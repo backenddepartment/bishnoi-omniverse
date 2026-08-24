@@ -134,12 +134,14 @@ export default async function HomePage({
                   </li>
                 ))}
               </ul>
-              <Link
-                href="/corp"
+              <a
+                href="https://getmeds.ph"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="mt-6 inline-block text-sm font-bold text-orange-600 hover:underline"
               >
                 {getmedsPhilippines.ctaText}
-              </Link>
+              </a>
             </div>
 
             <div className="rounded-2xl border border-forest-950/10 bg-forest-950 text-white p-8">
@@ -157,9 +159,14 @@ export default async function HomePage({
                   </li>
                 ))}
               </ul>
-              <Link href="/llp" className="mt-6 inline-block text-sm font-bold text-orange-400 hover:underline">
+              <a
+                href="https://getmedshealthcare.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-6 inline-block text-sm font-bold text-orange-400 hover:underline"
+              >
                 {getmedsHealthcare.ctaText}
-              </Link>
+              </a>
             </div>
           </div>
         </div>
