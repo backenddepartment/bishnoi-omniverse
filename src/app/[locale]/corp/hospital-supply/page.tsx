@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { setRequestLocale } from "next-intl/server";
 import { Link } from "@/lib/i18n/navigation";
-import GlobalBanner from "@/components/corp/GlobalBanner";
 import GlobalCallout from "@/components/corp/GlobalCallout";
 
 export const metadata: Metadata = {
@@ -81,7 +80,6 @@ export default async function HospitalSupplyPage({
 
   return (
     <>
-      <GlobalBanner />
 
       <section className="bg-gradient-to-b from-cream-50 to-white px-6 py-16 sm:py-24">
         <div className="mx-auto max-w-6xl">

@@ -21,7 +21,7 @@ export default function Navbar() {
 
   return (
     <header className="w-full bg-white border-b border-forest-950/10">
-      <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-4 px-6 py-4">
+      <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-4 px-6 py-5">
         {/* Logo & Entity Context Badge */}
         <Link href={isCorp ? "/corp" : isLlp ? "/llp" : "/corp"} className="flex items-center gap-3">
           <span className="flex size-8 items-center justify-center rounded-full bg-orange-500 shadow-sm">

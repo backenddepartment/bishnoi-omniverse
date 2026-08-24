@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { setRequestLocale } from "next-intl/server";
 import { Link } from "@/lib/i18n/navigation";
-import LlpBanner from "@/components/llp/LlpBanner";
 
 export const metadata: Metadata = {
   title: "About Getmeds Healthcare India – Global Oncology Exporter",
@@ -27,7 +26,6 @@ export default async function AboutLlpPage({
 
   return (
     <>
-      <LlpBanner />
 
       <section className="bg-gradient-to-b from-cream-50 to-white px-6 py-16 sm:py-24">
         <div className="mx-auto max-w-6xl">

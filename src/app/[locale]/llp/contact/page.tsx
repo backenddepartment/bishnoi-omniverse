@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { setRequestLocale } from "next-intl/server";
 import { Link } from "@/lib/i18n/navigation";
-import LlpBanner from "@/components/llp/LlpBanner";
 import LlpContactForm from "@/components/llp/LlpContactForm";
 
 export const metadata: Metadata = {
@@ -20,7 +19,6 @@ export default async function ContactLlpPage({
 
   return (
     <>
-      <LlpBanner />
 
       <section className="bg-gradient-to-b from-cream-50 to-white px-6 py-16 sm:py-24">
         <div className="mx-auto max-w-6xl">
