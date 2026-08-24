@@ -18,7 +18,14 @@
       { "label": "Global Partnerships", "href": "/llp/global-partnerships" },
       { "label": "About India LLP", "href": "/llp/about" },
       { "label": "Contact Global", "href": "/llp/contact" }
-    ]
+    ],
+    "neutralNavLinks": [
+      { "label": "Home", "href": "/" },
+      { "label": "Our Businesses", "href": "/ecosystem" },
+      { "label": "About", "href": "/about" },
+      { "label": "Contact", "href": "/contact" }
+    ],
+    "requestProductLabel": "Request a Product"
   },
   "footer": {
     "brandName": "Bishnoi Omniverse",

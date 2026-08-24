@@ -63,10 +63,71 @@
     },
     "hero": {
       "title": "One Identity. Multiple Ventures.",
-      "body1": "Bishnoi Omniverse is a connected ecosystem of businesses, ventures, people, and initiatives brought together by a shared identity and long-term vision.",
-      "body2": "From healthcare and pharmaceuticals to international ventures and social impact, we connect capabilities, opportunities, and people across borders.",
-      "primaryCta": "Explore Our Ecosystem",
-      "secondaryCta": "Our Story"
+      "body1": "A healthcare and pharmaceutical group connecting reliable supply, manufacturers, healthcare providers, and patients across markets.",
+      "body2": "Through businesses including Getmeds Philippines and Getmeds Healthcare India, we provide pharmaceutical sourcing, distribution, and healthcare supply solutions for hospitals, pharmacies, healthcare organizations, and partners.",
+      "primaryCta": "Explore Our Businesses",
+      "secondaryCta": "Partner With Us"
+    },
+    "customerPaths": {
+      "tag": "Who We Serve",
+      "title": "Find Your Path",
+      "cards": [
+        {
+          "icon": "🏥",
+          "title": "Hospitals & Healthcare Providers",
+          "description": "Pharmaceutical sourcing and supply for hospitals, clinics, and healthcare institutions.",
+          "ctaText": "View Healthcare Solutions →"
+        },
+        {
+          "icon": "💊",
+          "title": "Pharmacies & Distributors",
+          "description": "Reliable access to pharmaceutical products through established supply channels.",
+          "ctaText": "Become a Partner →"
+        },
+        {
+          "icon": "🏭",
+          "title": "Pharmaceutical Manufacturers",
+          "description": "Distribution and market access opportunities across our operating markets.",
+          "ctaText": "Partner With Us →"
+        },
+        {
+          "icon": "🤝",
+          "title": "Patients & Caregivers",
+          "description": "Access information about available medicines and healthcare services through our operating companies.",
+          "ctaText": "Explore Getmeds →"
+        }
+      ]
+    },
+    "businesses": {
+      "tag": "Our Operating Businesses",
+      "title": "The Companies Behind Bishnoi Omniverse",
+      "getmedsPhilippines": {
+        "title": "Getmeds Philippines",
+        "description": "Pharmaceutical distribution and healthcare supply in the Philippines.",
+        "features": ["Hospital supply", "Oncology medicines", "Pharmaceutical sourcing", "Pharmacy supply", "Importation", "Distribution"],
+        "ctaText": "Visit Getmeds Philippines →"
+      },
+      "getmedsHealthcare": {
+        "title": "Getmeds Healthcare India",
+        "description": "Pharmaceutical sourcing and healthcare supply serving the Indian market.",
+        "features": ["Pharmaceutical products", "Healthcare supply", "Manufacturer relationships", "Distribution"],
+        "ctaText": "Explore Getmeds Healthcare India →"
+      }
+    },
+    "requestProduct": {
+      "tag": "Request a Product",
+      "title": "Looking For a Specific Medicine or Partnership?",
+      "body": "Tell us what you need and our team will follow up within one business day.",
+      "reasonLabel": "What can we help with?",
+      "reasons": [
+        "Request a pharmaceutical product",
+        "Hospital / pharmacy supply",
+        "Manufacturer partnership",
+        "Distribution partnership",
+        "Export inquiry",
+        "Existing order",
+        "General inquiry"
+      ]
     },
     "introduction": {
       "title": "Beyond a Business. An Ecosystem.",

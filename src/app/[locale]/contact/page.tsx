@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
+import RequestProductForm from "@/components/RequestProductForm";
 
 export async function generateMetadata({
   params,
@@ -39,9 +40,16 @@ export default async function ContactPage({
         </div>
       </section>
 
+      <section id="request-product" className="bg-white px-6 py-16">
+        <div className="mx-auto max-w-3xl">
+          <RequestProductForm />
+        </div>
+      </section>
+
       <section className="bg-cream-50 px-6 py-20">
         <div className="mx-auto max-w-6xl">
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          <h2 className="text-center text-2xl font-bold text-forest-950">Or Reach Us Directly</h2>
+          <div className="mt-10 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {contacts.map((contact) => (
               <div
                 key={contact.title}

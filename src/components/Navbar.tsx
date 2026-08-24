@@ -18,12 +18,14 @@ export default function Navbar() {
 
   const corpNavLinks = headerData.corpNavLinks;
   const llpNavLinks = headerData.llpNavLinks;
+  const neutralNavLinks = headerData.neutralNavLinks;
+  const navLinks = isLlp ? llpNavLinks : isCorp ? corpNavLinks : neutralNavLinks;
 
   return (
     <header className="w-full bg-white border-b border-forest-950/10">
       <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-4 px-6 py-4">
         {/* Logo & Entity Context Badge */}
-        <Link href={isCorp ? "/corp" : isLlp ? "/llp" : "/corp"} className="flex items-center gap-3">
+        <Link href={isCorp ? "/corp" : isLlp ? "/llp" : "/"} className="flex items-center gap-3">
           <span className="flex size-8 items-center justify-center rounded-full bg-orange-500 shadow-sm">
             <svg viewBox="0 0 24 24" className="size-4" fill="white">
               <rect x="4" y="4" width="6" height="6" />
@@ -50,33 +52,28 @@ export default function Navbar() {
         {/* Dynamic Context-Aware Navigation Menu */}
         <nav>
           <ul className="flex flex-wrap items-center gap-6">
-            {isLlp
-              ? llpNavLinks.map((link) => {
-                  const active = pathname === link.href;
-                  return (
-                    <li key={link.href}>
-                      <Link href={link.href} className={active ? ACTIVE_LINK_CLASSES : LINK_CLASSES}>
-                        {link.label}
-                      </Link>
-                    </li>
-                  );
-                })
-              : corpNavLinks.map((link) => {
-                  const active = pathname === link.href;
-                  return (
-                    <li key={link.href}>
-                      <Link href={link.href} className={active ? ACTIVE_LINK_CLASSES : LINK_CLASSES}>
-                        {link.label}
-                      </Link>
-                    </li>
-                  );
-                })}
+            {navLinks.map((link) => {
+              const active = pathname === link.href;
+              return (
+                <li key={link.href}>
+                  <Link href={link.href} className={active ? ACTIVE_LINK_CLASSES : LINK_CLASSES}>
+                    {link.label}
+                  </Link>
+                </li>
+              );
+            })}
           </ul>
         </nav>
 
-        {/* Language Switcher */}
-        <div>
+        {/* Language Switcher & Persistent Conversion CTA */}
+        <div className="flex items-center gap-4">
           <LanguageSwitcher />
+          <Link
+            href="/contact#request-product"
+            className="rounded-lg bg-orange-500 px-4 py-2 text-sm font-bold text-white hover:bg-orange-600 transition-colors"
+          >
+            {headerData.requestProductLabel}
+          </Link>
         </div>
       </div>
     </header>
