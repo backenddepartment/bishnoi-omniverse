@@ -1,0 +1,115 @@
+{
+  "header": {
+    "brandName": "Bishnoi Omniverse",
+    "corpBadge": "🇵🇭 Philippines Operations",
+    "llpBadge": "🇮🇳 Global Sourcing & Export",
+    "corpNavLinks": [
+      { "label": "Overview", "href": "/corp" },
+      { "label": "Oncology Portfolio", "href": "/corp/oncology-medicines" },
+      { "label": "Hospital Supply", "href": "/corp/hospital-supply" },
+      { "label": "Partnerships", "href": "/corp/partnerships" },
+      { "label": "About Us", "href": "/corp/about" },
+      { "label": "Contact PH", "href": "/corp/contact" }
+    ],
+    "llpNavLinks": [
+      { "label": "Overview", "href": "/llp" },
+      { "label": "Global Portfolio", "href": "/llp/oncology-export-portfolio" },
+      { "label": "Sourcing Network", "href": "/llp/sourcing-supply-chain" },
+      { "label": "Global Partnerships", "href": "/llp/global-partnerships" },
+      { "label": "About India LLP", "href": "/llp/about" },
+      { "label": "Contact Global", "href": "/llp/contact" }
+    ]
+  },
+  "footer": {
+    "brandName": "Bishnoi Omniverse",
+    "tagline": "Rooted in five hundred years. Building for what comes next.",
+    "legacy": "For over five centuries, the Bishnoi tradition has championed strict personal discipline, ecological conservation, and selfless protection of life. This enduring philosophy guides our commitment to uncompromised quality, zero-waste logistics, and compassionate care.",
+    "corpSection": {
+      "title": "Philippines Operations",
+      "companyName": "Getmeds Philippines Inc. / 2MG Inc.",
+      "address": "Unit 301 & 305, 17 Vatican Bldg., Vatican City Drive, B.F. Resort Village, Talon II, Las Piñas City, Metro Manila, Philippines",
+      "phone": "+63 917 156 9029",
+      "email": "info@getmeds.ph",
+      "b2bEmail": "sales5@2mginc.com",
+      "links": [
+        { "label": "Philippines Home", "href": "/corp" },
+        { "label": "Oncology Medicine Catalog", "href": "/corp/oncology-medicines" },
+        { "label": "Hospital Supply & Tenders", "href": "/corp/hospital-supply" },
+        { "label": "Commercial Partnerships", "href": "/corp/partnerships" },
+        { "label": "About Getmeds Philippines", "href": "/corp/about" },
+        { "label": "Contact Account Team", "href": "/corp/contact" }
+      ]
+    },
+    "llpSection": {
+      "title": "Global Export Hub",
+      "companyName": "Getmeds Healthcare (India LLP)",
+      "address": "Mumbai, Maharashtra, India",
+      "phone": "+91 91907 69100",
+      "email": "care2@getmeds.in",
+      "links": [
+        { "label": "Global Export Home", "href": "/llp" },
+        { "label": "Oncology Export Portfolio", "href": "/llp/oncology-export-portfolio" },
+        { "label": "Global Partnerships", "href": "/llp/global-partnerships" },
+        { "label": "Sourcing & Supply Chain", "href": "/llp/sourcing-supply-chain" },
+        { "label": "About Getmeds Healthcare", "href": "/llp/about" },
+        { "label": "Contact Global Export Team", "href": "/llp/contact" }
+      ]
+    },
+    "globalNote": {
+      "corpText": "🌍 For our global sourcing and export operations, visit our ",
+      "corpLinkText": "India Global Export Hub",
+      "llpText": "🇵🇭 For pharmaceutical distribution within the Philippines, visit our ",
+      "llpLinkText": "Philippines Operations"
+    },
+    "copyright": "© 2026 Bishnoi Omniverse. All rights reserved."
+  },
+  "common": {
+    "globalBanner": {
+      "badge": "Dual-Gateway Operating Model",
+      "title": "Unified Bishnoi Omniverse Operating Ecosystem",
+      "text": "Getmeds Philippines Inc. / 2MG Inc. (SEC Registered, FDA & PDEA Licensed) serving 500+ hospitals across the Philippines, and Getmeds Healthcare India LLP serving global wholesale export across 54+ countries."
+    },
+    "globalCallout": {
+      "title": "Looking to Export or Distribute Oncology Products Worldwide?",
+      "body": "If you are an international pharmaceutical distributor or hospital supply agent looking for direct sourcing from India, our LLP entity (Getmeds Healthcare) handles all international commercial agreements and export logistics."
+    },
+    "pathways": {
+      "tag": "How Can We Help You Today?",
+      "title": "Select Your Pathway",
+      "hiTag": "हम आपकी सहायता कैसे कर सकते हैं?",
+      "hiTitle": "अपना मार्ग चुनें",
+      "cards": [
+        {
+          "icon": "🏥",
+          "title": "Philippine Hospital Procurement",
+          "hiTitle": "फिलीपींस अस्पताल खरीद",
+          "desc": "FDA Philippines LTO licensed, PDEA S-4/S-5 certified, DSWD/PCSO accredited supplier for 500+ hospital formularies and public tenders.",
+          "hiDesc": "फिलीपींस एफडीए एलटीओ, पीडीईए एस-4/एस-5 और 500+ अस्पतालों के लिए स्थानीय वितरण।",
+          "linkText": "Hospital Supply & Tenders →",
+          "hiLinkText": "अस्पताल आपूर्ति विवरण →",
+          "href": "/corp/hospital-supply"
+        },
+        {
+          "icon": "🌍",
+          "title": "Global Wholesale & Export",
+          "hiTitle": "अंतर्राष्ट्रीय वितरक",
+          "desc": "WHO-GMP certified sourcing from India, China, Europe & US. Supplying 2,000+ molecules to 54+ countries worldwide.",
+          "hiDesc": "50+ प्रमाणित निर्माताओं से 2,000+ अणुओं की थोक पहुंच। 54+ देशों को प्राथमिकता हवाई माल ढुलाई।",
+          "linkText": "Explore Global Export Catalog →",
+          "hiLinkText": "निर्यात सूची देखें →",
+          "href": "/llp/oncology-export-portfolio"
+        },
+        {
+          "icon": "🎗️",
+          "title": "Oncology & Patient Assistance",
+          "hiTitle": "निर्माता साझेदारी",
+          "desc": "Carboget, BorteGet, BendaGet, AbiraGet & specialty therapies. Assistance with FDA Compassionate Special Permits (CSP).",
+          "hiDesc": "दक्षिण-पूर्व एशिया, प्रशांत, मध्य पूर्व, अफ्रीका और अमेरिका के वाणिज्यिक चैनलों तक पहुंच।",
+          "linkText": "View Cancer Medicines →",
+          "hiLinkText": "साझेदारी विवरण →",
+          "href": "/corp/oncology-medicines"
+        }
+      ]
+    }
+  }
+}

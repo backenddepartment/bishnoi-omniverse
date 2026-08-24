@@ -32,6 +32,30 @@
       "nareshBishnoiFoundation": "Naresh Bishnoi Foundation"
     }
   },
+  "corp": {
+    "metadata": {
+      "title": "Cancer Medicine Philippines – FDA Oncology Distributor",
+      "description": "FDA-approved cancer medicine Philippines distributor. Chemotherapy, immunotherapy, & hospital drugs. Trusted by 500+ hospitals. Cold-chain delivery nationwide."
+    },
+    "badge": "Bishnoi Omniverse • Philippines CORP",
+    "h1": "Cancer Medicine Philippines: FDA-Approved Chemotherapy & Hospital Pharmaceutical Supplier",
+    "intro": "At Getmeds Philippines Inc. and 2MG Inc., we understand that a box of medicine isn't a product. It's a stage-IV oncology mother in Cebu waiting for her next dose. Operating under the unified identity of the Bishnoi Omniverse, we are SEC-registered and FDA-licensed oncology distributors in the Philippines dedicated to ensuring that distance, cost, and logistics never decide who lives.",
+    "ctaExplore": "Explore Chemotherapy Drug List →",
+    "ctaHospital": "Hospital Procurement & Bidding",
+    "ctaGlobal": "Global Export Hub"
+  },
+  "llp": {
+    "metadata": {
+      "title": "Oncology Exporter India – WHO-GMP Cancer Drugs Export",
+      "description": "Leading oncology exporter in India. Exporting WHO-GMP certified cancer medicines, carboplatin, & specialty pharmaceuticals to 54+ countries worldwide."
+    },
+    "badge": "Bishnoi Omniverse • India Global Export LLP",
+    "h1": "Oncology Exporter India: WHO-GMP Cancer Drugs & Pharmaceutical Export Worldwide",
+    "intro": "Getmeds Healthcare (India LLP) is a premier oncology exporter in India and the global sourcing and wholesale export hub of the Bishnoi Omniverse. Operating from Mumbai, Maharashtra, India, we bridge world-class pharmaceutical manufacturing with healthcare systems, distributors, and hospitals across 54+ countries.",
+    "ctaExplore": "Explore Oncology Export Portfolio →",
+    "ctaGlobal": "Become a Global Partner",
+    "ctaCorp": "Visit Philippines Portal"
+  },
   "home": {
     "metadata": {
       "title": "Bishnoi Omniverse | A Connected Global Ecosystem",

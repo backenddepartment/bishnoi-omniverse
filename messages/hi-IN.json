@@ -32,6 +32,30 @@
       "nareshBishnoiFoundation": "नरेश बिश्नोई फाउंडेशन"
     }
   },
+  "corp": {
+    "metadata": {
+      "title": "Cancer Medicine Philippines – FDA Oncology Distributor",
+      "description": "FDA-approved cancer medicine Philippines distributor. Chemotherapy, immunotherapy, & hospital drugs. Trusted by 500+ hospitals. Cold-chain delivery nationwide."
+    },
+    "badge": "Bishnoi Omniverse • Philippines CORP",
+    "h1": "Cancer Medicine Philippines: FDA-Approved Chemotherapy & Hospital Pharmaceutical Supplier",
+    "intro": "At Getmeds Philippines Inc. and 2MG Inc., we understand that a box of medicine isn't a product. It's a stage-IV oncology mother in Cebu waiting for her next dose. Operating under the unified identity of the Bishnoi Omniverse, we are SEC-registered and FDA-licensed oncology distributors in the Philippines dedicated to ensuring that distance, cost, and logistics never decide who lives.",
+    "ctaExplore": "Explore Chemotherapy Drug List →",
+    "ctaHospital": "Hospital Procurement & Bidding",
+    "ctaGlobal": "Global Export Hub"
+  },
+  "llp": {
+    "metadata": {
+      "title": "ऑन्कोलॉजी निर्यातक भारत – डब्ल्यूएचओ-जीएमपी कैंसर दवाएं निर्यात",
+      "description": "भारत में प्रमुख ऑन्कोलॉजी निर्यातक। 54+ देशों में डब्ल्यूएचओ-जीएमपी प्रमाणित कैंसर दवाओं और कार्बोप्लाटिन का निर्यात।"
+    },
+    "badge": "बिश्नोई ओम्निवर्स • भारत वैश्विक निर्यात (LLP)",
+    "h1": "ऑन्कोलॉजी निर्यातक भारत: डब्ल्यूएचओ-जीएमपी कैंसर दवाएं और वैश्विक फार्मास्युटिकल निर्यात",
+    "intro": "गेटमेड्स हेल्थकेयर (इंडिया एलएलपी) भारत में एक प्रमुख ऑन्कोलॉजी निर्यातक और बिश्नोई ओम्निवर्स का वैश्विक सोर्सिंग और थोक निर्यात हब है। मुंबई, महाराष्ट्र से परिचालन करते हुए, हम 54+ देशों के अस्पतालों और वितरकों को जोड़ते हैं।",
+    "ctaExplore": "ऑन्कोलॉजी निर्यात पोर्टफोलियो देखें →",
+    "ctaGlobal": "वैश्विक भागीदार बनें",
+    "ctaCorp": "फिलीपींस पोर्टल पर जाएं"
+  },
   "home": {
     "metadata": {
       "title": "बिश्नोई ओम्निवर्स | एक जुड़ा हुआ वैश्विक इकोसिस्टम",
