@@ -12,6 +12,14 @@ const isStaticExport = process.env.GITHUB_PAGES === "true";
 const basePath = process.env.NEXT_BASE_PATH ?? "";
 
 const nextConfig: NextConfig = {
+  // Pin the project root explicitly. Without this, Turbopack auto-detects
+  // the root by walking up for a lockfile — a stray lockfile in a parent
+  // folder (e.g. from running `npm install` one directory too high) makes
+  // it pick the wrong root and breaks resolution of internal modules like
+  // next/font's Turbopack loader.
+  turbopack: {
+    root: __dirname,
+  },
   images: {
     formats: ["image/avif", "image/webp"],
     ...(isStaticExport ? { unoptimized: true } : {}),
