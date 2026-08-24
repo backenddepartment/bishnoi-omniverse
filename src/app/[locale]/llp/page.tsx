@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { setRequestLocale } from "next-intl/server";
 import { Link } from "@/lib/i18n/navigation";
-import LlpBanner from "@/components/llp/LlpBanner";
 import { getLlpPageData, getCommonData } from "@/lib/data/getOmniverseData";
 import { LlpJsonLd } from "@/components/seo/JsonLd";
 
@@ -53,7 +52,6 @@ export default async function LlpHomePage({
   return (
     <>
       <LlpJsonLd />
-      <LlpBanner />
 
       {/* Hero Section */}
       <section className="bg-gradient-to-b from-forest-950 via-forest-900 to-forest-950 px-6 py-16 sm:py-24 text-white">

@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/lib/i18n/navigation";
-import GlobalBanner from "@/components/corp/GlobalBanner";
 import GlobalCallout from "@/components/corp/GlobalCallout";
 import { CorpJsonLd } from "@/components/seo/JsonLd";
 import { getCommonData } from "@/lib/data/getOmniverseData";
@@ -74,7 +73,6 @@ export default async function CorpHomePage({
   return (
     <>
       <CorpJsonLd />
-      <GlobalBanner />
 
       {/* Hero Section */}
       <section className="bg-gradient-to-b from-cream-50 via-white to-white px-6 py-16 sm:py-24">
