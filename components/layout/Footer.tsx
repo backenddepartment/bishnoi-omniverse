@@ -1,57 +1,62 @@
 import React from 'react';
 import Link from 'next/link';
+import { Cross } from 'lucide-react';
 import homepageData from '@/lib/data/homepageData.json';
 
 export const Footer: React.FC = () => {
   const { brand } = homepageData;
 
   return (
-    <footer className="w-full bg-white border-t border-black py-12 mt-auto">
-      <div className="max-w-6xl mx-auto px-6 space-y-6">
-        {/* Top Footer Section */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-black pb-6">
+    <footer className="site-footer mt-auto">
+      <div className="wrap">
+        <div className="footer-grid">
           <div>
-            <span className="text-base font-bold uppercase tracking-tight text-black block">
-              {brand.name} <span className="font-normal normal-case text-slate-700">| {brand.tagline}</span>
-            </span>
-            <span className="text-xs text-slate-600 italic block mt-1">
-              {brand.affiliation}
-            </span>
+            <Link href="/" className="flex items-center gap-2.5 mb-4 text-white no-underline">
+              <Cross className="w-5 h-5 text-accent" strokeWidth={2.5} />
+              <span className="font-sans text-[15px] font-bold tracking-wide text-white">
+                {brand.name}
+              </span>
+            </Link>
+            <p>
+              {brand.tagline} — reliable hospital essentials and specialty cancer treatments,
+              sourced globally and delivered locally from our hubs in India and the Philippines.
+            </p>
+            <p className="text-xs italic !text-[#8f8877]">{brand.affiliation}</p>
           </div>
 
-          <div className="text-xs md:text-sm font-medium text-slate-800">
-            <a href={`mailto:${brand.email}`} className="hover:underline">
-              {brand.email}
-            </a>
-            <span className="mx-2">|</span>
-            <span>{brand.phone}</span>
+          <div>
+            <h4>Company</h4>
+            <ul>
+              <li><Link href="/about">Our Story</Link></li>
+              <li><Link href="/global">Global Presence</Link></li>
+              <li><Link href="/about#values">Vision &amp; Values</Link></li>
+              <li><Link href="/contact">Governance &amp; Standards</Link></li>
+            </ul>
+          </div>
+
+          <div>
+            <h4>Businesses</h4>
+            <ul>
+              <li><Link href="/catalog">Hospital Supplies</Link></li>
+              <li><Link href="/contact?type=find-medicine">Specialty Pharmaceuticals</Link></li>
+              <li><Link href="/global">The Getmeds Ecosystem</Link></li>
+              <li><Link href="/global">Naresh Bishnoi Trust</Link></li>
+            </ul>
+          </div>
+
+          <div>
+            <h4>Contact</h4>
+            <ul>
+              <li><a href={`mailto:${brand.email}`}>{brand.email}</a></li>
+              <li className="!text-[#d7d2c1]">{brand.phone}</li>
+              <li><Link href="/contact">Get in touch</Link></li>
+            </ul>
           </div>
         </div>
 
-        {/* Quick Links */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 text-xs uppercase">
-          <div className="flex flex-wrap items-center gap-4">
-            <span className="font-bold text-slate-900">Quick Links:</span>
-            <Link href="/contact?type=find-medicine" className="hover:underline text-slate-800">
-              Find a Medicine
-            </Link>
-            <span>|</span>
-            <Link href="/contact?type=hospital-supplies" className="hover:underline text-slate-800">
-              Hospital Supplies
-            </Link>
-            <span>|</span>
-            <Link href="/about" className="hover:underline text-slate-800">
-              Partner With Us
-            </Link>
-            <span>|</span>
-            <Link href="/contact" className="hover:underline text-slate-800">
-              Contact
-            </Link>
-          </div>
-
-          <div className="text-slate-500">
-            © {new Date().getFullYear()} Bishnoi Omniverse. All rights reserved.
-          </div>
+        <div className="footer-bottom">
+          <span>© {new Date().getFullYear()} Bishnoi Omniverse LLP. All rights reserved.</span>
+          <span>A proud member of the Bishnoi Group</span>
         </div>
       </div>
     </footer>

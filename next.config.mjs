@@ -20,6 +20,9 @@ const nextConfig = {
   trailingSlash: true,
   basePath: basePath,
   assetPrefix: assetPrefix,
+  experimental: {
+    workerThreads: false,
+  },
   images: {
     unoptimized: true,
     remotePatterns: [

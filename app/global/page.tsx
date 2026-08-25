@@ -1,122 +1,152 @@
 import React from 'react';
 import Link from 'next/link';
+import { ArrowRight, HeartHandshake, Globe2 } from 'lucide-react';
 import businessesData from '@/lib/data/businessesData.json';
+
+const IMG = {
+  hero: 'https://upload.wikimedia.org/wikipedia/commons/2/2e/Hospital_corridor_2.jpg',
+  omniverse: 'https://upload.wikimedia.org/wikipedia/commons/2/2e/Hospital_corridor_2.jpg',
+  getmeds:
+    'https://upload.wikimedia.org/wikipedia/commons/thumb/8/8e/Former_pharmacy%2C_shelves_with_medicines.jpg/1920px-Former_pharmacy%2C_shelves_with_medicines.jpg',
+  india: 'https://upload.wikimedia.org/wikipedia/commons/d/da/Skyline_of_Cannaught_Place%2C_New_Delhi.jpg',
+  philippines:
+    'https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/Manila_Skyline_March_2020.jpg/1920px-Manila_Skyline_March_2020.jpg',
+};
+
+const divisionImages: Record<string, string> = {
+  omniverse: IMG.omniverse,
+  getmeds: IMG.getmeds,
+};
 
 export default function GlobalBusinessesPage() {
   const { header, vision, sections, legacy } = businessesData;
 
   return (
     <div className="w-full">
-      {/* Hero Section */}
-      <section className="max-w-6xl mx-auto px-6 py-16 md:py-24 border-b border-black">
-        <span className="text-xs uppercase font-bold tracking-widest text-slate-600 block mb-2">
-          {header.title}
-        </span>
-        <h1 className="text-3xl md:text-5xl font-bold uppercase tracking-tight text-black leading-tight max-w-4xl">
-          {header.headline}
-        </h1>
-        <p className="text-base md:text-lg text-slate-800 mt-6 max-w-3xl leading-relaxed font-normal">
-          {header.subheadline}
-        </p>
-
-        {/* Hero CTAs */}
-        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 mt-8">
-          <a
-            href="#ventures"
-            className="px-6 py-3.5 bg-black text-white text-sm uppercase font-bold text-center border border-black hover:bg-slate-900 transition"
-          >
-            {header.ctaExplore}
-          </a>
-          <Link
-            href="/contact?type=partner"
-            className="px-6 py-3.5 bg-white text-black text-sm uppercase font-bold text-center border border-black hover:bg-slate-100 transition"
-          >
-            {header.ctaPartner}
-          </Link>
+      <section className="page-hero">
+        <div className="hero-media">
+          <img src={IMG.hero} alt="Hospital corridor representing our healthcare infrastructure" loading="eager" />
         </div>
-      </section>
-
-      {/* From Vision to the World */}
-      <section className="max-w-6xl mx-auto px-6 py-16 border-b border-black">
-        <span className="text-xs uppercase font-bold tracking-widest text-slate-600 block mb-2">
-          Our Journey
-        </span>
-        <h2 className="text-2xl md:text-3xl font-bold uppercase text-black mb-6">
-          {vision.title}
-        </h2>
-        <div className="space-y-4 text-slate-800 text-sm md:text-base leading-relaxed max-w-4xl">
-          <p className="font-bold text-black text-base md:text-lg">
-            {vision.lead}
-          </p>
-          <p>{vision.paragraph}</p>
-        </div>
-      </section>
-
-      {/* Sections 1, 2, 3 (Ventures & Ecosystem) */}
-      <section id="ventures" className="max-w-6xl mx-auto px-6 py-16 border-b border-black space-y-16">
-        {sections.map((sec) => (
-          <div key={sec.id} className="p-8 border border-black bg-white space-y-6">
-            <div>
-              <span className="text-xs font-bold uppercase tracking-widest text-slate-500 block mb-1">
-                Division 0{sec.number}
-              </span>
-              <h2 className="text-2xl md:text-3xl font-bold uppercase text-black">
-                {sec.title}
-              </h2>
-              <p className="text-sm font-medium italic text-slate-700 mt-1">
-                {sec.tagline}
-              </p>
-            </div>
-
-            <p className="text-sm md:text-base text-slate-800 leading-relaxed max-w-4xl">
-              {sec.description}
-            </p>
-
-            <ul className="space-y-3 pt-2">
-              {sec.bullets.map((b, idx) => (
-                <li key={idx} className="text-sm text-slate-800 leading-relaxed flex items-start gap-2">
-                  <span className="font-bold text-black shrink-0">•</span>
-                  <div>
-                    <strong className="text-black uppercase tracking-wide">{b.name}</strong> {b.desc}
-                  </div>
-                </li>
-              ))}
-            </ul>
-
-            {sec.ctaText && sec.ctaHref && (
-              <div className="pt-4">
-                <Link
-                  href={sec.ctaHref}
-                  className="inline-block px-6 py-3 bg-black text-white text-xs font-bold uppercase tracking-wider border border-black hover:bg-slate-900 transition"
-                >
-                  {sec.ctaText}
-                </Link>
-              </div>
-            )}
+        <div className="hero-content">
+          <span className="eyebrow on-dark">{header.title}</span>
+          <h1>{header.headline}</h1>
+          <p className="lede">{header.subheadline}</p>
+          <div className="hero-actions">
+            <Link className="btn btn-primary" href="#ventures">
+              {header.ctaExplore.replace(/[\[\]]/g, '')} <ArrowRight />
+            </Link>
+            <Link className="btn btn-outline" href="/contact?type=partner">
+              {header.ctaPartner.replace(/[\[\]]/g, '')}
+            </Link>
           </div>
-        ))}
+        </div>
       </section>
 
-      {/* A Legacy Still in the Making */}
-      <section className="max-w-6xl mx-auto px-6 py-16">
-        <span className="text-xs uppercase font-bold tracking-widest text-slate-600 block mb-2">
-          Future Outlook
-        </span>
-        <h2 className="text-2xl md:text-3xl font-bold uppercase text-black mb-6">
-          {legacy.title}
-        </h2>
-        <p className="text-base text-slate-800 max-w-4xl leading-relaxed">
-          {legacy.description}
-        </p>
-
-        <div className="mt-8 p-6 border-2 border-black bg-slate-900 text-white max-w-4xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+      <section className="section section-tight">
+        <div className="wrap grid-2">
           <div>
-            <span className="text-sm font-bold uppercase block">{legacy.footerBrand}</span>
-            <a href={`mailto:${legacy.email}`} className="text-xs text-slate-300 hover:underline block mt-1">
-              {legacy.email}
-            </a>
+            <span className="eyebrow">Our Journey</span>
+            <h2>{vision.title}</h2>
           </div>
-          <span className="text-xs text-slate-400">{legacy.copyright}</span>
+          <div className="lead-block">
+            <p className="font-serif text-xl font-semibold text-ink leading-snug mb-4">{vision.lead}</p>
+            <p className="text-ink-soft leading-relaxed">{vision.paragraph}</p>
+          </div>
+        </div>
+      </section>
+
+      <div id="ventures">
+        {sections.map((sec) => {
+          const img = divisionImages[sec.id];
+          return (
+            <section key={sec.id} id={sec.id} className="division">
+              <div className="wrap">
+                {img ? (
+                  <div className="division-grid">
+                    <img src={img} alt={sec.title} />
+                    <div>
+                      <span className="tag">Division 0{sec.number}</span>
+                      <h2>{sec.title}</h2>
+                      <p className="text-sm font-medium italic text-muted mb-4">{sec.tagline}</p>
+                      <p className="text-ink-soft leading-relaxed mb-6">{sec.description}</p>
+                      <ul className="space-y-3 mb-6">
+                        {sec.bullets.map((b, idx) => (
+                          <li key={idx} className="text-sm text-ink-soft leading-relaxed flex items-start gap-2.5">
+                            <span className="text-accent shrink-0 mt-0.5">—</span>
+                            <span>
+                              <strong className="text-ink">{b.name}</strong> {b.desc}
+                            </span>
+                          </li>
+                        ))}
+                      </ul>
+                      {sec.ctaText && sec.ctaHref && (
+                        <Link href={sec.ctaHref} className="btn btn-outline on-light">
+                          {sec.ctaText.replace(/[\[\]→]/g, '').trim()} <ArrowRight />
+                        </Link>
+                      )}
+                    </div>
+                  </div>
+                ) : (
+                  <>
+                    <span className="tag">Division 0{sec.number}</span>
+                    <div className="grid-2 items-start">
+                      <div>
+                        <h2>{sec.title}</h2>
+                        <p className="text-sm font-medium italic text-muted mb-4">{sec.tagline}</p>
+                        <p className="text-ink-soft leading-relaxed">{sec.description}</p>
+                      </div>
+                      <div className="bg-paper-2 border border-line rounded p-8 h-full flex flex-col justify-center gap-5">
+                        <HeartHandshake className="w-9 h-9 text-accent" strokeWidth={1.5} />
+                        <ul className="space-y-3">
+                          {sec.bullets.map((b, idx) => (
+                            <li key={idx} className="text-sm text-ink-soft leading-relaxed flex items-start gap-2.5">
+                              <span className="text-accent shrink-0 mt-0.5">—</span>
+                              <span>
+                                <strong className="text-ink">{b.name}</strong> {b.desc}
+                              </span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    </div>
+                  </>
+                )}
+              </div>
+            </section>
+          );
+        })}
+      </div>
+
+      <section className="section" id="global-presence">
+        <div className="wrap">
+          <span className="eyebrow">Our Global Presence</span>
+          <h2 className="mb-10">Two Hubs, One Continuous Line of Supply</h2>
+          <div className="grid-2">
+            <img src={IMG.india} alt="New Delhi, India — our global sourcing hub" className="w-full h-[300px] object-cover rounded" />
+            <img src={IMG.philippines} alt="Manila, Philippines — our Asia-Pacific logistics hub" className="w-full h-[300px] object-cover rounded" />
+          </div>
+        </div>
+      </section>
+
+      <section className="section-dark section-tight">
+        <div className="wrap">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-8">
+            <div className="max-w-xl">
+              <span className="eyebrow on-dark">Future Outlook</span>
+              <h2>{legacy.title}</h2>
+              <p>{legacy.description}</p>
+            </div>
+            <div className="flex flex-col items-start md:items-end gap-3 shrink-0">
+              <div className="flex items-center gap-2 text-white font-sans font-bold">
+                <Globe2 className="w-5 h-5 text-accent" />
+                {legacy.footerBrand}
+              </div>
+              <a href={`mailto:${legacy.email}`} className="text-sm text-[#cfc9ba] hover:text-white">
+                {legacy.email}
+              </a>
+              <span className="text-xs text-[#807a6a]">{legacy.copyright}</span>
+            </div>
+          </div>
         </div>
       </section>
     </div>
