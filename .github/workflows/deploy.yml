@@ -29,11 +29,17 @@ jobs:
 
       - name: Setup GitHub Pages
         uses: actions/configure-pages@v5
+        with:
+          static_site_generator: next
 
       - name: Install dependencies
         run: npm ci || npm install
 
       - name: Build static Next.js export
+        env:
+          NEXT_PUBLIC_BASE_PATH: "/bishnoi-omniverse"
+          GITHUB_ACTIONS: "true"
+          NODE_OPTIONS: "--max-old-space-size=4096"
         run: npx next build
 
       - name: Upload build artifact
