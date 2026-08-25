@@ -1,0 +1,162 @@
+{
+  "hero": {
+    "title": "BISHNOI OMNIVERSE: GLOBAL CATALOG",
+    "headline": "Hospital Procurement, Simplified.",
+    "subheadline": "No gated portals. No confusing jargon. Just verified, internationally compliant medical supplies ready for global distribution. Find exactly what your hospital needs, instantly.",
+    "ctaSearch": "[ SEARCH THE CATALOG ]",
+    "ctaUpload": "[ UPLOAD YOUR REQUISITION LIST ]"
+  },
+  "categories": [
+    {
+      "id": "fluid-iv",
+      "name": "Fluid & IV Therapy",
+      "description": "Cannulas, infusion sets, and securement devices."
+    },
+    {
+      "id": "blood-transfusion",
+      "name": "Blood Bank & Transfusion",
+      "description": "Sterile bags, filtered lines, and cold-chain transport."
+    },
+    {
+      "id": "surgical-critical",
+      "name": "Surgical & Critical Care",
+      "description": "OR consumables, advanced airway support, and monitoring."
+    },
+    {
+      "id": "specialty-oncology",
+      "name": "Specialty Oncology (Named Patient)",
+      "description": "Targeted therapies, biosimilars, and rare medications."
+    },
+    {
+      "id": "facility-infrastructure",
+      "name": "Facility Infrastructure",
+      "description": "Medical gas cylinders, durable equipment, and diagnostic machines."
+    }
+  ],
+  "products": [
+    {
+      "id": "iv-cannula-set",
+      "categoryId": "fluid-iv",
+      "name": "Intravenous (IV) Cannula Set (With Wings & Port)",
+      "brand": "GetMeds™",
+      "origin": "India",
+      "visualTags": ["✓ In Stock", "✓ CE Certified", "✓ CMDR Approved"],
+      "whatItDoes": "Provides secure, comfortable, and reliable venous access for the rapid delivery of medications and fluids.",
+      "whyItsSafe": [
+        "Manufactured by La-Med Healthcare Pvt. Ltd. under strict ISO guidelines.",
+        "Integrated port allows for needle-free secondary medication administration.",
+        "Flexible wings ensure secure skin fixation, reducing patient trauma."
+      ],
+      "specs": "Available Specs (Gauges): G14, G16, G17, G18, G20, G22, G24, G26",
+      "certUrl": "/certificates/iv-cannula-ce.pdf"
+    },
+    {
+      "id": "blood-transfusion-set",
+      "categoryId": "blood-transfusion",
+      "name": "Sterile Blood Transfusion Set (With AirVent)",
+      "brand": "GetMeds™",
+      "origin": "India",
+      "visualTags": ["✓ In Stock", "✓ CMDR-2023-01556", "❄️ Cold-Chain Ready"],
+      "whatItDoes": "Ensures the safe, controlled, and sterile delivery of blood and blood components to the patient.",
+      "whyItsSafe": [
+        "Features a built-in AirVent to maintain a steady, uninterrupted flow rate.",
+        "Designed with an advanced filtration chamber to prevent micro-clots and debris.",
+        "Kink-resistant medical-grade tubing guarantees reliable delivery during emergencies."
+      ],
+      "specs": "Drip chamber volume: 20 drops/ml | Filter mesh: 200 microns",
+      "certUrl": "/certificates/blood-transfusion-cmdr.pdf"
+    },
+    {
+      "id": "carboplatin-injection",
+      "categoryId": "specialty-oncology",
+      "name": "Carboplatin Injection (150mg/15ml & 450mg/45ml)",
+      "brand": "Carboget™ / GetMeds™",
+      "origin": "India (WHO-GMP Certified Facility)",
+      "visualTags": ["✓ Cold-Chain Monitored", "✓ WHO-GMP", "✓ Named Patient Access"],
+      "whatItDoes": "Essential platinum-based chemotherapy agent for ovarian, lung, and head/neck carcinoma treatment.",
+      "whyItsSafe": [
+        "Sourced directly from audited oncology parenteral manufacturing units.",
+        "Shipped in thermal-insulated containers with digital continuous temperature tracking.",
+        "Accompanied by Certificate of Analysis (CoA) and batch test release data."
+      ],
+      "specs": "Storage: 2°C to 8°C | Vials per box: 10 Vials | FDA CSP Ready",
+      "certUrl": "/certificates/carboplatin-coa.pdf"
+    },
+    {
+      "id": "medical-oxygen-cylinder",
+      "categoryId": "facility-infrastructure",
+      "name": "High-Pressure Seamless Steel Medical Gas Cylinder (40L Oxygen)",
+      "brand": "Bishnoi PureFlow™",
+      "origin": "India / China",
+      "visualTags": ["✓ ISO 9809-1", "✓ DOT/TPED Certified", "✓ Hydro-Tested"],
+      "whatItDoes": "Provides high-purity medical oxygen storage for ICU respirators, emergency crash carts, and surgical suites.",
+      "whyItsSafe": [
+        "Constructed from high-grade 34CrMo4 alloy steel tested to 200 bar operating pressure.",
+        "Fitted with Pin-Index / DIN standard chrome-plated brass valves for leak-free sealing.",
+        "Includes individual hydrostatic test certificates and serial batch stamping."
+      ],
+      "specs": "Water capacity: 40 Liters | Working Pressure: 150-200 Bar | Valve: CGA 540 / BS 341",
+      "certUrl": "/certificates/oxygen-cylinder-iso.pdf"
+    },
+    {
+      "id": "endotracheal-tube-set",
+      "categoryId": "surgical-critical",
+      "name": "Cuffed Endotracheal Airway Tube Set (Sterile)",
+      "brand": "GetMeds™",
+      "origin": "India",
+      "visualTags": ["✓ In Stock", "✓ CE Marked", "✓ Pyrogen-Free"],
+      "whatItDoes": "Maintains open airway and ventilation during general anesthesia and critical care intubation.",
+      "whyItsSafe": [
+        "High-volume, low-pressure cuff reduces tracheal wall mucosal trauma.",
+        "Radio-opaque line along full tube length enables accurate X-ray position check.",
+        "Smooth Murphy eye protects against accidental airway occlusion."
+      ],
+      "specs": "Sizes: ID 3.0mm to 9.0mm (0.5mm increments) | Standard 15mm connector",
+      "certUrl": "/certificates/endotracheal-ce.pdf"
+    }
+  ],
+  "trustBanner": {
+    "title": "Uncompromising Global Standards",
+    "subtitle": "You shouldn't have to guess if a product is safe. Every item in the Bishnoi Omniverse catalog passes a strict multi-point verification process before it reaches your facility:",
+    "points": [
+      {
+        "step": "1",
+        "title": "Direct Manufacturer Sourcing",
+        "desc": "We eliminate grey-market risks by sourcing exclusively from certified global manufacturers."
+      },
+      {
+        "step": "2",
+        "title": "Regulatory Clearance",
+        "desc": "Full documentation provided for CE, ISO, and CMDR standards."
+      },
+      {
+        "step": "3",
+        "title": "Batch Traceability",
+        "desc": "100% transparent tracking from the factory floor to your hospital doors."
+      }
+    ]
+  },
+  "rfqCheckout": {
+    "title": "Ready to Order? We Move Fast.",
+    "subtitle": "Don't see your specific item? Need a bulk container shipment? Our sourcing team is on standby.",
+    "steps": [
+      {
+        "step": "1",
+        "title": "1. Build Your List",
+        "desc": "Add items to your quote directly from the catalog."
+      },
+      {
+        "step": "2",
+        "title": "2. Submit Instantly",
+        "desc": "No account creation required for initial quotes."
+      },
+      {
+        "step": "3",
+        "title": "3. 24-Hour Turnaround",
+        "desc": "A dedicated Bishnoi supply manager will return a fully costed, logistics-mapped quote within one business day."
+      }
+    ],
+    "ctaSubmit": "[ SUBMIT HOSPITAL REQUISITION ]",
+    "ctaTalk": "[ TALK TO SOURCING ]"
+  }
+}

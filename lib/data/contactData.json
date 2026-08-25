@@ -1,0 +1,102 @@
+{
+  "pageHeader": {
+    "title": "CONTACT BISHNOI OMNIVERSE",
+    "headline": "We Are Here to Help.",
+    "subheadline": "Whether you are a hospital running low on critical supplies, a doctor seeking a specific cancer treatment, or a patient looking for guidance, our global team is ready to assist you."
+  },
+  "directContact": {
+    "title": "Reach Us Directly",
+    "description": "For immediate assistance, please use our global contact lines. We treat every inquiry with urgency and confidentiality.",
+    "email": "contact@bishnoi.ai",
+    "hotline": "+63 917 156 9029 | +91 (11) 4000-0000",
+    "hours": "24/7 Support for Urgent Medical Requests"
+  },
+  "assistSection": {
+    "title": "How Can We Assist You Today?",
+    "subtitle": "Please select the option that best describes your needs so we can connect you with the right specialist immediately."
+  },
+  "personas": [
+    {
+      "id": "doctor",
+      "number": "1",
+      "category": "For Doctors & Oncologists (Named Patient Supply)",
+      "tagline": "I need to source an unregistered, unavailable, or specialty medicine for my patient.",
+      "buttonText": "Request a Specific Medicine",
+      "formFields": [
+        { "name": "physicianName", "label": "Physician Name", "type": "text", "placeholder": "Dr. Full Name", "required": true },
+        { "name": "medicalFacility", "label": "Medical Facility / Hospital", "type": "text", "placeholder": "Hospital or Clinic Name", "required": true },
+        { "name": "country", "label": "Country", "type": "text", "placeholder": "Country of Practice", "required": true },
+        { "name": "medicationName", "label": "Medication Name / Active Ingredient", "type": "text", "placeholder": "e.g., Carboplatin, Bortezomib", "required": true },
+        { "name": "urgencyLevel", "label": "Urgency Level", "type": "select", "options": ["Routine (Standard Procurement)", "Urgent (Within 48-72 hrs)", "Emergency (24hr Dispatch Required)"], "required": true },
+        { "name": "additionalNotes", "label": "Prescription / Additional Notes", "type": "textarea", "placeholder": "Provide dosage, quantity, or specific patient needs..." }
+      ]
+    },
+    {
+      "id": "hospital",
+      "number": "2",
+      "category": "For Hospitals & Clinics (Institutional Supply)",
+      "tagline": "I need to order hospital essentials, from IV needles to medical cylinders, to keep our facility running.",
+      "buttonText": "Hospital Supply Inquiry",
+      "formFields": [
+        { "name": "hospitalName", "label": "Hospital / Clinic Name", "type": "text", "placeholder": "Facility Name", "required": true },
+        { "name": "procurementOfficer", "label": "Procurement Officer Name", "type": "text", "placeholder": "Full Name", "required": true },
+        { "name": "department", "label": "Department", "type": "text", "placeholder": "e.g., ICU, Oncology, Central Pharmacy, Surgery", "required": true },
+        { "name": "supplyType", "label": "Type of Supplies Needed", "type": "select", "options": ["Consumables (IV Needles, Syringes, Catheters)", "Blood Transfusion Kits & IV Fluids", "Medical Gas Cylinders & ICU Equipment", "Mixed Bulk Hospital Inventory"], "required": true },
+        { "name": "estimatedVolume", "label": "Estimated Volume / Quantity", "type": "text", "placeholder": "e.g., 5,000 units monthly or 50 cylinders", "required": true },
+        { "name": "additionalNotes", "label": "Specific Specifications / Notes", "type": "textarea", "placeholder": "Specify brands, gauge sizes, or tender details..." }
+      ]
+    },
+    {
+      "id": "patient",
+      "number": "3",
+      "category": "For Patients & Families",
+      "tagline": "My doctor recommended a medicine that is not available in my country, and I need help finding it.",
+      "buttonText": "Patient Support & Guidance",
+      "formFields": [
+        { "name": "patientName", "label": "Patient Name", "type": "text", "placeholder": "Patient or Relative Name", "required": true },
+        { "name": "country", "label": "Country", "type": "text", "placeholder": "Country of Residence", "required": true },
+        { "name": "doctorName", "label": "Prescribing Doctor's Name", "type": "text", "placeholder": "Attending Physician Name", "required": true },
+        { "name": "medicineRequested", "label": "Medicine Requested (if known)", "type": "text", "placeholder": "Brand or Generic Name", "required": false },
+        { "name": "message", "label": "Message / Questions", "type": "textarea", "placeholder": "Tell us how we can help you or your family member...", "required": true }
+      ]
+    },
+    {
+      "id": "partner",
+      "number": "4",
+      "category": "For Manufacturers & Partners",
+      "tagline": "I am a medical device or pharmaceutical manufacturer looking to expand distribution.",
+      "buttonText": "Explore Partnership",
+      "formFields": [
+        { "name": "companyName", "label": "Company Name", "type": "text", "placeholder": "Manufacturer / Brand Name", "required": true },
+        { "name": "countryOfOrigin", "label": "Country of Origin", "type": "text", "placeholder": "e.g., USA, Germany, India, China, Japan", "required": true },
+        { "name": "productCategory", "label": "Product Category", "type": "text", "placeholder": "e.g., Oncology Biologics, Surgical Devices, Consumables", "required": true },
+        { "name": "certifications", "label": "Certifications Held", "type": "text", "placeholder": "e.g., WHO-GMP, US FDA, EU CE, ISO 13485", "required": true },
+        { "name": "additionalNotes", "label": "Partnership Intent / Message", "type": "textarea", "placeholder": "Share details about your expansion goals..." }
+      ]
+    }
+  ],
+  "globalOffices": {
+    "title": "Our Global Offices",
+    "locations": [
+      {
+        "region": "India (Global Sourcing Hub)",
+        "entity": "Bishnoi Omniverse LLP",
+        "desc": "We source directly from the pharmaceutical capital of the world, ensuring fast, affordable access to high-quality medicines.",
+        "address": "Okhla Industrial Area, Phase III, New Delhi, India 110020",
+        "email": "care2@getmeds.in"
+      },
+      {
+        "region": "Philippines (Asia-Pacific Logistics Hub)",
+        "entity": "Bishnoi Omniverse Corp (Getmeds Philippines Inc. / 2MG Inc.)",
+        "desc": "Our strategic operations center bridging Southeast Asia with the rest of our global distribution network.",
+        "address": "Unit 301 & 305, 17 Vatican Bldg., Vatican City Drive, B.F. Resort Village, Talon II, Las Piñas City, Metro Manila, Philippines",
+        "email": "info@getmeds.ph | sales5@2mginc.com"
+      }
+    ]
+  },
+  "whatHappens": {
+    "title": "What Happens After You Contact Us?",
+    "body": "In healthcare, waiting is the hardest part. When you submit an inquiry, our team immediately reviews your request and begins sourcing or coordinating logistics.",
+    "guarantee": "You will receive a direct response from a dedicated case manager within 24 hours."
+  }
+}

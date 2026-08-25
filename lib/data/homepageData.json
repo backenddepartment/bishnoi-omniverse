@@ -1,0 +1,168 @@
+{
+  "brand": {
+    "name": "Bishnoi Omniverse",
+    "tagline": "Advancing Global Access to Healthcare",
+    "affiliation": "A proud member of the Bishnoi Group",
+    "email": "contact@bishnoi.ai",
+    "phone": "+63 917 156 9029 | +91 (11) 4000-0000"
+  },
+  "hero": {
+    "headline": "Connecting Doctors and Patients to Life-Saving Care Worldwide",
+    "subheadline": "When a crucial medicine or medical supply isn't available locally, we find it and deliver it safely. Reliable hospital essentials and specialty cancer treatments for the patients who need them most.",
+    "ctaFindMedicine": "[ HELP ME FIND A MEDICINE ]",
+    "ctaHospitalSupply": "[ HOSPITAL SUPPLY INQUIRY ]"
+  },
+  "realProblem": {
+    "sectionTag": "The Real Problem",
+    "title": "When Time is the Most Important Thing",
+    "paragraphs": [
+      "When standard supply chains fail, or when a life-saving cancer treatment isn't yet available in your country, patients and doctors face terrifying delays. Traditional suppliers aren't built for individual emergencies. We are.",
+      "Bishnoi Omniverse bridges the gap. We connect the world's medical resources directly to your local hospital so you never have to hear the words, 'We can't get that treatment here.'"
+    ]
+  },
+  "whoWeHelp": {
+    "sectionTag": "Who We Help & What We Provide",
+    "title": "Target Care Groups & Essential Solutions",
+    "items": [
+      {
+        "id": "doctors",
+        "title": "For Doctors & Oncologists",
+        "desc": "We help you access the specific cancer treatments and specialty medicines your patients need, even if they aren't officially sold in your country yet. You write the prescription; we handle the global sourcing and paperwork."
+      },
+      {
+        "id": "hospitals",
+        "title": "For Hospitals & Clinics",
+        "desc": "A hospital cannot save lives if its supply rooms are empty. Without reliable equipment, operations stop. We act as the backbone of your daily medical operations, ensuring your facility runs without interruption. We make sure your medical staff never has to pause patient care because a critical supply is missing."
+      },
+      {
+        "id": "essentials",
+        "title": "From Needles to Cylinders",
+        "desc": "We supply the complete spectrum of hospital essentials. From the smallest IV needles used for delicate care to the largest medical gas cylinders required in the ICU, we deliver everything a healthcare facility needs to function from top to bottom."
+      },
+      {
+        "id": "patients",
+        "title": "For Patients & Families",
+        "desc": "We guide you through the confusing process of getting hard-to-find medicines from abroad. We treat your request with urgency, transparency, and deep compassion."
+      }
+    ]
+  },
+  "howItWorks": {
+    "sectionTag": "Simple Process",
+    "title": "How It Works (4 Simple Steps)",
+    "steps": [
+      {
+        "step": "1",
+        "title": "1. The Prescription",
+        "desc": "The treating doctor provides a prescription for the specific medicine or a request for hospital supplies."
+      },
+      {
+        "step": "2",
+        "title": "2. We Find It Fast",
+        "desc": "We source the exact, authentic product from trusted, globally approved manufacturers."
+      },
+      {
+        "step": "3",
+        "title": "3. The Paperwork",
+        "desc": "Our team helps the doctor or hospital secure the proper legal permits to bring the medicine safely into your country."
+      },
+      {
+        "step": "4",
+        "title": "4. Direct, Safe Delivery",
+        "desc": "We ship the medicine straight to the hospital. If a medicine needs to stay cold, we use special temperature-tracking boxes so it arrives perfectly safe."
+      }
+    ]
+  },
+  "globalFootprint": {
+    "sectionTag": "Global Operations & Portfolio",
+    "title": "Our Global Footprint & Core Catalog",
+    "lead": "Sourced Globally. Delivered Locally. Essential to Every Hospital.",
+    "description": "We operate strategic distribution hubs in India (the global pharmacy capital) and the Philippines (our Asia-Pacific logistics center). This dual-hub footprint allows us to source the highest quality medical devices and specialty medicines, securely delivering them to hospitals across more than 50 countries.",
+    "subtext": "Below is a snapshot of our core hospital catalog. From the smallest needles to comprehensive infusion setups, these are the verified, internationally compliant tools that keep your hospital running.",
+    "essentialLineTitle": "The GetMeds™ Essential Hospital Line",
+    "essentialLineTagline": "Engineered for precision and uninterrupted patient care. All products are CE/ISO certified and hold active medical device registrations.",
+    "categories": [
+      {
+        "name": "Fluid & IV Therapy",
+        "items": [
+          {
+            "title": "IV Cannula Sets (With Wings & Port):",
+            "desc": "Available in all standard hospital gauges (G14 to G26) for secure, comfortable venous access and rapid fluid delivery."
+          },
+          {
+            "title": "Advanced IV Infusion Sets:",
+            "desc": "Equipped with AirVents and 0.2-micron filters to prevent particulate contamination and ensure absolute patient safety."
+          }
+        ]
+      },
+      {
+        "name": "Blood Bank & Transfusion",
+        "items": [
+          {
+            "title": "Sterile Blood Transfusion Sets:",
+            "desc": "Available with or without AirVents, featuring advanced filtration chambers to ensure the safe, controlled delivery of blood components."
+          },
+          {
+            "title": "Disposable Blood Bags:",
+            "desc": "High-quality, secure collection bags for safe blood preservation and cold-chain transport."
+          }
+        ]
+      },
+      {
+        "name": "Surgical Support & Connectivity",
+        "items": [
+          {
+            "title": "Extension Tubes & Three-Way Stop Cocks:",
+            "desc": "Durable, kink-resistant tubing and secure routing valves that allow complex, multi-line IV setups to run efficiently without compromising the sterile barrier."
+          }
+        ]
+      },
+      {
+        "name": "Specialty & Named Patient Supply",
+        "items": [
+          {
+            "title": "Oncology & Critical Care Regimens:",
+            "desc": "Targeted oncology therapies, rare biosimilars, and unregistered critical-care medicines sourced directly for individual patient requisitions."
+          }
+        ]
+      }
+    ],
+    "ctaExplore": "[ EXPLORE THE FULL CATALOG ]",
+    "ctaDownload": "[ DOWNLOAD PRODUCT PRICING & SPECS ]"
+  },
+  "whyTrustUs": {
+    "sectionTag": "Our Guarantee",
+    "title": "Why Trust Bishnoi Omniverse?",
+    "points": [
+      {
+        "title": "A Global Team Working for You",
+        "desc": "By operating from two strategic locations—India (the pharmacy capital of the world) and the Philippines—we have the unique ability to source affordable, high-quality medicines quickly and ship them to over 50 countries worldwide."
+      },
+      {
+        "title": "Guaranteed Safety",
+        "desc": "Every single medicine and medical tool we supply is verified for safety, authenticity, and quality. No exceptions."
+      },
+      {
+        "title": "Fast Action",
+        "desc": "In cancer care and critical health emergencies, we know we cannot wait. We respond to quotes and requests within 24 hours to get the process moving immediately."
+      }
+    ]
+  },
+  "faq": {
+    "sectionTag": "FAQ",
+    "title": "Questions You Might Have",
+    "questions": [
+      {
+        "q": "What does it mean to supply for a 'Named Patient'?",
+        "a": "It simply means that if a medicine isn't approved or sold in your home country yet, your doctor can legally request it just for you (the 'named patient'). We navigate the rules to legally deliver that specific medicine for your specific care."
+      },
+      {
+        "q": "How do you keep medicines safe during shipping?",
+        "a": "Many cancer treatments must stay perfectly cold. We use advanced temperature-controlled packaging that tracks the exact climate of the medicine from the moment it leaves the manufacturer until it is placed in your doctor's hands."
+      },
+      {
+        "q": "Where do you ship to?",
+        "a": "While our home offices are proudly located in India (LLP) and the Philippines (Corp), our mission is global. We deliver to hospitals, clinics, and oncologists anywhere in the world."
+      }
+    ]
+  }
+}
