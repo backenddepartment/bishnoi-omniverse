@@ -3,9 +3,10 @@
 import React, { useState } from 'react';
 import { ArrowRight, Mail, Phone, Clock3 } from 'lucide-react';
 import contactData from '@/lib/data/contactData.json';
+import contactbg from '@/app/assets/contactbg.png';
 
 const IMG = {
-  hero: 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f9/A_waiting_room_at_a_medical_healthcare_clinic%2C_doctor%27s_office%2C_hospital.jpg/1600px-A_waiting_room_at_a_medical_healthcare_clinic%2C_doctor%27s_office%2C_hospital.jpg',
+  hero: contactbg.src,
 };
 
 export default function ContactPage() {
@@ -27,7 +28,7 @@ export default function ContactPage() {
   };
 
   return (
-    <div className="w-full">
+    <div className="w-full contact-page">
       {/* Page Header */}
       <section className="page-hero">
         <div className="hero-media">
@@ -43,31 +44,33 @@ export default function ContactPage() {
       {/* Direct Reach Us */}
       <section className="section-tight section-2col">
         <div className="wrap">
-          <span className="eyebrow">Direct Channels</span>
-          <h2 className="mb-3">{directContact.title}</h2>
-          <p className="lead-block text-ink-soft mb-10">{directContact.description}</p>
+          <div className="direct-channels-heading">
+            <span className="eyebrow">Direct Channels</span>
+            <h2 className="mb-3">{directContact.title}</h2>
+            <p className="lead-block text-ink-soft mb-10">{directContact.description}</p>
+          </div>
 
           <div className="grid-3 text-sm">
-            <div className="info-card">
-              <Mail className="w-5 h-5 text-accent mb-3" strokeWidth={1.75} />
-              <span className="text-xs font-semibold uppercase tracking-wide text-muted block mb-1">Global Email</span>
-              <a href={`mailto:${directContact.email}`} className="text-base font-bold text-ink hover:text-accent-dark block">
+            <div className="info-card contact-detail-card">
+              <Mail className="w-7 h-7 text-accent mb-3" strokeWidth={1.75} />
+              <span className="text-xs font-semibold tracking-wide text-accent block mb-1">Global Email</span>
+              <a href={`mailto:${directContact.email}`} className="text-base font-semibold text-ink hover:text-accent-dark block">
                 {directContact.email}
               </a>
               <span className="text-xs text-muted block mt-1">Confidential &amp; Direct Case Handler</span>
             </div>
 
-            <div className="info-card">
-              <Phone className="w-5 h-5 text-accent mb-3" strokeWidth={1.75} />
-              <span className="text-xs font-semibold uppercase tracking-wide text-muted block mb-1">International Hotline</span>
-              <span className="text-base font-bold text-ink block">{directContact.hotline}</span>
+            <div className="info-card contact-detail-card">
+              <Phone className="w-7 h-7 text-accent mb-3" strokeWidth={1.75} />
+              <span className="text-xs font-semibold tracking-wide text-accent block mb-1">International Hotline</span>
+              <span className="text-base font-semibold text-ink block">{directContact.hotline}</span>
               <span className="text-xs text-muted block mt-1">Global Operations Desk</span>
             </div>
 
-            <div className="info-card">
-              <Clock3 className="w-5 h-5 text-accent mb-3" strokeWidth={1.75} />
-              <span className="text-xs font-semibold uppercase tracking-wide text-muted block mb-1">Operating Hours</span>
-              <span className="text-base font-bold text-ink block">{directContact.hours}</span>
+            <div className="info-card contact-detail-card">
+              <Clock3 className="w-7 h-7 text-accent mb-3" strokeWidth={1.75} />
+              <span className="text-xs font-semibold tracking-wide text-accent block mb-1">Operating Hours</span>
+              <span className="text-base font-semibold text-ink block">{directContact.hours}</span>
               <span className="text-xs text-muted block mt-1">Always Available for Emergencies</span>
             </div>
           </div>
@@ -75,11 +78,13 @@ export default function ContactPage() {
       </section>
 
       {/* How Can We Assist You Today? */}
-      <section className="section">
+      <section className="section !pt-0">
         <div className="wrap">
-          <span className="eyebrow">Targeted Inquiry</span>
-          <h2 className="mb-3">{assistSection.title}</h2>
-          <p className="lead-block text-ink-soft italic mb-10">{assistSection.subtitle}</p>
+          <div className="assist-heading">
+            <span className="eyebrow">Targeted Inquiry</span>
+            <h2 className="mb-3">{assistSection.title}</h2>
+            <p className="lead-block text-ink-soft italic mb-10">{assistSection.subtitle}</p>
+          </div>
 
           {/* Persona Selector */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-12">
@@ -94,15 +99,12 @@ export default function ContactPage() {
                     setSubmitted(false);
                     setFormData({});
                   }}
-                  className={`p-5 text-left rounded border transition flex flex-col justify-between ${
+                  className={`p-5 text-left rounded-xl border transition flex flex-col justify-between ${
                     selected ? 'border-ink bg-ink text-white' : 'border-line bg-surface text-ink hover:border-accent'
                   }`}
                 >
                   <div>
-                    <span className={`text-xs font-semibold uppercase block mb-1 ${selected ? 'text-[#cfc9ba]' : 'text-muted'}`}>
-                      Option 0{p.number}
-                    </span>
-                    <h3 className="font-sans text-sm font-bold leading-snug m-0">{p.category}</h3>
+                    <h3 className="font-sans text-lg font-bold leading-snug m-0">{p.category}</h3>
                   </div>
                   <span className={`mt-4 text-xs font-semibold flex items-center gap-1 ${selected ? 'text-accent' : 'text-accent-dark'}`}>
                     Select <ArrowRight className="w-3 h-3" />
@@ -113,7 +115,7 @@ export default function ContactPage() {
           </div>
 
           {/* Active Persona Form */}
-          <div className="info-card max-w-4xl !p-8">
+          <div className="info-card max-w-4xl !p-8 !rounded-2xl">
             <div className="border-b border-line pb-6 mb-6">
               <span className="text-xs font-semibold uppercase tracking-wide text-muted block mb-1">Active Selection</span>
               <h3 className="font-sans text-xl font-bold text-ink">{activePersona.category}</h3>
@@ -212,12 +214,14 @@ export default function ContactPage() {
       {/* Our Global Offices */}
       <section className="section section-line section-2col">
         <div className="wrap">
-          <span className="eyebrow">Global Operations</span>
-          <h2 className="mb-10">{globalOffices.title}</h2>
+          <div className="offices-heading">
+            <span className="eyebrow">Global Operations</span>
+            <h2 className="mb-10">{globalOffices.title}</h2>
+          </div>
 
           <div className="grid-2">
             {globalOffices.locations.map((office) => (
-              <div key={office.region} className="info-card">
+              <div key={office.region} className="info-card office-card">
                 <h3 className="font-sans text-lg font-bold text-ink mb-1">{office.region}</h3>
                 <div className="text-sm font-semibold text-ink-soft mb-3">{office.entity}</div>
                 <p className="text-sm text-ink-soft leading-relaxed">{office.desc}</p>

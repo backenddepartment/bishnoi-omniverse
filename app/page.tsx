@@ -2,19 +2,21 @@ import React from 'react';
 import Link from 'next/link';
 import { ArrowRight, ShieldCheck, Globe2, Clock } from 'lucide-react';
 import homepageData from '@/lib/data/homepageData.json';
+import { FadeIn } from '@/components/FadeIn';
+import heroBg from '@/app/assets/background.png';
+import doctorsImg from '@/app/assets/doctors.jpg';
+import familiesImg from '@/app/assets/families.jpg';
 
 // Images sourced from Wikimedia Commons (CC BY / CC BY-SA / public domain)
 const IMG = {
-  hero: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/ec/LMH_emergency_entrance_%282025%291.jpg/1920px-LMH_emergency_entrance_%282025%291.jpg',
-  doctors:
-    'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/Facial_plastic_surgeon_wearing_surgical_loupes_and_headlight_during_an_operating_room_procedure.jpg/1200px-Facial_plastic_surgeon_wearing_surgical_loupes_and_headlight_during_an_operating_room_procedure.jpg',
+  hero: heroBg.src,
+  doctors: doctorsImg.src,
   hospitals: 'https://upload.wikimedia.org/wikipedia/commons/2/2e/Hospital_corridor_2.jpg',
   essentials:
     'https://upload.wikimedia.org/wikipedia/commons/c/c3/Ethylene_oxide_sterilisation_sticker_on_box_of_medical_supplies.jpg',
-  patients:
-    'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f9/A_waiting_room_at_a_medical_healthcare_clinic%2C_doctor%27s_office%2C_hospital.jpg/1200px-A_waiting_room_at_a_medical_healthcare_clinic%2C_doctor%27s_office%2C_hospital.jpg',
+  patients: familiesImg.src,
   logistics:
-    'https://upload.wikimedia.org/wikipedia/commons/thumb/5/59/Shipping_cranes_by_Cartagena.jpg/1200px-Shipping_cranes_by_Cartagena.jpg',
+    'https://upload.wikimedia.org/wikipedia/commons/5/59/Shipping_cranes_by_Cartagena.jpg',
 };
 
 const tileImages: Record<string, string> = {
@@ -28,7 +30,7 @@ export default function HomePage() {
   const { hero, realProblem, whoWeHelp, howItWorks, globalFootprint, whyTrustUs, faq } = homepageData;
 
   return (
-    <div className="w-full">
+    <div className="w-full home-page">
       {/* Hero */}
       <section className="hero" id="home">
         <div className="hero-media">
@@ -50,8 +52,8 @@ export default function HomePage() {
 
       {/* The Real Problem */}
       <section className="section section-tight">
-        <div className="wrap grid-2">
-          <div>
+        <FadeIn className="wrap grid-2">
+          <div className="real-problem-heading">
             <span className="eyebrow">{realProblem.sectionTag}</span>
             <h2>{realProblem.title}</h2>
           </div>
@@ -62,18 +64,20 @@ export default function HomePage() {
               </p>
             ))}
           </div>
-        </div>
+        </FadeIn>
       </section>
 
       {/* Who We Help — image tiles */}
-      <section className="section section-line section-2col">
-        <div className="wrap">
-          <span className="eyebrow">{whoWeHelp.sectionTag}</span>
-          <h2 className="mb-3">{whoWeHelp.title}</h2>
-          <p className="lead-block text-ink-soft mb-10">
-            Four groups rely on us to keep care moving — and one continuous line of supply, from the
-            smallest needle to the largest cylinder, that serves them all.
-          </p>
+      <section className="section section-line section-2col !pb-10">
+        <FadeIn className="wrap">
+          <div className="who-we-help-heading">
+            <span className="eyebrow">{whoWeHelp.sectionTag}</span>
+            <h2 className="mb-3">{whoWeHelp.title}</h2>
+            <p className="lead-block text-ink-soft mb-10">
+              Four groups rely on us to keep care moving — and one continuous line of supply, from the
+              smallest needle to the largest cylinder, that serves them all.
+            </p>
+          </div>
 
           <div className="biz-grid">
             {whoWeHelp.items.map((item) => (
@@ -86,19 +90,25 @@ export default function HomePage() {
               </Link>
             ))}
           </div>
-        </div>
+        </FadeIn>
       </section>
 
       {/* How It Works — timeline */}
-      <section className="section">
-        <div className="wrap grid-2">
-          <div>
+      <section className="section !pt-10">
+        <FadeIn className="wrap grid-2 items-start">
+          <div className="how-it-works-heading">
             <span className="eyebrow">{howItWorks.sectionTag}</span>
             <h2>{howItWorks.title}</h2>
             <p className="text-ink-soft max-w-md">
               A simple, transparent path from prescription to bedside — built for the moments when
               speed and accuracy both matter.
             </p>
+            <img
+              src={IMG.logistics}
+              alt="Global shipping and logistics"
+              className="mt-8 w-full max-w-md h-64 object-cover rounded-2xl"
+              loading="lazy"
+            />
           </div>
           <div className="timeline">
             {howItWorks.steps.map((step) => (
@@ -109,13 +119,13 @@ export default function HomePage() {
               </div>
             ))}
           </div>
-        </div>
+        </FadeIn>
       </section>
 
       {/* Quote / trust statement */}
       <section className="section-dark section-tight">
-        <div className="wrap quote-grid">
-          <div className="quote-block">
+        <FadeIn className="wrap">
+          <div className="quote-block max-w-2xl mx-auto text-center">
             <span className="mark">&ldquo;</span>
             <blockquote>{whyTrustUs.points.find((p) => p.title === 'Fast Action')?.desc}</blockquote>
             <cite>Our response commitment, every quote and case</cite>
@@ -125,15 +135,12 @@ export default function HomePage() {
               </Link>
             </div>
           </div>
-          <figure className="quote-figure m-0">
-            <img src={IMG.logistics} alt="Global shipping and logistics" loading="lazy" />
-          </figure>
-        </div>
+        </FadeIn>
       </section>
 
       {/* Global Footprint & Core Catalog */}
       <section className="section">
-        <div className="wrap">
+        <FadeIn className="wrap">
           <span className="eyebrow">{globalFootprint.sectionTag}</span>
           <h2 className="mb-3">{globalFootprint.title}</h2>
           <p className="font-serif text-xl md:text-2xl font-semibold text-ink max-w-3xl mb-4">
@@ -169,12 +176,12 @@ export default function HomePage() {
               Download Pricing &amp; Specs
             </Link>
           </div>
-        </div>
+        </FadeIn>
       </section>
 
       {/* Why Trust Us */}
       <section className="section section-line section-2col">
-        <div className="wrap">
+        <FadeIn className="wrap">
           <span className="eyebrow">{whyTrustUs.sectionTag}</span>
           <h2 className="mb-10">{whyTrustUs.title}</h2>
 
@@ -191,12 +198,12 @@ export default function HomePage() {
               );
             })}
           </div>
-        </div>
+        </FadeIn>
       </section>
 
       {/* FAQ */}
       <section className="section">
-        <div className="wrap">
+        <FadeIn className="wrap">
           <span className="eyebrow">{faq.sectionTag}</span>
           <h2 className="mb-10">{faq.title}</h2>
 
@@ -208,7 +215,7 @@ export default function HomePage() {
               </div>
             ))}
           </div>
-        </div>
+        </FadeIn>
       </section>
     </div>
   );

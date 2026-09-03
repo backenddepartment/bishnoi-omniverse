@@ -22,7 +22,7 @@ export default function GlobalBusinessesPage() {
   const { header, vision, sections, legacy } = businessesData;
 
   return (
-    <div className="w-full">
+    <div className="w-full businesses-page">
       <section className="page-hero">
         <div className="hero-media">
           <img src={IMG.hero} alt="Hospital corridor representing our healthcare infrastructure" loading="eager" />

@@ -23,9 +23,9 @@ const config: Config = {
         line: '#e4ddd0',
         muted: '#6e675a',
         accent: {
-          DEFAULT: '#d9711f',
-          dark: '#a85416',
-          tint: '#faeadb',
+          DEFAULT: '#f36b21',
+          dark: '#c2561a',
+          tint: '#fde9de',
         },
       },
       maxWidth: {

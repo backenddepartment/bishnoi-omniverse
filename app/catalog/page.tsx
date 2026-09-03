@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import Link from 'next/link';
 import { Search, ShoppingBag, CheckCircle, FileText, X, ArrowRight } from 'lucide-react';
 import catalogData from '@/lib/data/catalogData.json';
@@ -33,6 +33,14 @@ export default function CatalogPage() {
   const [rfqSubmitted, setRfqSubmitted] = useState<boolean>(false);
   const [hospitalInfo, setHospitalInfo] = useState({ name: '', email: '', phone: '', notes: '' });
 
+  // Pre-select a category when arriving from the nav's Catalog mega-menu (?category=slug).
+  useEffect(() => {
+    const category = new URLSearchParams(window.location.search).get('category');
+    if (category && categories.some((c) => c.id === category)) {
+      setSelectedCategory(category);
+    }
+  }, [categories]);
+
   const filteredProducts = useMemo(() => {
     return products.filter((item: ProductItem) => {
       const matchesCategory = selectedCategory === 'all' || item.categoryId === selectedCategory;
@@ -63,7 +71,7 @@ export default function CatalogPage() {
   };
 
   return (
-    <div className="w-full">
+    <div className="w-full catalog-page">
       {/* Hero */}
       <section className="page-hero">
         <div className="hero-media">
@@ -198,7 +206,12 @@ export default function CatalogPage() {
                       </div>
 
                       <div>
-                        <h3 className="font-sans text-xl md:text-2xl font-bold text-ink leading-snug">{product.name}</h3>
+                        <Link
+                          href={`/catalog/${product.id}`}
+                          className="no-underline text-ink hover:text-accent-dark transition-colors"
+                        >
+                          <h3 className="font-sans text-xl md:text-2xl font-bold leading-snug">{product.name}</h3>
+                        </Link>
                         <div className="text-xs font-semibold text-muted mt-1">
                           Brand: <span className="text-ink font-semibold">{product.brand}</span> | Origin:{' '}
                           <span className="text-ink font-semibold">{product.origin}</span>
@@ -229,6 +242,10 @@ export default function CatalogPage() {
                       </div>
 
                       <div className="flex flex-wrap items-center gap-4 pt-2 border-t border-line">
+                        <Link href={`/catalog/${product.id}`} className="btn btn-outline on-light">
+                          View Details <ArrowRight className="w-3.5 h-3.5" />
+                        </Link>
+
                         <button
                           type="button"
                           onClick={() => (isAdded ? removeFromQuote(product.id) : addToQuote(product))}
