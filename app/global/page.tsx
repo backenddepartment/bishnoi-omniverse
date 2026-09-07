@@ -19,7 +19,7 @@ const divisionImages: Record<string, string> = {
 };
 
 export default function GlobalBusinessesPage() {
-  const { header, vision, sections, legacy } = businessesData;
+  const { header, sections, legacy } = businessesData;
 
   return (
     <div className="w-full businesses-page">
@@ -33,24 +33,11 @@ export default function GlobalBusinessesPage() {
           <p className="lede">{header.subheadline}</p>
           <div className="hero-actions">
             <Link className="btn btn-primary" href="#ventures">
-              {header.ctaExplore.replace(/[\[\]]/g, '')} <ArrowRight />
+              {header.ctaExplore} <ArrowRight />
             </Link>
             <Link className="btn btn-outline" href="/contact?type=partner">
-              {header.ctaPartner.replace(/[\[\]]/g, '')}
+              {header.ctaPartner}
             </Link>
-          </div>
-        </div>
-      </section>
-
-      <section className="section section-tight">
-        <div className="wrap grid-2">
-          <div>
-            <span className="eyebrow">Our Journey</span>
-            <h2>{vision.title}</h2>
-          </div>
-          <div className="lead-block">
-            <p className="font-serif text-xl font-semibold text-ink leading-snug mb-4">{vision.lead}</p>
-            <p className="text-ink-soft leading-relaxed">{vision.paragraph}</p>
           </div>
         </div>
       </section>
@@ -65,7 +52,9 @@ export default function GlobalBusinessesPage() {
                   <div className="division-grid">
                     <img src={img} alt={sec.title} />
                     <div>
-                      <span className="tag">Division 0{sec.number}</span>
+                      <span className="tag">
+                        {sec.group} &middot; Division 0{sec.number}
+                      </span>
                       <h2>{sec.title}</h2>
                       <p className="text-sm font-medium italic text-muted mb-4">{sec.tagline}</p>
                       <p className="text-ink-soft leading-relaxed mb-6">{sec.description}</p>
@@ -81,14 +70,16 @@ export default function GlobalBusinessesPage() {
                       </ul>
                       {sec.ctaText && sec.ctaHref && (
                         <Link href={sec.ctaHref} className="btn btn-outline on-light">
-                          {sec.ctaText.replace(/[\[\]→]/g, '').trim()} <ArrowRight />
+                          {sec.ctaText} <ArrowRight />
                         </Link>
                       )}
                     </div>
                   </div>
                 ) : (
                   <>
-                    <span className="tag">Division 0{sec.number}</span>
+                    <span className="tag">
+                      {sec.group} &middot; Division 0{sec.number}
+                    </span>
                     <div className="grid-2 items-start">
                       <div>
                         <h2>{sec.title}</h2>
@@ -107,6 +98,11 @@ export default function GlobalBusinessesPage() {
                             </li>
                           ))}
                         </ul>
+                        {sec.ctaText && sec.ctaHref && (
+                          <Link href={sec.ctaHref} className="btn btn-outline on-light self-start">
+                            {sec.ctaText} <ArrowRight />
+                          </Link>
+                        )}
                       </div>
                     </div>
                   </>
@@ -120,7 +116,14 @@ export default function GlobalBusinessesPage() {
       <section className="section" id="global-presence">
         <div className="wrap">
           <span className="eyebrow">Our Global Presence</span>
-          <h2 className="mb-10">Two Hubs, One Continuous Line of Supply</h2>
+          <h2 className="mb-3">Two Hubs, One Continuous Line of Supply</h2>
+          <p className="lead-block text-ink-soft mb-10">
+            Sourcing runs through New Delhi and regional logistics through Metro Manila.{' '}
+            <Link href="/global-network" className="text-accent-dark font-semibold hover:underline">
+              See the full operating footprint
+            </Link>
+            , including addresses and our UN Global Compact participation.
+          </p>
           <div className="grid-2">
             <img src={IMG.india} alt="New Delhi, India — our global sourcing hub" className="w-full h-[300px] object-cover rounded" />
             <img src={IMG.philippines} alt="Manila, Philippines — our Asia-Pacific logistics hub" className="w-full h-[300px] object-cover rounded" />

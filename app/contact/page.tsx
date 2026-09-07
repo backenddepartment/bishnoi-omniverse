@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ArrowRight, Mail, Phone, Clock3 } from 'lucide-react';
 import contactData from '@/lib/data/contactData.json';
 import contactbg from '@/app/assets/contactbg.png';
@@ -13,6 +13,27 @@ export default function ContactPage() {
   const { pageHeader, directContact, assistSection, personas, globalOffices, whatHappens } = contactData;
 
   const [activePersonaId, setActivePersonaId] = useState<string>('doctor');
+
+  // CTAs across the site carry ?type=... so a visitor lands on the right intake route
+  // (institutional quote, named-patient access, patient guidance, or partnership).
+  useEffect(() => {
+    const type = new URLSearchParams(window.location.search).get('type');
+    if (!type) return;
+    const routes: Record<string, string> = {
+      quote: 'hospital',
+      'hospital-supply': 'hospital',
+      'hospital-supplies': 'hospital',
+      hospital: 'hospital',
+      'find-medicine': 'doctor',
+      specialty: 'doctor',
+      doctor: 'doctor',
+      patient: 'patient',
+      partner: 'partner',
+      trade: 'partner',
+    };
+    const persona = routes[type];
+    if (persona) setActivePersonaId(persona);
+  }, []);
   const [formData, setFormData] = useState<Record<string, string>>({});
   const [submitted, setSubmitted] = useState<boolean>(false);
 

@@ -1,4 +1,17 @@
-import { Syringe, Droplet, Activity, FlaskConical, Wind, type LucideIcon } from 'lucide-react';
+import {
+  Syringe,
+  Droplet,
+  Activity,
+  FlaskConical,
+  Wind,
+  HeartPulse,
+  BedDouble,
+  Shield,
+  ScanLine,
+  Sparkles,
+  Bandage,
+  type LucideIcon,
+} from 'lucide-react';
 
 export const categoryIcons: Record<string, LucideIcon> = {
   'fluid-iv': Syringe,
@@ -6,6 +19,12 @@ export const categoryIcons: Record<string, LucideIcon> = {
   'surgical-critical': Activity,
   'specialty-oncology': FlaskConical,
   'facility-infrastructure': Wind,
+  'patient-monitoring': HeartPulse,
+  'durable-medical-equipment': BedDouble,
+  ppe: Shield,
+  'diagnostic-imaging': ScanLine,
+  sterilization: Sparkles,
+  'wound-care': Bandage,
 };
 
 export function getCategoryIcon(categoryId: string): LucideIcon {

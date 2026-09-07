@@ -18,8 +18,9 @@ export const Footer: React.FC = () => {
               </span>
             </Link>
             <p>
-              {brand.tagline} — reliable hospital essentials and specialty cancer treatments,
-              sourced globally and delivered locally from our hubs in India and the Philippines.
+              Hospital-grade medical supplies and hard-to-source specialty medicines, sourced
+              through our India and Philippines hubs and delivered to healthcare providers
+              worldwide.
             </p>
             <p className="text-xs italic !text-[#8f8877]">{brand.affiliation}</p>
           </div>
@@ -28,19 +29,22 @@ export const Footer: React.FC = () => {
             <h4>Company</h4>
             <ul>
               <li><Link href="/about">Our Story</Link></li>
-              <li><Link href="/global">Global Presence</Link></li>
-              <li><Link href="/about#values">Vision &amp; Values</Link></li>
-              <li><Link href="/contact">Governance &amp; Standards</Link></li>
+              <li><Link href="/about/leadership">Leadership</Link></li>
+              <li><Link href="/global-network">Global Network</Link></li>
+              <li><Link href="/global">Group Structure</Link></li>
+              <li><Link href="/about/vision-values">Vision &amp; Values</Link></li>
+              <li><Link href="/about/governance">Governance &amp; Standards</Link></li>
             </ul>
           </div>
 
           <div>
-            <h4>Businesses</h4>
+            <h4>What We Supply</h4>
             <ul>
               <li><Link href="/catalog">Hospital Supplies</Link></li>
-              <li><Link href="/contact?type=find-medicine">Specialty Pharmaceuticals</Link></li>
-              <li><Link href="/global">The Getmeds Ecosystem</Link></li>
-              <li><Link href="/global">Naresh Bishnoi Trust</Link></li>
+              <li><Link href="/contact?type=find-medicine">Specialty &amp; Named-Patient Medicines</Link></li>
+              <li><Link href="/trade-partners">Trade &amp; Partners</Link></li>
+              <li><Link href="/quality">Quality &amp; Compliance</Link></li>
+              <li><Link href="/contact?type=quote">Request a Quote</Link></li>
             </ul>
           </div>
 

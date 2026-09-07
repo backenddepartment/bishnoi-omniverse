@@ -23,9 +23,9 @@ const poppins = Poppins({
 });
 
 export const metadata: Metadata = {
-  title: 'Bishnoi Omniverse | Advancing Global Access to Healthcare',
+  title: 'Bishnoi Omniverse | Global Medical Supply & Specialty Sourcing',
   description:
-    'Bishnoi Omniverse connects doctors, hospitals and patients to life-saving medicines and hospital essentials worldwide, from dual hubs in India and the Philippines.',
+    'Bishnoi Omniverse supplies hospitals, clinics, and trade partners with hospital-grade medical supplies and hard-to-source specialty medicines, sourced through our India and Philippines hubs and delivered to healthcare providers worldwide.',
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

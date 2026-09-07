@@ -31,6 +31,36 @@
       "id": "facility-infrastructure",
       "name": "Facility Infrastructure",
       "description": "Medical gas cylinders, durable equipment, and diagnostic machines."
+    },
+    {
+      "id": "patient-monitoring",
+      "name": "Patient Monitoring",
+      "description": "Vital signs monitors, pulse oximeters, and ECG systems."
+    },
+    {
+      "id": "durable-medical-equipment",
+      "name": "Durable Medical Equipment",
+      "description": "Hospital beds, wheelchairs, and mobility aids built to last."
+    },
+    {
+      "id": "ppe",
+      "name": "Personal Protective Equipment (PPE)",
+      "description": "Gowns, masks, gloves, and face shields for frontline safety."
+    },
+    {
+      "id": "diagnostic-imaging",
+      "name": "Diagnostic & Imaging Equipment",
+      "description": "Portable ultrasound, X-ray, and point-of-care diagnostic tools."
+    },
+    {
+      "id": "sterilization",
+      "name": "Sterilization & Infection Control",
+      "description": "Autoclaves, disinfectants, and sterile processing equipment."
+    },
+    {
+      "id": "wound-care",
+      "name": "Wound & Skin Care",
+      "description": "Advanced dressings, sutures, and post-surgical wound management."
     }
   ],
   "products": [
@@ -113,6 +143,102 @@
       ],
       "specs": "Sizes: ID 3.0mm to 9.0mm (0.5mm increments) | Standard 15mm connector",
       "certUrl": "/certificates/endotracheal-ce.pdf"
+    },
+    {
+      "id": "patient-monitor",
+      "categoryId": "patient-monitoring",
+      "name": "Multi-Parameter Patient Monitor (ECG, SpO2, NIBP, Temp)",
+      "brand": "Bishnoi VitalTrack™",
+      "origin": "China / India",
+      "visualTags": ["✓ In Stock", "✓ CE Certified", "✓ FDA Listed"],
+      "whatItDoes": "Continuously tracks a patient's vital signs — heart rhythm, oxygen saturation, blood pressure, and temperature — in ICU, ER, and general ward settings.",
+      "whyItsSafe": [
+        "12.1-inch color touchscreen with configurable alarm thresholds for early deterioration alerts.",
+        "Built-in rechargeable battery provides up to 4 hours of monitoring during patient transport.",
+        "Calibrated against international IEC 60601-1 medical electrical safety standards."
+      ],
+      "specs": "Display: 12.1\" TFT | Battery backup: 4 hrs | Modules: ECG, SpO2, NIBP, Temp, Resp",
+      "certUrl": "/certificates/patient-monitor-ce.pdf"
+    },
+    {
+      "id": "icu-hospital-bed",
+      "categoryId": "durable-medical-equipment",
+      "name": "Electric ICU Hospital Bed (5-Function)",
+      "brand": "Bishnoi CareLine™",
+      "origin": "India",
+      "visualTags": ["✓ In Stock", "✓ ISO 13485", "✓ CE Marked"],
+      "whatItDoes": "Provides adjustable, motorized positioning for critical and long-term care patients, reducing pressure injuries and easing nursing care.",
+      "whyItsSafe": [
+        "Reinforced steel frame rated for patients up to 185kg with full side-rail safety enclosure.",
+        "Electric back, knee, and height adjustment reduces manual handling injury risk for staff.",
+        "X-ray translucent panel allows imaging without patient transfer."
+      ],
+      "specs": "Weight capacity: 185kg | Functions: Back, Knee, Height, Trendelenburg, Reverse-Trendelenburg",
+      "certUrl": "/certificates/icu-bed-iso.pdf"
+    },
+    {
+      "id": "isolation-gown",
+      "categoryId": "ppe",
+      "name": "AAMI Level 3 Surgical Isolation Gown (Sterile, Disposable)",
+      "brand": "GetMeds™",
+      "origin": "India",
+      "visualTags": ["✓ In Stock", "✓ AAMI Level 3", "✓ Fluid Resistant"],
+      "whatItDoes": "Protects clinical staff from fluid exposure during surgical and moderate-risk patient care procedures.",
+      "whyItsSafe": [
+        "Reinforced sleeve and torso panels tested to AAMI PB70 Level 3 fluid barrier standard.",
+        "Knit cuffs and rear-tie closure ensure a secure, contamination-free fit.",
+        "Individually packed and gamma-sterilized for single-use reliability."
+      ],
+      "specs": "Sizes: S to XXL | Material: SMS Non-woven, 45gsm | Sterility: Gamma-irradiated",
+      "certUrl": "/certificates/isolation-gown-aami.pdf"
+    },
+    {
+      "id": "portable-ultrasound",
+      "categoryId": "diagnostic-imaging",
+      "name": "Portable Point-of-Care Ultrasound Scanner",
+      "brand": "Bishnoi ClearView™",
+      "origin": "China / India",
+      "visualTags": ["✓ In Stock", "✓ CE Certified", "✓ Wireless Probe"],
+      "whatItDoes": "Delivers real-time diagnostic imaging at the bedside for emergency, obstetric, and critical care assessment.",
+      "whyItsSafe": [
+        "Wireless probe with 5-hour battery life eliminates cable hazards in busy wards.",
+        "Multi-frequency transducer supports abdominal, cardiac, and vascular scanning in one device.",
+        "Encrypted image storage supports patient data protection compliance."
+      ],
+      "specs": "Probe: Wireless multi-frequency | Battery: 5 hrs | Display: 12\" HD touchscreen",
+      "certUrl": "/certificates/portable-ultrasound-ce.pdf"
+    },
+    {
+      "id": "autoclave-sterilizer",
+      "categoryId": "sterilization",
+      "name": "Class B Vacuum Autoclave Sterilizer (23L)",
+      "brand": "Bishnoi PureSteam™",
+      "origin": "India",
+      "visualTags": ["✓ In Stock", "✓ EN 13060 Class B", "✓ CE Marked"],
+      "whatItDoes": "Sterilizes surgical instruments, porous loads, and hollow devices using pre-vacuum steam cycles for complete microbial elimination.",
+      "whyItsSafe": [
+        "Fractionated pre-vacuum cycle penetrates wrapped and hollow instruments fully, per Class B standard.",
+        "Automated cycle logging with printable batch records supports full sterilization traceability.",
+        "Built-in safety interlocks prevent door opening during active pressurized cycles."
+      ],
+      "specs": "Chamber volume: 23L | Cycle types: Class B, Prion, Quick | Max temp: 134°C",
+      "certUrl": "/certificates/autoclave-en13060.pdf"
+    },
+    {
+      "id": "silver-foam-dressing",
+      "categoryId": "wound-care",
+      "name": "Advanced Silver Foam Wound Dressing",
+      "brand": "GetMeds™",
+      "origin": "India",
+      "visualTags": ["✓ In Stock", "✓ CE Certified", "✓ Antimicrobial"],
+      "whatItDoes": "Manages moderate to heavily exuding wounds while releasing ionic silver to reduce bacterial bioburden and support faster healing.",
+      "whyItsSafe": [
+        "Sustained silver release provides antimicrobial protection for up to 7 days per application.",
+        "Highly absorbent foam layer locks in exudate, minimizing maceration of surrounding skin.",
+        "Non-adherent wound contact layer allows atraumatic dressing changes."
+      ],
+      "specs": "Sizes: 10x10cm, 15x15cm, 20x20cm | Wear time: Up to 7 days",
+      "certUrl": "/certificates/silver-foam-dressing-ce.pdf"
     }
   ],
   "trustBanner": {

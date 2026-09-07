@@ -33,11 +33,17 @@ export default function CatalogPage() {
   const [rfqSubmitted, setRfqSubmitted] = useState<boolean>(false);
   const [hospitalInfo, setHospitalInfo] = useState({ name: '', email: '', phone: '', notes: '' });
 
-  // Pre-select a category when arriving from the nav's Catalog mega-menu (?category=slug).
+  // Pre-select a category (?category=slug) or search term (?search=text) when arriving
+  // from the nav's Catalog mega-menu or the navbar search bar.
   useEffect(() => {
-    const category = new URLSearchParams(window.location.search).get('category');
+    const params = new URLSearchParams(window.location.search);
+    const category = params.get('category');
     if (category && categories.some((c) => c.id === category)) {
       setSelectedCategory(category);
+    }
+    const search = params.get('search');
+    if (search) {
+      setSearchQuery(search);
     }
   }, [categories]);
 

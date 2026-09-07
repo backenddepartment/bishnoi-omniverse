@@ -1,96 +1,101 @@
 {
   "header": {
-    "title": "OUR BUSINESSES & GLOBAL ECOSYSTEM",
-    "headline": "Rooted in Five Hundred Years. Building What Comes Next.",
-    "subheadline": "Driven by centuries of discipline, stewardship, and purpose, the Bishnoi ecosystem spans healthcare infrastructure, pharmaceutical access, global logistics, and social philanthropy across borders.",
-    "ctaExplore": "[ EXPLORE OUR VENTURES ]",
-    "ctaPartner": "[ PARTNER WITH US ]"
+    "title": "GROUP STRUCTURE & GLOBAL ECOSYSTEM",
+    "headline": "One Group, Two Commercial Lines, One Social Mandate.",
+    "subheadline": "Bishnoi Omniverse is the healthcare infrastructure and hospital supply business within the wider Bishnoi Group, which also includes the Getmeds pharmaceutical access network and the Naresh Bishnoi Foundation's philanthropic initiatives.",
+    "ctaExplore": "Explore the Group",
+    "ctaPartner": "Partner With Us"
   },
   "vision": {
-    "title": "From Vision to the World",
-    "lead": "From humble beginnings in Haryana, India, to building ventures that touch lives across five continents, our journey is rooted in a single commitment: removing barriers so people and hospitals can access what they need to thrive.",
-    "paragraph": "What began with a focused mission in healthcare has grown into an interconnected global ecosystem—delivering life-saving medicines, supplying hospital infrastructure, and investing in sustainable communities."
+    "title": "How the group is organised",
+    "lead": "Two commercial businesses supply healthcare providers. One philanthropic arm answers to a different mandate entirely. We keep them clearly separated so partners always know which entity they are dealing with.",
+    "paragraph": "Bishnoi Omniverse supplies hospitals, clinics, and trade partners with hospital-grade medical supplies and hard-to-source specialty medicines through hubs in India and the Philippines. The Getmeds network extends pharmaceutical access across the Philippines, India, the Pacific, Latin America, and Southeast Asia. Alongside them, the Naresh Bishnoi Foundation and our UN Global Compact participation carry the group's social and environmental commitments."
   },
   "sections": [
     {
       "id": "omniverse",
       "number": "1",
-      "title": "Bishnoi Omniverse — Healthcare Infrastructure",
-      "tagline": "Building the physical backbone of healthcare delivery.",
-      "description": "Bishnoi Omniverse is a global supply powerhouse dedicated to keeping hospitals fully equipped and operational. From the smallest sterile needles to large medical gas cylinders, we ensure healthcare institutions never have to halt care due to missing supplies.",
+      "group": "Commercial",
+      "title": "Bishnoi Omniverse — Hospital Supply & Healthcare Infrastructure",
+      "tagline": "Specification-documented supply for institutional procurement.",
+      "description": "Bishnoi Omniverse supplies hospitals, clinics, and trade partners with medical-surgical consumables and facility infrastructure, sourced directly from certified manufacturers and documented for procurement and regulatory review.",
       "bullets": [
         {
-          "name": "Bishnoi Omniverse India (LLP):",
-          "desc": "Our primary global sourcing hub, leveraging India’s pharmaceutical and manufacturing strength to secure authentic, cost-effective supplies."
+          "name": "Bishnoi Omniverse LLP (India):",
+          "desc": "Sourcing hub in New Delhi — direct manufacturer sourcing, product qualification, and documentation assembly."
         },
         {
-          "name": "Bishnoi Omniverse Philippines (Corp):",
-          "desc": "Our strategic operations and logistics center bridging Southeast Asia with international distribution lines."
+          "name": "Bishnoi Omniverse Corp (Philippines):",
+          "desc": "Asia-Pacific logistics and operations hub in Metro Manila, tied to Getmeds Philippines Inc. / 2MG Inc., handling regional consolidation and cold-chain movement."
         },
         {
-          "name": "Core Offerings:",
-          "desc": "Medical-surgical consumables, infusion systems, blood transfusion products, and specialized institutional hospital supply."
+          "name": "Core Lines:",
+          "desc": "IV and infusion therapy, blood bank and transfusion products, surgical connectivity, airway management, and medical gas."
         }
       ],
-      "ctaText": "[ Visit Bishnoi Omniverse → ]",
-      "ctaHref": "/contact?type=hospital-supply"
+      "ctaText": "Browse Hospital Supplies",
+      "ctaHref": "/catalog"
     },
     {
       "id": "getmeds",
       "number": "2",
-      "title": "The Getmeds Ecosystem — Global Pharmaceuticals & Specialty Care",
-      "tagline": "Expanding access to essential, rare, and life-saving cancer medicines worldwide.",
-      "description": "The Getmeds network provides compassionate access and specialized pharmacy distribution, ensuring that patients and doctors can obtain vital treatments even when they are unavailable locally.",
+      "group": "Commercial",
+      "title": "The Getmeds Network — Pharmaceutical Access & Specialty Care",
+      "tagline": "Cross-border access to medicines that aren't yet available locally.",
+      "description": "The Getmeds network provides named-patient and cross-border access to oncology therapies, rare biosimilars, and critical-care medicines, sourced from verified manufacturers and documented for regulatory review in the destination market.",
       "bullets": [
         {
           "name": "Getmeds Philippines:",
-          "desc": "Expanding access to everyday essential medicines and healthcare services across the Philippine archipelago."
+          "desc": "Everyday essential medicines and healthcare services across the Philippine archipelago."
         },
         {
           "name": "Getmeds Healthcare (India):",
-          "desc": "A global pharmaceutical export engine enabling compassionate, Named Patient access to specialized oncology and critical care therapies."
+          "desc": "Pharmaceutical export engine enabling named-patient access to specialised oncology and critical-care therapies, including the Carboget™ carboplatin injection from WHO-GMP certified manufacturing."
         },
         {
           "name": "Getmeds Vanuatu:",
-          "desc": "The first specialty pharmacy in the Pacific region, providing local communities with reliable access to cancer treatments."
+          "desc": "Specialty pharmacy presence in the Pacific region, providing local access to cancer treatments."
         },
         {
           "name": "Getmeds Latin America:",
-          "desc": "Forging cross-border distribution partnerships and expanding pharmaceutical reach across Latin American markets."
+          "desc": "Cross-border distribution partnerships across Latin American markets."
         },
         {
-          "name": "Getmeds Southeast Asia (SEA):",
-          "desc": "Strengthening regional supply lines across emerging Southeast Asian territories."
+          "name": "Getmeds Southeast Asia:",
+          "desc": "Regional supply lines across emerging Southeast Asian territories."
         }
       ],
-      "ctaText": "[ Explore the Getmeds Network → ]",
+      "ctaText": "Find a Specialty Medicine",
       "ctaHref": "/contact?type=find-medicine"
     },
     {
       "id": "social",
       "number": "3",
+      "group": "Social Impact",
       "title": "Social Impact, Stewardship & Sustainability",
-      "tagline": "Creating lasting impact across generations, communities, and the planet.",
-      "description": "Our businesses answer to founding principles of environmental conservation, community welfare, and ethical responsibility.",
+      "tagline": "A separate mandate, run alongside the commercial businesses — not through them.",
+      "description": "The group's philanthropic and sustainability work is held separately from its supply businesses, so neither is used to speak for the other.",
       "bullets": [
         {
           "name": "Naresh Bishnoi Foundation (NBF):",
-          "desc": "A philanthropic initiative dedicated to creating opportunities through education, agricultural innovation, youth empowerment, and cultural preservation."
+          "desc": "Philanthropic initiatives across education, agricultural innovation, youth empowerment, and cultural preservation."
         },
         {
           "name": "NKB.COM (Family Office & Initiatives):",
-          "desc": "The digital platform representing the wider vision, investments, and future ventures of Naresh Kumar Bishnoi."
+          "desc": "The platform representing the wider investments and future ventures of Naresh Kumar Bishnoi."
         },
         {
-          "name": "United Nations Global Compact Member:",
-          "desc": "We are committed to responsible business practices, sustainable operations, and positive social impact aligned with UN global goals."
+          "name": "United Nations Global Compact:",
+          "desc": "Active Participant since November 2024, with Communications on Progress filed for 2025 and 2026, and leadership representation at the UNGC Forward Faster Now | APAC Conference 2026 in Colombo, Sri Lanka (11–12 August 2026)."
         }
-      ]
+      ],
+      "ctaText": "See Our Global Network",
+      "ctaHref": "/global-network"
     }
   ],
   "legacy": {
-    "title": "A Legacy Still in the Making",
-    "description": "Every division runs independently with its own specialized focus, yet all move forward under one shared commitment to innovation, integrity, and human impact.",
+    "title": "Independent divisions, one standard of accountability",
+    "description": "Every division runs independently with its own specialised focus and its own regulatory obligations. What they share is a single standard: document what you supply, and say plainly what you cannot.",
     "footerBrand": "Bishnoi Omniverse | Part of the Bishnoi Group",
     "email": "contact@bishnoi.ai",
     "copyright": "© 2026 Bishnoi. All rights reserved."

@@ -1,96 +1,176 @@
 {
   "brand": {
     "name": "Bishnoi Omniverse",
-    "tagline": "Advancing Global Access to Healthcare",
+    "tagline": "The healthcare supply partner for hard-to-source hospital and specialty requirements",
     "affiliation": "A proud member of the Bishnoi Group",
     "email": "contact@bishnoi.ai",
     "phone": "+63 917 156 9029 | +91 (11) 4000-0000"
   },
   "hero": {
-    "headline": "Connecting Doctors and Patients to Life-Saving Care Worldwide",
-    "subheadline": "When a crucial medicine or medical supply isn't available locally, we find it and deliver it safely. Reliable hospital essentials and specialty cancer treatments for the patients who need them most.",
-    "ctaFindMedicine": "[ Help Me Find a Medicine ]",
-    "ctaHospitalSupply": "[ Hospital Supply Inquiry ]"
+    "headline": "Global Medical Supply and Specialty Sourcing for Healthcare That Can't Wait",
+    "subheadline": "Bishnoi Omniverse supplies hospitals, clinics, and trade partners with hospital-grade medical supplies and hard-to-source specialty medicines — sourced through our India and Philippines hubs and delivered to healthcare providers worldwide.",
+    "ctaQuote": "Request a Quote",
+    "ctaHospitalSupply": "Submit a Hospital Requirement",
+    "ctaFindMedicine": "Find a Specialty Medicine",
+    "capabilityBar": [
+      "Hospital Supplies",
+      "Specialty & Named-Patient Medicines",
+      "Cross-Border Sourcing",
+      "Cold-Chain Logistics",
+      "Documented Quality & Compliance"
+    ]
   },
-  "realProblem": {
-    "sectionTag": "The Real Problem",
-    "title": "When Time is the Most Important Thing",
-    "paragraphs": [
-      "When standard supply chains fail, or when a life-saving cancer treatment isn't yet available in your country, patients and doctors face terrifying delays. Traditional suppliers aren't built for individual emergencies. We are.",
-      "Bishnoi Omniverse bridges the gap. We connect the world's medical resources directly to your local hospital so you never have to hear the words, 'We can't get that treatment here.'"
+  "whatWeProvide": {
+    "sectionTag": "What We Provide",
+    "title": "Two supply lines, one accountable partner",
+    "lead": "Hospital-grade consumables for institutional procurement, and cross-border access to medicines that aren't yet available in your market — run through the same sourcing, documentation, and logistics discipline.",
+    "items": [
+      {
+        "id": "hospital-supplies",
+        "title": "Hospital Supplies",
+        "desc": "IV and infusion therapy, blood bank and transfusion products, surgical connectivity, airway management, and medical gas — verified, specification-documented consumables for institutional procurement.",
+        "ctaText": "Browse hospital supplies",
+        "ctaHref": "/catalog"
+      },
+      {
+        "id": "specialty-medicines",
+        "title": "Specialty Medicines",
+        "desc": "Named-patient and cross-border access to oncology therapies, rare biosimilars, and critical-care medicines that aren't yet registered or available in your market, with cold-chain-monitored delivery.",
+        "ctaText": "Find a specialty medicine",
+        "ctaHref": "/contact?type=find-medicine"
+      },
+      {
+        "id": "sourcing-trade",
+        "title": "Sourcing, Logistics & Trade",
+        "desc": "A dual-hub sourcing and fulfillment network connecting India's manufacturing base and Southeast Asia's logistics corridor to hospitals, distributors, and manufacturer partners worldwide.",
+        "ctaText": "Trade & partners",
+        "ctaHref": "/trade-partners"
+      }
     ]
   },
   "whoWeHelp": {
-    "sectionTag": "Who We Help & What We Provide",
-    "title": "Target Care Groups & Essential Solutions",
+    "sectionTag": "Who We Serve",
+    "title": "Built for institutional procurement and specialist access",
+    "lead": "Four groups rely on us for the requirements that standard distribution does not cover — each with its own intake route, documentation set, and point of contact.",
     "items": [
       {
-        "id": "doctors",
-        "title": "For Doctors & Oncologists",
-        "desc": "We help you access the specific cancer treatments and specialty medicines your patients need, even if they aren't officially sold in your country yet. You write the prescription; we handle the global sourcing and paperwork."
+        "id": "hospitals",
+        "title": "Hospitals & Procurement Teams",
+        "desc": "Specification-documented consumables quoted against your tender line list, with certification references attached, so wards and theatres are never held up waiting on a missing item."
       },
       {
-        "id": "hospitals",
-        "title": "For Hospitals & Clinics",
-        "desc": "A hospital cannot save lives if its supply rooms are empty. Without reliable equipment, operations stop. We act as the backbone of your daily medical operations, ensuring your facility runs without interruption. We make sure your medical staff never has to pause patient care because a critical supply is missing."
+        "id": "doctors",
+        "title": "Clinicians & Oncology Teams",
+        "desc": "Named-patient and cross-border access to therapies not yet registered in your market, supported by the manufacturer documentation your pharmacy committee and regulator will ask to see."
       },
       {
         "id": "essentials",
-        "title": "From Needles to Cylinders",
-        "desc": "We supply the complete spectrum of hospital essentials. From the smallest IV needles used for delicate care to the largest medical gas cylinders required in the ICU, we deliver everything a healthcare facility needs to function from top to bottom."
+        "title": "Distributors & Manufacturer Partners",
+        "desc": "Cross-border reach into markets that are difficult to serve directly, through a two-hub network built for sourcing, consolidation, and onward distribution."
       },
       {
         "id": "patients",
-        "title": "For Patients & Families",
-        "desc": "We guide you through the confusing process of getting hard-to-find medicines from abroad. We treat your request with urgency, transparency, and deep compassion."
+        "title": "Patients & Families",
+        "desc": "Guidance through the named-patient process, coordinated with your treating doctor and handled with urgency and confidentiality."
       }
     ]
   },
   "howItWorks": {
-    "sectionTag": "Simple Process",
-    "title": "How It Works (4 Simple Steps)",
-    "steps": [
+    "sectionTag": "How It Works",
+    "title": "Two workflows, one accountable team",
+    "lead": "Institutional procurement and named-patient access follow different rules, different documentation, and different timelines. We run them as separate tracks so neither slows the other down.",
+    "tracks": [
       {
-        "step": "1",
-        "title": "1. The Prescription",
-        "desc": "The treating doctor provides a prescription for the specific medicine or a request for hospital supplies."
+        "id": "hospital",
+        "name": "Hospital Procurement",
+        "summary": "For facilities, procurement officers, and tender teams sourcing medical-surgical consumables at volume.",
+        "steps": [
+          {
+            "step": "1",
+            "title": "Requirement",
+            "desc": "You send a requirement or tender line list — product, specification, volume, destination. No login or account required."
+          },
+          {
+            "step": "2",
+            "title": "Quotation & Specification",
+            "desc": "We return a quote line by line, with the product specifications and certification references attached to each item."
+          },
+          {
+            "step": "3",
+            "title": "Order & Documentation",
+            "desc": "On approval we confirm the order and compile the documentation pack your procurement, pharmacy, and regulatory reviewers need."
+          },
+          {
+            "step": "4",
+            "title": "Consolidated Fulfilment",
+            "desc": "Dispatch from our India sourcing hub or Philippines logistics hub, consolidated where possible and cold-chain controlled where the product requires it."
+          }
+        ]
       },
       {
-        "step": "2",
-        "title": "2. We Find It Fast",
-        "desc": "We source the exact, authentic product from trusted, globally approved manufacturers."
-      },
-      {
-        "step": "3",
-        "title": "3. The Paperwork",
-        "desc": "Our team helps the doctor or hospital secure the proper legal permits to bring the medicine safely into your country."
-      },
-      {
-        "step": "4",
-        "title": "4. Direct, Safe Delivery",
-        "desc": "We ship the medicine straight to the hospital. If a medicine needs to stay cold, we use special temperature-tracking boxes so it arrives perfectly safe."
+        "id": "specialty",
+        "name": "Specialty & Named-Patient Access",
+        "summary": "For treating physicians and hospital pharmacies sourcing a medicine that is not registered or not available locally.",
+        "steps": [
+          {
+            "step": "1",
+            "title": "Clinical Request",
+            "desc": "The treating physician submits the product, strength, quantity, and patient context for a named-patient requisition."
+          },
+          {
+            "step": "2",
+            "title": "Sourcing & Verification",
+            "desc": "We source from verified manufacturers and assemble the Certificates of Analysis and manufacturing credentials for clinical and regulatory review."
+          },
+          {
+            "step": "3",
+            "title": "Regulatory Pathway",
+            "desc": "We support the import permit and named-patient documentation required by the destination market, working to the prescriber's timeline."
+          },
+          {
+            "step": "4",
+            "title": "Cold-Chain Delivery",
+            "desc": "Temperature-monitored shipment direct to the treating facility, with the chain of custody documented from dispatch to handover."
+          }
+        ]
       }
     ]
   },
   "globalFootprint": {
-    "sectionTag": "Global Operations & Portfolio",
-    "title": "Our Global Footprint & Core Catalog",
-    "lead": "Sourced Globally. Delivered Locally. Essential to Every Hospital.",
-    "description": "We operate strategic distribution hubs in India (the global pharmacy capital) and the Philippines (our Asia-Pacific logistics center). This dual-hub footprint allows us to source the highest quality medical devices and specialty medicines, securely delivering them to hospitals across more than 50 countries.",
-    "subtext": "Below is a snapshot of our core hospital catalog. From the smallest needles to comprehensive infusion setups, these are the verified, internationally compliant tools that keep your hospital running.",
+    "sectionTag": "Operating Footprint",
+    "title": "Two Hubs, One Continuous Line of Supply",
+    "lead": "Sourced through India. Consolidated through the Philippines. Delivered to healthcare providers worldwide.",
+    "description": "Bishnoi Omniverse LLP in New Delhi is our sourcing hub, working directly with certified manufacturers across India's pharmaceutical and medical-device base. Bishnoi Omniverse Corp in Metro Manila is our Asia-Pacific logistics and operations hub, tied to Getmeds Philippines Inc. / 2MG Inc. Between them we serve hospitals, clinics, and trade partners across more than 50 countries.",
+    "subtext": "Below is a snapshot of the hospital line. Full specifications, certifications, and registration references are on each catalog product page.",
+    "hubs": [
+      {
+        "id": "india",
+        "region": "India Hub — Sourcing",
+        "entity": "Bishnoi Omniverse LLP",
+        "address": "Okhla Industrial Area, Phase III, New Delhi, India 110020",
+        "desc": "Direct sourcing from certified manufacturers, product qualification, and documentation assembly."
+      },
+      {
+        "id": "philippines",
+        "region": "Philippines Hub — Logistics & Operations",
+        "entity": "Bishnoi Omniverse Corp (Getmeds Philippines Inc. / 2MG Inc.)",
+        "address": "Unit 301 & 305, 17 Vatican Bldg., Vatican City Drive, B.F. Resort Village, Talon II, Las Piñas City, Metro Manila, Philippines",
+        "desc": "Regional consolidation, cold-chain handling, and onward distribution across the Asia-Pacific corridor."
+      }
+    ],
     "essentialLineTitle": "The GetMeds™ Essential Hospital Line",
-    "essentialLineTagline": "Engineered for precision and uninterrupted patient care. All products are CE/ISO certified and hold active medical device registrations.",
+    "essentialLineTagline": "Specification-documented consumables for institutional procurement. Certification varies by product and destination market — references are published per product.",
     "categories": [
       {
-        "name": "Fluid & IV Therapy",
+        "name": "IV & Infusion Therapy",
         "items": [
           {
-            "title": "IV Cannula Sets (With Wings & Port):",
-            "desc": "Available in all standard hospital gauges (G14 to G26) for secure, comfortable venous access and rapid fluid delivery."
+            "title": "IV Cannula Set (With Wings & Port):",
+            "desc": "GetMeds™, available across standard hospital gauges for secure venous access and rapid fluid delivery."
           },
           {
             "title": "Advanced IV Infusion Sets:",
-            "desc": "Equipped with AirVents and 0.2-micron filters to prevent particulate contamination and ensure absolute patient safety."
+            "desc": "Supplied with AirVents and 0.2-micron filters for particulate control on sensitive infusions."
           }
         ]
       },
@@ -98,12 +178,12 @@
         "name": "Blood Bank & Transfusion",
         "items": [
           {
-            "title": "Sterile Blood Transfusion Sets:",
-            "desc": "Available with or without AirVents, featuring advanced filtration chambers to ensure the safe, controlled delivery of blood components."
+            "title": "Sterile Blood Transfusion Set (With AirVent):",
+            "desc": "GetMeds™, CMDR-2023-01556, with filtration chamber for controlled delivery of blood components."
           },
           {
             "title": "Disposable Blood Bags:",
-            "desc": "High-quality, secure collection bags for safe blood preservation and cold-chain transport."
+            "desc": "Collection bags for blood preservation and cold-chain transport."
           }
         ]
       },
@@ -112,56 +192,83 @@
         "items": [
           {
             "title": "Extension Tubes & Three-Way Stop Cocks:",
-            "desc": "Durable, kink-resistant tubing and secure routing valves that allow complex, multi-line IV setups to run efficiently without compromising the sterile barrier."
+            "desc": "Kink-resistant tubing and routing valves for multi-line IV setups that keep the sterile barrier intact."
           }
         ]
       },
       {
-        "name": "Specialty & Named Patient Supply",
+        "name": "Airway & Respiratory",
         "items": [
           {
-            "title": "Oncology & Critical Care Regimens:",
-            "desc": "Targeted oncology therapies, rare biosimilars, and unregistered critical-care medicines sourced directly for individual patient requisitions."
+            "title": "Cuffed Endotracheal Airway Tube Set (Sterile):",
+            "desc": "GetMeds™, for theatre and critical-care airway management."
+          }
+        ]
+      },
+      {
+        "name": "Medical Gas & Facility Infrastructure",
+        "items": [
+          {
+            "title": "High-Pressure Seamless Steel Cylinder (40L Oxygen):",
+            "desc": "Bishnoi PureFlow™, ISO 9809-1 with DOT/TPED certification for facility-level medical gas."
           }
         ]
       }
     ],
-    "ctaExplore": "[ EXPLORE THE FULL CATALOG ]",
-    "ctaDownload": "[ DOWNLOAD PRODUCT PRICING & SPECS ]"
+    "ctaExplore": "Explore The Full Catalog",
+    "ctaQuote": "Request a Quote"
   },
-  "whyTrustUs": {
-    "sectionTag": "Our Guarantee",
-    "title": "Why Trust Bishnoi Omniverse?",
+  "qualityCompliance": {
+    "sectionTag": "Quality & Compliance",
+    "title": "Documented at the product level, not claimed in a banner",
+    "lead": "Certification and regulatory documentation vary by product category and destination market. Rather than one blanket claim, we document quality where it can be checked — on the product, with the paperwork that supports it.",
     "points": [
       {
-        "title": "A Global Team Working for You",
-        "desc": "By operating from two strategic locations—India (the pharmacy capital of the world) and the Philippines—we have the unique ability to source affordable, high-quality medicines quickly and ship them to over 50 countries worldwide."
+        "title": "Medical Devices",
+        "desc": "CE marking and CMDR approvals, with specification sheets and registration references available on request — for example CMDR-2023-01556 on the GetMeds™ blood transfusion set."
       },
       {
-        "title": "Guaranteed Safety",
-        "desc": "Every single medicine and medical tool we supply is verified for safety, authenticity, and quality. No exceptions."
+        "title": "Pharmaceuticals",
+        "desc": "WHO-GMP certified manufacturing and Certificates of Analysis, including for the Carboget™ / GetMeds™ carboplatin injection supplied under named-patient access."
       },
       {
-        "title": "Fast Action",
-        "desc": "In cancer care and critical health emergencies, we know we cannot wait. We respond to quotes and requests within 24 hours to get the process moving immediately."
+        "title": "Medical Gas Cylinders",
+        "desc": "ISO 9809-1 manufacture with DOT/TPED certification on high-pressure seamless steel cylinders, documented per batch."
       }
-    ]
+    ],
+    "responseCommitment": "Every institutional requisition and specialty-access request is reviewed by a named case manager, with a response inside 24 hours. No login required to request a quote."
   },
   "faq": {
     "sectionTag": "FAQ",
-    "title": "Questions You Might Have",
+    "title": "Procurement and Access Questions",
     "questions": [
       {
-        "q": "What does it mean to supply for a 'Named Patient'?",
-        "a": "It simply means that if a medicine isn't approved or sold in your home country yet, your doctor can legally request it just for you (the 'named patient'). We navigate the rules to legally deliver that specific medicine for your specific care."
+        "q": "What does named-patient supply actually mean?",
+        "a": "If a medicine is not registered or not available in your market, the named-patient pathway lets a treating physician request it for one identified patient. We source the product from a verified manufacturer and support the import permit and documentation the destination regulator requires."
       },
       {
-        "q": "How do you keep medicines safe during shipping?",
-        "a": "Many cancer treatments must stay perfectly cold. We use advanced temperature-controlled packaging that tracks the exact climate of the medicine from the moment it leaves the manufacturer until it is placed in your doctor's hands."
+        "q": "What documentation comes with a quote?",
+        "a": "Product specifications and the certification references that apply to each line — CE marking and CMDR approvals for devices, WHO-GMP credentials and Certificates of Analysis for pharmaceuticals, and ISO 9809-1 / DOT/TPED certification for gas cylinders. Documentation varies by product and destination market, so we state it line by line rather than as a blanket claim."
       },
       {
-        "q": "Where do you ship to?",
-        "a": "While our home offices are proudly located in India (LLP) and the Philippines (Corp), our mission is global. We deliver to hospitals, clinics, and oncologists anywhere in the world."
+        "q": "Do we need an account or login to request a quote?",
+        "a": "No. Institutional requisitions and specialty-access requests are submitted directly through the contact workflow, and a case manager responds within 24 hours."
+      },
+      {
+        "q": "How do you handle cold-chain products?",
+        "a": "Temperature-sensitive products ship in monitored packaging, with the temperature record and chain of custody documented from dispatch through to handover at the treating facility."
+      },
+      {
+        "q": "Where do you source from, and where do you deliver?",
+        "a": "Sourcing runs through our India hub in New Delhi and logistics through our Philippines hub in Metro Manila, serving hospitals, clinics, and trade partners across more than 50 countries."
+      },
+      {
+        "q": "What are your minimum order quantities and lead times?",
+        "a": "Both depend on the product category, volume, and destination market, so we confirm them on the quote rather than publishing a single figure. Send your line list and we will come back with quantities, lead times, and documentation together."
+      },
+      {
+        "q": "Can you support tenders and framework agreements?",
+        "a": "Yes. Send the tender line list or framework schedule and we will quote against the stated specifications, flagging any line where an equivalent product or an alternative certification route is the better fit."
       }
     ]
   }
