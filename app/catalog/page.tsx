@@ -176,7 +176,7 @@ export default function CatalogPage() {
           {/* Product Cards */}
           <div className="space-y-8">
             <div className="flex items-center justify-between border-b border-line pb-4">
-              <span className="text-xs font-semibold uppercase tracking-wide text-muted">
+              <span className="inline-block rounded-full bg-brand-blue px-3.5 py-1.5 text-sm font-medium text-white">
                 Showing {filteredProducts.length} Verified Product(s)
               </span>
               {selectedCategory !== 'all' && (

@@ -27,6 +27,8 @@ const config: Config = {
           dark: '#c2561a',
           tint: '#fde9de',
         },
+        // Global Network blue, carried over from the Getmeds design.
+        'brand-blue': '#1d9fda',
       },
       maxWidth: {
         wrap: '1180px',

@@ -1,6 +1,9 @@
 import React from 'react';
 import Link from 'next/link';
-import { ArrowRight, ShieldCheck, Globe2, Clock, FlaskConical, Boxes, Truck } from 'lucide-react';
+import {
+  ArrowRight, ShieldCheck, Globe2, Clock, FlaskConical, Boxes, Truck,
+  Building2, Stethoscope, Microscope, HeartPulse, Landmark,
+} from 'lucide-react';
 import homepageData from '@/lib/data/homepageData.json';
 import { FadeIn } from '@/components/FadeIn';
 import heroBg from '@/app/assets/background.png';
@@ -32,9 +35,20 @@ const provideIcons: Record<string, React.ElementType> = {
   'sourcing-trade': Truck,
 };
 
+const facilityIcons: Record<string, React.ElementType> = {
+  hospitals: Building2,
+  clinics: Stethoscope,
+  labs: Microscope,
+  surgical: HeartPulse,
+  government: Landmark,
+  trade: Truck,
+};
+
 export default function HomePage() {
-  const { hero, whatWeProvide, whoWeHelp, howItWorks, globalFootprint, qualityCompliance, faq } =
-    homepageData;
+  const {
+    hero, whatWeProvide, whoWeHelp, howItWorks, globalFootprint, qualityCompliance, faq,
+    statsStrip, facilityTypes, ourBrands, globalCompact,
+  } = homepageData;
 
   return (
     <div className="w-full home-page">
@@ -73,19 +87,43 @@ export default function HomePage() {
         </ul>
       </section>
 
+      {/* Stats / proof strip. Every figure here is already substantiated elsewhere on the site:
+          the two hubs and "50+ countries" come from globalFootprint, the 11 categories are the
+          catalogData category count, and the UNGC date is on the Global Network page. */}
+      <section className="section-tight section-white !py-14">
+        <FadeIn className="wrap">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+            {statsStrip.items.map((item) => (
+              <div key={item.label} className="border-l-2 border-accent pl-5">
+                <div className="font-poppins text-4xl font-semibold text-ink leading-none mb-2">
+                  {item.stat}
+                </div>
+                <div className="text-sm text-ink-soft leading-snug">{item.label}</div>
+              </div>
+            ))}
+          </div>
+        </FadeIn>
+      </section>
+
       {/* What We Provide — two supply lines plus the network that carries them */}
       <section className="section section-tight">
         <FadeIn className="wrap">
-          <span className="eyebrow">{whatWeProvide.sectionTag}</span>
-          <h2 className="mb-3">{whatWeProvide.title}</h2>
-          <p className="lead-block text-ink-soft mb-12">{whatWeProvide.lead}</p>
+          <div className="grid-2 items-start">
+            <div className="heading-lg">
+              <span className="eyebrow">{whatWeProvide.sectionTag}</span>
+              <h2 className="mb-0">{whatWeProvide.title}</h2>
+            </div>
+            <div className="lead-block">
+              <p className="text-ink-soft leading-relaxed m-0">{whatWeProvide.lead}</p>
+            </div>
+          </div>
 
-          <div className="grid-3">
+          <div className="grid-3 mt-14">
             {whatWeProvide.items.map((item) => {
               const Icon = provideIcons[item.id] || Boxes;
               return (
                 <div key={item.id} className="pillar">
-                  <Icon className="w-5 h-5 text-accent mb-4" strokeWidth={1.75} />
+                  <Icon className="w-10 h-10 text-accent mb-5" strokeWidth={1.5} />
                   <h3>{item.title}</h3>
                   <p className="mb-4">{item.desc}</p>
                   <Link
@@ -94,6 +132,33 @@ export default function HomePage() {
                   >
                     {item.ctaText} <ArrowRight className="w-3.5 h-3.5" />
                   </Link>
+                </div>
+              );
+            })}
+          </div>
+        </FadeIn>
+      </section>
+
+      {/* Facility Types — what kind of buyer we supply, distinct from the persona tiles below. */}
+      <section className="section section-line section-white">
+        <FadeIn className="wrap">
+          <div className="grid-2 items-start">
+            <div className="heading-lg">
+              <span className="eyebrow">{facilityTypes.sectionTag}</span>
+              <h2 className="mb-0">{facilityTypes.title}</h2>
+            </div>
+            <div className="lead-block">
+              <p className="text-ink-soft leading-relaxed m-0">{facilityTypes.lead}</p>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-14">
+            {facilityTypes.items.map((item) => {
+              const Icon = facilityIcons[item.id] || Building2;
+              return (
+                <div key={item.id} className="info-card flex items-center gap-4">
+                  <Icon className="w-8 h-8 text-accent shrink-0" strokeWidth={1.5} />
+                  <span className="text-[15px] font-medium text-ink leading-snug">{item.name}</span>
                 </div>
               );
             })}
@@ -225,6 +290,74 @@ export default function HomePage() {
             <Link href="/contact?type=quote" className="btn btn-outline on-light">
               {globalFootprint.ctaQuote}
             </Link>
+          </div>
+        </FadeIn>
+      </section>
+
+      {/* Our Brands — every brand listed has at least one live product in catalogData.json. */}
+      <section className="section section-line section-white">
+        <FadeIn className="wrap">
+          <div className="grid-2 items-start">
+            <div className="heading-lg">
+              <span className="eyebrow">{ourBrands.sectionTag}</span>
+              <h2 className="mb-0">{ourBrands.title}</h2>
+            </div>
+            <div className="lead-block">
+              <p className="text-ink-soft leading-relaxed m-0">{ourBrands.lead}</p>
+            </div>
+          </div>
+
+          <div className="overflow-x-auto mt-14">
+            <table className="w-full border-collapse text-left">
+              <thead>
+                <tr className="border-b border-line">
+                  <th className="py-3 pr-6 text-xs font-semibold uppercase tracking-wide text-muted">Brand</th>
+                  <th className="py-3 text-xs font-semibold uppercase tracking-wide text-muted">Product Line</th>
+                </tr>
+              </thead>
+              <tbody>
+                {ourBrands.items.map((item) => (
+                  <tr key={item.brand} className="border-b border-line">
+                    <td className="py-4 pr-6 align-top whitespace-nowrap font-poppins text-[15px] font-semibold text-ink">
+                      {item.brand}
+                    </td>
+                    <td className="py-4 align-top text-sm text-ink-soft leading-relaxed">{item.line}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          <div className="mt-10">
+            <Link
+              href={ourBrands.ctaHref}
+              className="inline-flex items-center gap-1.5 no-underline text-sm font-semibold text-accent-dark hover:underline"
+            >
+              {ourBrands.ctaText} <ArrowRight className="w-3.5 h-3.5" />
+            </Link>
+          </div>
+        </FadeIn>
+      </section>
+
+      {/* UN Global Compact teaser — the fuller content lives on the Global Network page. */}
+      <section className="section section-tight section-white">
+        <FadeIn className="wrap">
+          <div className="section-dark rounded-3xl px-8 py-16">
+            <div className="grid-2 items-center">
+              <div className="heading-lg">
+                <span className="eyebrow on-dark text-[#f8ae85]">{globalCompact.sectionTag}</span>
+                <h2 className="mb-0">{globalCompact.title}</h2>
+              </div>
+              <div>
+                <p>{globalCompact.body}</p>
+                <Link
+                  href={globalCompact.ctaHref}
+                  className="inline-flex items-center gap-1.5 no-underline text-sm font-semibold text-accent hover:underline"
+                >
+                  {globalCompact.ctaText} <ArrowRight className="w-3.5 h-3.5" />
+                </Link>
+              </div>
+            </div>
           </div>
         </FadeIn>
       </section>

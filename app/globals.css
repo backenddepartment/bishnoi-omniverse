@@ -360,7 +360,9 @@
     border-radius: 999px;
     margin-bottom: 16px;
   }
-  .division h2 { font-size: clamp(24px, 3vw, 36px); margin-bottom: 14px; }
+  /* Matches .heading-lg h2, so a division title reads at the same size as the Group Structure
+     heading on the About page. */
+  .division h2 { font-size: clamp(28px, 3vw, 40px); margin-bottom: 14px; }
   .img-credit { display: block; font-size: 10px; color: var(--muted); margin-top: 10px; }
 
   /* Stat row */
@@ -584,11 +586,11 @@
   .site-footer { padding: 64px 0 30px; background: var(--ink); color: #cfc9ba; }
   .footer-grid { display: grid; grid-template-columns: 1.4fr 1fr 1fr 1fr; gap: 40px; margin-bottom: 48px; }
   .footer-grid h4 {
-    font-size: 12px;
+    font-size: 16px;
     margin-bottom: 16px;
     color: #8f8877;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
+    letter-spacing: 0.01em;
+    text-transform: none;
     font-weight: 600;
     font-family: var(--font-poppins), sans-serif;
   }

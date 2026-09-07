@@ -1,7 +1,8 @@
 import React from 'react';
+import Image from 'next/image';
 import Link from 'next/link';
-import { Cross } from 'lucide-react';
 import homepageData from '@/lib/data/homepageData.json';
+import logo from '@/app/assets/logo.png';
 
 export const Footer: React.FC = () => {
   const { brand } = homepageData;
@@ -11,11 +12,9 @@ export const Footer: React.FC = () => {
       <div className="wrap">
         <div className="footer-grid">
           <div>
-            <Link href="/" className="flex items-center gap-2.5 mb-4 text-white no-underline">
-              <Cross className="w-5 h-5 text-accent" strokeWidth={2.5} />
-              <span className="font-sans text-[15px] font-bold tracking-wide text-white">
-                {brand.name}
-              </span>
+            <Link href="/" className="inline-flex items-center mb-5 no-underline">
+              {/* brightness-0 invert flattens the colour logo to a white silhouette for the dark footer. */}
+              <Image src={logo} alt={brand.name} className="h-14 w-auto brightness-0 invert" />
             </Link>
             <p>
               Hospital-grade medical supplies and hard-to-source specialty medicines, sourced

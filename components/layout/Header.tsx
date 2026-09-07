@@ -7,6 +7,8 @@ import { usePathname, useRouter } from 'next/navigation';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Menu, X, ChevronDown, ChevronRight, ArrowRight, ArrowUpRight, Search } from 'lucide-react';
 import logo from '@/app/assets/logo.png';
+import globalNetworkLogo from '@/app/assets/globalnetworklogo.png';
+import countriesMap from '@/app/assets/countries.png';
 import catalogData from '@/lib/data/catalogData.json';
 import { getCategoryIcon } from '@/lib/catalogIcons';
 
@@ -35,11 +37,10 @@ const ENTITY_LINKS: { label: string; href: string; desc: string }[] = [
   },
 ];
 
-const GLOBAL_NETWORK_LINKS: { label: string; href: string }[] = [
-  { label: 'Operating Footprint', href: '/global-network' },
-  { label: 'Trade & Partners', href: '/trade-partners' },
-  { label: 'Getmeds Philippines', href: '/global#getmeds' },
-  { label: 'Getmeds Healthcare', href: '/global#getmeds' },
+// `external: true` leaves the site — rendered as a plain anchor opening in a new tab.
+const GLOBAL_NETWORK_LINKS: { label: string; href: string; external?: boolean }[] = [
+  { label: 'Getmeds Philippines', href: 'https://getmeds.ph/', external: true },
+  { label: 'Getmeds India', href: 'https://getmedshealthcare.com/', external: true },
   { label: 'Getmeds Vanuatu', href: '/global#getmeds' },
   { label: 'Getmeds South East Asia', href: '/global#getmeds' },
   { label: 'Getmeds Latin', href: '/global#getmeds' },
@@ -48,6 +49,7 @@ const GLOBAL_NETWORK_LINKS: { label: string; href: string }[] = [
   { label: 'Naresh Bishnoi', href: '/global#social' },
   { label: 'Naresh Bishnoi Foundation', href: '/global#social' },
   { label: 'UNGC', href: '/global#social' },
+  { label: '2MG Incorporated', href: 'https://2mginc.com/', external: true },
 ];
 
 export const Header: React.FC = () => {
@@ -320,8 +322,15 @@ export const Header: React.FC = () => {
               <div className="absolute left-0 right-0 top-full h-4" />
             </div>
 
-            {aboutOpen && (
-            <div className="absolute left-0 right-0 top-full">
+            <AnimatePresence initial={false}>
+              {aboutOpen && (
+              <motion.div
+                initial={{ opacity: 0, y: -12 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -12 }}
+                transition={{ duration: 0.32, ease: [0.16, 1, 0.3, 1] }}
+                className="absolute left-0 right-0 top-full origin-top"
+              >
               <div className="bg-surface border-b border-line rounded-b-2xl shadow-xl overflow-hidden">
                 <div className="grid grid-cols-[260px_1fr] gap-14 items-start p-10">
                   <div>
@@ -337,16 +346,18 @@ export const Header: React.FC = () => {
                         key={item.href}
                         href={item.href}
                         onClick={() => setAboutOpen(false)}
-                        className="menu-link no-underline text-[15px] font-medium text-ink hover:text-accent transition-colors leading-snug"
+                        className="menu-link inline-flex items-center gap-1.5 no-underline text-[15px] font-medium text-ink hover:text-accent transition-colors leading-snug"
                       >
                         {item.label}
+                        <ArrowUpRight className="w-3.5 h-3.5 text-accent shrink-0" strokeWidth={2} />
                       </Link>
                     ))}
                   </div>
                 </div>
               </div>
-            </div>
-            )}
+            </motion.div>
+              )}
+            </AnimatePresence>
           </div>
 
           {/* LLP / CORP — hover mega-menu, same full-width treatment as Catalog / About Us. */}
@@ -367,8 +378,15 @@ export const Header: React.FC = () => {
               <div className="absolute left-0 right-0 top-full h-4" />
             </div>
 
-            {entityOpen && (
-            <div className="absolute left-0 right-0 top-full">
+            <AnimatePresence initial={false}>
+              {entityOpen && (
+              <motion.div
+                initial={{ opacity: 0, y: -12 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -12 }}
+                transition={{ duration: 0.32, ease: [0.16, 1, 0.3, 1] }}
+                className="absolute left-0 right-0 top-full origin-top"
+              >
               <div className="bg-surface border-b border-line rounded-b-2xl shadow-xl overflow-hidden">
                 <div className="grid grid-cols-[260px_1fr] gap-14 items-start p-10">
                   <div>
@@ -397,8 +415,9 @@ export const Header: React.FC = () => {
                   </div>
                 </div>
               </div>
-            </div>
-            )}
+            </motion.div>
+              )}
+            </AnimatePresence>
           </div>
         </nav>
 
@@ -439,40 +458,81 @@ export const Header: React.FC = () => {
                 aria-expanded={networkOpen}
                 className="flex items-center h-full gap-1.5 text-sm font-medium text-ink-soft hover:text-ink transition-colors"
               >
-                <span>Global Network</span>
+                <Image src={globalNetworkLogo} alt="Global Network" className="h-9 w-auto shrink-0" />
                 <ChevronDown className={`w-3.5 h-3.5 transition-transform ${networkOpen ? 'rotate-180' : ''}`} />
               </button>
               <div className="absolute left-0 right-0 top-full h-4" />
             </div>
 
-            {networkOpen && (
-            <div className="absolute left-0 right-0 top-full">
+            <AnimatePresence initial={false}>
+              {networkOpen && (
+              <motion.div
+                initial={{ opacity: 0, y: -12 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -12 }}
+                transition={{ duration: 0.32, ease: [0.16, 1, 0.3, 1] }}
+                className="absolute left-0 right-0 top-full origin-top"
+              >
               <div className="bg-surface border-b border-line rounded-b-2xl shadow-xl overflow-hidden">
-                <div className="grid grid-cols-[260px_1fr] gap-14 items-start p-10">
-                  <div>
-                    <h4 className="font-poppins font-semibold text-xl text-accent mb-3 leading-snug">Global Network</h4>
+                <div className="grid grid-cols-1 lg:grid-cols-[260px_1fr] xl:grid-cols-[260px_1fr_340px] gap-12 items-center p-10">
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.35, delay: 0.06 }}
+                  >
+                    <h3 className="font-poppins font-semibold text-3xl text-ink mb-3 leading-tight">Global Network</h3>
                     <p className="text-sm text-ink-soft leading-relaxed m-0">
-                      Getmeds Healthcare&apos;s growing footprint across the world — connect with any of our regional
+                      Bishnoi Omniverse&apos;s growing footprint across the world — connect with any of our regional
                       sites and trusted partners.
                     </p>
-                  </div>
+                  </motion.div>
 
-                  <div className="grid grid-cols-5 gap-x-8 gap-y-6">
-                    {GLOBAL_NETWORK_LINKS.map((item) => (
-                      <Link
+                  <div className="grid grid-cols-2 gap-x-8 gap-y-1">
+                    {GLOBAL_NETWORK_LINKS.map((item, idx) => (
+                      <motion.div
                         key={item.label}
-                        href={item.href}
-                        onClick={() => setNetworkOpen(false)}
-                        className="menu-link text-sm font-semibold text-ink hover:text-accent no-underline transition-colors leading-snug"
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.35, delay: 0.06 * (idx + 2) }}
                       >
-                        {item.label}
-                      </Link>
+                        {item.external ? (
+                          <a
+                            href={item.href}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            onClick={() => setNetworkOpen(false)}
+                            className="menu-link inline-flex items-center gap-1.5 py-2.5 text-[15px] font-medium text-ink hover:text-accent no-underline transition-colors leading-snug"
+                          >
+                            {item.label}
+                            <ArrowUpRight className="w-3.5 h-3.5 text-accent shrink-0" strokeWidth={2} />
+                          </a>
+                        ) : (
+                          <Link
+                            href={item.href}
+                            onClick={() => setNetworkOpen(false)}
+                            className="menu-link inline-block py-2.5 text-[15px] font-medium text-ink hover:text-accent no-underline transition-colors leading-snug"
+                          >
+                            {item.label}
+                          </Link>
+                        )}
+                      </motion.div>
                     ))}
                   </div>
+
+                  <motion.div
+                    className="hidden xl:block"
+                    aria-hidden="true"
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.35, delay: 0.06 * (GLOBAL_NETWORK_LINKS.length + 2) }}
+                  >
+                    <Image src={countriesMap} alt="" className="w-full h-auto" />
+                  </motion.div>
                 </div>
               </div>
-            </div>
-            )}
+            </motion.div>
+              )}
+            </AnimatePresence>
           </div>
 
           <button

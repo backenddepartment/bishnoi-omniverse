@@ -271,5 +271,100 @@
         "a": "Yes. Send the tender line list or framework schedule and we will quote against the stated specifications, flagging any line where an equivalent product or an alternative certification route is the better fit."
       }
     ]
+  },
+  "statsStrip": {
+    "items": [
+      {
+        "stat": "2",
+        "label": "Operating hubs — India & Philippines"
+      },
+      {
+        "stat": "50+",
+        "label": "Countries served"
+      },
+      {
+        "stat": "11",
+        "label": "Hospital supply categories"
+      },
+      {
+        "stat": "2024",
+        "label": "UN Global Compact participant since"
+      }
+    ]
+  },
+  "facilityTypes": {
+    "sectionTag": "Who We Serve",
+    "title": "Facility Types We Supply",
+    "lead": "Institutional procurement and named-patient access run to different rules, but both are supplied from the same two hubs and the same documentation discipline.",
+    "items": [
+      {
+        "id": "hospitals",
+        "name": "Hospitals"
+      },
+      {
+        "id": "clinics",
+        "name": "Multi-specialty clinics"
+      },
+      {
+        "id": "labs",
+        "name": "Diagnostic and pathology laboratories"
+      },
+      {
+        "id": "surgical",
+        "name": "Ambulatory surgical centers"
+      },
+      {
+        "id": "government",
+        "name": "Government and public-health procurement bodies"
+      },
+      {
+        "id": "trade",
+        "name": "Distribution and trade partners"
+      }
+    ]
+  },
+  "ourBrands": {
+    "sectionTag": "Our Brands",
+    "title": "Brands Behind Our Products",
+    "lead": "Bishnoi Omniverse products are sourced and, where applicable, manufactured under a small number of house brands, each tied to a specific product line and its certification basis:",
+    "items": [
+      {
+        "brand": "GetMeds™",
+        "line": "IV & infusion therapy, airway management, blood transfusion sets"
+      },
+      {
+        "brand": "Carboget™",
+        "line": "Oncology / specialty injectable (carboplatin)"
+      },
+      {
+        "brand": "Bishnoi PureFlow™",
+        "line": "Medical gas cylinders and facility infrastructure"
+      },
+      {
+        "brand": "Bishnoi VitalTrack™",
+        "line": "Patient monitoring — multi-parameter bedside monitors"
+      },
+      {
+        "brand": "Bishnoi CareLine™",
+        "line": "Durable medical equipment — electric ICU hospital beds"
+      },
+      {
+        "brand": "Bishnoi ClearView™",
+        "line": "Diagnostic & imaging — point-of-care ultrasound"
+      },
+      {
+        "brand": "Bishnoi PureSteam™",
+        "line": "Sterilization & infection control — Class B vacuum autoclaves"
+      }
+    ],
+    "ctaText": "Browse the full catalogue",
+    "ctaHref": "/catalog"
+  },
+  "globalCompact": {
+    "sectionTag": "Global Standards",
+    "title": "Held to a Global Standard",
+    "body": "Bishnoi Omniverse's parent, the Bishnoi Group, has been an active participant in the United Nations Global Compact since November 2024, with Communications on Progress filed for 2025 and 2026. Group leadership represented these commitments at the UN Global Compact Forward Faster Now | APAC Conference 2026 in Colombo, Sri Lanka.",
+    "ctaText": "Learn more about our Global Network",
+    "ctaHref": "/global-network"
   }
 }

@@ -52,9 +52,6 @@ export default function GlobalBusinessesPage() {
                   <div className="division-grid">
                     <img src={img} alt={sec.title} />
                     <div>
-                      <span className="tag">
-                        {sec.group} &middot; Division 0{sec.number}
-                      </span>
                       <h2>{sec.title}</h2>
                       <p className="text-sm font-medium italic text-muted mb-4">{sec.tagline}</p>
                       <p className="text-ink-soft leading-relaxed mb-6">{sec.description}</p>
@@ -76,11 +73,7 @@ export default function GlobalBusinessesPage() {
                     </div>
                   </div>
                 ) : (
-                  <>
-                    <span className="tag">
-                      {sec.group} &middot; Division 0{sec.number}
-                    </span>
-                    <div className="grid-2 items-start">
+                  <div className="grid-2 items-start">
                       <div>
                         <h2>{sec.title}</h2>
                         <p className="text-sm font-medium italic text-muted mb-4">{sec.tagline}</p>
@@ -104,8 +97,7 @@ export default function GlobalBusinessesPage() {
                           </Link>
                         )}
                       </div>
-                    </div>
-                  </>
+                  </div>
                 )}
               </div>
             </section>
