@@ -4,11 +4,10 @@ import { ArrowRight, ShieldCheck, Globe2, FlaskConical, Boxes, Truck } from 'luc
 import homepageData from '@/lib/data/homepageData.json';
 import { HeroSlider } from '@/components/HeroSlider';
 import { FaqAccordion } from '@/components/FaqAccordion';
+import { CardSlider } from '@/components/CardSlider';
 import heroBg from '@/app/assets/background.png';
 import heroSlideTwo from '@/app/assets/slidertwo.png';
 import heroSlideThree from '@/app/assets/sliderthree.png';
-import hospitalsImg from '@/app/assets/hospitals.png';
-import clinicsImg from '@/app/assets/clinics.png';
 import doctorsImg from '@/app/assets/doctors.jpg';
 import familiesImg from '@/app/assets/families.jpg';
 
@@ -46,11 +45,18 @@ const provideIcons: Record<string, React.ElementType> = {
 // Photos for the facility cards. Every URL here is already used elsewhere on the site, so all of
 // them are known to load. The four marked STAND-IN are stylistically close, not literal: swap them
 // as soon as real photography for those facility types is available.
-// `corner: true` anchors the artwork to the bottom-right of the card instead of cropping it to
-// fill the media column — for cut-out graphics rather than photographs.
-const facilityImages: Record<string, { src: string; corner?: boolean; mediaClass?: string }> = {
-  hospitals: { src: hospitalsImg.src, corner: true, mediaClass: 'is-corner-raised' },
-  clinics: { src: clinicsImg.src, corner: true, mediaClass: 'is-corner-narrow' },
+// `contain: true` marks cut-out artwork on a transparent background, shown whole rather than
+// cropped. The two entries marked STAND-IN are stylistically close, not literal — swap them once
+// real photography for those facility types exists.
+const facilityImages: Record<string, { src: string; contain?: boolean }> = {
+  // Wikimedia Commons, both verified to resolve:
+  //   hospitals — 中少, CC BY-SA 4.0 · clinics — Shixart1985, CC BY 2.0
+  hospitals: {
+    src: 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/67/Exterior%2C_Building_1%2C_Fourth_Affiliated_Hospital_of_Guangzhou_Medical_University_20241230.jpg/1280px-Exterior%2C_Building_1%2C_Fourth_Affiliated_Hospital_of_Guangzhou_Medical_University_20241230.jpg',
+  },
+  clinics: {
+    src: 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6d/Modern_clinic_interior_design.jpg/1280px-Modern_clinic_interior_design.jpg',
+  },
   labs: { src: IMG.essentials }, // STAND-IN — sterile supply, not a pathology lab
   surgical: {
     src: 'https://upload.wikimedia.org/wikipedia/commons/a/a0/Facial_plastic_surgeon_wearing_surgical_loupes_and_headlight_during_an_operating_room_procedure.jpg',
@@ -113,7 +119,15 @@ export default function HomePage() {
                 <div className="font-poppins text-4xl font-semibold text-ink leading-none mb-2">
                   {item.stat}
                 </div>
-                <div className="text-sm text-ink-soft leading-snug">{item.label}</div>
+                <div className="text-sm text-ink-soft leading-snug">
+                  {item.label}
+                  {item.line2 && (
+                    <>
+                      <br />
+                      {item.line2}
+                    </>
+                  )}
+                </div>
               </div>
             ))}
           </div>
@@ -167,30 +181,24 @@ export default function HomePage() {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-14">
+          <div className="mt-14">
+            <CardSlider label="Facility types we supply">
             {facilityTypes.items.map((item) => {
               const media = facilityImages[item.id];
               return (
-              <Link key={item.id} href={item.href} className="facility-card">
-                <div className="facility-card-body">
-                  <h3>{item.name}</h3>
-                  <span className="facility-card-cta">
-                    <span className="facility-card-arrow">
-                      <ArrowRight className="w-4 h-4" strokeWidth={2.5} />
-                    </span>
-                    Learn More
-                  </span>
-                </div>
-                <div
-                  className={['facility-card-media', media.corner && 'is-corner', media.mediaClass]
-                    .filter(Boolean)
-                    .join(' ')}
-                >
-                  <img src={media.src} alt="" loading="lazy" />
-                </div>
-              </Link>
+                <Link key={item.id} href={item.href} className="facility-card">
+                  <div className="facility-card-head">
+                    <span className="facility-card-mark">Learn More</span>
+                    <h3>{item.name}</h3>
+                  </div>
+                  <div className={`facility-card-media${media.contain ? ' is-contain' : ''}`}>
+                    <img src={media.src} alt="" loading="lazy" />
+                  </div>
+                  <p className="facility-card-caption">{item.caption}</p>
+                </Link>
               );
             })}
+            </CardSlider>
           </div>
         </div>
       </section>

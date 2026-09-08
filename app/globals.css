@@ -260,9 +260,12 @@
     width: 100%;
   }
   .hero h1 {
-    font-size: clamp(28px, 4vw, 52px);
+    font-size: clamp(24px, 3.4vw, 44px);
     color: #fff;
     max-width: 820px;
+    /* The headline carries its own line break as a newline in homepageData.json, so the split
+       lands in the same place at every width instead of re-wrapping with the viewport. */
+    white-space: pre-line;
   }
   .hero .lede {
     font-size: clamp(14px, 1.4vw, 17px);
@@ -409,155 +412,111 @@
   .division h2 { font-size: clamp(28px, 3vw, 40px); margin-bottom: 14px; }
   .img-credit { display: block; font-size: 10px; color: var(--muted); margin-top: 10px; }
 
-  /* Facility cards — wide orange panel, photo bleeding off the right edge, title top-left and a
-     circular arrow + LEARN MORE at bottom-left. */
-  .facility-card {
+  /* Horizontal card slider — native overflow scrolling with snap points, plus arrow controls. */
+  .card-slider { position: relative; }
+  .card-slider-track {
     display: flex;
-    align-items: stretch;
-    min-height: 150px;
-    border-radius: 14px;
-    overflow: hidden;
-    text-decoration: none;
-    background: linear-gradient(120deg, #f0631b 0%, #f78b38 100%);
-    transition: transform 0.3s var(--ease), box-shadow 0.3s var(--ease);
+    gap: 20px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    /* Room for the cards' drop shadow, which would otherwise be clipped by the scroll box. */
+    padding: 6px 4px 14px;
+    margin: -6px -4px -14px;
+    scrollbar-width: none;
   }
-  .facility-card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 18px 40px rgba(243, 107, 33, 0.28);
+  .card-slider-track::-webkit-scrollbar { display: none; }
+  .card-slider-track > * {
+    flex: 0 0 250px;
+    scroll-snap-align: start;
   }
-  .facility-card-body {
-    flex: 1 1 64%;
-    min-width: 0;
-    padding: 22px 18px 20px 26px;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    gap: 22px;
-  }
-  .facility-card h3 {
-    margin: 0;
-    color: #fff;
-    font-size: clamp(18px, 1.7vw, 23px);
-    font-weight: 600;
-    line-height: 1.15;
-    letter-spacing: -0.01em;
-  }
-  .facility-card-cta {
-    display: inline-flex;
-    align-items: center;
-    gap: 14px;
-    color: #fff;
-    font-size: 13px;
-    font-weight: 500;
-    letter-spacing: 0.02em;
-    text-transform: none;
-    white-space: nowrap;
-  }
-  .facility-card-arrow {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 34px;
-    height: 34px;
-    border-radius: 999px;
-    background: #fff;
-    color: var(--accent);
-    flex-shrink: 0;
-    transition: transform 0.3s var(--ease);
-  }
-  .facility-card:hover .facility-card-arrow {
-    transform: translateX(4px);
-  }
-  .facility-card-media {
-    flex: 0 0 36%;
-    /* Positioned so the photo can fill the card instead of setting its height: an <img> with
-       height:100% inside an auto-height flex item falls back to the file's intrinsic height, which
-       made tall source images stretch their whole grid row. */
-    position: relative;
-    overflow: hidden;
-  }
-  .facility-card-media img {
+  .card-slider-btn {
     position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-  /* Soften the seam: the photo fades out towards its left edge so it blends into the orange panel
-     instead of butting against it. Masking the image (rather than overlaying a colour) means the
-     card's own gradient shows through, so there is no colour to keep in sync. */
-  .facility-card-media:not(.is-corner) img {
-    -webkit-mask-image: linear-gradient(90deg, transparent 0%, rgba(0, 0, 0, 0.6) 30%, #000 60%);
-    mask-image: linear-gradient(90deg, transparent 0%, rgba(0, 0, 0, 0.6) 30%, #000 60%);
-  }
-  /* Corner variant: sits the artwork whole in the card's bottom-right instead of cropping it.
-     Takes a wider column and spills past it, so a contained graphic still reads at size. */
-  .facility-card-media.is-corner {
-    flex: 0 0 46%;
-    overflow: visible;
-  }
-  .facility-card-media.is-corner img {
-    /* Bottom-right anchored and shorter than the card, so the graphic sits in the corner rather
-       than spanning the full height — which is what a near-square image does when the box is the
-       card's full height and `contain` fits it by height instead of width. */
-    inset: auto 0 -20% auto;
-    width: 126%;
-    height: 84%;
-    max-width: none;
-    object-fit: contain;
-    object-position: bottom right;
-  }
-  /* Per-card corner overrides — must follow .is-corner img to win on source order. */
-  .facility-card-media.is-corner-raised img {
-    bottom: 0;
-  }
-  .facility-card-media.is-corner-narrow {
-    flex-basis: 36%;
-  }
-
-  /* FAQ accordion — question row with a circular accent toggle, rule under each item. */
-  .faq-item { border-bottom: 1px solid var(--line); }
-  .faq-q {
-    width: 100%;
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    gap: 28px;
-    padding: 22px 0;
-    background: none;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 42px;
+    height: 42px;
     border: 0;
-    cursor: pointer;
-    text-align: left;
-    font-family: var(--font-poppins), sans-serif;
-    font-size: 17px;
-    font-weight: 600;
-    line-height: 1.35;
-    color: var(--ink);
-    transition: color 0.25s var(--ease);
-  }
-  .faq-q:hover { color: var(--accent-dark); }
-  .faq-toggle {
-    flex-shrink: 0;
-    width: 32px;
-    height: 32px;
     border-radius: 999px;
     background: var(--accent);
     color: #fff;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    transition: background 0.25s var(--ease);
+    cursor: pointer;
+    box-shadow: 0 6px 18px rgba(15, 14, 12, 0.18);
+    transition: background 0.25s var(--ease), opacity 0.25s var(--ease);
+    z-index: 2;
   }
-  /* One chevron that flips, rather than swapping two icons — the rotation reads as the open/close
-     direction and there is nothing to cross-fade. */
-  .faq-toggle svg { transition: transform 0.28s var(--ease); }
-  .faq-toggle.is-open svg { transform: rotate(180deg); }
-  .faq-q:hover .faq-toggle { background: var(--accent-dark); }
-  .faq-a {
-    margin: 0 0 24px;
-    padding-right: 60px;
-    font-size: 14px;
-    line-height: 1.75;
+  .card-slider-btn:hover:not(:disabled) { background: var(--accent-dark); }
+  .card-slider-btn:disabled {
+    opacity: 0;
+    pointer-events: none;
+  }
+  .card-slider-btn.is-prev { left: -14px; }
+  .card-slider-btn.is-next { right: -14px; }
+
+  /* Facility cards — portrait "report cover" format: mark and title up top, the photograph
+     banded across the bottom, caption beneath it. */
+  .facility-card {
+    display: flex;
+    flex-direction: column;
+    background: var(--surface);
+    border-radius: 10px;
+    overflow: hidden;
+    text-decoration: none;
+    /* No border — a soft shadow keeps the card readable against the white section instead. */
+    box-shadow: 0 1px 2px rgba(15, 14, 12, 0.04), 0 3px 10px rgba(15, 14, 12, 0.035);
+    transition: transform 0.3s var(--ease), box-shadow 0.3s var(--ease);
+  }
+  .facility-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 2px 6px rgba(15, 14, 12, 0.05), 0 10px 24px rgba(15, 14, 12, 0.07);
+  }
+  .facility-card-head {
+    padding: 20px 20px 22px;
+  }
+  .facility-card-mark {
+    display: block;
+    color: var(--accent);
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.01em;
+    margin-bottom: 20px;
+  }
+  .facility-card h3 {
+    margin: 0;
+    font-size: 19px;
+    font-weight: 600;
+    line-height: 1.25;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+    transition: color 0.3s var(--ease);
+  }
+  .facility-card:hover h3 { color: var(--accent); }
+  /* margin-top:auto pins the media band to the bottom, so cards with a one-line title and a
+     three-line title still align their photographs across the row. */
+  .facility-card-media {
+    margin-top: auto;
+    height: 140px;
+    background: var(--surface);
+    padding: 0 18px;
+  }
+  .facility-card-media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 10px;
+  }
+  /* Cut-out artwork on a transparent background: shown whole rather than cropped to fill. */
+  .facility-card-media.is-contain img {
+    object-fit: contain;
+    padding: 8px 0;
+  }
+  .facility-card-caption {
+    margin: 0;
+    padding: 12px 20px 18px;
+    font-size: 12.5px;
+    line-height: 1.6;
     color: var(--ink-soft);
   }
 

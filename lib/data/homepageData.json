@@ -7,7 +7,7 @@
     "phone": "+63 917 156 9029 | +91 (11) 4000-0000"
   },
   "hero": {
-    "headline": "Global Medical Supply and Specialty Sourcing for Healthcare That Can't Wait",
+    "headline": "From the Smallest Needle\nto the Largest Cylinder.",
     "subheadline": "Bishnoi Omniverse supplies hospitals, clinics, and trade partners with hospital-grade medical supplies and hard-to-source specialty medicines — sourced through our India and Philippines hubs and delivered to healthcare providers worldwide.",
     "ctaQuote": "Request a Quote",
     "ctaHospitalSupply": "Submit a Hospital Requirement",
@@ -276,19 +276,23 @@
     "items": [
       {
         "stat": "2",
-        "label": "Operating hubs — India & Philippines"
+        "label": "Operating hubs",
+        "line2": "India & Philippines"
       },
       {
         "stat": "50+",
-        "label": "Countries served"
+        "label": "Countries served",
+        "line2": ""
       },
       {
         "stat": "11",
-        "label": "Hospital supply categories"
+        "label": "Hospital supply categories",
+        "line2": ""
       },
       {
         "stat": "2024",
-        "label": "UN Global Compact participant since"
+        "label": "UN Global Compact",
+        "line2": "participant since"
       }
     ]
   },
@@ -300,32 +304,38 @@
       {
         "id": "hospitals",
         "name": "Hospitals",
-        "href": "/contact?type=hospital-supply"
+        "href": "/contact?type=hospital-supply",
+        "caption": "Ward, theatre, and ICU consumables consolidated under one purchase order."
       },
       {
         "id": "clinics",
         "name": "Multi-specialty clinics",
-        "href": "/contact?type=hospital-supply"
+        "href": "/contact?type=hospital-supply",
+        "caption": "Smaller order volumes, carrying the same documentation trail as a hospital tender."
       },
       {
         "id": "labs",
         "name": "Diagnostic and pathology laboratories",
-        "href": "/catalog"
+        "href": "/catalog",
+        "caption": "Sterile consumables and sample-handling supplies, traceable to the supplied batch."
       },
       {
         "id": "surgical",
         "name": "Ambulatory surgical centers",
-        "href": "/catalog"
+        "href": "/catalog",
+        "caption": "Airway, infusion, and single-use surgical sets sourced against their certification."
       },
       {
         "id": "government",
         "name": "Government and public-health procurement bodies",
-        "href": "/contact?type=quote"
+        "href": "/contact?type=quote",
+        "caption": "Tender and framework requirements, with the paperwork prepared for public procurement review."
       },
       {
         "id": "trade",
         "name": "Distribution and trade partners",
-        "href": "/trade-partners"
+        "href": "/trade-partners",
+        "caption": "Consolidated supply from both hubs, with one counterparty accountable end to end."
       }
     ]
   },
