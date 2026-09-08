@@ -1,7 +1,34 @@
 import React from 'react';
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { ArrowRight, Factory, Handshake, Ship } from 'lucide-react';
+import {
+  ArrowRight, Factory, Handshake, Ship, Globe2, FileCheck2, FlaskConical, UserCheck,
+} from 'lucide-react';
+import partnerFaqData from '@/lib/data/partnerFaqData.json';
+
+const PARTNER_BENEFITS = [
+  {
+    icon: Globe2,
+    title: 'Dual-market reach',
+    desc: 'A single partnership agreement gives distributors and manufacturers access to both our India sourcing hub and Philippines/Asia-Pacific logistics corridor — two distinct markets through one relationship.',
+  },
+  {
+    icon: FileCheck2,
+    title: 'Documentation-first sourcing',
+    desc: 'Manufacturer partners work with a team that qualifies suppliers on certification and testing evidence before commercial terms are discussed, reducing downstream compliance risk for both sides.',
+  },
+  {
+    icon: FlaskConical,
+    title: 'Specialty-access expertise',
+    desc: 'For manufacturers with oncology, biosimilar, or critical-care products that face named-patient or cross-border registration pathways, our specialty medicines line brings direct experience navigating those regulatory routes.',
+  },
+  {
+    icon: UserCheck,
+    title: 'Direct, named contact',
+    desc: 'Partner accounts are assigned a single point of contact rather than routed through a general inquiry queue.',
+  },
+];
+
 
 export const metadata: Metadata = {
   title: 'Trade & Partners | Bishnoi Omniverse',
@@ -48,7 +75,7 @@ const PARTNER_TYPES = [
 
 export default function TradePartnersPage() {
   return (
-    <div className="w-full">
+    <div className="w-full trade-page">
       <section className="page-hero">
         <div className="hero-media">
           <img src={IMG.hero} alt="Container cranes at a shipping port" loading="eager" />
@@ -159,6 +186,54 @@ export default function TradePartnersPage() {
                 <span className="tl-year">Step {step.step}</span>
                 <h3>{step.title}</h3>
                 <p>{step.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="section section-line section-white">
+        <div className="wrap">
+          <div className="grid-2 items-start">
+            <div className="heading-lg">
+              <span className="eyebrow">Why Partner With Bishnoi Omniverse</span>
+              <h2 className="mb-0">Partner Benefits</h2>
+            </div>
+            <div className="lead-block">
+              <p className="text-ink-soft leading-relaxed m-0">
+                What a distribution or manufacturing partner actually gets from the relationship —
+                stated as commitments we can be held to, not positioning.
+              </p>
+            </div>
+          </div>
+
+          <div className="grid-2 items-start mt-14">
+            {PARTNER_BENEFITS.map((benefit) => {
+              const Icon = benefit.icon;
+              return (
+                <div key={benefit.title} className="pillar">
+                  <Icon className="w-10 h-10 text-accent mb-5" strokeWidth={1.5} />
+                  <h3>{benefit.title}</h3>
+                  <p>{benefit.desc}</p>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      <section className="section section-line section-white">
+        <div className="wrap">
+          <div className="heading-lg">
+            <span className="eyebrow">Partner FAQ</span>
+            <h2 className="mb-10">Questions partners ask first</h2>
+          </div>
+
+          <div className="max-w-3xl">
+            {partnerFaqData.questions.map((item) => (
+              <div key={item.q} className="faq-card">
+                <h3>{item.q}</h3>
+                <p>{item.a}</p>
               </div>
             ))}
           </div>

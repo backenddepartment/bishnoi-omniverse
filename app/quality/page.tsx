@@ -3,6 +3,32 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { ArrowRight, FileCheck2, FlaskConical, Gauge, Thermometer } from 'lucide-react';
 
+// Draft process per the content upgrade package. Awaiting regulatory-affairs ratification
+// (Section 6, item 1) and a dedicated regulatory/quality contact channel (item 2); until that
+// address exists, the closing line routes through the existing contact page.
+const RECALL_STEPS = [
+  {
+    title: 'Notification intake',
+    desc: 'Recall and field safety notices are received directly from manufacturers and cross-checked against active shipment and inventory records for the affected lot(s) or batch(es).',
+  },
+  {
+    title: 'Customer notification',
+    desc: 'Institutions that received affected product are notified directly, with the manufacturer’s recall classification, affected lot/batch numbers, and recommended action — quarantine, return, or continued use with monitoring, as applicable.',
+  },
+  {
+    title: 'Product tracing',
+    desc: 'Lot- and batch-level tracking allows Bishnoi Omniverse to identify which customers received a specific shipment, supporting rapid, targeted notification rather than blanket alerts.',
+  },
+  {
+    title: 'Resolution & documentation',
+    desc: 'Replacement, credit, or return logistics are coordinated per the manufacturer’s recall terms, and resolution is documented and retained for audit purposes.',
+  },
+  {
+    title: 'Adverse event / complaint reporting',
+    desc: 'Product complaints and adverse events reported by customers are logged and, where applicable, escalated to the manufacturer and relevant regulatory body in the destination market.',
+  },
+];
+
 export const metadata: Metadata = {
   title: 'Quality & Compliance | Bishnoi Omniverse',
   description:
@@ -126,6 +152,42 @@ export default function QualityCompliancePage() {
               </li>
             ))}
           </ul>
+        </div>
+      </section>
+
+      <section className="section section-line section-white">
+        <div className="wrap grid-2 items-start">
+          <div className="heading-lg">
+            <span className="eyebrow">If Something Goes Wrong</span>
+            <h2 className="mb-3">Recall &amp; Field Corrective Action Process</h2>
+            <p className="text-ink-soft max-w-md">
+              Bishnoi Omniverse maintains a structured process for responding to manufacturer
+              recalls, field safety notices, and quality complaints across both our hospital supplies
+              and specialty medicines lines.
+            </p>
+          </div>
+          <div className="timeline">
+            {RECALL_STEPS.map((step, idx) => (
+              <div key={step.title} className="tl-item">
+                <span className="tl-year">Step {idx + 1}</span>
+                <h3>{step.title}</h3>
+                <p>{step.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="wrap mt-12">
+          <p className="lead-block text-ink-soft leading-relaxed m-0">
+            For an active recall or to report a product quality concern, contact your regular Bishnoi
+            Omniverse account contact, or{' '}
+            <Link href="/contact" className="text-accent-dark font-semibold hover:underline">
+              reach us here
+            </Link>
+            . Regulatory, quality, and compliance-specific inquiries — including certificate requests
+            and recall matters — are routed to the team that qualified the product, not the general
+            sales queue.
+          </p>
         </div>
       </section>
 

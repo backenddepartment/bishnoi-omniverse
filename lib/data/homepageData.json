@@ -299,27 +299,33 @@
     "items": [
       {
         "id": "hospitals",
-        "name": "Hospitals"
+        "name": "Hospitals",
+        "href": "/contact?type=hospital-supply"
       },
       {
         "id": "clinics",
-        "name": "Multi-specialty clinics"
+        "name": "Multi-specialty clinics",
+        "href": "/contact?type=hospital-supply"
       },
       {
         "id": "labs",
-        "name": "Diagnostic and pathology laboratories"
+        "name": "Diagnostic and pathology laboratories",
+        "href": "/catalog"
       },
       {
         "id": "surgical",
-        "name": "Ambulatory surgical centers"
+        "name": "Ambulatory surgical centers",
+        "href": "/catalog"
       },
       {
         "id": "government",
-        "name": "Government and public-health procurement bodies"
+        "name": "Government and public-health procurement bodies",
+        "href": "/contact?type=quote"
       },
       {
         "id": "trade",
-        "name": "Distribution and trade partners"
+        "name": "Distribution and trade partners",
+        "href": "/trade-partners"
       }
     ]
   },

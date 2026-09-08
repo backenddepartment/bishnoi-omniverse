@@ -198,7 +198,8 @@
        opens with a flat pale strip under the navbar that reads as a stray container. */
     object-position: center bottom;
   }
-  .hero-media::after {
+  /* Scoped to .page-hero: the homepage hero deliberately carries no scrim over its slider. */
+  .page-hero .hero-media::after {
     content: '';
     position: absolute;
     inset: 0;
@@ -212,6 +213,44 @@
       rgba(10, 9, 7, 0.9) 100%
     );
   }
+  /* Hero slider — slides stack and crossfade, so only opacity animates. */
+  .hero-slide {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center bottom;
+    opacity: 0;
+    transition: opacity 1.1s var(--ease);
+  }
+  .hero-slide.is-active { opacity: 1; }
+  @media (prefers-reduced-motion: reduce) {
+    .hero-slide { transition: none; }
+  }
+  .hero-dots {
+    position: absolute;
+    right: 32px;
+    bottom: 32px;
+    z-index: 2;
+    display: flex;
+    gap: 10px;
+  }
+  .hero-dot {
+    width: 9px;
+    height: 9px;
+    padding: 0;
+    border: 0;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.45);
+    cursor: pointer;
+    transition: background 0.3s var(--ease), width 0.3s var(--ease);
+  }
+  .hero-dot.is-active {
+    width: 26px;
+    background: var(--accent);
+  }
+
   .hero-content {
     position: relative;
     z-index: 1;
@@ -291,6 +330,11 @@
   .businesses-page { background: #ffffff; }
   .businesses-page .section-2col { background: #ffffff; }
   .businesses-page .page-hero { min-height: 90vh; }
+  /* Scoped to this page: its hero headline runs long, so it sits a step below the shared
+     .page-hero h1 scale rather than dominating the viewport. The explicit min-height keeps the
+     hero image the same size it was at the larger type, so only the text changed. */
+  .trade-page .page-hero { min-height: 60vh; }
+  .trade-page .page-hero h1 { font-size: clamp(24px, 3.2vw, 40px); }
   .lead-block { max-width: 640px; }
 
   /* Grids */
@@ -364,6 +408,158 @@
      heading on the About page. */
   .division h2 { font-size: clamp(28px, 3vw, 40px); margin-bottom: 14px; }
   .img-credit { display: block; font-size: 10px; color: var(--muted); margin-top: 10px; }
+
+  /* Facility cards — wide orange panel, photo bleeding off the right edge, title top-left and a
+     circular arrow + LEARN MORE at bottom-left. */
+  .facility-card {
+    display: flex;
+    align-items: stretch;
+    min-height: 150px;
+    border-radius: 14px;
+    overflow: hidden;
+    text-decoration: none;
+    background: linear-gradient(120deg, #f0631b 0%, #f78b38 100%);
+    transition: transform 0.3s var(--ease), box-shadow 0.3s var(--ease);
+  }
+  .facility-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 18px 40px rgba(243, 107, 33, 0.28);
+  }
+  .facility-card-body {
+    flex: 1 1 64%;
+    min-width: 0;
+    padding: 22px 18px 20px 26px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 22px;
+  }
+  .facility-card h3 {
+    margin: 0;
+    color: #fff;
+    font-size: clamp(18px, 1.7vw, 23px);
+    font-weight: 600;
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+  }
+  .facility-card-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 14px;
+    color: #fff;
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    text-transform: none;
+    white-space: nowrap;
+  }
+  .facility-card-arrow {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    border-radius: 999px;
+    background: #fff;
+    color: var(--accent);
+    flex-shrink: 0;
+    transition: transform 0.3s var(--ease);
+  }
+  .facility-card:hover .facility-card-arrow {
+    transform: translateX(4px);
+  }
+  .facility-card-media {
+    flex: 0 0 36%;
+    /* Positioned so the photo can fill the card instead of setting its height: an <img> with
+       height:100% inside an auto-height flex item falls back to the file's intrinsic height, which
+       made tall source images stretch their whole grid row. */
+    position: relative;
+    overflow: hidden;
+  }
+  .facility-card-media img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  /* Soften the seam: the photo fades out towards its left edge so it blends into the orange panel
+     instead of butting against it. Masking the image (rather than overlaying a colour) means the
+     card's own gradient shows through, so there is no colour to keep in sync. */
+  .facility-card-media:not(.is-corner) img {
+    -webkit-mask-image: linear-gradient(90deg, transparent 0%, rgba(0, 0, 0, 0.6) 30%, #000 60%);
+    mask-image: linear-gradient(90deg, transparent 0%, rgba(0, 0, 0, 0.6) 30%, #000 60%);
+  }
+  /* Corner variant: sits the artwork whole in the card's bottom-right instead of cropping it.
+     Takes a wider column and spills past it, so a contained graphic still reads at size. */
+  .facility-card-media.is-corner {
+    flex: 0 0 46%;
+    overflow: visible;
+  }
+  .facility-card-media.is-corner img {
+    /* Bottom-right anchored and shorter than the card, so the graphic sits in the corner rather
+       than spanning the full height — which is what a near-square image does when the box is the
+       card's full height and `contain` fits it by height instead of width. */
+    inset: auto 0 -20% auto;
+    width: 126%;
+    height: 84%;
+    max-width: none;
+    object-fit: contain;
+    object-position: bottom right;
+  }
+  /* Per-card corner overrides — must follow .is-corner img to win on source order. */
+  .facility-card-media.is-corner-raised img {
+    bottom: 0;
+  }
+  .facility-card-media.is-corner-narrow {
+    flex-basis: 36%;
+  }
+
+  /* FAQ accordion — question row with a circular accent toggle, rule under each item. */
+  .faq-item { border-bottom: 1px solid var(--line); }
+  .faq-q {
+    width: 100%;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 28px;
+    padding: 22px 0;
+    background: none;
+    border: 0;
+    cursor: pointer;
+    text-align: left;
+    font-family: var(--font-poppins), sans-serif;
+    font-size: 17px;
+    font-weight: 600;
+    line-height: 1.35;
+    color: var(--ink);
+    transition: color 0.25s var(--ease);
+  }
+  .faq-q:hover { color: var(--accent-dark); }
+  .faq-toggle {
+    flex-shrink: 0;
+    width: 32px;
+    height: 32px;
+    border-radius: 999px;
+    background: var(--accent);
+    color: #fff;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.25s var(--ease);
+  }
+  /* One chevron that flips, rather than swapping two icons — the rotation reads as the open/close
+     direction and there is nothing to cross-fade. */
+  .faq-toggle svg { transition: transform 0.28s var(--ease); }
+  .faq-toggle.is-open svg { transform: rotate(180deg); }
+  .faq-q:hover .faq-toggle { background: var(--accent-dark); }
+  .faq-a {
+    margin: 0 0 24px;
+    padding-right: 60px;
+    font-size: 14px;
+    line-height: 1.75;
+    color: var(--ink-soft);
+  }
 
   /* Stat row */
   .statrow { display: flex; gap: 0; border-top: 1px solid rgba(255, 255, 255, 0.15); margin-top: 48px; }

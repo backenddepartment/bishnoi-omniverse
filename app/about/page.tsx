@@ -11,6 +11,15 @@ const IMG = {
   structure: structureImg.src,
 };
 
+// Same four figures as the homepage proof strip, reformatted for a company-overview context.
+// Every one is substantiated by existing site content — no new numbers.
+const BY_THE_NUMBERS = [
+  { stat: '2', label: 'Operating hubs — India & Philippines' },
+  { stat: '2', label: 'Supply lines — hospital supplies & specialty medicines' },
+  { stat: '50+', label: 'Countries served' },
+  { stat: '2024', label: 'UN Global Compact participant since' },
+];
+
 // Operating principles, distinct from the homepage's commercial framing.
 const PRINCIPLES = [
   {
@@ -140,6 +149,39 @@ export default function AboutPage() {
             >
               See the full operating footprint <ArrowRight className="w-3.5 h-3.5" />
             </Link>
+          </div>
+        </div>
+      </section>
+
+      <section className="section section-line section-white pt-0">
+        <div className="wrap">
+          <div className="grid-2 items-start">
+            <div className="heading-lg">
+              <span className="eyebrow">Sustainability &amp; Governance</span>
+              <h2 className="mb-0">Governed to one standard, commercial and philanthropic alike</h2>
+            </div>
+            <div className="lead-block">
+              <p className="text-ink-soft leading-relaxed m-0">
+                Bishnoi Omniverse&apos;s approach to sustainability is set at the Bishnoi Group level,
+                where the Group has been an active UN Global Compact participant since November 2024,
+                filing Communications on Progress for 2025 and 2026. This commitment sits alongside
+                the Group&apos;s long-standing philanthropic work through the Naresh Bishnoi
+                Foundation, reflecting a view that responsible sourcing, transparent documentation,
+                and social-impact work are governed under the same standard rather than run as
+                separate initiatives.
+              </p>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mt-14">
+            {BY_THE_NUMBERS.map((item) => (
+              <div key={item.label} className="border-l-2 border-accent pl-5">
+                <div className="font-poppins text-4xl font-semibold text-ink leading-none mb-2">
+                  {item.stat}
+                </div>
+                <div className="text-sm text-ink-soft leading-snug">{item.label}</div>
+              </div>
+            ))}
           </div>
         </div>
       </section>

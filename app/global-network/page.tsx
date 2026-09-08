@@ -1,7 +1,27 @@
 import React from 'react';
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { ArrowRight, Building2, Globe2, MapPin, Mail } from 'lucide-react';
+import { ArrowRight, Building2, Globe2, MapPin, Mail, Handshake, Snowflake } from 'lucide-react';
+
+// Service tiers are described by hub relationship rather than by country list — a real regional
+// breakdown (Section 6, item 5) would be stronger, but only once the geographies are confirmed.
+const SERVICE_TIERS = [
+  {
+    icon: Globe2,
+    title: 'Direct-served markets',
+    desc: 'Countries reached directly from our India and Philippines hubs, with established customs, logistics, and documentation pathways.',
+  },
+  {
+    icon: Handshake,
+    title: 'Partner-served markets',
+    desc: 'Countries reached through distribution partners under the Trade & Partners program, extending our reach beyond directly served geographies.',
+  },
+  {
+    icon: MapPin,
+    title: 'Named-patient / case-by-case markets',
+    desc: 'For specialty medicines requiring named-patient regulatory pathways, sourcing and delivery are confirmed on a per-case, per-country basis in coordination with the receiving institution’s regulatory requirements.',
+  },
+];
 import contactData from '@/lib/data/contactData.json';
 
 export const metadata: Metadata = {
@@ -195,6 +215,51 @@ export default function GlobalNetworkPage() {
                 </span>
               </li>
             </ul>
+          </div>
+        </div>
+      </section>
+
+      <section className="section section-line section-white">
+        <div className="wrap">
+          <div className="grid-2 items-start">
+            <div className="heading-lg">
+              <span className="eyebrow">How We Serve Each Region</span>
+              <h2 className="mb-0">Regional Service Model</h2>
+            </div>
+            <div className="lead-block">
+              <p className="text-ink-soft leading-relaxed m-0">
+                Reach is not uniform, and saying so is more useful than a single number. Markets fall
+                into three tiers, by how the supply actually gets there.
+              </p>
+            </div>
+          </div>
+
+          <div className="grid-3 mt-14">
+            {SERVICE_TIERS.map((tier) => {
+              const Icon = tier.icon;
+              return (
+                <div key={tier.title} className="pillar">
+                  <Icon className="w-10 h-10 text-accent mb-5" strokeWidth={1.5} />
+                  <h3>{tier.title}</h3>
+                  <p>{tier.desc}</p>
+                </div>
+              );
+            })}
+          </div>
+
+          <div className="info-card mt-12 flex items-start gap-5">
+            <Snowflake className="w-9 h-9 text-accent shrink-0" strokeWidth={1.5} />
+            <div>
+              <h3 className="font-sans text-lg font-bold text-ink mb-2">
+                Cold-Chain &amp; Logistics Capability
+              </h3>
+              <p className="text-sm text-ink-soft leading-relaxed m-0">
+                Temperature-sensitive products — including named-patient oncology and biosimilar
+                shipments — move under continuous cold-chain monitoring from the point of dispatch
+                through delivery, with temperature-log documentation provided alongside each
+                shipment.
+              </p>
+            </div>
           </div>
         </div>
       </section>
