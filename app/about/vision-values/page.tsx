@@ -2,13 +2,15 @@ import React from 'react';
 import Link from 'next/link';
 import { ArrowRight, ShieldCheck, FlaskConical, Globe2 } from 'lucide-react';
 import homepageData from '@/lib/data/homepageData.json';
+import sectionDetail from '@/lib/data/sectionDetailData.json';
 
 const IMG = {
   hero: 'https://upload.wikimedia.org/wikipedia/commons/2/2e/Hospital_corridor_2.jpg',
 };
 
 export default function VisionValuesPage() {
-  const { qualityCompliance } = homepageData;
+  const { responseCommitment } = homepageData;
+  const { productStandard } = sectionDetail;
   const icons = [ShieldCheck, FlaskConical, Globe2];
 
   return (
@@ -31,10 +33,10 @@ export default function VisionValuesPage() {
         <div className="wrap grid-2">
           <div>
             <span className="eyebrow">Our Standard</span>
-            <h2 className="mb-0">{qualityCompliance.title}</h2>
+            <h2 className="mb-0">{productStandard.title}</h2>
           </div>
           <div className="lead-block">
-            <p className="text-ink-soft leading-relaxed">{qualityCompliance.lead}</p>
+            <p className="text-ink-soft leading-relaxed">{productStandard.lead}</p>
             <p className="text-ink-soft leading-relaxed">
               Every division — pharmaceutical access or hospital logistics — answers to the same
               standard: document what you supply, and say plainly what you cannot.
@@ -46,7 +48,7 @@ export default function VisionValuesPage() {
       <section className="section section-line section-2col">
         <div className="wrap">
           <div className="grid-3">
-            {qualityCompliance.points.map((point, idx) => {
+            {productStandard.points.map((point, idx) => {
               const Icon = icons[idx] || ShieldCheck;
               return (
                 <div key={point.title} className="pillar">
@@ -58,7 +60,7 @@ export default function VisionValuesPage() {
             })}
           </div>
 
-          <p className="lead-block text-ink-soft mt-12 mb-0">{qualityCompliance.responseCommitment}</p>
+          <p className="lead-block text-ink-soft mt-12 mb-0">{responseCommitment}</p>
         </div>
       </section>
 

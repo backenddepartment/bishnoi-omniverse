@@ -41,14 +41,17 @@ const ENTITY_LINKS: { label: string; href: string; desc: string }[] = [
 const GLOBAL_NETWORK_LINKS: { label: string; href: string; external?: boolean }[] = [
   { label: 'Getmeds Philippines', href: 'https://getmeds.ph/', external: true },
   { label: 'Getmeds India', href: 'https://getmedshealthcare.com/', external: true },
-  { label: 'Getmeds Vanuatu', href: '/global#getmeds' },
-  { label: 'Getmeds South East Asia', href: '/global#getmeds' },
-  { label: 'Getmeds Latin', href: '/global#getmeds' },
-  { label: 'Bishnoi Omniverse Philippines', href: '/global#omniverse' },
-  { label: 'Bishnoi Omniverse India', href: '/global#omniverse' },
-  { label: 'Naresh Bishnoi', href: '/global#social' },
-  { label: 'Naresh Bishnoi Foundation', href: '/global#social' },
-  { label: 'UNGC', href: '/global#social' },
+  // Sites in the network that have no destination of their own yet land on a per-site
+  // coming-soon page (app/coming-soon/[site]) rather than a generic anchor on /global.
+  { label: 'Getmeds Vanuatu', href: '/coming-soon/getmeds-vanuatu' },
+  { label: 'Getmeds South East Asia', href: '/coming-soon/getmeds-south-east-asia' },
+  { label: 'Getmeds Latin', href: '/coming-soon/getmeds-latin' },
+  // These two are the entities behind /corp and /llp, so they point at those real pages.
+  { label: 'Bishnoi Omniverse Philippines', href: '/corp' },
+  { label: 'Bishnoi Omniverse India', href: '/llp' },
+  { label: 'Naresh Bishnoi', href: '/coming-soon/naresh-bishnoi' },
+  { label: 'Naresh Bishnoi Foundation', href: '/coming-soon/naresh-bishnoi-foundation' },
+  { label: 'UNGC', href: '/coming-soon/ungc' },
   { label: '2MG Incorporated', href: 'https://2mginc.com/', external: true },
 ];
 

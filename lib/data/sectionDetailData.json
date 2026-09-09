@@ -1,0 +1,221 @@
+{
+  "whoWeServe": {
+    "intro": "Four groups rely on us for the requirements that standard distribution does not cover — each with its own intake route, documentation set, and point of contact.",
+    "items": [
+      {
+        "id": "hospitals",
+        "title": "Hospitals & Procurement Teams",
+        "desc": "We quote against your tender line list with the certification reference attached to every item, so wards and theatres are never held up waiting on a missing line.",
+        "serves": "Supplied to hospitals, multi-specialty clinics, diagnostic and pathology laboratories, ambulatory surgical centers, and government procurement programs."
+      },
+      {
+        "id": "doctors",
+        "title": "Clinicians & Oncology Teams",
+        "desc": "Named-patient and cross-border access to therapies not yet registered in your market, supported by the manufacturer documentation your pharmacy committee and regulator will ask to see."
+      },
+      {
+        "id": "essentials",
+        "title": "Distributors & Manufacturer Partners",
+        "desc": "Cross-border reach into markets that are difficult to serve directly, through a two-hub network built for sourcing, consolidation, and onward distribution."
+      },
+      {
+        "id": "patients",
+        "title": "Patients & Families",
+        "desc": "Guidance through the named-patient process, coordinated with your treating doctor and handled with urgency and confidentiality."
+      }
+    ]
+  },
+  "howItWorks": {
+    "intro": "Here's exactly what happens after you send a requirement or clinical request — step by step, for either track.",
+    "tracks": [
+      {
+        "id": "hospital",
+        "name": "Hospital Procurement",
+        "summary": "For facilities, procurement officers, and tender teams sourcing medical-surgical consumables at volume.",
+        "steps": [
+          {
+            "step": "1",
+            "title": "Requirement",
+            "desc": "You send a requirement or tender line list — product, specification, volume, destination. No login or account required."
+          },
+          {
+            "step": "2",
+            "title": "Quotation & Specification",
+            "desc": "We return a quote line by line, with the product specifications and certification references attached to each item."
+          },
+          {
+            "step": "3",
+            "title": "Order & Documentation",
+            "desc": "On approval we confirm the order and compile the documentation pack your procurement, pharmacy, and regulatory reviewers need."
+          },
+          {
+            "step": "4",
+            "title": "Consolidated Fulfilment",
+            "desc": "Dispatch from our India sourcing hub or Philippines logistics hub, consolidated where possible and cold-chain controlled where the product requires it."
+          }
+        ]
+      },
+      {
+        "id": "specialty",
+        "name": "Specialty & Named-Patient Access",
+        "summary": "For treating physicians and hospital pharmacies sourcing a medicine that is not registered or not available locally.",
+        "steps": [
+          {
+            "step": "1",
+            "title": "Clinical Request",
+            "desc": "The treating physician submits the product, strength, quantity, and patient context for a named-patient requisition."
+          },
+          {
+            "step": "2",
+            "title": "Sourcing & Verification",
+            "desc": "We source from verified manufacturers and assemble the Certificates of Analysis and manufacturing credentials for clinical and regulatory review."
+          },
+          {
+            "step": "3",
+            "title": "Regulatory Pathway",
+            "desc": "We support the import permit and named-patient documentation required by the destination market, working to the prescriber's timeline."
+          },
+          {
+            "step": "4",
+            "title": "Cold-Chain Delivery",
+            "desc": "Temperature-monitored shipment direct to the treating facility, with the chain of custody documented from dispatch to handover."
+          }
+        ]
+      }
+    ]
+  },
+  "globalNetwork": {
+    "narrative": "Bishnoi Omniverse LLP in New Delhi is our sourcing hub, working directly with certified manufacturers across India's pharmaceutical and medical-device base. Bishnoi Omniverse Corp in Metro Manila is our Asia-Pacific logistics and operations hub, tied to Getmeds Philippines Inc. / 2MG Inc. Between them we serve hospitals, clinics, and trade partners across more than 50 countries."
+  },
+  "hubs": {
+    "india": {
+      "id": "india",
+      "region": "India Hub — Sourcing",
+      "entity": "Bishnoi Omniverse LLP",
+      "address": "Okhla Industrial Area, Phase III, New Delhi, India 110020",
+      "desc": "Direct sourcing from certified manufacturers, product qualification, and documentation assembly."
+    },
+    "philippines": {
+      "id": "philippines",
+      "region": "Philippines Hub — Logistics & Operations",
+      "entity": "Bishnoi Omniverse Corp (Getmeds Philippines Inc. / 2MG Inc.)",
+      "address": "Unit 301 & 305, 17 Vatican Bldg., Vatican City Drive, B.F. Resort Village, Talon II, Las Piñas City, Metro Manila, Philippines",
+      "desc": "Regional consolidation, cold-chain handling, and onward distribution across the Asia-Pacific corridor."
+    }
+  },
+  "essentialLine": {
+    "title": "The Bishnoi Omniverse™ Essential Hospital Line",
+    "tagline": "Certification varies by product and destination market — references are published per product.",
+    "categories": [
+      {
+        "name": "IV & Infusion Therapy",
+        "items": [
+          {
+            "title": "IV Cannula Set (With Wings & Port):",
+            "desc": "Bishnoi Omniverse™, available across standard hospital gauges for secure venous access and rapid fluid delivery."
+          },
+          {
+            "title": "Advanced IV Infusion Sets:",
+            "desc": "Supplied with AirVents and 0.2-micron filters for particulate control on sensitive infusions."
+          }
+        ]
+      },
+      {
+        "name": "Blood Bank & Transfusion",
+        "items": [
+          {
+            "title": "Sterile Blood Transfusion Set (With AirVent):",
+            "desc": "Bishnoi Omniverse™, CMDR-2023-01556, with filtration chamber for controlled delivery of blood components."
+          },
+          {
+            "title": "Disposable Blood Bags:",
+            "desc": "Collection bags for blood preservation and cold-chain transport."
+          }
+        ]
+      },
+      {
+        "name": "Surgical Support & Connectivity",
+        "items": [
+          {
+            "title": "Extension Tubes & Three-Way Stop Cocks:",
+            "desc": "Kink-resistant tubing and routing valves for multi-line IV setups that keep the sterile barrier intact."
+          }
+        ]
+      },
+      {
+        "name": "Airway & Respiratory",
+        "items": [
+          {
+            "title": "Cuffed Endotracheal Airway Tube Set (Sterile):",
+            "desc": "Bishnoi Omniverse™, for theatre and critical-care airway management."
+          }
+        ]
+      },
+      {
+        "name": "Medical Gas & Facility Infrastructure",
+        "items": [
+          {
+            "title": "High-Pressure Seamless Steel Cylinder (40L Oxygen):",
+            "desc": "Bishnoi PureFlow™, ISO 9809-1 with DOT/TPED certification for facility-level medical gas."
+          }
+        ]
+      }
+    ]
+  },
+  "brands": {
+    "title": "Brands Behind Our Products",
+    "lead": "Products are sourced and, where applicable, manufactured under a small number of house brands, each tied to a specific product line and its certification basis.",
+    "items": [
+      {
+        "brand": "Bishnoi Omniverse™",
+        "line": "IV & infusion therapy, airway management, blood transfusion sets"
+      },
+      {
+        "brand": "Carboget™",
+        "line": "Oncology / specialty injectable (carboplatin)"
+      },
+      {
+        "brand": "Bishnoi PureFlow™",
+        "line": "Medical gas cylinders and facility infrastructure"
+      },
+      {
+        "brand": "Bishnoi VitalTrack™",
+        "line": "Patient monitoring — multi-parameter bedside monitors"
+      },
+      {
+        "brand": "Bishnoi CareLine™",
+        "line": "Durable medical equipment — electric ICU hospital beds"
+      },
+      {
+        "brand": "Bishnoi ClearView™",
+        "line": "Diagnostic & imaging — point-of-care ultrasound"
+      },
+      {
+        "brand": "Bishnoi PureSteam™",
+        "line": "Sterilization & infection control — Class B vacuum autoclaves"
+      }
+    ]
+  },
+  "governance": {
+    "title": "Held to a Global Standard",
+    "body": "Bishnoi Omniverse's parent, the Bishnoi Group, has been an active participant in the United Nations Global Compact since November 2024, with Communications on Progress filed for 2025 and 2026. Group leadership represented these commitments at the UN Global Compact Forward Faster Now | APAC Conference 2026 in Colombo, Sri Lanka."
+  },
+  "productStandard": {
+    "title": "Certification, product by product",
+    "lead": "Certification and regulatory documentation vary by product category and destination market, so we document quality where it can be checked — on the product, with the paperwork that supports it.",
+    "points": [
+      {
+        "title": "Medical Devices",
+        "desc": "CE marking and CMDR approvals, with specification sheets and registration references available on request — for example CMDR-2023-01556 on the Bishnoi Omniverse™ blood transfusion set."
+      },
+      {
+        "title": "Pharmaceuticals",
+        "desc": "WHO-GMP certified manufacturing and Certificates of Analysis, including for the Carboget™ / Bishnoi Omniverse™ carboplatin injection supplied under named-patient access."
+      },
+      {
+        "title": "Medical Gas Cylinders",
+        "desc": "ISO 9809-1 manufacture with DOT/TPED certification on high-pressure seamless steel cylinders, documented per batch."
+      }
+    ]
+  }
+}

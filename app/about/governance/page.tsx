@@ -2,6 +2,7 @@ import React from 'react';
 import Link from 'next/link';
 import { ArrowRight, CheckCircle } from 'lucide-react';
 import catalogData from '@/lib/data/catalogData.json';
+import sectionDetail from '@/lib/data/sectionDetailData.json';
 
 const IMG = {
   hero: 'https://upload.wikimedia.org/wikipedia/commons/c/c3/Ethylene_oxide_sterilisation_sticker_on_box_of_medical_supplies.jpg',
@@ -39,6 +40,21 @@ export default function GovernancePage() {
                 </div>
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Group-level commitments, relocated from the homepage's Standards & Compliance tier. */}
+      <section className="section section-line" id="global-standard">
+        <div className="wrap">
+          <div className="grid-2 items-start">
+            <div className="heading-lg">
+              <span className="eyebrow">Group Level</span>
+              <h2 className="mb-0">{sectionDetail.governance.title}</h2>
+            </div>
+            <div className="lead-block">
+              <p className="text-ink-soft leading-relaxed m-0">{sectionDetail.governance.body}</p>
+            </div>
           </div>
         </div>
       </section>

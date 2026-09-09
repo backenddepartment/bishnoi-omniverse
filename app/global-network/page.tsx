@@ -23,6 +23,7 @@ const SERVICE_TIERS = [
   },
 ];
 import contactData from '@/lib/data/contactData.json';
+import sectionDetail from '@/lib/data/sectionDetailData.json';
 
 export const metadata: Metadata = {
   title: 'Global Network | Bishnoi Omniverse',
@@ -83,7 +84,11 @@ export default function GlobalNetworkPage() {
       <section className="section section-tight">
         <div className="wrap">
           <span className="eyebrow">Operating Hubs</span>
-          <h2 className="mb-10">Where the supply is sourced and where it is consolidated</h2>
+          <h2 className="mb-4">Where the supply is sourced and where it is consolidated</h2>
+          {/* Network narrative, relocated from the homepage's Operating Footprint section. */}
+          <p className="lead-block text-ink-soft leading-relaxed mb-10">
+            {sectionDetail.globalNetwork.narrative}
+          </p>
 
           <div className="grid-2">
             {[

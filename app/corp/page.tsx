@@ -2,6 +2,7 @@ import React from 'react';
 import Link from 'next/link';
 import { ArrowRight, MapPin, Mail } from 'lucide-react';
 import contactData from '@/lib/data/contactData.json';
+import sectionDetail from '@/lib/data/sectionDetailData.json';
 
 const IMG = {
   hero: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/Manila_Skyline_March_2020.jpg/1920px-Manila_Skyline_March_2020.jpg',
@@ -9,6 +10,7 @@ const IMG = {
 
 export default function CorpPage() {
   const office = contactData.globalOffices.locations.find((l) => l.region.startsWith('Philippines'))!;
+  const hub = sectionDetail.hubs.philippines;
 
   return (
     <div className="w-full">
@@ -26,8 +28,10 @@ export default function CorpPage() {
       <section className="section section-tight">
         <div className="wrap grid-2">
           <div>
-            <span className="eyebrow">{office.region}</span>
-            <h2>{office.entity}</h2>
+            {/* Hub role and operational description, relocated from the homepage footprint. */}
+            <span className="eyebrow">{hub.region}</span>
+            <h2 className="mb-4">{hub.entity}</h2>
+            <p className="text-ink-soft leading-relaxed m-0">{hub.desc}</p>
           </div>
           <div className="lead-block">
             <p className="text-ink-soft leading-relaxed mb-6">{office.desc}</p>

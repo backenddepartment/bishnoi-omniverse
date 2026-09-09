@@ -2,6 +2,7 @@ import React from 'react';
 import Link from 'next/link';
 import { ArrowRight, HeartHandshake, Globe2 } from 'lucide-react';
 import businessesData from '@/lib/data/businessesData.json';
+import sectionDetail from '@/lib/data/sectionDetailData.json';
 
 const IMG = {
   hero: 'https://upload.wikimedia.org/wikipedia/commons/2/2e/Hospital_corridor_2.jpg',
@@ -20,6 +21,7 @@ const divisionImages: Record<string, string> = {
 
 export default function GlobalBusinessesPage() {
   const { header, sections, legacy } = businessesData;
+  const { whoWeServe, howItWorks } = sectionDetail;
 
   return (
     <div className="w-full businesses-page">
@@ -38,6 +40,60 @@ export default function GlobalBusinessesPage() {
             <Link className="btn btn-outline" href="/contact?type=partner">
               {header.ctaPartner}
             </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* Relocated from the homepage: the full four-audience detail. */}
+      <section className="section section-tight" id="who-we-serve">
+        <div className="wrap">
+          <div className="grid-2 items-start">
+            <div className="heading-lg">
+              <span className="eyebrow">Who We Serve</span>
+              <h2 className="mb-0">Built for institutional procurement and specialist access</h2>
+            </div>
+            <div className="lead-block">
+              <p className="text-ink-soft leading-relaxed m-0">{whoWeServe.intro}</p>
+            </div>
+          </div>
+
+          <div className="grid-4 mt-14">
+            {whoWeServe.items.map((item) => (
+              <div key={item.id} className="pillar">
+                <h3>{item.title}</h3>
+                <p>{item.desc}</p>
+                {'serves' in item && <p className="pillar-serves">{item.serves}</p>}
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Relocated from the homepage: the full eight steps, four per track. */}
+      <section className="section section-line section-2col" id="how-it-works">
+        <div className="wrap">
+          <div className="heading-lg">
+            <span className="eyebrow">How It Works</span>
+            <h2 className="mb-3">From Request to Delivery</h2>
+          </div>
+          <p className="lead-block text-ink-soft leading-relaxed mb-12">{howItWorks.intro}</p>
+
+          <div className="workflow-grid">
+            {howItWorks.tracks.map((track) => (
+              <div key={track.id} className="workflow-track">
+                <span className="tag">{track.name}</span>
+                <p className="text-sm text-ink-soft leading-relaxed mb-8 max-w-md">{track.summary}</p>
+                <div className="timeline">
+                  {track.steps.map((step) => (
+                    <div key={step.step} className="tl-item">
+                      <span className="tl-year">Step {step.step}</span>
+                      <h3>{step.title}</h3>
+                      <p>{step.desc}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </section>

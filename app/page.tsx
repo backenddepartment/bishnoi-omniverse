@@ -1,14 +1,21 @@
 import React from 'react';
 import Link from 'next/link';
-import { ArrowRight, ShieldCheck, Globe2, FlaskConical, Boxes, Truck } from 'lucide-react';
+import { ArrowRight, ArrowUpRight, ShieldCheck, Globe2, FlaskConical } from 'lucide-react';
 import homepageData from '@/lib/data/homepageData.json';
+import sectionDetail from '@/lib/data/sectionDetailData.json';
 import { HeroSlider } from '@/components/HeroSlider';
 import { FaqAccordion } from '@/components/FaqAccordion';
-import { CardSlider } from '@/components/CardSlider';
 import heroBg from '@/app/assets/background.png';
 import heroSlideTwo from '@/app/assets/slidertwo.png';
 import heroSlideThree from '@/app/assets/sliderthree.png';
 import doctorsImg from '@/app/assets/doctors.jpg';
+import hospitalCardImg from '@/app/assets/hospitalcard.png';
+import clinicsCardImg from '@/app/assets/clinicscard.png';
+import distributorsCardImg from '@/app/assets/distributorscard.png';
+import familiesCardImg from '@/app/assets/familiescard.png';
+import suppliesImg from '@/app/assets/supplies.jpg';
+import medicinesImg from '@/app/assets/medicines.jpg';
+import sourcingImg from '@/app/assets/sourcing.jpg';
 import familiesImg from '@/app/assets/families.jpg';
 
 // Images sourced from Wikimedia Commons (CC BY / CC BY-SA / public domain)
@@ -21,6 +28,14 @@ const IMG = {
   patients: familiesImg.src,
   logistics:
     'https://upload.wikimedia.org/wikipedia/commons/5/59/Shipping_cranes_by_Cartagena.jpg',
+  // Operating-footprint hub panels. Wikimedia Commons, both verified to resolve.
+  india: 'https://upload.wikimedia.org/wikipedia/commons/d/da/Skyline_of_Cannaught_Place%2C_New_Delhi.jpg',
+  philippines:
+    'https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/Manila_Skyline_March_2020.jpg/1920px-Manila_Skyline_March_2020.jpg',
+  // Behind the response-commitment band: a medical supply requisition being handled.
+  // Wikimedia Commons, public domain, verified to resolve. 1920px thumbnail, not the original.
+  responseBand:
+    'https://upload.wikimedia.org/wikipedia/commons/thumb/0/09/Reserve_Soldiers_support_medical_supply_mission_during_pandemic_%286154094%29.jpg/1920px-Reserve_Soldiers_support_medical_supply_mission_during_pandemic_%286154094%29.jpg',
 };
 
 const HERO_SLIDES = [
@@ -30,47 +45,41 @@ const HERO_SLIDES = [
 ];
 
 const tileImages: Record<string, string> = {
-  doctors: IMG.doctors,
-  hospitals: IMG.hospitals,
-  essentials: IMG.essentials,
-  patients: IMG.patients,
+  hospitals: hospitalCardImg.src,
+  doctors: clinicsCardImg.src,
+  essentials: distributorsCardImg.src,
+  patients: familiesCardImg.src,
 };
 
-const provideIcons: Record<string, React.ElementType> = {
-  'hospital-supplies': Boxes,
-  'specialty-medicines': FlaskConical,
-  'sourcing-trade': Truck,
+// What We Provide is a three-card bento: each card pairs a photo with a solid colour panel.
+// `tone` picks the panel colour — green for the hospital line, brand orange for the other two.
+const provideCards: Record<string, { src: string; alt: string; tone: 'green' | 'orange' }> = {
+  'hospital-supplies': {
+    src: suppliesImg.src,
+    alt: 'Hospital-grade consumables prepared for institutional supply',
+    tone: 'green',
+  },
+  'specialty-medicines': {
+    src: medicinesImg.src,
+    alt: 'Specialty medicines handled under cold-chain conditions',
+    tone: 'orange',
+  },
+  'sourcing-trade': {
+    src: sourcingImg.src,
+    alt: 'Sourcing and logistics across our India and Philippines hubs',
+    tone: 'orange',
+  },
 };
 
-// Photos for the facility cards. Every URL here is already used elsewhere on the site, so all of
-// them are known to load. The four marked STAND-IN are stylistically close, not literal: swap them
-// as soon as real photography for those facility types is available.
-// `contain: true` marks cut-out artwork on a transparent background, shown whole rather than
-// cropped. The two entries marked STAND-IN are stylistically close, not literal — swap them once
-// real photography for those facility types exists.
-const facilityImages: Record<string, { src: string; contain?: boolean }> = {
-  // Wikimedia Commons, both verified to resolve:
-  //   hospitals — 中少, CC BY-SA 4.0 · clinics — Shixart1985, CC BY 2.0
-  hospitals: {
-    src: 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/67/Exterior%2C_Building_1%2C_Fourth_Affiliated_Hospital_of_Guangzhou_Medical_University_20241230.jpg/1280px-Exterior%2C_Building_1%2C_Fourth_Affiliated_Hospital_of_Guangzhou_Medical_University_20241230.jpg',
-  },
-  clinics: {
-    src: 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6d/Modern_clinic_interior_design.jpg/1280px-Modern_clinic_interior_design.jpg',
-  },
-  labs: { src: IMG.essentials }, // STAND-IN — sterile supply, not a pathology lab
-  surgical: {
-    src: 'https://upload.wikimedia.org/wikipedia/commons/a/a0/Facial_plastic_surgeon_wearing_surgical_loupes_and_headlight_during_an_operating_room_procedure.jpg',
-  },
-  government: {
-    src: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/Manila_Skyline_March_2020.jpg/1920px-Manila_Skyline_March_2020.jpg',
-  }, // STAND-IN
-  trade: { src: IMG.logistics },
+const hubImages: Record<string, string> = {
+  india: IMG.india,
+  philippines: IMG.philippines,
 };
 
 export default function HomePage() {
   const {
-    hero, whatWeProvide, whoWeHelp, howItWorks, globalFootprint, qualityCompliance, faq,
-    statsStrip, facilityTypes, ourBrands, globalCompact,
+    hero, whatWeProvide, whoWeHelp, responseCommitment, globalFootprint,
+    whatWeSupply, standardsCompliance, faq, statsStrip,
   } = homepageData;
 
   return (
@@ -147,126 +156,103 @@ export default function HomePage() {
             </div>
           </div>
 
-          <div className="grid-3 mt-14">
+          {/* Bento: card 1 is photo-beside-panel, card 2 stacks photo over panel, card 3 runs
+              full width. Card order is fixed by the layout, so each is placed by id rather than
+              by array position. */}
+          <div className="provide-bento mt-14">
             {whatWeProvide.items.map((item) => {
-              const Icon = provideIcons[item.id] || Boxes;
+              const card = provideCards[item.id];
+              if (!card) return null;
               return (
-                <div key={item.id} className="pillar">
-                  <Icon className="w-10 h-10 text-accent mb-5" strokeWidth={1.5} />
-                  <h3>{item.title}</h3>
-                  <p className="mb-4">{item.desc}</p>
-                  <Link
-                    href={item.ctaHref}
-                    className="inline-flex items-center gap-1.5 no-underline text-sm font-semibold text-accent-dark hover:underline"
-                  >
-                    {item.ctaText} <ArrowRight className="w-3.5 h-3.5" />
-                  </Link>
-                </div>
+                <article key={item.id} className={`provide-card is-${item.id}`}>
+                  <div className="provide-media">
+                    <img src={card.src} alt={card.alt} loading="lazy" />
+                  </div>
+                  <div className={`provide-panel is-${card.tone}`}>
+                    <div>
+                      <h3>{item.title}</h3>
+                      <p>{item.desc}</p>
+                    </div>
+                    <Link href={item.ctaHref} className="provide-cta">
+                      {item.ctaText}
+                      <ArrowUpRight aria-hidden="true" />
+                    </Link>
+                  </div>
+                </article>
               );
             })}
           </div>
         </div>
       </section>
 
-      {/* Facility Types — what kind of buyer we supply, distinct from the persona tiles below. */}
+      {/* What We Supply — three featured lines. All five, plus the brand table, live on /catalog. */}
       <section className="section section-line section-white">
         <div className="wrap">
           <div className="grid-2 items-start">
             <div className="heading-lg">
-              <span className="eyebrow">{facilityTypes.sectionTag}</span>
-              <h2 className="mb-0">{facilityTypes.title}</h2>
+              <span className="eyebrow">{whatWeSupply.sectionTag}</span>
+              <h2 className="mb-0">{whatWeSupply.title}</h2>
             </div>
             <div className="lead-block">
-              <p className="text-ink-soft leading-relaxed m-0">{facilityTypes.lead}</p>
+              <p className="text-ink-soft leading-relaxed m-0">{whatWeSupply.lead}</p>
             </div>
           </div>
 
-          <div className="mt-14">
-            <CardSlider label="Facility types we supply">
-            {facilityTypes.items.map((item) => {
-              const media = facilityImages[item.id];
-              return (
-                <Link key={item.id} href={item.href} className="facility-card">
-                  <div className="facility-card-head">
-                    <span className="facility-card-mark">Learn More</span>
-                    <h3>{item.name}</h3>
-                  </div>
-                  <div className={`facility-card-media${media.contain ? ' is-contain' : ''}`}>
-                    <img src={media.src} alt="" loading="lazy" />
-                  </div>
-                  <p className="facility-card-caption">{item.caption}</p>
-                </Link>
-              );
-            })}
-            </CardSlider>
+          <div className="grid-3 mt-14">
+            {whatWeSupply.featured.map((line, idx) => (
+              <div key={line.name} className="pillar">
+                <span className="num">0{idx + 1}</span>
+                <h3>{line.name}</h3>
+                <p>{line.desc}</p>
+              </div>
+            ))}
+          </div>
+
+          <div className="mt-12">
+            <Link href={whatWeSupply.ctaHref} className="btn btn-primary">
+              {whatWeSupply.ctaText} <ArrowRight />
+            </Link>
           </div>
         </div>
       </section>
 
-      {/* Who We Serve — image tiles */}
-      <section className="section section-line section-2col !pb-10">
+      {/* Who We Serve — teaser only. The full four-audience detail lives on /global. */}
+      <section className="section section-line section-2col">
         <div className="wrap">
-          <div className="who-we-help-heading">
-            <span className="eyebrow">{whoWeHelp.sectionTag}</span>
-            <h2 className="mb-3">{whoWeHelp.title}</h2>
-            <p className="lead-block text-ink-soft mb-10">{whoWeHelp.lead}</p>
+          {/* items-end drops the lead to sit level with the foot of the heading, rather than
+              starting at its top edge. */}
+          <div className="grid-2 items-end">
+            <div className="heading-lg">
+              <span className="eyebrow">{whoWeHelp.sectionTag}</span>
+              <h2 className="mb-0">{whoWeHelp.title}</h2>
+            </div>
+            <div className="lead-block">
+              <p className="text-ink-soft leading-relaxed m-0">{whoWeHelp.lead}</p>
+              <Link href={whoWeHelp.ctaHref} className="btn btn-primary mt-7">
+                {whoWeHelp.ctaText}
+              </Link>
+            </div>
           </div>
 
-          <div className="biz-grid">
+          <div className="biz-grid mt-14">
             {whoWeHelp.items.map((item) => (
               <Link key={item.id} href="/contact?type=quote" className="biz-tile">
                 <img src={tileImages[item.id]} alt={item.title} />
-                <div className="biz-tile-label">
-                  <h3>{item.title}</h3>
-                </div>
               </Link>
             ))}
           </div>
-
-          <div className="grid-4 mt-12">
-            {whoWeHelp.items.map((item) => (
-              <div key={item.id} className="pillar">
-                <h3>{item.title}</h3>
-                <p>{item.desc}</p>
-              </div>
-            ))}
-          </div>
         </div>
       </section>
 
-      {/* How It Works — procurement and named-patient access run as parallel tracks */}
-      <section className="section !pt-10">
-        <div className="wrap">
-          <span className="eyebrow">{howItWorks.sectionTag}</span>
-          <h2 className="mb-3">{howItWorks.title}</h2>
-          <p className="lead-block text-ink-soft mb-12">{howItWorks.lead}</p>
-
-          <div className="workflow-grid">
-            {howItWorks.tracks.map((track) => (
-              <div key={track.id} className="workflow-track">
-                <span className="tag">{track.name}</span>
-                <p className="text-sm text-ink-soft leading-relaxed mb-8 max-w-md">{track.summary}</p>
-                <div className="timeline">
-                  {track.steps.map((step) => (
-                    <div key={step.step} className="tl-item">
-                      <span className="tl-year">Step {step.step}</span>
-                      <h3>{step.title}</h3>
-                      <p>{step.desc}</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Response commitment */}
-      <section className="section-dark section-tight">
+      {/* Response commitment — backed by the contact photography, since this band is the
+          request-a-quote promise. The image is dimmed rather than scrimmed with an overlay, so
+          the white text keeps its contrast against the dark ground underneath. */}
+      <section className="section-dark section-tight response-band">
+        <img src={IMG.responseBand} alt="" className="response-band-media" loading="lazy" />
         <div className="wrap">
           <div className="quote-block max-w-2xl mx-auto text-center">
             <span className="mark">&ldquo;</span>
-            <blockquote>{qualityCompliance.responseCommitment}</blockquote>
+            <blockquote>{responseCommitment}</blockquote>
             <cite>Our response commitment, every quote and every case</cite>
             <div className="mt-7">
               <Link className="btn btn-outline" href="/contact?type=quote">
@@ -277,159 +263,106 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Operating footprint & hospital line */}
+      {/* Operating Footprint — the two hubs named only. Narrative moved to /global-network,
+          entity detail and addresses to /llp and /corp. */}
       <section className="section">
         <div className="wrap">
-          <span className="eyebrow">{globalFootprint.sectionTag}</span>
-          <h2 className="mb-3">{globalFootprint.title}</h2>
-          <p className="font-serif text-xl md:text-2xl font-semibold text-ink max-w-3xl mb-4">
-            {globalFootprint.lead}
-          </p>
-          <p className="lead-block text-ink-soft mb-10">{globalFootprint.description}</p>
+          <div className="grid-2 items-start">
+            <div className="heading-lg">
+              <span className="eyebrow">{globalFootprint.sectionTag}</span>
+              <h2 className="mb-0">{globalFootprint.title}</h2>
+            </div>
+            <div className="lead-block">
+              <p className="text-ink-soft leading-relaxed">{globalFootprint.lead}</p>
+              <Link href={globalFootprint.ctaHref} className="btn btn-primary mt-2">
+                {globalFootprint.ctaText} <ArrowRight />
+              </Link>
+            </div>
+          </div>
 
-          <div className="grid-2 mb-14">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-14">
             {globalFootprint.hubs.map((hub) => (
-              <div key={hub.id} className="info-card">
-                <span className="text-xs font-semibold uppercase tracking-wide text-accent-dark block mb-2">
-                  {hub.region}
-                </span>
-                <h3 className="font-sans text-lg font-bold text-ink mb-2">{hub.entity}</h3>
-                <p className="text-sm text-ink-soft leading-relaxed mb-3">{hub.desc}</p>
-                <p className="text-sm text-muted leading-relaxed m-0">{hub.address}</p>
-              </div>
+              <Link key={hub.id} href={hub.href} className="hub-card">
+                <div className="hub-card-media">
+                  <img src={hubImages[hub.id]} alt={hub.region} loading="lazy" />
+                </div>
+                <div className="hub-card-row">
+                  <div>
+                    <h3>{hub.region}</h3>
+                    <p className="hub-card-sub">{hub.entity}</p>
+                  </div>
+                  <span className="hub-card-cta">
+                    <ArrowUpRight className="w-4 h-4" strokeWidth={2} />
+                    {hub.hrefLabel}
+                  </span>
+                </div>
+              </Link>
             ))}
-          </div>
-
-          <div className="mb-4">
-            <h3 className="font-sans text-lg font-bold">{globalFootprint.essentialLineTitle}</h3>
-            <p className="text-xs text-muted italic mt-1 mb-3">{globalFootprint.essentialLineTagline}</p>
-            <p className="lead-block text-ink-soft mb-10">{globalFootprint.subtext}</p>
-          </div>
-
-          <div className="grid-3 mb-14">
-            {globalFootprint.categories.map((cat, idx) => (
-              <div key={cat.name} className="pillar">
-                <span className="num">0{idx + 1}</span>
-                <h3>{cat.name}</h3>
-                {cat.items.map((item) => (
-                  <p key={item.title}>
-                    <strong className="text-ink">{item.title}</strong> {item.desc}
-                  </p>
-                ))}
-              </div>
-            ))}
-          </div>
-
-          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
-            <Link href="/catalog" className="btn btn-primary">
-              {globalFootprint.ctaExplore} <ArrowRight />
-            </Link>
-            <Link href="/contact?type=quote" className="btn btn-outline on-light">
-              {globalFootprint.ctaQuote}
-            </Link>
           </div>
         </div>
       </section>
 
-      {/* Our Brands — every brand listed has at least one live product in catalogData.json. */}
+      {/* Standards & Compliance — two tiers: the green group-level banner, then the
+          product-level pillars. Detail is shared with /about/governance and /quality, which
+          carry the same content in full. */}
       <section className="section section-line section-white">
         <div className="wrap">
           <div className="grid-2 items-start">
             <div className="heading-lg">
-              <span className="eyebrow">{ourBrands.sectionTag}</span>
-              <h2 className="mb-0">{ourBrands.title}</h2>
+              <span className="eyebrow">{standardsCompliance.sectionTag}</span>
+              <h2 className="mb-0">{standardsCompliance.title}</h2>
             </div>
             <div className="lead-block">
-              <p className="text-ink-soft leading-relaxed m-0">{ourBrands.lead}</p>
+              <p className="text-ink-soft leading-relaxed m-0">{standardsCompliance.lead}</p>
             </div>
           </div>
 
-          <div className="overflow-x-auto mt-14">
-            <table className="w-full border-collapse text-left">
-              <thead>
-                <tr className="border-b border-line">
-                  <th className="py-3 pr-6 text-xs font-semibold uppercase tracking-wide text-muted">Brand</th>
-                  <th className="py-3 text-xs font-semibold uppercase tracking-wide text-muted">Product Line</th>
-                </tr>
-              </thead>
-              <tbody>
-                {ourBrands.items.map((item) => (
-                  <tr key={item.brand} className="border-b border-line">
-                    <td className="py-4 pr-6 align-top whitespace-nowrap font-poppins text-[15px] font-semibold text-ink">
-                      {item.brand}
-                    </td>
-                    <td className="py-4 align-top text-sm text-ink-soft leading-relaxed">{item.line}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-
-          <div className="mt-10">
-            <Link
-              href={ourBrands.ctaHref}
-              className="inline-flex items-center gap-1.5 no-underline text-sm font-semibold text-accent-dark hover:underline"
-            >
-              {ourBrands.ctaText} <ArrowRight className="w-3.5 h-3.5" />
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* UN Global Compact teaser — the fuller content lives on the Global Network page. */}
-      <section className="section section-tight section-white">
-        <div className="wrap">
-          <div className="section-dark rounded-3xl px-8 py-16">
+          {/* Tier 1 — group level */}
+          <div className="standards-tier rounded-3xl px-10 py-14 mt-14">
             <div className="grid-2 items-center">
-              <div className="heading-lg">
-                <span className="eyebrow on-dark text-[#f8ae85]">{globalCompact.sectionTag}</span>
-                <h2 className="mb-0">{globalCompact.title}</h2>
+              <div>
+                <span className="eyebrow">{standardsCompliance.levels[0].tier}</span>
+                <h3>{sectionDetail.governance.title}</h3>
               </div>
               <div>
-                <p>{globalCompact.body}</p>
+                <p>{sectionDetail.governance.body}</p>
                 <Link
-                  href={globalCompact.ctaHref}
-                  className="inline-flex items-center gap-1.5 no-underline text-sm font-semibold text-accent hover:underline"
+                  href={standardsCompliance.levels[0].ctaHref}
+                  className="standards-tier-cta"
                 >
-                  {globalCompact.ctaText} <ArrowRight className="w-3.5 h-3.5" />
+                  {standardsCompliance.levels[0].ctaText} <ArrowRight className="w-3.5 h-3.5" />
                 </Link>
               </div>
             </div>
           </div>
-        </div>
-      </section>
 
-      {/* Quality & Compliance — product-level, no blanket guarantees */}
-      <section className="section section-line section-white">
-        <div className="wrap">
-          <div className="grid-2 items-start">
-            <div className="heading-lg">
-              <span className="eyebrow">{qualityCompliance.sectionTag}</span>
-              <h2 className="mb-0">{qualityCompliance.title}</h2>
+          {/* Tier 2 — product level */}
+          <div className="mt-16">
+            <span className="eyebrow">{standardsCompliance.levels[1].tier}</span>
+            <h3 className="font-sans text-2xl font-bold mb-3">{sectionDetail.productStandard.title}</h3>
+            <p className="lead-block text-ink-soft leading-relaxed mb-4">
+              {sectionDetail.productStandard.lead}
+            </p>
+
+            <div className="grid-3 mt-10">
+              {sectionDetail.productStandard.points.map((point, idx) => {
+                const icons = [ShieldCheck, FlaskConical, Globe2];
+                const Icon = icons[idx] || ShieldCheck;
+                return (
+                  <div key={point.title} className="pillar">
+                    <Icon className="w-10 h-10 text-accent mb-5" strokeWidth={1.5} />
+                    <h3>{point.title}</h3>
+                    <p>{point.desc}</p>
+                  </div>
+                );
+              })}
             </div>
-            <div className="lead-block">
-              <p className="text-ink-soft leading-relaxed m-0">{qualityCompliance.lead}</p>
+
+            <div className="mt-12">
+              <Link href={standardsCompliance.levels[1].ctaHref} className="btn btn-primary">
+                {standardsCompliance.levels[1].ctaText} <ArrowRight />
+              </Link>
             </div>
-          </div>
-
-          <div className="grid-3 mt-14">
-            {qualityCompliance.points.map((point, idx) => {
-              const icons = [ShieldCheck, FlaskConical, Globe2];
-              const Icon = icons[idx] || ShieldCheck;
-              return (
-                <div key={point.title} className="pillar">
-                  <Icon className="w-10 h-10 text-accent mb-5" strokeWidth={1.5} />
-                  <h3>{point.title}</h3>
-                  <p>{point.desc}</p>
-                </div>
-              );
-            })}
-          </div>
-
-          <div className="mt-12">
-            <Link href="/quality" className="btn btn-primary">
-              See how we document quality and compliance <ArrowRight />
-            </Link>
           </div>
         </div>
       </section>
@@ -445,8 +378,8 @@ export default function HomePage() {
                 View all FAQs <ArrowRight />
               </Link>
               {/* on-light: .btn-outline is built for dark sections, this variant is its light twin. */}
-              <Link href="/global-network" className="btn btn-outline on-light">
-                See our operating footprint
+              <Link href="/contact?type=quote" className="btn btn-outline on-light">
+                Talk to a case manager
               </Link>
             </div>
           </div>

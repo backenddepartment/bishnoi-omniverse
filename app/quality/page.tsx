@@ -44,13 +44,13 @@ const EVIDENCE = [
     icon: FileCheck2,
     category: 'Medical Devices',
     standard: 'CE Marking · CMDR Approval',
-    desc: 'Device lines carry CE marking and, where the destination market requires it, CMDR registration — for example CMDR-2023-01556 on the GetMeds™ sterile blood transfusion set. Specification sheets and registration references are supplied with the quote.',
+    desc: 'Device lines carry CE marking and, where the destination market requires it, CMDR registration — for example CMDR-2023-01556 on the Bishnoi Omniverse™ sterile blood transfusion set. Specification sheets and registration references are supplied with the quote.',
   },
   {
     icon: FlaskConical,
     category: 'Pharmaceuticals',
     standard: 'WHO-GMP · Certificate of Analysis',
-    desc: 'Specialty and named-patient medicines are sourced from WHO-GMP certified manufacturing, with a Certificate of Analysis for the supplied batch. Our Carboget™ / GetMeds™ carboplatin injection is supplied on this basis.',
+    desc: 'Specialty and named-patient medicines are sourced from WHO-GMP certified manufacturing, with a Certificate of Analysis for the supplied batch. Our Carboget™ / Bishnoi Omniverse™ carboplatin injection is supplied on this basis.',
   },
   {
     icon: Gauge,

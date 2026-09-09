@@ -1,0 +1,34 @@
+{
+  "copy": {
+    "eyebrow": "Coming soon",
+    "headingSuffix": "is under construction",
+    "line": "This site is still being built. Check back soon.",
+    "ctaHome": "Return Home"
+  },
+  "sites": [
+    {
+      "slug": "getmeds-vanuatu",
+      "name": "Getmeds Vanuatu"
+    },
+    {
+      "slug": "getmeds-south-east-asia",
+      "name": "Getmeds South East Asia"
+    },
+    {
+      "slug": "getmeds-latin",
+      "name": "Getmeds Latin"
+    },
+    {
+      "slug": "naresh-bishnoi",
+      "name": "Naresh Bishnoi"
+    },
+    {
+      "slug": "naresh-bishnoi-foundation",
+      "name": "Naresh Bishnoi Foundation"
+    },
+    {
+      "slug": "ungc",
+      "name": "UNGC"
+    }
+  ]
+}

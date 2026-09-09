@@ -2,8 +2,10 @@
 
 import React, { useState, useMemo, useEffect } from 'react';
 import Link from 'next/link';
-import { Search, ShoppingBag, CheckCircle, FileText, X, ArrowRight } from 'lucide-react';
+import { Search, ShoppingBag, FileText, X, ArrowRight, Plus, Check } from 'lucide-react';
 import catalogData from '@/lib/data/catalogData.json';
+import { productImages } from '@/lib/catalogImages';
+import sectionDetail from '@/lib/data/sectionDetailData.json';
 
 const IMG = {
   hero: 'https://upload.wikimedia.org/wikipedia/commons/c/c3/Ethylene_oxide_sterilisation_sticker_on_box_of_medical_supplies.jpg',
@@ -116,169 +118,222 @@ export default function CatalogPage() {
       {/* Catalog Browser */}
       <section id="catalog-browser" className="section section-tight">
         <div className="wrap">
-          {/* Search Bar */}
-          <div className="mb-10">
-            <label htmlFor="search-input" className="field-label">
-              No-Login Fast Search
-            </label>
-            <div className="relative max-w-3xl">
-              <input
-                id="search-input"
-                type="text"
-                placeholder="Search by product, gauge (e.g. G18, G22), clinical need, or certification (CE, CMDR)..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="field-input !pl-12"
-              />
-              <Search className="w-5 h-5 absolute left-4 top-1/2 -translate-y-1/2 text-muted" />
-              {searchQuery && (
-                <button
-                  onClick={() => setSearchQuery('')}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 text-xs font-semibold text-muted hover:text-ink"
-                >
-                  Clear
-                </button>
-              )}
-            </div>
-          </div>
-
-          {/* Category Tabs */}
-          <div className="mb-12">
-            <span className="field-label !mb-3">1. Browse by Clinical Need</span>
-            <div className="flex flex-wrap gap-2">
-              <button
-                onClick={() => setSelectedCategory('all')}
-                className={`px-4 py-2.5 text-xs font-semibold rounded-full border transition ${
-                  selectedCategory === 'all' ? 'bg-ink text-white border-ink' : 'bg-surface text-ink border-line hover:border-accent'
-                }`}
-              >
-                All Clinical Categories ({products.length})
-              </button>
-
-              {categories.map((cat) => {
-                const count = products.filter((p) => p.categoryId === cat.id).length;
-                const selected = selectedCategory === cat.id;
-                return (
+          <div className="catalog-shell">
+            {/* Category rail */}
+            <aside className="catalog-sidebar">
+              <h3 className="catalog-side-title">Category</h3>
+              <ul className="catalog-cats">
+                <li>
                   <button
-                    key={cat.id}
-                    onClick={() => setSelectedCategory(cat.id)}
-                    className={`px-4 py-2.5 text-xs font-semibold rounded-full border transition ${
-                      selected ? 'bg-ink text-white border-ink' : 'bg-surface text-ink border-line hover:border-accent'
-                    }`}
+                    type="button"
+                    onClick={() => setSelectedCategory('all')}
+                    className={`catalog-cat${selectedCategory === 'all' ? ' is-active' : ''}`}
                   >
-                    {cat.name} ({count})
+                    <span>All Clinical Categories</span>
+                    <span className="catalog-cat-count">{products.length}</span>
                   </button>
-                );
-              })}
-            </div>
-          </div>
-
-          {/* Product Cards */}
-          <div className="space-y-8">
-            <div className="flex items-center justify-between border-b border-line pb-4">
-              <span className="inline-block rounded-full bg-brand-blue px-3.5 py-1.5 text-sm font-medium text-white">
-                Showing {filteredProducts.length} Verified Product(s)
-              </span>
-              {selectedCategory !== 'all' && (
-                <button onClick={() => setSelectedCategory('all')} className="text-xs font-semibold text-accent-dark hover:underline">
-                  Reset Filter
-                </button>
-              )}
-            </div>
-
-            {filteredProducts.length === 0 ? (
-              <div className="info-card text-center space-y-3 !py-12">
-                <h3 className="font-sans text-lg font-bold text-ink">No Products Found</h3>
-                <p className="text-sm text-ink-soft">
-                  No items match your search term &quot;{searchQuery}&quot;. Our sourcing team can fulfill any custom hospital
-                  requisition list.
-                </p>
-                <button type="button" onClick={() => setIsRfqModalOpen(true)} className="btn btn-primary !text-xs mt-2">
-                  Request Custom Sourcing
-                </button>
-              </div>
-            ) : (
-              <div className="grid grid-cols-1 gap-6">
-                {filteredProducts.map((product: ProductItem) => {
-                  const isAdded = quoteItems.some((item) => item.id === product.id);
+                </li>
+                {categories.map((cat) => {
+                  const count = products.filter((p) => p.categoryId === cat.id).length;
                   return (
-                    <div key={product.id} className="info-card !p-6 md:!p-8 space-y-6">
-                      <div className="flex flex-wrap items-center gap-2">
-                        {product.visualTags.map((tag, idx) => (
-                          <span key={idx} className="px-3 py-1 bg-paper-2 text-ink-soft border border-line rounded-full text-xs font-semibold">
-                            {tag}
-                          </span>
-                        ))}
-                      </div>
-
-                      <div>
-                        <Link
-                          href={`/catalog/${product.id}`}
-                          className="no-underline text-ink hover:text-accent-dark transition-colors"
-                        >
-                          <h3 className="font-sans text-xl md:text-2xl font-bold leading-snug">{product.name}</h3>
-                        </Link>
-                        <div className="text-xs font-semibold text-muted mt-1">
-                          Brand: <span className="text-ink font-semibold">{product.brand}</span> | Origin:{' '}
-                          <span className="text-ink font-semibold">{product.origin}</span>
-                        </div>
-                      </div>
-
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 bg-paper-2 rounded p-5 border border-line text-sm">
-                        <div>
-                          <strong className="text-xs uppercase tracking-wide text-muted block mb-1">What It Does</strong>
-                          <p className="text-ink-soft leading-relaxed font-medium m-0">{product.whatItDoes}</p>
-                        </div>
-
-                        <div>
-                          <strong className="text-xs uppercase tracking-wide text-muted block mb-1">Why It&apos;s Safe &amp; Compliant</strong>
-                          <ul className="space-y-1.5 text-xs text-ink-soft m-0 p-0 list-none">
-                            {product.whyItsSafe.map((bullet, bIdx) => (
-                              <li key={bIdx} className="flex items-start gap-1.5">
-                                <CheckCircle className="w-3.5 h-3.5 text-accent shrink-0 mt-0.5" />
-                                <span>{bullet}</span>
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
-                      </div>
-
-                      <div className="text-xs text-ink-soft font-mono bg-paper p-3 rounded border border-line">
-                        <strong>{product.specs}</strong>
-                      </div>
-
-                      <div className="flex flex-wrap items-center gap-4 pt-2 border-t border-line">
-                        <Link href={`/catalog/${product.id}`} className="btn btn-outline on-light">
-                          View Details <ArrowRight className="w-3.5 h-3.5" />
-                        </Link>
-
-                        <button
-                          type="button"
-                          onClick={() => (isAdded ? removeFromQuote(product.id) : addToQuote(product))}
-                          className={isAdded ? 'btn !bg-ink-2 !text-white' : 'btn btn-primary'}
-                        >
-                          {isAdded ? 'Remove From Quote' : 'Add To Quote'}
-                        </button>
-
-                        <button
-                          type="button"
-                          onClick={() =>
-                            setActiveCert({
-                              title: product.name,
-                              content: `Official Compliance Dossier for ${product.name} (${product.brand}). Sourced from audited facilities in ${product.origin}. Verified under international standards: ${product.visualTags.join(', ')}.`,
-                            })
-                          }
-                          className="btn btn-outline on-light"
-                        >
-                          <FileText className="w-3.5 h-3.5" />
-                          <span>View Compliance Certificate</span>
-                        </button>
-                      </div>
-                    </div>
+                    <li key={cat.id}>
+                      <button
+                        type="button"
+                        onClick={() => setSelectedCategory(cat.id)}
+                        className={`catalog-cat${selectedCategory === cat.id ? ' is-active' : ''}`}
+                      >
+                        <span>{cat.name}</span>
+                        <span className="catalog-cat-count">{count}</span>
+                      </button>
+                    </li>
                   );
                 })}
+              </ul>
+
+              <hr className="catalog-side-rule" />
+
+              <button
+                type="button"
+                onClick={() => setIsRfqModalOpen(true)}
+                className="btn btn-primary !text-xs w-full justify-center"
+              >
+                Upload Requisition List
+              </button>
+            </aside>
+
+            {/* Results */}
+            <div className="catalog-main">
+              <div className="mb-7">
+                <label htmlFor="search-input" className="field-label">
+                  No-Login Fast Search
+                </label>
+                <div className="relative">
+                  <input
+                    id="search-input"
+                    type="text"
+                    placeholder="Search by product, gauge (e.g. G18, G22), clinical need, or certification (CE, CMDR)..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="field-input !pl-12"
+                  />
+                  <Search className="w-5 h-5 absolute left-4 top-1/2 -translate-y-1/2 text-muted" />
+                  {searchQuery && (
+                    <button
+                      onClick={() => setSearchQuery('')}
+                      className="absolute right-4 top-1/2 -translate-y-1/2 text-xs font-semibold text-muted hover:text-ink"
+                    >
+                      Clear
+                    </button>
+                  )}
+                </div>
               </div>
-            )}
+
+              <div className="flex flex-wrap items-center justify-between gap-3 border-b border-line pb-4 mb-8">
+                <span className="inline-block rounded-full bg-brand-blue px-3.5 py-1.5 text-sm font-medium text-white">
+                  Showing {filteredProducts.length} Verified Product(s)
+                </span>
+                {selectedCategory !== 'all' && (
+                  <button
+                    onClick={() => setSelectedCategory('all')}
+                    className="text-xs font-semibold text-accent-dark hover:underline"
+                  >
+                    Reset Filter
+                  </button>
+                )}
+              </div>
+
+              {filteredProducts.length === 0 ? (
+                <div className="info-card text-center space-y-3 !py-12">
+                  <h3 className="font-sans text-lg font-bold text-ink">No Products Found</h3>
+                  <p className="text-sm text-ink-soft">
+                    No items match your search term &quot;{searchQuery}&quot;. Our sourcing team can fulfill any
+                    custom hospital requisition list.
+                  </p>
+                  <button
+                    type="button"
+                    onClick={() => setIsRfqModalOpen(true)}
+                    className="btn btn-primary !text-xs mt-2"
+                  >
+                    Request Custom Sourcing
+                  </button>
+                </div>
+              ) : (
+                <div className="product-grid">
+                  {filteredProducts.map((product: ProductItem) => {
+                    const isAdded = quoteItems.some((item) => item.id === product.id);
+                    const img = productImages[product.id];
+                    return (
+                      <div key={product.id} className="product-card">
+                        <div className="product-card-media">
+                          {product.visualTags[0] && (
+                            <span className="product-badge">{product.visualTags[0]}</span>
+                          )}
+                          <button
+                            type="button"
+                            aria-label={`View compliance certificate for ${product.name}`}
+                            onClick={() =>
+                              setActiveCert({
+                                title: product.name,
+                                content: `Official Compliance Dossier for ${product.name} (${product.brand}). Sourced from audited facilities in ${product.origin}. Verified under international standards: ${product.visualTags.join(', ')}.`,
+                              })
+                            }
+                            className="product-cert"
+                          >
+                            <FileText className="w-3.5 h-3.5" />
+                          </button>
+                          <Link href={`/catalog/${product.id}`}>
+                            <img src={img?.src} alt={img?.alt || product.name} loading="lazy" />
+                          </Link>
+                        </div>
+
+                        <div className="product-card-body">
+                          <Link href={`/catalog/${product.id}`}>
+                            <h3>{product.name}</h3>
+                          </Link>
+
+                          <div className="product-card-foot">
+                            <div>
+                              <span className="product-card-meta">Brand</span>
+                              <span className="product-card-brand">{product.brand}</span>
+                            </div>
+                            <button
+                              type="button"
+                              aria-label={
+                                isAdded
+                                  ? `Remove ${product.name} from quote`
+                                  : `Add ${product.name} to quote`
+                              }
+                              onClick={() => (isAdded ? removeFromQuote(product.id) : addToQuote(product))}
+                              className={`product-add${isAdded ? ' is-added' : ''}`}
+                            >
+                              {isAdded ? <Check className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* The Bishnoi Omniverse Essential Hospital Line + brand table, relocated from the homepage's
+          What We Supply section. All five product lines and all seven brands live here. */}
+      <section className="section section-line" id="essential-hospital-line">
+        <div className="wrap">
+          <div className="grid-2 items-start">
+            <div className="heading-lg">
+              <span className="eyebrow">What We Supply</span>
+              <h2 className="mb-0">{sectionDetail.essentialLine.title}</h2>
+            </div>
+            <div className="lead-block">
+              <p className="text-ink-soft leading-relaxed m-0">{sectionDetail.essentialLine.tagline}</p>
+            </div>
+          </div>
+
+          <div className="grid-3 mt-14">
+            {sectionDetail.essentialLine.categories.map((cat, idx) => (
+              <div key={cat.name} className="pillar">
+                <span className="num">0{idx + 1}</span>
+                <h3>{cat.name}</h3>
+                {cat.items.map((item) => (
+                  <p key={item.title}>
+                    <strong className="text-ink">{item.title}</strong> {item.desc}
+                  </p>
+                ))}
+              </div>
+            ))}
+          </div>
+
+          <div className="mt-16 mb-4">
+            <h3 className="font-sans text-lg font-bold">{sectionDetail.brands.title}</h3>
+            <p className="lead-block text-ink-soft leading-relaxed mt-1 m-0">
+              {sectionDetail.brands.lead}
+            </p>
+          </div>
+
+          <div className="overflow-x-auto">
+            <table className="w-full border-collapse text-left">
+              <thead>
+                <tr className="border-b border-line">
+                  <th className="py-3 pr-6 text-xs font-semibold uppercase tracking-wide text-muted">Brand</th>
+                  <th className="py-3 text-xs font-semibold uppercase tracking-wide text-muted">Product Line</th>
+                </tr>
+              </thead>
+              <tbody>
+                {sectionDetail.brands.items.map((item) => (
+                  <tr key={item.brand} className="border-b border-line">
+                    <td className="py-4 pr-6 align-top whitespace-nowrap font-poppins text-[15px] font-semibold text-ink">
+                      {item.brand}
+                    </td>
+                    <td className="py-4 align-top text-sm text-ink-soft leading-relaxed">{item.line}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         </div>
       </section>

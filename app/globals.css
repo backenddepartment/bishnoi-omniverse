@@ -14,6 +14,10 @@
   --accent: #f36b21;
   --accent-dark: #c2561a;
   --accent-tint: #fde9de;
+  /* Panel green, paired with --accent on the What We Provide bento. Chosen to carry white text
+     at AA contrast (4.8:1) while holding the same saturation as the brand orange. */
+  --green: #0b8457;
+  --green-dark: #086a45;
   --maxw: 1180px;
   --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
 }
@@ -89,16 +93,6 @@
   }
   .heading-lg h2 {
     font-size: clamp(28px, 3vw, 40px);
-  }
-  .who-we-help-heading .eyebrow {
-    font-size: 14px;
-  }
-  .who-we-help-heading h2 {
-    font-size: clamp(26px, 2.8vw, 38px);
-  }
-  .who-we-help-heading p {
-    font-size: 17px;
-    line-height: 1.65;
   }
   .direct-channels-heading .eyebrow,
   .assist-heading .eyebrow,
@@ -329,6 +323,11 @@
   .contact-page .page-hero { min-height: 90vh; }
   .about-page .page-hero { min-height: 90vh; }
   .catalog-page { background: #ffffff; }
+  /* Type only — the hero keeps its shared .page-hero min-height (48vh) and its image, so
+     shrinking the copy does not change the band's height. */
+  .catalog-page .page-hero h1 { font-size: clamp(26px, 3.4vw, 44px); }
+  .catalog-page .page-hero .lede { font-size: 15px; }
+  .catalog-page .page-hero .eyebrow { font-size: 10.5px; }
   .catalog-page .section-2col { background: #ffffff; }
   .businesses-page { background: #ffffff; }
   .businesses-page .section-2col { background: #ffffff; }
@@ -356,12 +355,24 @@
   }
   .pillar h3 { font-size: 20px; margin-bottom: 10px; }
   .pillar p { font-size: 14.5px; margin: 0; color: var(--ink-soft); }
+  /* The facility-type list folded into the Hospitals & Procurement Teams card: set apart from
+     the card's paragraph so it reads as a list of who we supply, not another sentence. */
+  .pillar-serves {
+    margin-top: 12px !important;
+    padding-top: 12px;
+    border-top: 1px solid var(--line);
+    font-size: 13px !important;
+    line-height: 1.55;
+    color: var(--muted) !important;
+  }
 
   /* Business / service tiles */
   .biz-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; background: transparent; }
   .biz-tile {
     position: relative;
-    background: var(--ink);
+    /* Light backing: the card artwork carries an alpha channel, so a dark panel would show
+       through any transparent area. */
+    background: var(--paper-2);
     aspect-ratio: 3 / 4;
     overflow: hidden;
     border-radius: 14px;
@@ -373,21 +384,10 @@
     width: 100%;
     height: 100%;
     object-fit: cover;
-    opacity: 0.72;
-    transition: transform 0.6s var(--ease), opacity 0.4s;
+    /* Full opacity — the 0.72 dim existed only to keep the old white overlay caption legible. */
+    transition: transform 0.6s var(--ease);
   }
-  .biz-tile:hover img { transform: scale(1.06); opacity: 0.5; }
-  .biz-tile-label { position: absolute; left: 0; right: 0; bottom: 0; padding: 24px; z-index: 1; }
-  .biz-tile-label .tag {
-    font-size: 10px;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: #f8ae85;
-    display: block;
-    margin-bottom: 6px;
-  }
-  .biz-tile-label h3 { font-size: 18px; color: #fff; margin: 0; }
-  .biz-tile-label p { font-size: 12.5px; color: #d7d2c1; margin: 8px 0 0; line-height: 1.45; }
+  .biz-tile:hover img { transform: scale(1.06); }
 
   /* Division-style full sections */
   .division { padding: 88px 0; border-top: 1px solid var(--line); }
@@ -455,70 +455,386 @@
   .card-slider-btn.is-prev { left: -14px; }
   .card-slider-btn.is-next { right: -14px; }
 
-  /* Facility cards — portrait "report cover" format: mark and title up top, the photograph
-     banded across the bottom, caption beneath it. */
-  .facility-card {
+  /* Coming-soon / under-construction page (app/coming-soon/[site]). Renders standalone — no
+     navbar, no footer — so it owns the full viewport and paints its own white ground rather
+     than inheriting the body's paper. */
+  .uc-section {
     display: flex;
-    flex-direction: column;
-    background: var(--surface);
-    border-radius: 10px;
-    overflow: hidden;
-    text-decoration: none;
-    /* No border — a soft shadow keeps the card readable against the white section instead. */
-    box-shadow: 0 1px 2px rgba(15, 14, 12, 0.04), 0 3px 10px rgba(15, 14, 12, 0.035);
-    transition: transform 0.3s var(--ease), box-shadow 0.3s var(--ease);
+    align-items: center;
+    min-height: 100vh;
+    padding: 64px 0;
+    background: #ffffff;
   }
-  .facility-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 2px 6px rgba(15, 14, 12, 0.05), 0 10px 24px rgba(15, 14, 12, 0.07);
+  .uc-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 0.95fr);
+    align-items: center;
+    gap: 56px;
   }
-  .facility-card-head {
-    padding: 20px 20px 22px;
+  .uc-title {
+    font-size: clamp(30px, 4vw, 46px);
+    line-height: 1.1;
+    margin: 0 0 16px;
   }
-  .facility-card-mark {
-    display: block;
-    color: var(--accent);
-    font-size: 13px;
-    font-weight: 500;
-    letter-spacing: 0.01em;
-    margin-bottom: 20px;
-  }
-  .facility-card h3 {
-    margin: 0;
-    font-size: 19px;
-    font-weight: 600;
-    line-height: 1.25;
-    letter-spacing: -0.01em;
-    color: var(--ink);
-    transition: color 0.3s var(--ease);
-  }
-  .facility-card:hover h3 { color: var(--accent); }
-  /* margin-top:auto pins the media band to the bottom, so cards with a one-line title and a
-     three-line title still align their photographs across the row. */
-  .facility-card-media {
-    margin-top: auto;
-    height: 140px;
-    background: var(--surface);
-    padding: 0 18px;
-  }
-  .facility-card-media img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    border-radius: 10px;
-  }
-  /* Cut-out artwork on a transparent background: shown whole rather than cropped to fill. */
-  .facility-card-media.is-contain img {
-    object-fit: contain;
-    padding: 8px 0;
-  }
-  .facility-card-caption {
-    margin: 0;
-    padding: 12px 20px 18px;
-    font-size: 12.5px;
+  .uc-line {
+    max-width: 26rem;
+    margin: 0 0 32px;
+    font-size: 16px;
     line-height: 1.6;
     color: var(--ink-soft);
   }
+  .uc-art { width: 100%; height: auto; }
+
+  @media (max-width: 860px) {
+    .uc-grid { grid-template-columns: 1fr; gap: 40px; }
+    /* Illustration below the message, so the text is never pushed off the fold. */
+    .uc-art { order: 2; max-width: 380px; }
+  }
+
+  /* Standards & Compliance, group-level tier. Green rather than the near-black it used to be,
+     matching the bento's panel green, with its heading sized to the page's section headings. */
+  .standards-tier {
+    background: var(--green);
+    color: #fff;
+  }
+  .standards-tier .eyebrow {
+    font-size: 14px;
+    text-transform: none;
+    letter-spacing: 0.01em;
+    color: rgba(255, 255, 255, 0.82);
+  }
+  .standards-tier h3 {
+    margin: 0;
+    font-size: clamp(28px, 3vw, 40px);
+    line-height: 1.12;
+    letter-spacing: -0.01em;
+    color: #fff;
+  }
+  .standards-tier p {
+    margin: 0 0 18px;
+    color: #fff;
+    line-height: 1.7;
+  }
+  /* The orange link colour reads poorly on green, so the CTA goes white and underlines on hover. */
+  .standards-tier-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #fff;
+    text-decoration: none;
+  }
+  .standards-tier-cta:hover { text-decoration: underline; }
+
+  /* Response-commitment band with a photographic background. .section-dark already paints
+     --ink behind it, so dimming the photo (rather than layering a scrim over it) is enough to
+     hold white text at full contrast. */
+  .response-band { position: relative; overflow: hidden; }
+  .response-band-media {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.3;
+  }
+  /* Lift the content above the photo. */
+  .response-band > .wrap { position: relative; z-index: 1; }
+
+  /* What We Provide — a three-card bento. Each card pairs a photograph with a solid colour
+     panel: the hospital line takes green, the other two the brand orange. */
+  .provide-bento {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: 16px;
+  }
+  .provide-card {
+    display: grid;
+    border-radius: 18px;
+    overflow: hidden;
+    min-height: 300px;
+  }
+  /* Card 1 — photo beside the panel, two thirds of the top row. */
+  .provide-card.is-hospital-supplies {
+    grid-column: span 8;
+    grid-template-columns: 1fr 1fr;
+  }
+  /* Card 2 — photo stacked over the panel, one third of the top row. */
+  .provide-card.is-specialty-medicines {
+    grid-column: span 4;
+    grid-template-rows: 200px 1fr;
+  }
+  /* Card 3 — full width, photo on the left. Taller than the top row so the wide band still
+     reads as a substantial block rather than a strip. */
+  .provide-card.is-sourcing-trade {
+    grid-column: span 12;
+    grid-template-columns: 5fr 7fr;
+    min-height: 360px;
+  }
+  .is-sourcing-trade .provide-panel { padding: 44px 40px; gap: 24px; }
+  .is-sourcing-trade .provide-panel h3 { font-size: 24px; }
+  .is-sourcing-trade .provide-panel p { max-width: 46rem; }
+
+  /* The photo must not dictate the card's height: `height:100%` inside an auto-height grid row
+     resolves against an indefinite height and falls back to the image's natural height. Taking
+     the image out of flow makes the panel's content the only thing setting the row. */
+  .provide-media { position: relative; overflow: hidden; min-height: 0; }
+  .provide-media img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.6s var(--ease);
+  }
+  .provide-card:hover .provide-media img { transform: scale(1.04); }
+
+  .provide-panel {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 24px;
+    padding: 34px 32px;
+    color: #fff;
+  }
+  .provide-panel.is-green { background: var(--green); }
+  .provide-panel.is-orange { background: var(--accent); }
+  .provide-panel h3 {
+    color: #fff;
+    font-size: 21px;
+    line-height: 1.25;
+    margin: 0 0 12px;
+  }
+  .provide-panel p {
+    margin: 0;
+    font-size: 19px;
+    line-height: 1.55;
+    color: #fff;
+  }
+  /* The narrow stacked card carries the same copy in a tighter column. */
+  .is-specialty-medicines .provide-panel { padding: 30px 28px; }
+  .is-specialty-medicines .provide-panel h3 { font-size: 19px; }
+
+  .provide-cta {
+    align-self: flex-start;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 11px 22px;
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    color: #fff;
+    text-decoration: none;
+    transition: background 0.25s var(--ease), color 0.25s var(--ease),
+      border-color 0.25s var(--ease);
+  }
+  .provide-cta svg { width: 15px; height: 15px; flex: none; }
+  .provide-cta:hover { background: #fff; border-color: #fff; }
+  .is-green .provide-cta:hover { color: var(--green-dark); }
+  .is-orange .provide-cta:hover { color: var(--accent-dark); }
+
+  @media (max-width: 980px) {
+    /* One card per row; every card becomes photo-over-panel so the images keep a usable height. */
+    .provide-card.is-hospital-supplies,
+    .provide-card.is-specialty-medicines,
+    .provide-card.is-sourcing-trade {
+      grid-column: span 12;
+      grid-template-columns: 1fr;
+      grid-template-rows: 220px auto;
+      min-height: 0;
+    }
+    .is-specialty-medicines .provide-panel { padding: 30px 28px; }
+    .is-specialty-medicines .provide-panel h3 { font-size: 21px; }
+  }
+
+  /* Operating footprint hub cards — a rounded image panel with the detail row sitting beneath it
+     (outside the panel), title and subtitle left, arrow link right on the title's baseline. */
+  .hub-card {
+    display: block;
+    text-decoration: none;
+  }
+  .hub-card-media {
+    background: var(--paper-2);
+    border-radius: 16px;
+    overflow: hidden;
+    aspect-ratio: 4 / 3;
+  }
+  .hub-card-media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.6s var(--ease);
+  }
+  .hub-card:hover .hub-card-media img { transform: scale(1.03); }
+  .hub-card-row {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 24px;
+    margin-top: 20px;
+  }
+  .hub-card-row h3 {
+    margin: 0 0 5px;
+    font-size: 21px;
+    font-weight: 600;
+    line-height: 1.25;
+    color: var(--ink);
+  }
+  .hub-card-sub {
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--ink-soft);
+  }
+  .hub-card-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--ink);
+    white-space: nowrap;
+    transition: color 0.25s var(--ease);
+  }
+  .hub-card:hover .hub-card-cta { color: var(--accent); }
+
+  /* Catalog browser — category rail beside a product grid. */
+  .catalog-shell { display: grid; grid-template-columns: 1fr; gap: 36px; }
+  @media (min-width: 900px) {
+    .catalog-shell { grid-template-columns: 210px minmax(0, 1fr); gap: 48px; }
+    .catalog-sidebar { position: sticky; top: 96px; align-self: start; }
+  }
+  .catalog-side-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--ink);
+    margin: 0 0 12px;
+  }
+  .catalog-cats { list-style: none; margin: 0; padding: 0; }
+  .catalog-cat {
+    width: 100%;
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 7px 0;
+    border: 0;
+    background: none;
+    text-align: left;
+    font-size: 13.5px;
+    line-height: 1.35;
+    color: var(--ink-soft);
+    cursor: pointer;
+    transition: color 0.2s var(--ease);
+  }
+  .catalog-cat:hover { color: var(--ink); }
+  .catalog-cat.is-active { color: var(--accent); font-weight: 600; }
+  .catalog-cat-count { flex-shrink: 0; font-size: 11.5px; color: var(--muted); }
+  .catalog-side-rule { border: 0; border-top: 1px solid var(--line); margin: 14px 0; }
+
+  .product-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+    gap: 22px;
+  }
+  .product-card {
+    display: flex;
+    flex-direction: column;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: box-shadow 0.3s var(--ease), border-color 0.3s var(--ease);
+  }
+  .product-card:hover {
+    border-color: transparent;
+    box-shadow: 0 4px 12px rgba(15, 14, 12, 0.07), 0 14px 32px rgba(15, 14, 12, 0.08);
+  }
+  .product-card-media { position: relative; background: var(--paper-2); aspect-ratio: 1 / 1; }
+  .product-card-media img { width: 100%; height: 100%; object-fit: cover; }
+  .product-badge {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    z-index: 1;
+    max-width: calc(100% - 60px);
+    background: var(--surface);
+    color: var(--ink);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    padding: 5px 9px;
+    border-radius: 999px;
+    box-shadow: 0 1px 3px rgba(15, 14, 12, 0.14);
+  }
+  /* Top-right slot: the reference puts a wishlist toggle here; this catalog uses it for the
+     product's compliance dossier, which the old wide card carried as a text button. */
+  .product-cert {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 1;
+    width: 30px;
+    height: 30px;
+    border: 0;
+    border-radius: 999px;
+    background: var(--surface);
+    color: var(--ink-soft);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 1px 3px rgba(15, 14, 12, 0.14);
+    transition: background 0.2s var(--ease), color 0.2s var(--ease);
+  }
+  .product-cert:hover { background: var(--accent); color: #fff; }
+  .product-card-body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 14px 14px 16px;
+  }
+  .product-card-body a { text-decoration: none; }
+  .product-card-body h3 {
+    margin: 0;
+    font-size: 14.5px;
+    font-weight: 600;
+    line-height: 1.35;
+    color: var(--ink);
+    transition: color 0.2s var(--ease);
+  }
+  .product-card-body a:hover h3 { color: var(--accent-dark); }
+  .product-card-foot {
+    margin-top: auto;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  .product-card-meta { display: block; font-size: 10.5px; color: var(--muted); margin-bottom: 2px; }
+  .product-card-brand { font-size: 13px; font-weight: 600; color: var(--ink); }
+  .product-add {
+    width: 38px;
+    height: 38px;
+    flex-shrink: 0;
+    border: 0;
+    border-radius: 10px;
+    background: var(--accent);
+    color: #fff;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background 0.2s var(--ease);
+  }
+  .product-add:hover { background: var(--accent-dark); }
+  .product-add.is-added { background: var(--ink); }
 
   /* Stat row */
   .statrow { display: flex; gap: 0; border-top: 1px solid rgba(255, 255, 255, 0.15); margin-top: 48px; }
@@ -573,6 +889,63 @@
   .quote-figure img { width: 100%; height: 280px; object-fit: cover; border-radius: 3px; }
 
   /* FAQ / accordion cards */
+  /* Homepage FAQ accordion (components/FaqAccordion.tsx). Keeps .faq-card's rhythm — hairline
+     dividers, 17px question, 14.5px answer — but as a button-driven disclosure. The <button> needs
+     a full reset: there is no global button reset in this sheet, so without one the questions
+     render as default UA buttons. */
+  .faq-list { border-top: 1px solid var(--line); }
+  .faq-item { border-bottom: 1px solid var(--line); }
+  .faq-q {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 20px;
+    width: 100%;
+    margin: 0;
+    padding: 22px 0;
+    appearance: none;
+    background: none;
+    border: 0;
+    text-align: left;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 17px;
+    font-weight: 600;
+    line-height: 1.4;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+    transition: color 0.25s var(--ease);
+  }
+  .faq-q:hover { color: var(--accent); }
+  .faq-q:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+    border-radius: 3px;
+  }
+  /* Circle keeps the chevron on a fixed axis so the open/closed rotation reads cleanly. */
+  .faq-toggle {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 26px;
+    height: 26px;
+    margin-top: 1px;
+    border-radius: 50%;
+    color: var(--accent-dark);
+    background: var(--accent-tint);
+    transition: transform 0.28s var(--ease), background 0.25s var(--ease);
+  }
+  .faq-toggle.is-open { transform: rotate(180deg); }
+  .faq-q:hover .faq-toggle { background: var(--accent); color: #fff; }
+  /* Right padding clears the toggle column so the answer sits in its own measure. */
+  .faq-a {
+    margin: 0;
+    padding: 0 46px 24px 0;
+    font-size: 14.5px;
+    line-height: 1.7;
+    color: var(--ink-soft);
+  }
+
   .faq-card { border-bottom: 1px solid var(--line); padding: 26px 0; }
   .faq-card h3 { font-size: 17px; margin-bottom: 8px; }
   .faq-card p { color: var(--ink-soft); font-size: 14.5px; margin: 0; }

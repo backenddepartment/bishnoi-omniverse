@@ -23,7 +23,7 @@ const config: Config = {
         line: '#e4ddd0',
         muted: '#6e675a',
         accent: {
-          DEFAULT: '#f36b21',
+          DEFAULT: '# ',
           dark: '#c2561a',
           tint: '#fde9de',
         },
