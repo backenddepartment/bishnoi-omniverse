@@ -143,6 +143,7 @@ export const Header: React.FC = () => {
 
   const activeCategory = catalogData.categories.find((c) => c.id === activeCategoryId) || catalogData.categories[0];
   const activeCategoryProducts = catalogData.products.filter((p) => p.categoryId === activeCategoryId);
+  const activeCategorySubs = catalogData.subcategories.filter((s) => s.categoryId === activeCategoryId);
 
   const isActive = (path: string) => {
     if (path === '/') return pathname === '/';
@@ -266,14 +267,17 @@ export const Header: React.FC = () => {
                     </span>
                     <p className="text-xs text-ink-soft mb-4">{activeCategory.description}</p>
                     <div className="space-y-1 mb-4">
-                      {activeCategoryProducts.map((p) => (
+                      {activeCategorySubs.map((sub) => (
                         <Link
-                          key={p.id}
-                          href={`/catalog/${p.id}`}
+                          key={sub.id}
+                          href={`/catalog?subcategory=${sub.id}`}
                           onClick={() => setCatalogOpen(false)}
-                          className="block no-underline text-sm font-medium text-ink hover:text-accent py-1.5"
+                          className="flex items-center justify-between gap-3 no-underline text-sm font-medium text-ink hover:text-accent py-1.5"
                         >
-                          {p.name}
+                          <span>{sub.name}</span>
+                          <span className="text-xs text-muted">
+                            {activeCategoryProducts.filter((p) => p.subcategoryId === sub.id).length}
+                          </span>
                         </Link>
                       ))}
                     </div>

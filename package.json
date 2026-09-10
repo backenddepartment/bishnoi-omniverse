@@ -6,7 +6,10 @@
     "dev": "next dev",
     "build": "NODE_OPTIONS='--max-old-space-size=4096' next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "catalog:sync": "node scripts/sync-catalog.mjs",
+    "catalog:export": "node scripts/export-catalog-csv.mjs",
+    "prebuild": "node scripts/sync-catalog.mjs"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.0",

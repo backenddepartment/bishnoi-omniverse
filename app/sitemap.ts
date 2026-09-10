@@ -1,8 +1,18 @@
 import { MetadataRoute } from 'next';
+import catalogData from '@/lib/data/catalogData.json';
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://bishnoi.ai';
   const currentDate = new Date().toISOString();
+
+  // Product pages come from the catalog data, which is generated from the Google Sheet
+  // (docs/catalog-sheet.md) — so a product added in the sheet is indexed without a code change.
+  const productPages: MetadataRoute.Sitemap = catalogData.products.map((product) => ({
+    url: `${baseUrl}/catalog/${product.id}`,
+    lastModified: currentDate,
+    changeFrequency: 'weekly',
+    priority: 0.7,
+  }));
 
   return [
     {
@@ -59,5 +69,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: 'monthly',
       priority: 0.7,
     },
+    ...productPages,
   ];
 }

@@ -325,9 +325,9 @@
   .catalog-page { background: #ffffff; }
   /* Type only — the hero keeps its shared .page-hero min-height (48vh) and its image, so
      shrinking the copy does not change the band's height. */
-  .catalog-page .page-hero h1 { font-size: clamp(26px, 3.4vw, 44px); }
+  .catalog-page .page-hero h1 { font-size: clamp(22px, 2.6vw, 34px); }
   .catalog-page .page-hero .lede { font-size: 15px; }
-  .catalog-page .page-hero .eyebrow { font-size: 10.5px; }
+  .catalog-page .page-hero .eyebrow { font-size: 9.5px; }
   .catalog-page .section-2col { background: #ffffff; }
   .businesses-page { background: #ffffff; }
   .businesses-page .section-2col { background: #ffffff; }
@@ -1188,4 +1188,615 @@
   display: none;
   width: 0;
   height: 0;
+}
+
+/* ------------------------------------------------------------------ *
+ * Product detail page (PDP)
+ * Layout mirrors the supplied e-commerce reference: thumbnail rail +
+ * stage on the left, buy box on the right, then a tabs/detail-shot row,
+ * then the "You May Also Like" card row.
+ * ------------------------------------------------------------------ */
+
+.pdp { background: #ffffff; }
+
+/* Gallery + buy box */
+.pdp-top { padding: 40px 0 56px; }
+.pdp-top-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
+  gap: 52px;
+  align-items: start;
+}
+
+.pdp-gallery {
+  display: grid;
+  grid-template-columns: 78px minmax(0, 1fr);
+  grid-template-areas: "thumbs stage" "credit credit";
+  gap: 16px;
+}
+.pdp-thumbs {
+  grid-area: thumbs;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.pdp-thumb {
+  position: relative;
+  width: 78px;
+  height: 96px;
+  padding: 0;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--paper-2);
+  cursor: pointer;
+  transition: border-color 0.2s var(--ease);
+}
+.pdp-thumb.is-active { border-color: var(--ink); }
+.pdp-thumb img { width: 100%; height: 100%; object-fit: cover; }
+.pdp-thumb-empty { display: block; width: 100%; height: 100%; background: var(--paper-2); }
+.pdp-thumb-next {
+  align-self: center;
+  width: 40px;
+  height: 40px;
+  margin-top: 4px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--ink);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.2s var(--ease), color 0.2s var(--ease);
+}
+.pdp-thumb-next:hover { background: var(--ink); color: #fff; }
+
+.pdp-stage {
+  grid-area: stage;
+  position: relative;
+  overflow: hidden;
+  border-radius: 10px;
+  background: var(--paper-2);
+  aspect-ratio: 4 / 5;
+}
+.pdp-stage img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s var(--ease); }
+.pdp-zoom {
+  position: absolute;
+  right: 14px;
+  bottom: 14px;
+  width: 38px;
+  height: 38px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--ink);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 1px 3px rgba(15, 14, 12, 0.16);
+  transition: background 0.2s var(--ease), color 0.2s var(--ease);
+}
+.pdp-zoom:hover { background: var(--ink); color: #fff; }
+
+.pdp-credit { grid-area: credit; margin: 0; font-size: 11px; color: var(--muted); }
+.pdp-credit a { color: var(--muted); }
+.pdp-credit a:hover { color: var(--accent-dark); }
+
+.pdp-info { padding-top: 4px; }
+.pdp-pill {
+  display: inline-block;
+  padding: 5px 12px;
+  border-radius: 999px;
+  background: var(--paper-2);
+  color: var(--ink-soft);
+  font-size: 11px;
+  font-weight: 600;
+  margin-bottom: 16px;
+}
+.pdp-title {
+  font-size: clamp(28px, 3.2vw, 40px);
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  margin: 0 0 14px;
+}
+.pdp-rating {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 13px;
+  color: var(--muted);
+  margin-bottom: 14px;
+}
+.pdp-rating svg { color: var(--accent); flex-shrink: 0; }
+.pdp-rating strong { color: var(--ink); font-weight: 600; }
+
+.pdp-price-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+.pdp-price { font-size: 28px; font-weight: 700; letter-spacing: -0.02em; color: var(--ink); }
+.pdp-price-was { font-size: 15px; color: var(--muted); }
+.pdp-price-badge {
+  background: var(--ink);
+  color: #fff;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  padding: 5px 10px;
+  border-radius: 6px;
+}
+.pdp-lede {
+  font-size: 14.5px;
+  line-height: 1.6;
+  color: var(--ink-soft);
+  max-width: 420px;
+  margin: 0 0 24px;
+}
+.pdp-rule { border: 0; border-top: 1px solid var(--line); margin: 0 0 24px; }
+
+.pdp-option { margin-bottom: 24px; }
+.pdp-option-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+.pdp-option-label { font-size: 12.5px; font-weight: 700; color: var(--ink); }
+.pdp-option-label em { font-style: normal; font-weight: 500; color: var(--muted); }
+.pdp-guide {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+  color: var(--ink-soft);
+  text-decoration: none;
+}
+.pdp-guide:hover { color: var(--accent-dark); }
+
+.pdp-swatches { display: flex; flex-wrap: wrap; gap: 12px; }
+.pdp-swatch {
+  width: 42px;
+  height: 42px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: var(--paper-2);
+  color: var(--ink-soft);
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  transition: all 0.2s var(--ease);
+}
+.pdp-swatch:hover { border-color: var(--muted); }
+.pdp-swatch.is-active {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: #fff;
+  box-shadow: 0 0 0 2px #fff, 0 0 0 3px var(--ink);
+}
+
+.pdp-variants { display: flex; flex-wrap: wrap; gap: 10px; }
+.pdp-variant {
+  min-width: 52px;
+  padding: 11px 14px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--ink);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s var(--ease);
+}
+.pdp-variant:hover { border-color: var(--ink); }
+.pdp-variant.is-active { background: var(--ink); border-color: var(--ink); color: #fff; }
+
+.pdp-actions { display: flex; gap: 12px; margin: 28px 0 22px; }
+.pdp-cta {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  height: 56px;
+  border-radius: 10px;
+  background: var(--ink);
+  color: #fff;
+  font-size: 15px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background 0.25s var(--ease);
+}
+.pdp-cta:hover { background: var(--accent); }
+.pdp-save {
+  width: 56px;
+  height: 56px;
+  flex-shrink: 0;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--surface);
+  color: var(--ink);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s var(--ease);
+}
+.pdp-save:hover { border-color: var(--ink); }
+.pdp-save.is-active { color: var(--accent); border-color: var(--accent); }
+
+.pdp-trust {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+  padding-top: 22px;
+  border-top: 1px solid var(--line);
+}
+.pdp-trust-item { display: flex; align-items: flex-start; gap: 8px; }
+.pdp-trust-item svg { color: var(--ink); flex-shrink: 0; margin-top: 1px; }
+.pdp-trust-item strong { display: block; font-size: 10.5px; font-weight: 700; color: var(--ink); line-height: 1.3; }
+.pdp-trust-item span { display: block; font-size: 9.5px; color: var(--muted); line-height: 1.35; margin-top: 2px; }
+
+/* Tabs + detail shot */
+.pdp-mid { padding: 0 0 64px; }
+.pdp-mid-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 48px;
+  align-items: start;
+}
+.pdp-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 26px;
+  border-bottom: 1px solid var(--line);
+  margin-bottom: 24px;
+}
+.pdp-tab {
+  position: relative;
+  padding: 0 0 12px;
+  border: 0;
+  background: none;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--muted);
+  cursor: pointer;
+  transition: color 0.2s var(--ease);
+}
+.pdp-tab:hover { color: var(--ink); }
+.pdp-tab.is-active { color: var(--ink); font-weight: 600; }
+.pdp-tab.is-active::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 2px;
+  background: var(--ink);
+}
+.pdp-panel p { font-size: 14px; line-height: 1.65; color: var(--ink-soft); margin: 0 0 20px; max-width: 420px; }
+.pdp-features { list-style: none; margin: 0; padding: 0; }
+.pdp-features li {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  font-size: 13.5px;
+  color: var(--ink);
+  line-height: 1.5;
+  padding: 6px 0;
+}
+.pdp-features svg { color: var(--ink); flex-shrink: 0; margin-top: 2px; }
+.pdp-specs { margin: 0; }
+.pdp-specs > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 9px 0;
+  border-bottom: 1px solid var(--line);
+}
+.pdp-specs dt { font-size: 12.5px; font-weight: 600; color: var(--muted); }
+.pdp-specs dd { margin: 0; font-size: 13px; color: var(--ink); text-align: right; }
+
+.pdp-mid-media {
+  overflow: hidden;
+  border-radius: 12px;
+  background: var(--paper-2);
+  aspect-ratio: 3 / 2;
+}
+.pdp-mid-media img { width: 100%; height: 100%; object-fit: cover; }
+
+/* You may also like */
+.pdp-related { padding: 0 0 96px; }
+.pdp-related-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 24px;
+}
+.pdp-related-head h2 { font-size: clamp(22px, 2.4vw, 28px); font-weight: 700; letter-spacing: -0.02em; margin: 0; }
+.pdp-related-head a {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ink);
+  text-decoration: none;
+}
+.pdp-related-head a:hover { color: var(--accent-dark); }
+.pdp-related-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 22px;
+}
+.pdp-related-card {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  overflow: hidden;
+  background: var(--surface);
+  transition: box-shadow 0.3s var(--ease), border-color 0.3s var(--ease);
+}
+.pdp-related-card:hover {
+  border-color: transparent;
+  box-shadow: 0 4px 12px rgba(15, 14, 12, 0.07), 0 14px 32px rgba(15, 14, 12, 0.08);
+}
+.pdp-related-media { display: block; aspect-ratio: 1 / 1; background: var(--paper-2); }
+.pdp-related-media img { width: 100%; height: 100%; object-fit: cover; }
+.pdp-related-body {
+  flex: 1;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px;
+}
+.pdp-related-body a { text-decoration: none; }
+.pdp-related-body h3 {
+  margin: 0 0 4px;
+  font-size: 13.5px;
+  font-weight: 600;
+  line-height: 1.35;
+  color: var(--ink);
+  transition: color 0.2s var(--ease);
+}
+.pdp-related-body a:hover h3 { color: var(--accent-dark); }
+.pdp-related-meta { font-size: 12.5px; font-weight: 600; color: var(--ink-soft); }
+.pdp-related-save { color: var(--ink); flex-shrink: 0; transition: color 0.2s var(--ease); }
+.pdp-related-save:hover { color: var(--accent); }
+
+/* Zoom overlay */
+.pdp-lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  background: rgba(15, 14, 12, 0.86);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+}
+.pdp-lightbox img { max-width: min(900px, 92vw); max-height: 88vh; object-fit: contain; border-radius: 10px; }
+.pdp-lightbox-close {
+  position: absolute;
+  top: 24px;
+  right: 24px;
+  width: 40px;
+  height: 40px;
+  border: 0;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.14);
+  color: #fff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+.pdp-lightbox-close:hover { background: rgba(255, 255, 255, 0.26); }
+
+@media (max-width: 980px) {
+  .pdp-top-grid { grid-template-columns: 1fr; gap: 36px; }
+  .pdp-mid-grid { grid-template-columns: 1fr; gap: 32px; }
+  .pdp-related-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .pdp-lede, .pdp-panel p { max-width: none; }
+}
+
+@media (max-width: 640px) {
+  .pdp-gallery {
+    grid-template-columns: 1fr;
+    grid-template-areas: "stage" "thumbs" "credit";
+  }
+  .pdp-thumbs { flex-direction: row; overflow-x: auto; }
+  .pdp-thumb { flex: 0 0 66px; width: 66px; height: 80px; }
+  .pdp-thumb-next { display: none; }
+  .pdp-trust { grid-template-columns: 1fr; gap: 12px; }
+  .pdp-related-grid { grid-template-columns: 1fr; }
+}
+
+/* ------------------------------------------------------------------ *
+ * Catalog: category > subcategory rail, icon product tiles
+ * ------------------------------------------------------------------ */
+
+.catalog-cat-label { display: inline-flex; align-items: center; gap: 6px; min-width: 0; }
+.catalog-cat-chevron {
+  width: 13px;
+  height: 13px;
+  flex-shrink: 0;
+  color: var(--muted);
+  transition: transform 0.2s var(--ease);
+}
+.catalog-cat-chevron.is-open { transform: rotate(180deg); color: var(--accent); }
+
+.catalog-subs {
+  list-style: none;
+  margin: 2px 0 8px;
+  padding: 0 0 0 19px;
+  border-left: 1px solid var(--line);
+}
+.catalog-sub {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  width: 100%;
+  padding: 6px 0;
+  border: 0;
+  background: none;
+  text-align: left;
+  font-size: 12.5px;
+  line-height: 1.35;
+  color: var(--muted);
+  cursor: pointer;
+  transition: color 0.2s var(--ease);
+}
+.catalog-sub:hover { color: var(--ink); }
+.catalog-sub.is-active { color: var(--accent); font-weight: 600; }
+
+/* Product tiles fall back to their category icon: the sheet ships research links to stock-photo
+   pages, not licensed image files, so no photo is published until one is cleared. */
+.product-card-media.is-icon { background: var(--accent-tint); }
+.product-card-iconwrap {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+}
+.product-card-iconwrap svg {
+  width: 40%;
+  height: 40%;
+  color: var(--accent-dark);
+  opacity: 0.75;
+}
+.product-card:hover .product-card-iconwrap svg { opacity: 1; }
+
+.catalog-disclaimer {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin: 32px 0 0;
+  padding-top: 18px;
+  border-top: 1px solid var(--line);
+  font-size: 12px;
+  line-height: 1.55;
+  color: var(--muted);
+}
+.catalog-disclaimer svg { flex-shrink: 0; margin-top: 2px; }
+
+/* ------------------------------------------------------------------ *
+ * PDP additions for the sheet-driven catalog
+ * ------------------------------------------------------------------ */
+
+/* Icon stage, used wherever a product has no licensed photo. */
+.pdp-stage.is-icon { background: var(--accent-tint); display: flex; align-items: center; justify-content: center; }
+.pdp-stage-icon { display: flex; flex-direction: column; align-items: center; gap: 14px; padding: 24px; text-align: center; }
+.pdp-stage-icon svg { width: 96px; height: 96px; color: var(--accent-dark); opacity: 0.85; }
+.pdp-stage-icon span { font-size: 12px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: var(--accent-dark); }
+
+.pdp-pills { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
+.pdp-pills .pdp-pill { margin-bottom: 0; }
+.pdp-pill.is-sub { background: var(--accent-tint); color: var(--accent-dark); }
+
+/* Static attribute chips, in the slot the reference gives to colour swatches. */
+.pdp-attrs { display: flex; flex-wrap: wrap; gap: 10px; }
+.pdp-attr {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 9px 14px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--paper-2);
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--ink);
+}
+.pdp-attr svg { color: var(--accent-dark); flex-shrink: 0; }
+
+.pdp-option-prose { margin: 0; font-size: 13px; line-height: 1.6; color: var(--ink-soft); }
+
+.pdp-disclaimer {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin: 22px 0 0;
+  padding-top: 16px;
+  border-top: 1px solid var(--line);
+  font-size: 11.5px;
+  line-height: 1.55;
+  color: var(--muted);
+  max-width: none;
+}
+.pdp-disclaimer svg { flex-shrink: 0; margin-top: 2px; }
+
+.pdp-callout {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 14px 16px;
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--accent);
+  border-radius: 8px;
+  background: var(--paper-2);
+  margin-bottom: 20px;
+}
+.pdp-callout svg { flex-shrink: 0; margin-top: 2px; color: var(--accent-dark); }
+.pdp-callout p { margin: 0; font-size: 13.5px; line-height: 1.6; color: var(--ink); max-width: none; }
+
+.pdp-specs-note dd { text-align: left; color: var(--ink-soft); font-size: 12.5px; }
+
+/* At-a-glance panel, in place of the reference's second product shot. */
+.pdp-summary {
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--surface);
+  padding: 22px 24px 24px;
+}
+.pdp-summary-head { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+.pdp-summary-head svg { color: var(--accent-dark); flex-shrink: 0; }
+.pdp-summary-head h2 { margin: 0; font-size: 15px; font-weight: 700; letter-spacing: -0.01em; }
+.pdp-summary-list { margin: 0; }
+.pdp-summary-list > div {
+  display: grid;
+  grid-template-columns: 116px minmax(0, 1fr);
+  gap: 14px;
+  padding: 9px 0;
+  border-bottom: 1px solid var(--line);
+}
+.pdp-summary-list > div:last-of-type { border-bottom: 0; }
+.pdp-summary-list dt { font-size: 11.5px; font-weight: 600; color: var(--muted); }
+.pdp-summary-list dd { margin: 0; font-size: 12.5px; line-height: 1.5; color: var(--ink); }
+.pdp-summary-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  margin-top: 18px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink);
+  text-decoration: none;
+}
+.pdp-summary-cta:hover { color: var(--accent-dark); }
+
+.pdp-related-icon {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+  background: var(--accent-tint);
+}
+.pdp-related-icon svg { width: 38%; height: 38%; color: var(--accent-dark); opacity: 0.8; }
+
+@media (max-width: 640px) {
+  .pdp-summary-list > div { grid-template-columns: 1fr; gap: 2px; }
 }

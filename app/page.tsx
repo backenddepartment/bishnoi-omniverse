@@ -17,6 +17,8 @@ import suppliesImg from '@/app/assets/supplies.jpg';
 import medicinesImg from '@/app/assets/medicines.jpg';
 import sourcingImg from '@/app/assets/sourcing.jpg';
 import familiesImg from '@/app/assets/families.jpg';
+import llpImg from '@/app/assets/LLPIMAGE.png';
+import corpImg from '@/app/assets/CORPIMAGE.png';
 
 // Images sourced from Wikimedia Commons (CC BY / CC BY-SA / public domain)
 const IMG = {
@@ -28,10 +30,9 @@ const IMG = {
   patients: familiesImg.src,
   logistics:
     'https://upload.wikimedia.org/wikipedia/commons/5/59/Shipping_cranes_by_Cartagena.jpg',
-  // Operating-footprint hub panels. Wikimedia Commons, both verified to resolve.
-  india: 'https://upload.wikimedia.org/wikipedia/commons/d/da/Skyline_of_Cannaught_Place%2C_New_Delhi.jpg',
-  philippines:
-    'https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/Manila_Skyline_March_2020.jpg/1920px-Manila_Skyline_March_2020.jpg',
+  // Operating-footprint hub panels: the two entities' own images, held locally in app/assets.
+  india: llpImg.src,
+  philippines: corpImg.src,
   // Behind the response-commitment band: a medical supply requisition being handled.
   // Wikimedia Commons, public domain, verified to resolve. 1920px thumbnail, not the original.
   responseBand:

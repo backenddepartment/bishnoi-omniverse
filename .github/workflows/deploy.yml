@@ -3,6 +3,10 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches: ["main", "master"]
+  # Picks up Google Sheet edits without anyone touching the repo. The site is a static export,
+  # so the catalog only changes when it is rebuilt — see docs/catalog-sheet.md.
+  schedule:
+    - cron: "0 * * * *" # hourly, on the hour (UTC)
   workflow_dispatch:
 
 permissions:
@@ -34,6 +38,14 @@ jobs:
 
       - name: Install dependencies
         run: npm ci || npm install
+
+      # Rewrites lib/data/catalogData.json from the sheet. With the secret unset this is a
+      # no-op and the committed JSON is used, so the build still works on a fork. If the sheet
+      # is unreachable or has invalid rows the step fails and the previous deploy stays live.
+      - name: Sync catalog from Google Sheet
+        env:
+          CATALOG_SHEET_CSV: ${{ secrets.CATALOG_SHEET_CSV }}
+        run: npm run catalog:sync
 
       - name: Build static Next.js export
         env:
