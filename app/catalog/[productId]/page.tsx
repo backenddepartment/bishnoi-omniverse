@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation';
 import catalogData from '@/lib/data/catalogData.json';
 import { ProductDetail, type PdpProduct, type PdpRelated } from '@/components/ProductDetail';
+import { PRODUCT_GALLERIES } from '@/lib/productImageOverrides';
 
 export function generateStaticParams() {
   return catalogData.products.map((product) => ({ productId: product.id }));
@@ -30,11 +31,17 @@ export default function ProductDetailPage({ params }: { params: { productId: str
       name: p.name,
       categoryId: p.categoryId,
       subcategoryName: subcategoryName(p.subcategoryId),
+      sterility: p.sterility,
+      image: PRODUCT_GALLERIES[p.id]?.[0],
     }));
 
   return (
     <ProductDetail
-      product={product as PdpProduct}
+      product={{
+        ...(product as PdpProduct),
+        image: PRODUCT_GALLERIES[product.id]?.[0] ?? (product as PdpProduct).image,
+        gallery: PRODUCT_GALLERIES[product.id],
+      }}
       categoryName={category?.name}
       categoryId={category?.id}
       subcategoryName={subcategory?.name}

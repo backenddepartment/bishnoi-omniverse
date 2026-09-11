@@ -3,14 +3,15 @@
 import React, { useState, useRef, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import { AnimatePresence, motion } from 'framer-motion';
-import { Menu, X, ChevronDown, ChevronRight, ArrowRight, ArrowUpRight, Search } from 'lucide-react';
+import { Menu, X, ChevronDown, ChevronRight, ArrowRight, ArrowUpRight } from 'lucide-react';
 import logo from '@/app/assets/logo.png';
 import globalNetworkLogo from '@/app/assets/globalnetworklogo.png';
 import countriesMap from '@/app/assets/countries.png';
 import catalogData from '@/lib/data/catalogData.json';
 import { getCategoryIcon } from '@/lib/catalogIcons';
+import { NavSearch } from '@/components/NavSearch';
 
 const ABOUT_LINKS: { label: string; href: string }[] = [
   { label: 'Our Story', href: '/about' },
@@ -63,9 +64,7 @@ export const Header: React.FC = () => {
   const [entityOpen, setEntityOpen] = useState(false);
   const [activeCategoryId, setActiveCategoryId] = useState(catalogData.categories[0].id);
   const [categorySelected, setCategorySelected] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
   const pathname = usePathname();
-  const router = useRouter();
   const catalogRef = useRef<HTMLDivElement>(null);
   const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -115,12 +114,6 @@ export const Header: React.FC = () => {
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [catalogOpen]);
-
-  const handleSearchSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    const query = searchQuery.trim();
-    router.push(query ? `/catalog?search=${encodeURIComponent(query)}` : '/catalog');
-  };
 
   const navLinks = [
     { href: '/', label: 'Home' },
@@ -238,7 +231,7 @@ export const Header: React.FC = () => {
                           setCategorySelected(true);
                         }}
                         className={`w-full flex items-center gap-3 text-left px-5 py-3 text-sm font-semibold transition-colors ${
-                          active ? 'bg-accent text-white' : 'text-ink-soft hover:bg-paper-2 hover:text-ink'
+                          active ? 'bg-[var(--accent)] text-white' : 'text-ink-soft hover:bg-paper-2 hover:text-ink'
                         }`}
                       >
                         <CatIcon className="w-4 h-4 shrink-0" strokeWidth={1.5} />
@@ -262,7 +255,7 @@ export const Header: React.FC = () => {
                     transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
                     className="absolute z-0 left-full top-0 ml-3 w-80 bg-surface rounded-lg border border-line shadow-xl p-6"
                   >
-                    <span className="inline-block text-sm font-semibold text-white bg-accent rounded-full px-3 py-1 mb-2">
+                    <span className="inline-block text-sm font-semibold text-white bg-[var(--accent)] rounded-full px-3 py-1 mb-2">
                       {activeCategory.name}
                     </span>
                     <p className="text-xs text-ink-soft mb-4">{activeCategory.description}</p>
@@ -429,18 +422,9 @@ export const Header: React.FC = () => {
         </nav>
 
         <div className="flex items-stretch gap-6">
-          {/* Catalog search */}
-          <form onSubmit={handleSearchSubmit} className="relative hidden lg:flex items-center mr-2">
-            <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-muted pointer-events-none" />
-            <input
-              type="search"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="How can we help you?"
-              aria-label="How can we help you?"
-              className="w-56 xl:w-72 pl-8 pr-3 py-2 text-xs rounded-full border border-line bg-[#fafafa] text-ink placeholder:text-muted focus:bg-surface focus:border-ink outline-none transition-colors"
-            />
-          </form>
+          {/* Site search — inline field with instant results from 1024px, an icon and full-width
+              panel below that. Opening the panel closes the mobile menu. */}
+          <NavSearch onPanelOpen={() => setMobileMenuOpen(false)} />
 
           {/* Contact */}
           <Link

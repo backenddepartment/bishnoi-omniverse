@@ -103,20 +103,29 @@
   },
   "whatWeSupply": {
     "sectionTag": "What We Supply",
-    "title": "The Bishnoi Omniverse™ Essential Hospital Line",
+    "title": "The Bishnoi Omniverse Essential Hospital Line",
     "lead": "A snapshot of what ships most often. Full specifications, certifications, and the complete brand list live on the catalog.",
     "featured": [
       {
-        "name": "IV & Infusion Therapy",
-        "desc": "Bishnoi Omniverse™ IV cannula and infusion sets for secure venous access and rapid fluid delivery."
+        "id": "gloves",
+        "name": "Gloves",
+        "desc": "Exam, surgical and specialty gloves for routine patient care through to sterile procedures.",
+        "href": "/catalog?category=gloves",
+        "linkText": "Browse Gloves"
       },
       {
-        "name": "Blood Bank & Transfusion",
-        "desc": "Sterile transfusion sets and disposable blood bags for controlled, cold-chain-monitored delivery."
+        "id": "ppe",
+        "name": "Personal Protective Equipment (PPE)",
+        "desc": "Protective clothing, face protection, and head and shoe protection for clinical and infection-control teams.",
+        "href": "/catalog?category=personal-protective-equipment-ppe",
+        "linkText": "Browse PPE"
       },
       {
-        "name": "Medical Gas & Facility Infrastructure",
-        "desc": "Bishnoi PureFlow™ high-pressure oxygen cylinders, ISO 9809-1 and DOT/TPED certified."
+        "id": "dialysis",
+        "name": "Dialysis Equipment",
+        "desc": "Dialysis machines, dialysers, bloodline sets and related consumables for renal care units, sourced on request.",
+        "href": "/catalog?category=dialysis-equipment",
+        "linkText": "Browse Dialysis Equipment"
       }
     ],
     "ctaText": "Explore the Full Catalog",

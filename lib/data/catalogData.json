@@ -7,6 +7,11 @@
   },
   "categories": [
     {
+      "id": "dialysis-equipment",
+      "name": "Dialysis Equipment",
+      "description": "Dialysis Access & Bloodlines, Dialyzers & Filters, Wound Closure, Dialysis Concentrates & Solutions, Vascular Access & Infusion Accessories, Surgical Closure Devices, Hemostatic Products, Blood Collection & Transfusion, Central & Vascular Access Catheters, Antimicrobial Dressings, Laparoscopic Disposables, Urinary Catheters."
+    },
+    {
       "id": "gloves",
       "name": "Gloves",
       "description": "Exam Gloves, Surgical Gloves, Specialty Gloves."
@@ -128,6 +133,306 @@
     }
   ],
   "products": [
+    {
+      "id": "dialysis-bloodline-sets-arterial-and-venous",
+      "categoryId": "dialysis-equipment",
+      "subcategoryId": "dialysis-equipment--dialysis-access-and-bloodlines",
+      "name": "Dialysis Bloodline Sets (Arterial & Venous)",
+      "description": "Dialysis bloodline sets are sterile, single-use tubing circuits that connect a patient's vascular access to a hemodialysis machine, carrying blood from the patient through the dialyzer and back. Each set comprises an arterial line, venous line, drip chambers and connectors matched to a specific dialysis machine brand/model, and is central to safe, leak-free extracorporeal circulation during treatment. Bloodline sets must be compatible with the dialysis machine in use and are typically supplied by the machine manufacturer or an approved third-party vendor.",
+      "specifications": "Sterile, single-patient-use PVC (often DEHP-free) tubing; arterial and venous drip chambers; luer-lock and machine-specific connectors; adult and pediatric set sizes; compatibility varies by dialysis machine brand (e.g., Fresenius, Nipro, B. Braun) — always match set to the specific machine model.",
+      "sterility": "Sterile",
+      "reuse": "Disposable",
+      "sizes": "Adult and pediatric sets; standard and low-volume/high-flux circuit variants",
+      "regulatoryClass": "Class II (moderate risk)",
+      "precautions": "Single patient use only — do not reuse or reprocess; must be compatible with the specific dialysis machine model; inspect for leaks/air prior to use; incorrect priming can cause air embolism or blood loss.",
+      "useSetting": "Hemodialysis units, hospital renal wards, dialysis centers",
+      "endUser": "Nephrology nurses, dialysis technicians"
+    },
+    {
+      "id": "hemodialysis-dialyzers",
+      "categoryId": "dialysis-equipment",
+      "subcategoryId": "dialysis-equipment--dialyzers-and-filters",
+      "name": "Hemodialysis Dialyzers",
+      "description": "Hemodialysis dialyzers (artificial kidneys) are sterile, single-use filter cartridges containing thousands of semi-permeable hollow fibers that remove waste products, excess fluid and electrolytes from a patient's blood during dialysis. Dialyzers vary by membrane material, surface area and flux (low-flux vs high-flux), which determine clearance performance and are selected according to the patient's clinical needs and treatment prescription.",
+      "specifications": "Hollow-fiber membrane (polysulfone, polyethersulfone, cellulose-based, etc.); surface area typically 1.0–2.2 m²; low-flux and high-flux variants; sterilized by steam, gamma or ETO; single-use, though some facilities reprocess under strict protocols where permitted.",
+      "sterility": "Sterile",
+      "reuse": "Disposable (single-use; reprocessing only under strict facility protocol where permitted)",
+      "sizes": "Surface area 1.0–2.2 m²; low-flux and high-flux models",
+      "regulatoryClass": "Class II (moderate risk)",
+      "precautions": "Select membrane/flux according to physician prescription; first-use syndrome/allergic reaction possible with certain membranes; do not reuse unless facility has a validated, regulator-compliant reprocessing protocol.",
+      "useSetting": "Hemodialysis units, dialysis centers, hospital renal wards",
+      "endUser": "Nephrologists, dialysis technicians, nephrology nurses"
+    },
+    {
+      "id": "surgical-sutures-absorbable-and-non-absorbable",
+      "categoryId": "dialysis-equipment",
+      "subcategoryId": "dialysis-equipment--wound-closure",
+      "name": "Surgical Sutures (Absorbable & Non-Absorbable)",
+      "description": "Surgical sutures are sterile threads used to close wounds, incisions and surgical sites by approximating tissue edges to support healing. They are available in absorbable forms (which break down naturally in the body) and non-absorbable forms (which require removal or remain permanently), in a wide range of materials, thicknesses and needle configurations to suit different tissue types and procedures.",
+      "specifications": "Absorbable (e.g., polyglactin, catgut, poliglecaprone) and non-absorbable (e.g., nylon, silk, polypropylene) materials; USP sizes typically 10-0 to 2; supplied pre-loaded on needles of varying curvature/type (cutting, reverse-cutting, tapered); sterile, individually packaged.",
+      "sterility": "Sterile",
+      "reuse": "Disposable",
+      "sizes": "USP 10-0 to 2; various needle lengths/curvatures",
+      "regulatoryClass": "Class II (moderate risk)",
+      "precautions": "Select material/size according to tissue type and procedure; needlestick injury risk during handling; verify expiry date and sterile packaging integrity before use.",
+      "useSetting": "Operating theatre, minor surgery/procedure rooms, emergency department",
+      "endUser": "Surgeons, doctors, trained clinicians"
+    },
+    {
+      "id": "av-fistula-needles",
+      "categoryId": "dialysis-equipment",
+      "subcategoryId": "dialysis-equipment--dialysis-access-and-bloodlines",
+      "name": "AV Fistula Needles",
+      "description": "Arteriovenous (AV) fistula needles are sterile, single-use needles designed to cannulate a patient's fistula or graft to establish blood flow access for hemodialysis. They come in arterial and venous configurations, often with back-eye designs and safety mechanisms to reduce accidental needlestick injury to staff.",
+      "specifications": "Stainless steel needle with wing/butterfly grip; gauge typically 15G–17G; back-eye or standard tip; fixed or detachable tubing with clamp; safety (needle-guard) and non-safety variants; sterile, single-use.",
+      "sterility": "Sterile",
+      "reuse": "Disposable",
+      "sizes": "15G, 16G, 17G; tubing lengths approx. 20–30 cm",
+      "regulatoryClass": "Class II (moderate risk)",
+      "precautions": "Needlestick injury risk — safety-engineered devices recommended; correct cannulation technique required to avoid infiltration/hematoma; single use only.",
+      "useSetting": "Hemodialysis units, dialysis centers",
+      "endUser": "Dialysis technicians, nephrology nurses"
+    },
+    {
+      "id": "dialysis-concentrate-bicarbonate-cartridges",
+      "categoryId": "dialysis-equipment",
+      "subcategoryId": "dialysis-equipment--dialysis-concentrates-and-solutions",
+      "name": "Dialysis Concentrate / Bicarbonate Cartridges",
+      "description": "Dialysis concentrates and bicarbonate cartridges supply the acid and bicarbonate components that the dialysis machine mixes with purified water to form dialysate, the fluid that draws waste products and excess fluid from the patient's blood across the dialyzer membrane. Bicarbonate is commonly supplied as a dry cartridge that the machine reconstitutes on-line, while acid concentrate is typically liquid.",
+      "specifications": "Liquid acid concentrate (drums/jugs) and dry bicarbonate cartridges; formulation must match dialysis machine brand/model and prescribed electrolyte profile; shelf-stable when unopened, limited use-life once connected.",
+      "sterility": "Non-sterile (pharmaceutical-grade solution, not for direct injection)",
+      "reuse": "Disposable (single-use cartridge/container)",
+      "sizes": "Bicarbonate cartridges ~650–900 g; acid concentrate containers 5–10 L, machine-dependent",
+      "regulatoryClass": "Class II (moderate risk)",
+      "precautions": "Must match the specific dialysis machine and prescribed formulation; incorrect electrolyte concentration can cause serious patient harm; store per manufacturer instructions and check expiry before connecting.",
+      "useSetting": "Hemodialysis units, dialysis centers",
+      "endUser": "Dialysis technicians, nephrology nurses"
+    },
+    {
+      "id": "closed-system-transfer-devices-cstd",
+      "categoryId": "dialysis-equipment",
+      "subcategoryId": "dialysis-equipment--vascular-access-and-infusion-accessories",
+      "name": "Closed-System Transfer Devices (CSTD)",
+      "description": "Closed-system transfer devices are mechanical drug-transfer devices used mainly with hazardous drugs such as chemotherapy agents, preventing the transfer of environmental contaminants into the system and the escape of hazardous drug or vapour out of the system during reconstitution, transfer and administration. They protect pharmacy and nursing staff from occupational exposure to cytotoxic medications.",
+      "specifications": "Needle-free, air-tight/closed mechanical connection; compatible vial adaptors, syringe adaptors and spike/bag connectors; typically single-use; brand-specific compatibility across components (adaptors must match the connector system).",
+      "sterility": "Sterile",
+      "reuse": "Disposable",
+      "sizes": "Vial adaptor, syringe adaptor, bag/line connector components sold as a compatible set",
+      "regulatoryClass": "Class II (moderate risk)",
+      "precautions": "Components from different CSTD brands are generally not interchangeable; staff require training on correct connection technique; intended to reduce, not eliminate, hazardous drug exposure risk — follow full PPE protocols.",
+      "useSetting": "Oncology/chemotherapy units, hospital pharmacy compounding areas",
+      "endUser": "Pharmacists, oncology nurses"
+    },
+    {
+      "id": "needleless-iv-connectors",
+      "categoryId": "dialysis-equipment",
+      "subcategoryId": "dialysis-equipment--vascular-access-and-infusion-accessories",
+      "name": "Needleless IV Connectors",
+      "description": "Needleless connectors are small valved devices attached to IV catheters, central lines or administration sets that allow clinicians to access the vascular system with a syringe or tubing without using a needle, reducing needlestick injury risk while maintaining a closed system to limit contamination and air embolism.",
+      "specifications": "Luer-activated or split-septum valve mechanisms; positive-, negative- or neutral-displacement designs; compatible with standard luer-lock syringes/tubing; sterile, single-use, typically changed every 72–96 hours or per facility protocol.",
+      "sterility": "Sterile",
+      "reuse": "Disposable",
+      "sizes": "Standard luer-lock fitting; single-use, low priming volume",
+      "regulatoryClass": "Class II (moderate risk)",
+      "precautions": "Disinfect connector surface (\"scrub the hub\") before each access to prevent catheter-related bloodstream infection; replace per facility protocol/manufacturer instructions; do not reuse.",
+      "useSetting": "Wards, ICU, dialysis units, oncology units, home infusion",
+      "endUser": "Nurses, dialysis technicians, infusion therapy staff"
+    },
+    {
+      "id": "surgical-staplers-skin-and-internal",
+      "categoryId": "dialysis-equipment",
+      "subcategoryId": "dialysis-equipment--surgical-closure-devices",
+      "name": "Surgical Staplers (Skin & Internal)",
+      "description": "Surgical staplers are devices used to close skin incisions or internal tissue (such as bowel, vascular or lung tissue) quickly and with consistent tension, using titanium or stainless-steel staples instead of sutures. Skin staplers are typically simple disposable devices for wound closure, while internal/linear and circular staplers are more complex devices used during open or laparoscopic surgery to cut and staple tissue simultaneously.",
+      "specifications": "Disposable skin staplers (25–35 regular staples per device) and linear/circular internal staplers with reloadable cartridges; staple leg length and row configuration vary by tissue type; single-use devices, some internal stapler handles are reusable with disposable cartridges.",
+      "sterility": "Sterile",
+      "reuse": "Disposable (skin staplers; internal cartridges); some internal stapler handles reusable",
+      "sizes": "Skin staplers ~25–35 staples; internal cartridges in multiple staple-height/length options",
+      "regulatoryClass": "Class II (moderate risk)",
+      "precautions": "Select cartridge/staple height according to tissue thickness; internal stapling requires surgical training; check for staple line bleeding/leak before closing.",
+      "useSetting": "Operating theatre",
+      "endUser": "Surgeons"
+    },
+    {
+      "id": "hemostatic-products-and-devices",
+      "categoryId": "dialysis-equipment",
+      "subcategoryId": "dialysis-equipment--hemostatic-products",
+      "name": "Hemostatic Products & Devices",
+      "description": "Hemostatic products are topical agents and devices applied to bleeding tissue during surgery or wound care to control hemorrhage when conventional methods (pressure, sutures, cautery) are insufficient or impractical. They include absorbable gelatin/collagen sponges, oxidized cellulose, topical thrombin and hemostatic gauze/powder.",
+      "specifications": "Absorbable collagen/gelatin sponges, oxidized regenerated cellulose, hemostatic gauze impregnated with agents (e.g., kaolin, chitosan), topical thrombin; sterile, single-use; absorbable formats typically resorb over days to weeks.",
+      "sterility": "Sterile",
+      "reuse": "Disposable",
+      "sizes": "Various sponge/gauze sizes and pack configurations",
+      "regulatoryClass": "Class II–III depending on formulation (e.g., thrombin-based products are higher risk)",
+      "precautions": "Not a substitute for surgical hemostatic technique in major bleeding; some products derived from animal/human plasma sources carry allergy/transmission-risk warnings; follow product-specific application instructions.",
+      "useSetting": "Operating theatre, emergency department",
+      "endUser": "Surgeons, emergency physicians"
+    },
+    {
+      "id": "leukoreduction-blood-filters",
+      "categoryId": "dialysis-equipment",
+      "subcategoryId": "dialysis-equipment--blood-collection-and-transfusion",
+      "name": "Leukoreduction Blood Filters",
+      "description": "Leukoreduction filters are sterile, single-use inline filters used during blood collection or transfusion to remove white blood cells (leukocytes) from red cell or platelet products, reducing the risk of febrile transfusion reactions, HLA alloimmunization and transmission of leukocyte-associated viruses such as CMV.",
+      "specifications": "Inline filter housing with polyester/synthetic fibre filter media; pre-storage (at collection) or bedside (pre-transfusion) filter types; compatible with standard blood bag tubing/spikes; sterile, single-use.",
+      "sterility": "Sterile",
+      "reuse": "Disposable",
+      "sizes": "Standard unit-volume filters (~250–450 mL blood bag compatible)",
+      "regulatoryClass": "Class II (moderate risk)",
+      "precautions": "Follow correct priming to avoid air introduction; filtration is time-sensitive — follow blood bank/manufacturer protocol; not a substitute for other blood safety screening.",
+      "useSetting": "Blood bank, transfusion service, hospital wards/ICU",
+      "endUser": "Blood bank technologists, transfusion nurses"
+    },
+    {
+      "id": "chemotherapy-administration-sets-non-dehp-tubing",
+      "categoryId": "dialysis-equipment",
+      "subcategoryId": "dialysis-equipment--vascular-access-and-infusion-accessories",
+      "name": "Chemotherapy Administration Sets (Non-DEHP Tubing)",
+      "description": "Chemotherapy administration sets are IV giving sets specifically manufactured with non-DEHP, non-PVC tubing to prevent leaching of plasticizers into cytotoxic drug solutions and to reduce drug absorption into the tubing wall, ensuring accurate cytotoxic drug delivery. They typically include connectors compatible with CSTD systems for staff safety.",
+      "specifications": "Non-DEHP, non-PVC (e.g., polyethylene-lined) tubing; drip chamber, roller clamp, and CSTD-compatible or luer-lock connectors; light-protected tubing available for photosensitive drugs; sterile, single-use.",
+      "sterility": "Sterile",
+      "reuse": "Disposable",
+      "sizes": "Standard adult IV set lengths; light-protected and non-light-protected variants",
+      "regulatoryClass": "Class II (moderate risk)",
+      "precautions": "Use only non-DEHP sets for cytotoxic infusions; handle as hazardous drug waste after use; combine with CSTD and full PPE per chemotherapy safe-handling protocol.",
+      "useSetting": "Oncology/chemotherapy units, hospital pharmacy",
+      "endUser": "Oncology nurses, pharmacists"
+    },
+    {
+      "id": "peripherally-inserted-central-catheters-picc",
+      "categoryId": "dialysis-equipment",
+      "subcategoryId": "dialysis-equipment--central-and-vascular-access-catheters",
+      "name": "Peripherally Inserted Central Catheters (PICC)",
+      "description": "A peripherally inserted central catheter (PICC) is a long, thin, sterile catheter inserted through a peripheral vein (usually in the upper arm) and advanced until its tip sits in a large central vein near the heart, providing reliable venous access for extended IV therapy, chemotherapy, parenteral nutrition or frequent blood draws over weeks to months.",
+      "specifications": "Polyurethane or silicone catheter; single-, double- or triple-lumen configurations; typically 4–6 Fr for adults; lengths adjustable/trimmable at insertion; may include antimicrobial or power-injectable variants; sterile, single-patient use, inserted under ultrasound guidance.",
+      "sterility": "Sterile",
+      "reuse": "Disposable",
+      "sizes": "3–6 Fr, single/double/triple lumen",
+      "regulatoryClass": "Class II (moderate risk)",
+      "precautions": "Requires trained inserter and, ideally, ultrasound/ECG-tip-confirmation guidance; risk of catheter-related bloodstream infection, thrombosis or malposition; strict aseptic insertion and dressing-care protocol required.",
+      "useSetting": "Hospital wards, oncology units, home infusion therapy",
+      "endUser": "Vascular access nurses, radiologists, physicians"
+    },
+    {
+      "id": "surgical-meshes-hernia-repair",
+      "categoryId": "dialysis-equipment",
+      "subcategoryId": "dialysis-equipment--surgical-closure-devices",
+      "name": "Surgical Meshes (Hernia Repair)",
+      "description": "Surgical meshes are sterile, flexible implants used to reinforce or bridge weakened tissue, most commonly in hernia repair, providing structural support while the body's own tissue grows into or around the mesh. Meshes are available in synthetic non-absorbable, partially absorbable and biologic materials, selected according to the repair site and patient risk factors.",
+      "specifications": "Synthetic (polypropylene, polyester), absorbable/partially-absorbable and biologic (animal-derived collagen) mesh materials; flat sheet or pre-shaped/plug formats; various pore sizes and weights (lightweight to heavyweight); sterile, single-use implant.",
+      "sterility": "Sterile",
+      "reuse": "Disposable",
+      "sizes": "Sheet sizes commonly ~6x11 cm to 30x30 cm; pre-shaped plug/patch options",
+      "regulatoryClass": "Class II–III (implantable device; class depends on material/indication)",
+      "precautions": "Material selection affects infection risk, adhesion formation and recurrence rate; contraindicated/cautioned in contaminated fields for some synthetic meshes; verify sterility and expiry before implantation.",
+      "useSetting": "Operating theatre",
+      "endUser": "Surgeons"
+    },
+    {
+      "id": "blood-bags-collection-sets",
+      "categoryId": "dialysis-equipment",
+      "subcategoryId": "dialysis-equipment--blood-collection-and-transfusion",
+      "name": "Blood Bags (Collection Sets)",
+      "description": "Blood bags are sterile, single-use plastic collection sets used to collect, separate, store and transfuse whole blood and its components (red cells, plasma, platelets). Sets range from single bags for simple collection to multi-bag (double/triple/quadruple) systems that allow component separation by centrifugation without breaking the closed, sterile system.",
+      "specifications": "PVC (DEHP or DEHP-free) bags with integral anticoagulant (e.g., CPDA-1, CPD) pre-filled in the primary bag; single, double, triple or quadruple bag configurations; integral collection needle and tubing; sterile, single-use, closed system.",
+      "sterility": "Sterile",
+      "reuse": "Disposable",
+      "sizes": "Primary bag ~450–500 mL capacity; satellite bags vary by configuration",
+      "regulatoryClass": "Class II (moderate risk)",
+      "precautions": "Maintain closed-system sterility throughout collection/processing; correct anticoagulant-to-blood ratio is critical; store and transport per blood bank temperature requirements.",
+      "useSetting": "Blood bank, mobile blood donation drives, transfusion service",
+      "endUser": "Blood bank technologists, phlebotomists"
+    },
+    {
+      "id": "central-venous-catheters-cvc",
+      "categoryId": "dialysis-equipment",
+      "subcategoryId": "dialysis-equipment--central-and-vascular-access-catheters",
+      "name": "Central Venous Catheters (CVC)",
+      "description": "Central venous catheters are sterile catheters inserted into a large central vein (internal jugular, subclavian or femoral) to provide vascular access for fluid/medication administration, hemodynamic monitoring, or when peripheral access is inadequate. They are typically inserted at the bedside or in theatre using ultrasound guidance and sterile technique, and may remain in place for days to weeks.",
+      "specifications": "Polyurethane catheter, single- to quadruple-lumen; typical adult sizes 7–8.5 Fr; antimicrobial/antithrombogenic-coated variants available; insertion kit usually includes guidewire, dilator, introducer needle and fixation device; sterile, single-patient use.",
+      "sterility": "Sterile",
+      "reuse": "Disposable",
+      "sizes": "7–8.5 Fr (adult), 4–7 Fr (pediatric); single to quadruple lumen",
+      "regulatoryClass": "Class II (moderate risk)",
+      "precautions": "Risk of catheter-related bloodstream infection, pneumothorax (subclavian/jugular) and thrombosis; requires trained inserter, maximal sterile barrier precautions and radiographic tip confirmation.",
+      "useSetting": "ICU, operating theatre, emergency department",
+      "endUser": "Physicians, anesthesiologists, critical care nurses"
+    },
+    {
+      "id": "antimicrobial-wound-dressings-silver-phmb",
+      "categoryId": "dialysis-equipment",
+      "subcategoryId": "dialysis-equipment--antimicrobial-dressings",
+      "name": "Antimicrobial Wound Dressings (Silver / PHMB)",
+      "description": "Antimicrobial dressings incorporate agents such as silver (Ag) or polyhexamethylene biguanide (PHMB) into the dressing material to reduce bacterial bioburden at the wound surface, helping manage infected or high-risk chronic and post-surgical wounds alongside standard wound-care protocols.",
+      "specifications": "Silver-impregnated foam, hydrofiber, alginate or gauze formats; PHMB-impregnated gauze/foam; absorbent or non-absorbent backing; sizes typically 5x5 cm to 15x15 cm or roll format; sterile, single-use.",
+      "sterility": "Sterile",
+      "reuse": "Disposable",
+      "sizes": "5x5 cm to 15x15 cm pads; rolls for larger/irregular wounds",
+      "regulatoryClass": "Class II (moderate risk)",
+      "precautions": "Not a substitute for systemic antibiotics in clinically infected wounds; silver sensitivity is possible; follow manufacturer wear-time recommendations.",
+      "useSetting": "Wards, wound care clinics, home care",
+      "endUser": "Nurses, wound care specialists"
+    },
+    {
+      "id": "laparoscopic-disposables-trocar-sets",
+      "categoryId": "dialysis-equipment",
+      "subcategoryId": "dialysis-equipment--laparoscopic-disposables",
+      "name": "Laparoscopic Disposables / Trocar Sets",
+      "description": "Laparoscopic disposable sets, including trocars, provide sterile single-use access ports and instrumentation for minimally invasive (keyhole) surgery, allowing insertion of the laparoscope and surgical instruments through small abdominal incisions while maintaining pneumoperitoneum.",
+      "specifications": "Bladed or bladeless trocar tips; cannula diameters typically 5 mm, 10 mm and 12 mm; insufflation valve and seal mechanisms; may include disposable Veress needles, specimen retrieval bags and other single-use laparoscopic accessories; sterile, single-use.",
+      "sterility": "Sterile",
+      "reuse": "Disposable",
+      "sizes": "5 mm, 10 mm, 12 mm cannula diameters",
+      "regulatoryClass": "Class II (moderate risk)",
+      "precautions": "Risk of visceral/vascular injury on insertion — requires trained surgical technique; verify correct trocar size for the intended instrument; single-use only, do not reprocess.",
+      "useSetting": "Operating theatre (laparoscopic/minimally invasive surgery)",
+      "endUser": "Surgeons"
+    },
+    {
+      "id": "hemodialysis-catheters-tunneled-and-non-tunneled",
+      "categoryId": "dialysis-equipment",
+      "subcategoryId": "dialysis-equipment--dialysis-access-and-bloodlines",
+      "name": "Hemodialysis Catheters (Tunneled & Non-Tunneled)",
+      "description": "Hemodialysis catheters are large-bore, dual-lumen central venous catheters designed specifically for hemodialysis, providing immediate vascular access when a fistula or graft is not yet available or usable. Non-tunneled catheters are for short-term/acute use, while tunneled cuffed catheters are designed for longer-term use with a subcutaneous tunnel and cuff that reduces infection risk and aids fixation.",
+      "specifications": "Dual-lumen, large-bore polyurethane catheter; typical size 11.5–14.5 Fr; non-tunneled (acute, days) and tunneled cuffed (chronic, weeks–months) variants; insertion via internal jugular, subclavian or femoral vein under ultrasound guidance; sterile, single-patient use.",
+      "sterility": "Sterile",
+      "reuse": "Disposable",
+      "sizes": "11.5–14.5 Fr, dual-lumen; various tunneled lengths",
+      "regulatoryClass": "Class II (moderate risk)",
+      "precautions": "High infection and thrombosis risk relative to fistula/graft access — for temporary or bridging use where possible; requires trained inserter and strict aseptic catheter-care protocol; heparin/citrate locking per facility protocol between sessions.",
+      "useSetting": "Hemodialysis units, ICU, hospital renal wards",
+      "endUser": "Nephrologists, interventional radiologists, dialysis nurses"
+    },
+    {
+      "id": "iv-cannulas-iv-catheters",
+      "categoryId": "dialysis-equipment",
+      "subcategoryId": "dialysis-equipment--vascular-access-and-infusion-accessories",
+      "name": "IV Cannulas / IV Catheters",
+      "description": "Intravenous (IV) cannulas are short, sterile peripheral catheters inserted into a vein to provide access for fluid, medication or blood product administration and for blood sampling. They are among the most frequently used vascular access devices across nearly all clinical settings. Note: a partner supplier has already been secured for this item, so further supplier sourcing is not required.",
+      "specifications": "Color-coded by gauge (e.g., 14G–24G); winged or non-winged hub; integrated injection port on some models; safety (needle-shielding) and non-safety variants; sterile, single-use.",
+      "sterility": "Sterile",
+      "reuse": "Disposable",
+      "sizes": "14G–24G",
+      "regulatoryClass": "Class II (moderate risk)",
+      "precautions": "Needlestick injury risk — safety-engineered devices recommended; site rotation/monitoring needed to reduce phlebitis/infiltration; single use only.",
+      "useSetting": "Wards, OPD, ICU, emergency department",
+      "endUser": "Nurses, doctors"
+    },
+    {
+      "id": "foley-catheters-indwelling-urinary-catheters",
+      "categoryId": "dialysis-equipment",
+      "subcategoryId": "dialysis-equipment--urinary-catheters",
+      "name": "Foley Catheters (Indwelling Urinary Catheters)",
+      "description": "Foley catheters are sterile, flexible indwelling urinary catheters inserted through the urethra into the bladder to provide continuous urinary drainage. An inflatable balloon near the tip holds the catheter in place once inserted; commonly used for patients needing accurate urine output monitoring, urinary retention management, or peri-operative bladder decompression — including dialysis patients requiring close fluid balance monitoring. Note: Foley catheters also appear under the Urology category elsewhere in this catalog — kept here as well since the item was requested for this list.",
+      "specifications": "Latex or silicone construction; 2-way (drainage only) or 3-way (drainage + irrigation) configurations; balloon capacity typically 5–30 mL; sizes 8–24 Fr; sterile, single-patient use.",
+      "sterility": "Sterile",
+      "reuse": "Disposable",
+      "sizes": "8–24 Fr; balloon capacity 5–30 mL",
+      "regulatoryClass": "Class II (moderate risk)",
+      "precautions": "Catheter-associated urinary tract infection (CAUTI) risk increases with duration of use — remove as soon as clinically appropriate; latex allergy risk with latex catheters — silicone alternative available; maintain closed drainage system.",
+      "useSetting": "Wards, ICU, operating theatre, long-term/home care",
+      "endUser": "Nurses, doctors, caregivers"
+    },
     {
       "id": "nitrile-examination-gloves",
       "categoryId": "gloves",
@@ -4764,6 +5069,66 @@
     "ctaTalk": "[ TALK TO SOURCING ]"
   },
   "subcategories": [
+    {
+      "id": "dialysis-equipment--dialysis-access-and-bloodlines",
+      "categoryId": "dialysis-equipment",
+      "name": "Dialysis Access & Bloodlines"
+    },
+    {
+      "id": "dialysis-equipment--dialyzers-and-filters",
+      "categoryId": "dialysis-equipment",
+      "name": "Dialyzers & Filters"
+    },
+    {
+      "id": "dialysis-equipment--wound-closure",
+      "categoryId": "dialysis-equipment",
+      "name": "Wound Closure"
+    },
+    {
+      "id": "dialysis-equipment--dialysis-concentrates-and-solutions",
+      "categoryId": "dialysis-equipment",
+      "name": "Dialysis Concentrates & Solutions"
+    },
+    {
+      "id": "dialysis-equipment--vascular-access-and-infusion-accessories",
+      "categoryId": "dialysis-equipment",
+      "name": "Vascular Access & Infusion Accessories"
+    },
+    {
+      "id": "dialysis-equipment--surgical-closure-devices",
+      "categoryId": "dialysis-equipment",
+      "name": "Surgical Closure Devices"
+    },
+    {
+      "id": "dialysis-equipment--hemostatic-products",
+      "categoryId": "dialysis-equipment",
+      "name": "Hemostatic Products"
+    },
+    {
+      "id": "dialysis-equipment--blood-collection-and-transfusion",
+      "categoryId": "dialysis-equipment",
+      "name": "Blood Collection & Transfusion"
+    },
+    {
+      "id": "dialysis-equipment--central-and-vascular-access-catheters",
+      "categoryId": "dialysis-equipment",
+      "name": "Central & Vascular Access Catheters"
+    },
+    {
+      "id": "dialysis-equipment--antimicrobial-dressings",
+      "categoryId": "dialysis-equipment",
+      "name": "Antimicrobial Dressings"
+    },
+    {
+      "id": "dialysis-equipment--laparoscopic-disposables",
+      "categoryId": "dialysis-equipment",
+      "name": "Laparoscopic Disposables"
+    },
+    {
+      "id": "dialysis-equipment--urinary-catheters",
+      "categoryId": "dialysis-equipment",
+      "name": "Urinary Catheters"
+    },
     {
       "id": "gloves--exam-gloves",
       "categoryId": "gloves",

@@ -1,6 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
-import { ArrowRight, ArrowUpRight, ShieldCheck, Globe2, FlaskConical } from 'lucide-react';
+import { ArrowRight, ArrowUpRight, ShieldCheck, Globe2, FlaskConical, ImageIcon } from 'lucide-react';
 import homepageData from '@/lib/data/homepageData.json';
 import sectionDetail from '@/lib/data/sectionDetailData.json';
 import { HeroSlider } from '@/components/HeroSlider';
@@ -19,6 +19,9 @@ import sourcingImg from '@/app/assets/sourcing.jpg';
 import familiesImg from '@/app/assets/families.jpg';
 import llpImg from '@/app/assets/LLPIMAGE.png';
 import corpImg from '@/app/assets/CORPIMAGE.png';
+import featuredGlovesImg from '@/app/productimages/featuredone.png';
+import featuredPpeImg from '@/app/productimages/featuredtwo.png';
+import featuredDialysisImg from '@/app/productimages/featuredthree.png';
 
 // Images sourced from Wikimedia Commons (CC BY / CC BY-SA / public domain)
 const IMG = {
@@ -37,6 +40,23 @@ const IMG = {
   // Wikimedia Commons, public domain, verified to resolve. 1920px thumbnail, not the original.
   responseBand:
     'https://upload.wikimedia.org/wikipedia/commons/thumb/0/09/Reserve_Soldiers_support_medical_supply_mission_during_pandemic_%286154094%29.jpg/1920px-Reserve_Soldiers_support_medical_supply_mission_during_pandemic_%286154094%29.jpg',
+};
+
+// What We Supply card photos, keyed by the featured line's id in homepageData.json. A line with no
+// entry shows the grey placeholder instead.
+const FEATURED_LINE_IMAGES: Record<string, { src: string; alt: string } | undefined> = {
+  gloves: {
+    src: featuredGlovesImg.src,
+    alt: 'A pair of blue nitrile examination gloves in front of a white glove box',
+  },
+  ppe: {
+    src: featuredPpeImg.src,
+    alt: 'Personal protective equipment: a white hooded coverall, a blue isolation gown, gloves, a face mask, a face shield and a bouffant cap',
+  },
+  dialysis: {
+    src: featuredDialysisImg.src,
+    alt: 'A haemodialysis machine with IV pole, alongside dialysers, dialysate concentrates and bloodline tubing',
+  },
 };
 
 const HERO_SLIDES = [
@@ -186,7 +206,8 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* What We Supply — three featured lines. All five, plus the brand table, live on /catalog. */}
+      {/* What We Supply — three featured lines: the catalog's first two categories plus Dialysis
+          Equipment. Each card links through to its category, or to a quote request for dialysis. */}
       <section className="section section-line section-white">
         <div className="wrap">
           <div className="grid-2 items-start">
@@ -196,25 +217,45 @@ export default function HomePage() {
             </div>
             <div className="lead-block">
               <p className="text-ink-soft leading-relaxed m-0">{whatWeSupply.lead}</p>
+              <Link href={whatWeSupply.ctaHref} className="btn btn-primary mt-7">
+                {whatWeSupply.ctaText}
+              </Link>
             </div>
           </div>
 
           <div className="grid-3 mt-14">
-            {whatWeSupply.featured.map((line, idx) => (
-              <div key={line.name} className="pillar">
-                <span className="num">0{idx + 1}</span>
-                <h3>{line.name}</h3>
-                <p>{line.desc}</p>
-              </div>
-            ))}
-          </div>
-
-          <div className="mt-12">
-            <Link href={whatWeSupply.ctaHref} className="btn btn-primary">
-              {whatWeSupply.ctaText} <ArrowRight />
-            </Link>
-          </div>
-        </div>
+            {whatWeSupply.featured.map((line) => {
+              const image = FEATURED_LINE_IMAGES[line.id];
+              return (
+                <Link
+                  key={line.id}
+                  href={line.href}
+                  aria-label={line.linkText}
+                  className="pillar featured-line"
+                >
+                  <div className={`featured-line-media${image ? ' has-photo' : ''}`}>
+                    {image ? (
+                      <img src={image.src} alt={image.alt} loading="lazy" />
+                    ) : (
+                      <span className="featured-line-empty">
+                        <ImageIcon strokeWidth={1.5} aria-hidden="true" />
+                        <span>Image coming soon</span>
+                      </span>
+                    )}
+                  </div>
+                  {/* The arrow sits inline, bound to the last word by a no-break space, so it
+                      follows the name even when the name wraps onto a second line. */}
+                  <h3 className="featured-line-title">
+                    {line.name}
+                    {'\u00a0'}
+                    <span className="featured-line-arrow" aria-hidden="true">
+                      <ArrowUpRight strokeWidth={2} />
+                    </span>
+                  </h3>
+                </Link>
+              );
+            })}
+          </div>        </div>
       </section>
 
       {/* Who We Serve — teaser only. The full four-audience detail lives on /global. */}

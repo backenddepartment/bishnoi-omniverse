@@ -6,13 +6,12 @@ import {
   ArrowDown,
   ArrowRight,
   Building2,
-  Heart,
+  ImageIcon,
   Info,
-  Layers,
   Package,
   RecycleIcon,
   RotateCcw,
-  Ruler,
+  SendHorizontal,
   ShieldAlert,
   ShieldCheck,
   ShoppingBag,
@@ -21,10 +20,9 @@ import {
   Users,
   X,
   ZoomIn,
-  type LucideIcon,
 } from 'lucide-react';
 import type { ProductImage } from '@/lib/catalogImages';
-import { getCategoryIcon } from '@/lib/catalogIcons';
+import { parseSizes } from '@/lib/catalogSizes';
 
 export interface PdpProduct {
   id: string;
@@ -41,6 +39,8 @@ export interface PdpProduct {
   useSetting: string;
   endUser: string;
   image?: ProductImage;
+  /** Extra photos for the gallery rail, main image first. Falls back to `image` alone. */
+  gallery?: ProductImage[];
 }
 
 export interface PdpRelated {
@@ -48,6 +48,7 @@ export interface PdpRelated {
   name: string;
   categoryId: string;
   subcategoryName?: string;
+  sterility?: string;
   image?: ProductImage;
 }
 
@@ -62,26 +63,6 @@ interface Props {
 /* ------------------------------------------------------------------ *
  * Data shaping
  * ------------------------------------------------------------------ */
-
-/**
- * "XS, S, M, L, XL" -> selectable buttons. The sheet's Common Sizes / Capacity column is prose
- * as often as it is a list, so anything that does not split into short comma-separated values is
- * left to render as a sentence instead.
- */
-function parseSizes(sizes: string): string[] {
-  if (!sizes) return [];
-  // A semicolon joins statements rather than options — "One size (adult); paediatric available"
-  // is a sentence, not two sizes to pick between.
-  if (sizes.includes(';')) return [];
-  const parts = sizes
-    .split(',')
-    .map((part) => part.trim())
-    .filter(Boolean);
-  if (parts.length < 2) return [];
-  // Long fragments mean it is a description, not a size list.
-  if (parts.some((part) => part.length > 24)) return [];
-  return parts.slice(0, 12);
-}
 
 /**
  * The Specifications column is a single prose blob, usually semicolon-separated clauses, some of
@@ -101,15 +82,11 @@ function parseSpecPairs(specifications: string): { label: string; value: string 
     });
 }
 
-/** Four framings of a product photo, when one exists, so the gallery rail reads as a set. */
-const VIEWS = [
-  { key: 'full', label: 'Full view', objectPosition: 'center 50%', scale: 1 },
-  { key: 'top', label: 'Top detail', objectPosition: 'center 18%', scale: 1.35 },
-  { key: 'close', label: 'Close-up', objectPosition: 'center 50%', scale: 1.8 },
-  { key: 'base', label: 'Base detail', objectPosition: 'center 88%', scale: 1.35 },
-];
+/** Slots on the gallery rail: the product photo first, placeholders for the shots still to come. */
+const GALLERY_SLOTS = 4;
 
-const TABS = ['Details', 'Specifications', 'Safety & Handling', 'Use & Setting'] as const;
+// No "Details" tab: the description and product facts already sit in the quote box beside it.
+const TABS = ['Use & Setting', 'At a Glance', 'Specifications', 'Safety & Handling'] as const;
 type Tab = (typeof TABS)[number];
 
 /** Shown wherever a sheet column marked * is rendered. */
@@ -125,15 +102,15 @@ export function ProductDetail({ product, categoryName, categoryId, subcategoryNa
   const sizes = parseSizes(product.sizes);
   const specPairs = parseSpecPairs(product.specifications);
   const image = product.image;
-  const CategoryIcon = getCategoryIcon(product.categoryId);
 
   const [activeView, setActiveView] = useState(0);
   const [activeSize, setActiveSize] = useState(0);
-  const [activeTab, setActiveTab] = useState<Tab>('Details');
-  const [saved, setSaved] = useState(false);
+  const [activeTab, setActiveTab] = useState<Tab>('Use & Setting');
   const [isZoomed, setIsZoomed] = useState(false);
 
-  const view = VIEWS[activeView];
+  // Photos fill the rail's slots in order; any slot past the last photo shows the placeholder.
+  const gallery = product.gallery?.length ? product.gallery : image ? [image] : [];
+  const stageImage = gallery[activeView];
   const requestHref = `/contact?type=hospital-supply&product=${encodeURIComponent(product.name)}`;
 
   return (
@@ -142,46 +119,45 @@ export function ProductDetail({ product, categoryName, categoryId, subcategoryNa
       <section className="pdp-top">
         <div className="wrap pdp-top-grid">
           <div className="pdp-gallery">
-            {/* The thumbnail rail only earns its place when there is a real photo to crop. */}
-            {image && (
-              <div className="pdp-thumbs">
-                {VIEWS.map((v, idx) => (
+            {/* The product photo (when there is one) in the first slot; category-icon
+                placeholders hold the remaining slots until more photos are cleared. */}
+            <div className="pdp-thumbs">
+              {Array.from({ length: GALLERY_SLOTS }, (_, idx) => {
+                const slotImage = gallery[idx];
+                return (
                   <button
-                    key={v.key}
+                    key={idx}
                     type="button"
                     onClick={() => setActiveView(idx)}
-                    aria-label={`${v.label} of ${product.name}`}
+                    aria-label={slotImage ? `Photo ${idx + 1} of ${product.name}` : `No image (slot ${idx + 1})`}
                     aria-pressed={activeView === idx}
-                    className={`pdp-thumb${activeView === idx ? ' is-active' : ''}`}
+                    className={`pdp-thumb${slotImage ? ' has-photo' : ' is-placeholder'}${activeView === idx ? ' is-active' : ''}`}
                   >
-                    <img
-                      src={image.src}
-                      alt=""
-                      loading="lazy"
-                      style={{ objectPosition: v.objectPosition, transform: `scale(${v.scale})` }}
-                    />
+                    {slotImage ? (
+                      <img src={slotImage.src} alt="" loading="lazy" />
+                    ) : (
+                      <>
+                        <ImageIcon strokeWidth={1.5} aria-hidden="true" />
+                        <span>No image</span>
+                      </>
+                    )}
                   </button>
-                ))}
-                <button
-                  type="button"
-                  aria-label="Next view"
-                  onClick={() => setActiveView((i) => (i + 1) % VIEWS.length)}
-                  className="pdp-thumb-next"
-                >
-                  <ArrowDown className="w-4 h-4" />
-                </button>
-              </div>
-            )}
+                );
+              })}
+              <button
+                type="button"
+                aria-label="Next image"
+                onClick={() => setActiveView((i) => (i + 1) % GALLERY_SLOTS)}
+                className="pdp-thumb-next"
+              >
+                <ArrowDown className="w-4 h-4" />
+              </button>
+            </div>
 
-            <div className={`pdp-stage${image ? '' : ' is-icon'}`}>
-              {image ? (
+            <div className={`pdp-stage${stageImage ? ' has-photo' : ' is-icon'}`}>
+              {stageImage ? (
                 <>
-                  <img
-                    src={image.src}
-                    alt={image.alt || product.name}
-                    loading="eager"
-                    style={{ objectPosition: view.objectPosition, transform: `scale(${view.scale})` }}
-                  />
+                  <img src={stageImage.src} alt={stageImage.alt || product.name} loading="eager" />
                   <button
                     type="button"
                     aria-label="Zoom image"
@@ -193,8 +169,8 @@ export function ProductDetail({ product, categoryName, categoryId, subcategoryNa
                 </>
               ) : (
                 <div className="pdp-stage-icon">
-                  <CategoryIcon strokeWidth={1} aria-hidden="true" />
-                  <span>{categoryName}</span>
+                  <ImageIcon strokeWidth={1.25} aria-hidden="true" />
+                  <span>No image</span>
                 </div>
               )}
             </div>
@@ -248,16 +224,10 @@ export function ProductDetail({ product, categoryName, categoryId, subcategoryNa
                 </div>
                 <div className="pdp-attrs">
                   {product.sterility && (
-                    <span className="pdp-attr">
-                      <Sparkles className="w-3.5 h-3.5" />
-                      {product.sterility}
-                    </span>
+                    <span className="pdp-attr">{product.sterility}</span>
                   )}
                   {product.reuse && (
-                    <span className="pdp-attr">
-                      <RecycleIcon className="w-3.5 h-3.5" />
-                      {product.reuse}
-                    </span>
+                    <span className="pdp-attr">{product.reuse}</span>
                   )}
                 </div>
               </div>
@@ -274,9 +244,6 @@ export function ProductDetail({ product, categoryName, categoryId, subcategoryNa
                         : <em>{sizes[activeSize]}</em>
                       </>
                     )}
-                  </span>
-                  <span className="pdp-guide">
-                    <Ruler className="w-3.5 h-3.5" /> Indicative range
                   </span>
                 </div>
                 {sizes.length > 0 ? (
@@ -310,15 +277,6 @@ export function ProductDetail({ product, categoryName, categoryId, subcategoryNa
               >
                 <ShoppingBag className="w-5 h-5" /> Add to Quote
               </Link>
-              <button
-                type="button"
-                aria-label={saved ? 'Remove from shortlist' : 'Save to shortlist'}
-                aria-pressed={saved}
-                onClick={() => setSaved((s) => !s)}
-                className={`pdp-save${saved ? ' is-active' : ''}`}
-              >
-                <Heart className="w-5 h-5" fill={saved ? 'currentColor' : 'none'} />
-              </button>
             </div>
 
             <div className="pdp-trust">
@@ -345,12 +303,8 @@ export function ProductDetail({ product, categoryName, categoryId, subcategoryNa
               </div>
             </div>
           </div>
-        </div>
-      </section>
 
-      {/* ── Tabs + summary panel ──────────────────────────────────────── */}
-      <section className="pdp-mid">
-        <div className="wrap pdp-mid-grid">
+          {/* Tabs sit directly under the gallery; the quote box runs alongside both. */}
           <div className="pdp-tabs-col">
             <div className="pdp-tabs" role="tablist" aria-label="Product information">
               {TABS.map((tab) => (
@@ -368,47 +322,6 @@ export function ProductDetail({ product, categoryName, categoryId, subcategoryNa
             </div>
 
             <div className="pdp-panel" role="tabpanel">
-              {activeTab === 'Details' && (
-                <>
-                  <p>{product.description}</p>
-                  <ul className="pdp-features">
-                    {categoryName && (
-                      <li>
-                        <Layers className="w-4 h-4" strokeWidth={1.5} />
-                        <span>
-                          Category: {categoryName}
-                          {subcategoryName ? ` — ${subcategoryName}` : ''}
-                        </span>
-                      </li>
-                    )}
-                    {product.sterility && (
-                      <li>
-                        <Sparkles className="w-4 h-4" strokeWidth={1.5} />
-                        <span>{product.sterility}</span>
-                      </li>
-                    )}
-                    {product.reuse && (
-                      <li>
-                        <RecycleIcon className="w-4 h-4" strokeWidth={1.5} />
-                        <span>{product.reuse}</span>
-                      </li>
-                    )}
-                    {product.sizes && (
-                      <li>
-                        <Ruler className="w-4 h-4" strokeWidth={1.5} />
-                        <span>Sizes / capacity: {product.sizes}</span>
-                      </li>
-                    )}
-                    {product.regulatoryClass && (
-                      <li>
-                        <ShieldCheck className="w-4 h-4" strokeWidth={1.5} />
-                        <span>Typical regulatory class: {product.regulatoryClass}</span>
-                      </li>
-                    )}
-                  </ul>
-                </>
-              )}
-
               {activeTab === 'Specifications' && (
                 <>
                   {specPairs.some((pair) => pair.label) ? (
@@ -429,10 +342,6 @@ export function ProductDetail({ product, categoryName, categoryId, subcategoryNa
                   ) : (
                     <p>{product.specifications || 'No specifications recorded for this product.'}</p>
                   )}
-                  <p className="pdp-disclaimer">
-                    <Info className="w-3.5 h-3.5" />
-                    {REFERENCE_NOTE}
-                  </p>
                 </>
               )}
 
@@ -498,74 +407,67 @@ export function ProductDetail({ product, categoryName, categoryId, subcategoryNa
                       <span>Palletised export packing with batch labelling</span>
                     </li>
                   </ul>
-                  <p className="pdp-disclaimer">
-                    <Info className="w-3.5 h-3.5" />
-                    {REFERENCE_NOTE}
-                  </p>
+                </>
+              )}
+
+              {activeTab === 'At a Glance' && (
+                <>
+                  <dl className="pdp-summary-list">
+                    {categoryName && (
+                      <div>
+                        <dt>Category</dt>
+                        <dd>{categoryName}</dd>
+                      </div>
+                    )}
+                    {subcategoryName && (
+                      <div>
+                        <dt>Subcategory</dt>
+                        <dd>{subcategoryName}</dd>
+                      </div>
+                    )}
+                    {product.sterility && (
+                      <div>
+                        <dt>Sterility</dt>
+                        <dd>{product.sterility}</dd>
+                      </div>
+                    )}
+                    {product.reuse && (
+                      <div>
+                        <dt>Use</dt>
+                        <dd>{product.reuse}</dd>
+                      </div>
+                    )}
+                    {product.sizes && (
+                      <div>
+                        <dt>Sizes / capacity</dt>
+                        <dd>{product.sizes}</dd>
+                      </div>
+                    )}
+                    {product.regulatoryClass && (
+                      <div>
+                        <dt>Typical class</dt>
+                        <dd>{product.regulatoryClass}</dd>
+                      </div>
+                    )}
+                    {product.useSetting && (
+                      <div>
+                        <dt>Use setting</dt>
+                        <dd>{product.useSetting}</dd>
+                      </div>
+                    )}
+                    {product.endUser && (
+                      <div>
+                        <dt>End user</dt>
+                        <dd>{product.endUser}</dd>
+                      </div>
+                    )}
+                  </dl>
+                  <Link href={requestHref} className="pdp-summary-cta">
+                    Request this product <ArrowRight className="w-4 h-4" />
+                  </Link>
                 </>
               )}
             </div>
-          </div>
-
-          {/* Summary panel, in place of the reference's detail shot */}
-          <aside className="pdp-summary">
-            <div className="pdp-summary-head">
-              <CategoryIcon className="w-5 h-5" strokeWidth={1.5} aria-hidden="true" />
-              <h2>At a glance</h2>
-            </div>
-            <dl className="pdp-summary-list">
-              {categoryName && (
-                <div>
-                  <dt>Category</dt>
-                  <dd>{categoryName}</dd>
-                </div>
-              )}
-              {subcategoryName && (
-                <div>
-                  <dt>Subcategory</dt>
-                  <dd>{subcategoryName}</dd>
-                </div>
-              )}
-              {product.sterility && (
-                <div>
-                  <dt>Sterility</dt>
-                  <dd>{product.sterility}</dd>
-                </div>
-              )}
-              {product.reuse && (
-                <div>
-                  <dt>Use</dt>
-                  <dd>{product.reuse}</dd>
-                </div>
-              )}
-              {product.sizes && (
-                <div>
-                  <dt>Sizes / capacity</dt>
-                  <dd>{product.sizes}</dd>
-                </div>
-              )}
-              {product.regulatoryClass && (
-                <div>
-                  <dt>Typical class</dt>
-                  <dd>{product.regulatoryClass}</dd>
-                </div>
-              )}
-              {product.useSetting && (
-                <div>
-                  <dt>Use setting</dt>
-                  <dd>{product.useSetting}</dd>
-                </div>
-              )}
-              {product.endUser && (
-                <div>
-                  <dt>End user</dt>
-                  <dd>{product.endUser}</dd>
-                </div>
-              )}
-            </dl>
-            <Link href={requestHref} className="pdp-summary-cta">
-              Request this product <ArrowRight className="w-4 h-4" />
-            </Link>
 
             {/* Always visible, not tucked inside a tab: these values describe a product type, and
                 a buyer should see that before they act on them. */}
@@ -573,7 +475,7 @@ export function ProductDetail({ product, categoryName, categoryId, subcategoryNa
               <Info className="w-3.5 h-3.5" />
               <span>{REFERENCE_NOTE}</span>
             </p>
-          </aside>
+          </div>
         </div>
       </section>
 
@@ -589,51 +491,61 @@ export function ProductDetail({ product, categoryName, categoryId, subcategoryNa
             </div>
 
             <div className="pdp-related-grid">
-              {related.map((item) => {
-                const ItemIcon: LucideIcon = getCategoryIcon(item.categoryId);
-                return (
-                  <article key={item.id} className="pdp-related-card">
-                    <Link href={`/catalog/${item.id}`} className="pdp-related-media">
-                      {item.image ? (
-                        <img src={item.image.src} alt={item.image.alt || item.name} loading="lazy" />
-                      ) : (
-                        <span className="pdp-related-icon">
-                          <ItemIcon strokeWidth={1} aria-hidden="true" />
-                        </span>
+              {/* Same card as the catalog grid; Send Inquiry opens the quote request for that product. */}
+              {related.map((item) => (
+                <article key={item.id} className="product-card">
+                  <Link
+                    href={`/catalog/${item.id}`}
+                    aria-label={item.name}
+                    className={`product-card-media${item.image ? ' has-photo' : ' is-empty'}`}
+                  >
+                    {item.image ? (
+                      <img src={item.image.src} alt={item.image.alt || item.name} loading="lazy" />
+                    ) : (
+                      <span className="product-card-empty">
+                        <ImageIcon strokeWidth={1.5} aria-hidden="true" />
+                        <span>No image</span>
+                      </span>
+                    )}
+                  </Link>
+                  <div className="product-card-body">
+                    <div>
+                      <Link href={`/catalog/${item.id}`}>
+                        <h3>{item.name}</h3>
+                      </Link>
+                      {item.sterility && (
+                        <span className="product-card-sterility">{item.sterility}</span>
                       )}
-                    </Link>
-                    <div className="pdp-related-body">
-                      <div>
-                        <Link href={`/catalog/${item.id}`}>
-                          <h3>{item.name}</h3>
-                        </Link>
-                        {item.subcategoryName && (
-                          <span className="pdp-related-meta">{item.subcategoryName}</span>
-                        )}
-                      </div>
+                    </div>
+                    <div className="product-card-foot">
                       <Link
                         href={`/contact?type=hospital-supply&product=${encodeURIComponent(item.name)}`}
-                        aria-label={`Request a quote for ${item.name}`}
-                        className="pdp-related-save"
+                        aria-label={`Send an inquiry for ${item.name}`}
+                        className="inquiry-btn"
                       >
-                        <Heart className="w-4 h-4" />
+                        <SendHorizontal className="inquiry-btn-send" aria-hidden="true" />
+                        <span>Send Inquiry</span>
                       </Link>
                     </div>
-                  </article>
-                );
-              })}
+                  </div>
+                </article>
+              ))}
             </div>
           </div>
         </section>
       )}
 
       {/* Zoom overlay */}
-      {isZoomed && image && (
+      {isZoomed && stageImage && (
         <div className="pdp-lightbox" role="dialog" aria-modal="true" onClick={() => setIsZoomed(false)}>
           <button type="button" aria-label="Close zoom" className="pdp-lightbox-close">
             <X className="w-5 h-5" />
           </button>
-          <img src={image.src} alt={image.alt || product.name} onClick={(e) => e.stopPropagation()} />
+          <img
+            src={stageImage.src}
+            alt={stageImage.alt || product.name}
+            onClick={(e) => e.stopPropagation()}
+          />
         </div>
       )}
     </div>
