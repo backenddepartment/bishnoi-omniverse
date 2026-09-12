@@ -223,7 +223,7 @@ export default function ContactPage() {
 
                 <div className="pt-2">
                   <button type="submit" className="btn btn-primary w-full sm:w-auto justify-center">
-                    {activePersona.buttonText} <ArrowRight />
+                    {activePersona.buttonText}
                   </button>
                 </div>
               </form>

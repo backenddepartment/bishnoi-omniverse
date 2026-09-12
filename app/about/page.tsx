@@ -153,7 +153,7 @@ export default function AboutPage() {
         </div>
       </section>
 
-      <section className="section section-line section-white pt-0">
+      <section className="section section-line section-white">
         <div className="wrap">
           <div className="grid-2 items-start">
             <div className="heading-lg">
@@ -198,7 +198,7 @@ export default function AboutPage() {
               </p>
               <div className="flex flex-wrap justify-center gap-4">
                 <Link href="/contact?type=quote" className="btn btn-primary">
-                  Request a Quote <ArrowRight />
+                  Request a Quote
                 </Link>
                 <Link href="/global" className="btn btn-outline">
                   See The Group Structure

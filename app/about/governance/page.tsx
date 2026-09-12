@@ -1,6 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
-import { ArrowRight, CheckCircle } from 'lucide-react';
+import { CheckCircle } from 'lucide-react';
 import catalogData from '@/lib/data/catalogData.json';
 import sectionDetail from '@/lib/data/sectionDetailData.json';
 
@@ -82,7 +82,7 @@ export default function GovernancePage() {
           <h2>Building the world&apos;s most trusted supply line for medicine that can&apos;t wait.</h2>
           <div className="flex flex-wrap justify-center gap-4 mt-8">
             <Link href="/contact" className="btn btn-primary">
-              Get In Touch <ArrowRight />
+              Get In Touch
             </Link>
             <Link href="/catalog" className="btn btn-outline">
               Browse The Catalog

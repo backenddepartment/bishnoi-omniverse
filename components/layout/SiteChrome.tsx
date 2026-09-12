@@ -4,6 +4,7 @@ import React from 'react';
 import { usePathname } from 'next/navigation';
 import { Header } from './Header';
 import { Footer } from './Footer';
+import { MessagingButtons } from '@/components/MessagingButtons';
 
 /**
  * Routes that render standalone, with no navbar and no footer. Matched by prefix.
@@ -29,6 +30,7 @@ export function SiteChrome({ children }: { children: React.ReactNode }) {
       <Header />
       <main className="flex-grow">{children}</main>
       <Footer />
+      <MessagingButtons />
     </>
   );
 }

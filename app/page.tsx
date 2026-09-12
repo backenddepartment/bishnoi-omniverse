@@ -59,8 +59,9 @@ const FEATURED_LINE_IMAGES: Record<string, { src: string; alt: string } | undefi
   },
 };
 
+// Slide 1 (heroBg, "Clinicians supporting a patient in recovery") is out of the rotation for now;
+// add it back as the first entry to restore it.
 const HERO_SLIDES = [
-  { src: heroBg.src, alt: 'Clinicians supporting a patient in recovery' },
   { src: heroSlideTwo.src, alt: 'Bishnoi Omniverse medical supply operations' },
   { src: heroSlideThree.src, alt: 'Bishnoi Omniverse sourcing and logistics network' },
 ];
@@ -113,7 +114,7 @@ export default function HomePage() {
           <p className="lede reveal d3">{hero.subheadline}</p>
           <div className="hero-actions reveal d4">
             <Link className="btn btn-primary" href="/contact?type=quote">
-              {hero.ctaQuote} <ArrowRight />
+              {hero.ctaQuote}
             </Link>
             <Link className="btn btn-outline" href="/contact?type=hospital-supply">
               {hero.ctaHospitalSupply}
@@ -298,7 +299,7 @@ export default function HomePage() {
             <cite>Our response commitment, every quote and every case</cite>
             <div className="mt-7">
               <Link className="btn btn-outline" href="/contact?type=quote">
-                Request a Quote <ArrowRight />
+                Request a Quote
               </Link>
             </div>
           </div>
@@ -317,7 +318,7 @@ export default function HomePage() {
             <div className="lead-block">
               <p className="text-ink-soft leading-relaxed">{globalFootprint.lead}</p>
               <Link href={globalFootprint.ctaHref} className="btn btn-primary mt-2">
-                {globalFootprint.ctaText} <ArrowRight />
+                {globalFootprint.ctaText}
               </Link>
             </div>
           </div>
@@ -402,7 +403,7 @@ export default function HomePage() {
 
             <div className="mt-12">
               <Link href={standardsCompliance.levels[1].ctaHref} className="btn btn-primary">
-                {standardsCompliance.levels[1].ctaText} <ArrowRight />
+                {standardsCompliance.levels[1].ctaText}
               </Link>
             </div>
           </div>
@@ -417,7 +418,7 @@ export default function HomePage() {
             <h2 className="mb-8">{faq.title}</h2>
             <div className="flex flex-wrap gap-4">
               <Link href="/faq" className="btn btn-primary">
-                View all FAQs <ArrowRight />
+                View all FAQs
               </Link>
               {/* on-light: .btn-outline is built for dark sections, this variant is its light twin. */}
               <Link href="/contact?type=quote" className="btn btn-outline on-light">

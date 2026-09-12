@@ -322,6 +322,13 @@
   .contact-page .section-2col { background: #ffffff; }
   .contact-page .page-hero { min-height: 90vh; }
   .about-page .page-hero { min-height: 90vh; }
+  /* About Us shows its hero photo without the shared dark gradient overlay. The photo is mostly
+     white, so the hero's text switches from white to the dark ink colours to stay readable. */
+  .about-page .page-hero .hero-media::after { display: none; }
+  .about-page .page-hero { color: var(--ink); }
+  .about-page .page-hero h1 { color: var(--ink); }
+  .about-page .page-hero .lede { color: var(--ink-soft); }
+  .about-page .page-hero .eyebrow.on-dark { color: var(--accent-dark); }
   .catalog-page { background: #ffffff; }
   /* Type only — the hero keeps its shared .page-hero min-height (48vh) and its image, so
      shrinking the copy does not change the band's height. */
@@ -335,6 +342,8 @@
   /* Scoped to this page: its hero headline runs long, so it sits a step below the shared
      .page-hero h1 scale rather than dominating the viewport. The explicit min-height keeps the
      hero image the same size it was at the larger type, so only the text changed. */
+  .trade-page { background: #ffffff; }
+  .trade-page .section-2col { background: #ffffff; }
   .trade-page .page-hero { min-height: 60vh; }
   .trade-page .page-hero h1 { font-size: clamp(24px, 3.2vw, 40px); }
   .lead-block { max-width: 640px; }
@@ -1665,10 +1674,13 @@
 .catalog-cat:focus-visible,
 .catalog-cat.is-active { background: var(--accent); color: #fff; font-weight: 600; }
 
+/* Its height, fade and margins are animated from app/catalog/page.tsx (Framer Motion), so it can
+   fold shut smoothly as well as open; overflow stays hidden while it does. */
 .catalog-subs {
   list-style: none;
   margin: 2px 0 8px;
   padding: 0 0 0 19px;
+  overflow: hidden;
   border-left: 1px solid var(--line);
 }
 .catalog-sub {
@@ -1888,6 +1900,69 @@ html.nav-search-open body { overflow: hidden; overscroll-behavior: none; }
 .search-page-more { margin: 12px 0 0; font-size: 13.5px; color: var(--muted); }
 .search-page-more a { color: var(--accent-dark); font-weight: 600; text-decoration: none; }
 .search-mark { padding: 0 2px; border-radius: 3px; background: var(--accent-tint); color: inherit; }
+
+/* ------------------------------------------------------------------ *
+ * Floating WhatsApp / Viber shortcuts, bottom-right on every page
+ * ------------------------------------------------------------------ */
+
+.msg-fab {
+  position: fixed;
+  right: 16px;
+  bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+  z-index: 90; /* under the sticky header (100) and the modals and lightbox (200) */
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+@media (min-width: 768px) {
+  .msg-fab { right: 24px; bottom: calc(24px + env(safe-area-inset-bottom, 0px)); }
+}
+.msg-fab-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 999px;
+  color: #fff;
+  box-shadow: 0 4px 12px rgba(15, 14, 12, 0.16), 0 10px 24px rgba(15, 14, 12, 0.12);
+  transition: filter 0.2s var(--ease), transform 0.2s var(--ease);
+}
+/* Official brand colours (WhatsApp and Viber brand guidelines, via Simple Icons). Hover darkens
+   with a filter rather than a second, invented shade. */
+.msg-fab-btn.is-whatsapp { background: #25d366; }
+.msg-fab-btn.is-viber { background: #7360f2; }
+.msg-fab-btn:hover { filter: brightness(0.92); transform: translateY(-2px); }
+.msg-fab-btn:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
+.msg-fab-btn svg { width: 24px; height: 24px; }
+/* Name tag that slides in to the left on hover or keyboard focus. */
+.msg-fab-label {
+  position: absolute;
+  top: 50%;
+  right: calc(100% + 10px);
+  padding: 5px 10px;
+  border-radius: 999px;
+  background: var(--ink);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 500;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(4px, -50%);
+  transition: opacity 0.2s var(--ease), transform 0.2s var(--ease);
+}
+.msg-fab-btn:hover .msg-fab-label,
+.msg-fab-btn:focus-visible .msg-fab-label { opacity: 1; transform: translate(0, -50%); }
+@media (prefers-reduced-motion: reduce) {
+  .msg-fab-btn,
+  .msg-fab-label { transition: none; }
+  .msg-fab-btn:hover { transform: none; }
+}
+@media print {
+  .msg-fab { display: none; }
+}
 
 .catalog-disclaimer {
   display: flex;

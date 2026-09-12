@@ -1,7 +1,7 @@
 import React from 'react';
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { ArrowRight, FileCheck2, FlaskConical, Gauge, Thermometer } from 'lucide-react';
+import { FileCheck2, FlaskConical, Gauge, Thermometer } from 'lucide-react';
 
 // Draft process per the content upgrade package. Awaiting regulatory-affairs ratification
 // (Section 6, item 1) and a dedicated regulatory/quality contact channel (item 2); until that
@@ -201,7 +201,7 @@ export default function QualityCompliancePage() {
           </p>
           <div className="flex flex-wrap justify-center gap-4">
             <Link href="/contact?type=quote" className="btn btn-primary">
-              Request a Quote <ArrowRight />
+              Request a Quote
             </Link>
             <Link href="/catalog" className="btn btn-outline">
               Browse The Catalog

@@ -5,13 +5,14 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { AnimatePresence, motion } from 'framer-motion';
-import { Menu, X, ChevronDown, ChevronRight, ArrowRight, ArrowUpRight } from 'lucide-react';
+import { Menu, X, ChevronDown, ChevronRight, ArrowRight, ArrowUpRight, Phone } from 'lucide-react';
 import logo from '@/app/assets/logo.png';
 import globalNetworkLogo from '@/app/assets/globalnetworklogo.png';
 import countriesMap from '@/app/assets/countries.png';
 import catalogData from '@/lib/data/catalogData.json';
 import { getCategoryIcon } from '@/lib/catalogIcons';
 import { NavSearch } from '@/components/NavSearch';
+import { PH_PHONE_DISPLAY, PH_TEL_HREF } from '@/lib/contactChannels';
 
 const ABOUT_LINKS: { label: string; href: string }[] = [
   { label: 'Our Story', href: '/about' },
@@ -426,6 +427,18 @@ export const Header: React.FC = () => {
               panel below that. Opening the panel closes the mobile menu. */}
           <NavSearch onPanelOpen={() => setMobileMenuOpen(false)} />
 
+          {/* Tap-to-call the PH hub. The header is full below 1536px, so the number itself only
+              shows at 2xl; narrower screens get the phone icon (the label still names it). */}
+          <a
+            href={PH_TEL_HREF}
+            aria-label={`Call us on ${PH_PHONE_DISPLAY}`}
+            title={`Call ${PH_PHONE_DISPLAY}`}
+            className="hidden md:flex items-center gap-1.5 h-full no-underline whitespace-nowrap text-sm font-medium text-ink-soft hover:text-ink transition-colors"
+          >
+            <Phone className="w-4 h-4 shrink-0" aria-hidden="true" />
+            <span className="hidden 2xl:inline">{PH_PHONE_DISPLAY}</span>
+          </a>
+
           {/* Contact */}
           <Link
             href="/contact"
@@ -548,6 +561,14 @@ export const Header: React.FC = () => {
               {link.label}
             </Link>
           ))}
+
+          <a
+            href={PH_TEL_HREF}
+            className="flex items-center gap-2 text-sm font-semibold text-ink no-underline"
+          >
+            <Phone className="w-4 h-4 text-accent" aria-hidden="true" />
+            Call {PH_PHONE_DISPLAY}
+          </a>
 
           <div className="border-t border-line pt-4">
             <h4 className="font-poppins font-bold text-sm text-ink mb-3">Global Network</h4>

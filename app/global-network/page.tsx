@@ -278,7 +278,7 @@ export default function GlobalNetworkPage() {
           </p>
           <div className="flex flex-wrap justify-center gap-4">
             <Link href="/contact?type=quote" className="btn btn-primary">
-              Request a Quote <ArrowRight />
+              Request a Quote
             </Link>
             <Link href="/trade-partners" className="btn btn-outline">
               Trade &amp; Partners

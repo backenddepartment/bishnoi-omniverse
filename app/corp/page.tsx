@@ -1,6 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
-import { ArrowRight, MapPin, Mail } from 'lucide-react';
+import { MapPin, Mail } from 'lucide-react';
 import contactData from '@/lib/data/contactData.json';
 import sectionDetail from '@/lib/data/sectionDetailData.json';
 
@@ -55,7 +55,7 @@ export default function CorpPage() {
 
             <div className="flex flex-wrap gap-4 mt-8">
               <Link href="/contact" className="btn btn-primary">
-                Contact This Office <ArrowRight />
+                Contact This Office
               </Link>
               <Link href="/llp" className="btn btn-outline on-light">
                 View Bishnoi Omniverse LLP (India)

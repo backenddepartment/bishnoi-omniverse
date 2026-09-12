@@ -1,6 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
-import { ArrowRight, FileCheck2, UserCheck, RouteOff } from 'lucide-react';
+import { FileCheck2, UserCheck, RouteOff } from 'lucide-react';
 
 const IMG = {
   hero: 'https://upload.wikimedia.org/wikipedia/commons/a/a0/Facial_plastic_surgeon_wearing_surgical_loupes_and_headlight_during_an_operating_room_procedure.jpg',
@@ -183,7 +183,7 @@ export default function LeadershipPage() {
           <h2>Building the world&apos;s most trusted supply line for medicine that can&apos;t wait.</h2>
           <div className="flex flex-wrap justify-center gap-4 mt-8">
             <Link href="/contact" className="btn btn-primary">
-              Get In Touch <ArrowRight />
+              Get In Touch
             </Link>
             <Link href="/about" className="btn btn-outline">
               Read Our Story

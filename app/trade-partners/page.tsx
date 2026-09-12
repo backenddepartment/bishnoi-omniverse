@@ -2,7 +2,7 @@ import React from 'react';
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import {
-  ArrowRight, Factory, Handshake, Ship, Globe2, FileCheck2, FlaskConical, UserCheck,
+  Factory, Handshake, Ship, Globe2, FileCheck2, FlaskConical, UserCheck,
 } from 'lucide-react';
 import partnerFaqData from '@/lib/data/partnerFaqData.json';
 
@@ -90,7 +90,7 @@ export default function TradePartnersPage() {
           </p>
           <div className="hero-actions">
             <Link className="btn btn-primary" href="/contact?type=partner">
-              Explore a Partnership <ArrowRight />
+              Explore a Partnership
             </Link>
             <Link className="btn btn-outline" href="/global-network">
               See the Operating Footprint
@@ -250,7 +250,7 @@ export default function TradePartnersPage() {
           </p>
           <div className="flex flex-wrap justify-center gap-4">
             <Link href="/contact?type=partner" className="btn btn-primary">
-              Start a Partnership Conversation <ArrowRight />
+              Start a Partnership Conversation
             </Link>
             <Link href="/quality" className="btn btn-outline">
               Quality &amp; Compliance

@@ -1,7 +1,6 @@
 import React from 'react';
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { ArrowRight } from 'lucide-react';
 import homepageData from '@/lib/data/homepageData.json';
 import partnerFaqData from '@/lib/data/partnerFaqData.json';
 import { FaqAccordion } from '@/components/FaqAccordion';
@@ -82,7 +81,7 @@ export default function FaqPage() {
               </p>
               <div className="flex flex-wrap justify-center gap-4">
                 <Link href="/contact?type=quote" className="btn btn-primary">
-                  Request a Quote <ArrowRight />
+                  Request a Quote
                 </Link>
                 <Link href="/contact" className="btn btn-outline">
                   Contact Us

@@ -1,6 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
-import { ArrowRight, HeartHandshake, Globe2 } from 'lucide-react';
+import { HeartHandshake, Globe2 } from 'lucide-react';
 import businessesData from '@/lib/data/businessesData.json';
 import sectionDetail from '@/lib/data/sectionDetailData.json';
 
@@ -35,7 +35,7 @@ export default function GlobalBusinessesPage() {
           <p className="lede">{header.subheadline}</p>
           <div className="hero-actions">
             <Link className="btn btn-primary" href="#ventures">
-              {header.ctaExplore} <ArrowRight />
+              {header.ctaExplore}
             </Link>
             <Link className="btn btn-outline" href="/contact?type=partner">
               {header.ctaPartner}
@@ -123,7 +123,7 @@ export default function GlobalBusinessesPage() {
                       </ul>
                       {sec.ctaText && sec.ctaHref && (
                         <Link href={sec.ctaHref} className="btn btn-outline on-light">
-                          {sec.ctaText} <ArrowRight />
+                          {sec.ctaText}
                         </Link>
                       )}
                     </div>
@@ -149,7 +149,7 @@ export default function GlobalBusinessesPage() {
                         </ul>
                         {sec.ctaText && sec.ctaHref && (
                           <Link href={sec.ctaHref} className="btn btn-outline on-light self-start">
-                            {sec.ctaText} <ArrowRight />
+                            {sec.ctaText}
                           </Link>
                         )}
                       </div>

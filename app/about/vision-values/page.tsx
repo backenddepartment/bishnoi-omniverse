@@ -1,6 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
-import { ArrowRight, ShieldCheck, FlaskConical, Globe2 } from 'lucide-react';
+import { ShieldCheck, FlaskConical, Globe2 } from 'lucide-react';
 import homepageData from '@/lib/data/homepageData.json';
 import sectionDetail from '@/lib/data/sectionDetailData.json';
 
@@ -70,7 +70,7 @@ export default function VisionValuesPage() {
           <h2>Documented supply for the requirements that are hardest to source.</h2>
           <div className="flex flex-wrap justify-center gap-4 mt-8">
             <Link href="/contact?type=quote" className="btn btn-primary">
-              Request a Quote <ArrowRight />
+              Request a Quote
             </Link>
             <Link href="/quality" className="btn btn-outline">
               Quality &amp; Compliance

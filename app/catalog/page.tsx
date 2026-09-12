@@ -15,7 +15,9 @@ import {
   ChevronDown,
   SendHorizontal,
   ImageIcon,
+  RotateCcw,
 } from 'lucide-react';
+import { AnimatePresence, MotionConfig, motion, type Variants } from 'framer-motion';
 import catalogData from '@/lib/data/catalogData.json';
 import { PRODUCT_GALLERIES } from '@/lib/productImageOverrides';
 import heroImg from '@/app/assets/ppe.jpg';
@@ -25,6 +27,40 @@ const IMG = {
 };
 
 const PRODUCTS_PER_PAGE = 12;
+
+// Sidebar subcategory list: opening stacks the rows in top to bottom; closing fades them out
+// bottom to top while the list folds shut, so a category collapses as smoothly as it opens.
+const SIDEBAR_EASE = [0.2, 0.8, 0.2, 1] as const;
+const SUBCATEGORY_LIST: Variants = {
+  open: {
+    height: 'auto',
+    opacity: 1,
+    marginTop: 2,
+    marginBottom: 8,
+    transition: {
+      height: { duration: 0.35, ease: SIDEBAR_EASE },
+      opacity: { duration: 0.2 },
+      staggerChildren: 0.055,
+      delayChildren: 0.05,
+    },
+  },
+  closed: {
+    height: 0,
+    opacity: 0,
+    marginTop: 0,
+    marginBottom: 0,
+    transition: {
+      height: { duration: 0.35, ease: SIDEBAR_EASE, delay: 0.12 },
+      opacity: { duration: 0.25, delay: 0.15 },
+      staggerChildren: 0.03,
+      staggerDirection: -1,
+    },
+  },
+};
+const SUBCATEGORY_ITEM: Variants = {
+  open: { opacity: 1, y: 0, transition: { duration: 0.45, ease: SIDEBAR_EASE } },
+  closed: { opacity: 0, y: -8, transition: { duration: 0.2 } },
+};
 
 type ViewMode = 'grid' | 'table';
 const VIEW_MODE_KEY = 'catalog-view-mode';
@@ -84,6 +120,8 @@ export default function CatalogPage() {
 
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [selectedSubcategory, setSelectedSubcategory] = useState<string>('all');
+  // Whether the selected category's subcategory list is expanded; clicking it again folds it.
+  const [subsOpen, setSubsOpen] = useState<boolean>(true);
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [currentPage, setCurrentPage] = useState<number>(1);
   const resultsRef = useRef<HTMLDivElement>(null);
@@ -236,6 +274,16 @@ export default function CatalogPage() {
   const selectCategory = (categoryId: string) => {
     setSelectedCategory(categoryId);
     setSelectedSubcategory('all');
+    setSubsOpen(true);
+  };
+
+  // A second click on the selected category only folds or unfolds its list; the filter stays.
+  const toggleCategory = (categoryId: string) => {
+    if (categoryId === selectedCategory) {
+      setSubsOpen((open) => !open);
+    } else {
+      selectCategory(categoryId);
+    }
   };
 
   const addToQuote = (product: ProductItem) => {
@@ -314,16 +362,18 @@ export default function CatalogPage() {
                     <span>All Clinical Categories</span>
                   </button>
                 </li>
+                <MotionConfig reducedMotion="user">
                 {categories.map((cat) => {
-                  const isOpen = selectedCategory === cat.id;
+                  const isSelected = selectedCategory === cat.id;
+                  const isOpen = isSelected && subsOpen;
                   const subs = subcategories.filter((s) => s.categoryId === cat.id);
                   return (
                     <li key={cat.id}>
                       <button
                         type="button"
-                        onClick={() => selectCategory(cat.id)}
+                        onClick={() => toggleCategory(cat.id)}
                         aria-expanded={isOpen}
-                        className={`catalog-cat${isOpen ? ' is-active' : ''}`}
+                        className={`catalog-cat${isSelected ? ' is-active' : ''}`}
                       >
                         <span className="catalog-cat-label">{cat.name}</span>
                         <ChevronRight
@@ -332,33 +382,44 @@ export default function CatalogPage() {
                         />
                       </button>
 
-                      {isOpen && subs.length > 0 && (
-                        <ul className="catalog-subs">
-                          <li>
-                            <button
-                              type="button"
-                              onClick={() => setSelectedSubcategory('all')}
-                              className={`catalog-sub${selectedSubcategory === 'all' ? ' is-active' : ''}`}
-                            >
-                              <span>All {cat.name}</span>
-                            </button>
-                          </li>
-                          {subs.map((sub) => (
-                            <li key={sub.id}>
+                      {/* Kept mounted through its exit, so closing animates instead of vanishing. */}
+                      <AnimatePresence>
+                        {isOpen && subs.length > 0 && (
+                          <motion.ul
+                            key="subs"
+                            className="catalog-subs"
+                            variants={SUBCATEGORY_LIST}
+                            initial="closed"
+                            animate="open"
+                            exit="closed"
+                          >
+                            <motion.li variants={SUBCATEGORY_ITEM}>
                               <button
                                 type="button"
-                                onClick={() => setSelectedSubcategory(sub.id)}
-                                className={`catalog-sub${selectedSubcategory === sub.id ? ' is-active' : ''}`}
+                                onClick={() => setSelectedSubcategory('all')}
+                                className={`catalog-sub${selectedSubcategory === 'all' ? ' is-active' : ''}`}
                               >
-                                <span>{sub.name}</span>
+                                <span>All {cat.name}</span>
                               </button>
-                            </li>
-                          ))}
-                        </ul>
-                      )}
+                            </motion.li>
+                            {subs.map((sub) => (
+                              <motion.li key={sub.id} variants={SUBCATEGORY_ITEM}>
+                                <button
+                                  type="button"
+                                  onClick={() => setSelectedSubcategory(sub.id)}
+                                  className={`catalog-sub${selectedSubcategory === sub.id ? ' is-active' : ''}`}
+                                >
+                                  <span>{sub.name}</span>
+                                </button>
+                              </motion.li>
+                            ))}
+                          </motion.ul>
+                        )}
+                      </AnimatePresence>
                     </li>
                   );
                 })}
+                </MotionConfig>
               </ul>
 
               <hr className="catalog-side-rule" />
@@ -396,9 +457,11 @@ export default function CatalogPage() {
                 </div>
                 {isFiltered && (
                   <button
+                    type="button"
                     onClick={() => selectCategory('all')}
-                    className="text-xs font-semibold text-accent-dark hover:underline"
+                    className="inline-flex items-center gap-1.5 text-sm font-medium text-muted hover:text-ink transition-colors"
                   >
+                    <RotateCcw className="w-3.5 h-3.5" aria-hidden="true" />
                     Reset Filter
                   </button>
                 )}
