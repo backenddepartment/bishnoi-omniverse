@@ -51,6 +51,10 @@ jobs:
         env:
           NEXT_PUBLIC_BASE_PATH: "/bishnoi-omniverse"
           GITHUB_ACTIONS: "true"
+          # Public inquiry settings — repository Variables, not Secrets (see docs/inquiries.md).
+          # Unset, the forms tell visitors to email instead of pretending to send.
+          NEXT_PUBLIC_INQUIRY_ENDPOINT: ${{ vars.INQUIRY_ENDPOINT }}
+          NEXT_PUBLIC_TURNSTILE_SITE_KEY: ${{ vars.TURNSTILE_SITE_KEY }}
           NODE_OPTIONS: "--max-old-space-size=4096"
         run: npx next build
 

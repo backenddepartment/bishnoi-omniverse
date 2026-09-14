@@ -1,8 +1,13 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { ArrowRight, Mail, Phone, Clock3 } from 'lucide-react';
 import contactData from '@/lib/data/contactData.json';
+import { InquiryGuard, type InquiryGuardHandle } from '@/components/InquiryGuard';
+import { CAPTCHA_ENABLED, DOCUMENT_EXTENSIONS, collectFiles, sendInquiry } from '@/lib/inquiry';
+
+// Fields sent as the email's own header rows (or its message panel) rather than as detail rows.
+const CORE_FIELDS = ['email', 'phone', 'additionalNotes', 'message'];
 import contactbg from '@/app/assets/contactbg.png';
 
 const IMG = {
@@ -10,14 +15,23 @@ const IMG = {
 };
 
 export default function ContactPage() {
-  const { pageHeader, directContact, assistSection, personas, globalOffices, whatHappens } = contactData;
+  const { pageHeader, directContact, assistSection, personas, whatHappens } = contactData;
 
   const [activePersonaId, setActivePersonaId] = useState<string>('doctor');
+  const [formData, setFormData] = useState<Record<string, string>>({});
+  const [submitted, setSubmitted] = useState<boolean>(false);
+  // Chosen files, by field name (formData keeps only their names, for display).
+  const [files, setFiles] = useState<Record<string, File | null>>({});
+  const [sending, setSending] = useState<boolean>(false);
+  const [sendError, setSendError] = useState<string>('');
+  const [captchaToken, setCaptchaToken] = useState<string>('');
+  const guardRef = useRef<InquiryGuardHandle>(null);
 
   // CTAs across the site carry ?type=... so a visitor lands on the right intake route
   // (institutional quote, named-patient access, patient guidance, or partnership).
   useEffect(() => {
-    const type = new URLSearchParams(window.location.search).get('type');
+    const params = new URLSearchParams(window.location.search);
+    const type = params.get('type');
     if (!type) return;
     const routes: Record<string, string> = {
       quote: 'hospital',
@@ -33,9 +47,15 @@ export default function ContactPage() {
     };
     const persona = routes[type];
     if (persona) setActivePersonaId(persona);
+
+    // Arriving from a product page (?product=…&size=…): carry the item into the request, so the
+    // buyer edits it rather than retyping it.
+    const product = params.get('product');
+    if (persona === 'hospital' && product) {
+      const size = params.get('size');
+      setFormData({ itemsRequested: size ? `${product} (size: ${size})` : product });
+    }
   }, []);
-  const [formData, setFormData] = useState<Record<string, string>>({});
-  const [submitted, setSubmitted] = useState<boolean>(false);
 
   const activePersona = personas.find((p) => p.id === activePersonaId) || personas[0];
 
@@ -43,9 +63,48 @@ export default function ContactPage() {
     setFormData((prev) => ({ ...prev, [fieldName]: value }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSubmitted(true);
+    if (sending) return;
+    setSendError('');
+    setSending(true);
+
+    const chosen = activePersona.formFields
+      .filter((field) => field.type === 'file')
+      .map((field) => files[field.name])
+      .filter((file): file is File => !!file);
+    const collected = await collectFiles(chosen, DOCUMENT_EXTENSIONS, 'Tender spec / PO / product list');
+    if (!collected.ok) {
+      setSendError(collected.error);
+      setSending(false);
+      return;
+    }
+
+    const result = await sendInquiry(
+      {
+        // Institutional supply is where product pages send buyers, so it is an equipment inquiry.
+        formType: activePersona.id === 'hospital' ? 'product' : 'contact',
+        inquiryType: activePersona.inquiryType,
+        name: formData[activePersona.nameField] ?? '',
+        email: formData.email ?? '',
+        phone: formData.phone ?? '',
+        message: formData.additionalNotes ?? formData.message ?? '',
+        details: activePersona.formFields
+          .filter((field) => field.type !== 'file' && !CORE_FIELDS.includes(field.name))
+          .map((field) => ({ label: field.label, value: formData[field.name] ?? '' })),
+        files: collected.files,
+      },
+      { captchaToken, honeypot: guardRef.current?.honeypot() ?? '' }
+    );
+
+    // Turnstile tokens are single-use: a retry always needs a fresh one.
+    guardRef.current?.reset();
+    setSending(false);
+    if (result.ok) {
+      setSubmitted(true);
+    } else {
+      setSendError(result.message);
+    }
   };
 
   return (
@@ -119,6 +178,8 @@ export default function ContactPage() {
                     setActivePersonaId(p.id);
                     setSubmitted(false);
                     setFormData({});
+                    setFiles({});
+                    setSendError('');
                   }}
                   className={`p-5 text-left rounded-xl border transition flex flex-col justify-between ${
                     selected ? 'border-ink bg-ink text-white' : 'border-line bg-surface text-ink hover:border-accent'
@@ -156,6 +217,7 @@ export default function ContactPage() {
                   onClick={() => {
                     setSubmitted(false);
                     setFormData({});
+                    setFiles({});
                   }}
                   className="btn btn-outline !py-2 !px-4 !text-xs mt-2"
                 >
@@ -168,7 +230,14 @@ export default function ContactPage() {
                   {activePersona.formFields.map((field) => {
                     if (field.type === 'textarea') return null;
                     return (
-                      <div key={field.name} className={field.name === 'additionalNotes' || field.name === 'message' ? 'sm:col-span-2' : ''}>
+                      <div
+                        key={field.name}
+                        className={
+                          field.wide || field.name === 'additionalNotes' || field.name === 'message'
+                            ? 'sm:col-span-2'
+                            : ''
+                        }
+                      >
                         <label className="field-label">
                           {field.label} {field.required && <span className="text-accent">*</span>}
                         </label>
@@ -187,6 +256,19 @@ export default function ContactPage() {
                               </option>
                             ))}
                           </select>
+                        ) : field.type === 'file' ? (
+                          // File inputs can't be controlled; only the chosen file's name is kept.
+                          <input
+                            type="file"
+                            accept={field.accept}
+                            required={field.required}
+                            onChange={(e) => {
+                              const file = e.target.files?.[0] ?? null;
+                              setFiles((prev) => ({ ...prev, [field.name]: file }));
+                              handleInputChange(field.name, file?.name ?? '');
+                            }}
+                            className="field-input"
+                          />
                         ) : (
                           <input
                             type={field.type}
@@ -197,6 +279,7 @@ export default function ContactPage() {
                             className="field-input"
                           />
                         )}
+                        {field.hint && <p className="text-xs text-muted mt-1.5 mb-0">{field.hint}</p>}
                       </div>
                     );
                   })}
@@ -221,41 +304,26 @@ export default function ContactPage() {
                   );
                 })}
 
+                <InquiryGuard ref={guardRef} onToken={setCaptchaToken} />
+
+                {sendError && (
+                  <p className="inquiry-error" role="alert">
+                    {sendError}
+                  </p>
+                )}
+
                 <div className="pt-2">
-                  <button type="submit" className="btn btn-primary w-full sm:w-auto justify-center">
-                    {activePersona.buttonText}
+                  {/* Stays disabled until "Verify you are human" has passed, and while sending. */}
+                  <button
+                    type="submit"
+                    disabled={sending || (CAPTCHA_ENABLED && !captchaToken)}
+                    className="btn btn-primary w-full sm:w-auto justify-center disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {sending ? 'Sending…' : activePersona.buttonText}
                   </button>
                 </div>
               </form>
             )}
-          </div>
-        </div>
-      </section>
-
-      {/* Our Global Offices */}
-      <section className="section section-line section-2col">
-        <div className="wrap">
-          <div className="offices-heading">
-            <span className="eyebrow">Global Operations</span>
-            <h2 className="mb-10">{globalOffices.title}</h2>
-          </div>
-
-          <div className="grid-2">
-            {globalOffices.locations.map((office) => (
-              <div key={office.region} className="info-card office-card">
-                <h3 className="font-sans text-lg font-bold text-ink mb-1">{office.region}</h3>
-                <div className="text-sm font-semibold text-ink-soft mb-3">{office.entity}</div>
-                <p className="text-sm text-ink-soft leading-relaxed">{office.desc}</p>
-                <div className="pt-3 mt-3 border-t border-line text-xs text-ink-soft space-y-1">
-                  <p className="m-0">
-                    <strong className="text-ink">Address:</strong> {office.address}
-                  </p>
-                  <p className="m-0">
-                    <strong className="text-ink">Email:</strong> {office.email}
-                  </p>
-                </div>
-              </div>
-            ))}
           </div>
         </div>
       </section>

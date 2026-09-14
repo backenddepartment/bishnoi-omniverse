@@ -2193,6 +2193,78 @@ html.nav-search-open body { overflow: hidden; overscroll-behavior: none; }
   padding: 9px 12px;
   font-size: 14px;
 }
+/* Optional fields are marked in the label; required ones carry no marker. */
+.rfq-optional { font-weight: 400; color: var(--muted); }
+.rfq-hint { margin: 6px 0 0; font-size: 12px; color: var(--muted); }
+.rfq-form .rfq-file { padding: 7px 12px; font-size: 13px; cursor: pointer; }
+
+/* Items Requested: one pill per quote-list product. The name opens its product page; × removes it. */
+.rfq-items { display: flex; flex-wrap: wrap; gap: 8px; margin: 0; padding: 0; list-style: none; }
+.rfq-pill {
+  display: inline-flex;
+  align-items: center;
+  max-width: 100%;
+  border-radius: 999px;
+  background: var(--accent-tint);
+}
+.rfq-pill a,
+.rfq-pill-label {
+  overflow: hidden;
+  padding: 6px 4px 6px 12px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--accent-dark);
+  text-decoration: none;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.rfq-pill a:hover { text-decoration: underline; }
+.rfq-pill button {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  margin-right: 3px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--accent-dark);
+  cursor: pointer;
+  transition: background 0.2s var(--ease);
+}
+.rfq-pill button:hover { background: rgba(194, 86, 26, 0.14); }
+.rfq-items-empty {
+  margin: 0;
+  padding: 10px 12px;
+  border: 1px dashed var(--line);
+  border-radius: 10px;
+  font-size: 13px;
+  color: var(--muted);
+}
+.rfq-error { margin: 0; font-size: 13px; font-weight: 500; color: var(--accent-dark); }
+/* Requisition modal scrollbar: a slim light-grey thumb with no arrow buttons, kept clear of the
+   rounded corners. WebKit/Blink use the pseudo-elements; Firefox gets the standard properties. */
+.rfq-modal::-webkit-scrollbar { width: 8px; }
+.rfq-modal::-webkit-scrollbar-button { display: none; width: 0; height: 0; }
+.rfq-modal::-webkit-scrollbar-track { margin-block: 16px; background: transparent; }
+.rfq-modal::-webkit-scrollbar-thumb { border-radius: 999px; background: #d9d9d9; }
+.rfq-modal::-webkit-scrollbar-thumb:hover { background: #c4c4c4; }
+@supports not selector(::-webkit-scrollbar) {
+  .rfq-modal { scrollbar-width: thin; scrollbar-color: #d9d9d9 transparent; }
+}
+
+/* The chosen attachment, shown as a removable pill under the file picker. */
+.rfq-attachment { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 8px; }
+.rfq-attachment .rfq-hint { margin: 0; }
+
+/* Inquiry forms (components/InquiryGuard): the honeypot sits off-screen, out of sight of people and
+   screen readers but visible to bots; the Turnstile widget gets a fixed slot so the form does not
+   jump when it loads. */
+.inquiry-honeypot { position: absolute; left: -9999px; top: auto; width: 1px; height: 1px; overflow: hidden; }
+.inquiry-turnstile { display: flex; min-height: 65px; }
+.inquiry-error { margin: 0; font-size: 13px; font-weight: 500; color: var(--accent-dark); }
 
 /* ------------------------------------------------------------------ *
  * PDP additions for the sheet-driven catalog

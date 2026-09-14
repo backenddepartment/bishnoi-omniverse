@@ -20,6 +20,8 @@ import {
 import { AnimatePresence, MotionConfig, motion, type Variants } from 'framer-motion';
 import catalogData from '@/lib/data/catalogData.json';
 import { PRODUCT_GALLERIES } from '@/lib/productImageOverrides';
+import { InquiryGuard, type InquiryGuardHandle } from '@/components/InquiryGuard';
+import { CAPTCHA_ENABLED, DOCUMENT_EXTENSIONS, collectFiles, sendInquiry } from '@/lib/inquiry';
 import heroImg from '@/app/assets/ppe.jpg';
 
 const IMG = {
@@ -131,7 +133,23 @@ export default function CatalogPage() {
   const [quoteItems, setQuoteItems] = useState<ProductItem[]>([]);
   const [isRfqModalOpen, setIsRfqModalOpen] = useState<boolean>(false);
   const [rfqSubmitted, setRfqSubmitted] = useState<boolean>(false);
-  const [hospitalInfo, setHospitalInfo] = useState({ name: '', email: '', phone: '', notes: '' });
+  const EMPTY_RFQ = {
+    name: '',
+    email: '',
+    phone: '',
+    delivery: '',
+    quantity: '',
+    tenderRef: '',
+    notes: '',
+  };
+  const [hospitalInfo, setHospitalInfo] = useState(EMPTY_RFQ);
+  const [attachment, setAttachment] = useState<File | null>(null);
+  // File inputs can only be cleared through the element itself, so keep a handle on it.
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [rfqError, setRfqError] = useState<string>('');
+  const [rfqSending, setRfqSending] = useState<boolean>(false);
+  const [rfqToken, setRfqToken] = useState<string>('');
+  const rfqGuardRef = useRef<InquiryGuardHandle>(null);
 
   const subcategoryName = useMemo(() => {
     const map = new Map(subcategories.map((s) => [s.id, s.name]));
@@ -312,9 +330,74 @@ export default function CatalogPage() {
     );
   };
 
-  const handleRfqSubmit = (e: React.FormEvent) => {
+  // Drops a file picked by mistake and resets the picker, so the same file can be chosen again.
+  const clearAttachment = () => {
+    setAttachment(null);
+    if (fileInputRef.current) fileInputRef.current.value = '';
+  };
+
+  const handleRfqSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setRfqSubmitted(true);
+    if (rfqSending) return;
+    // Something has to say what is being requested: a catalog item, a note, or an attached list.
+    if (quoteItems.length === 0 && !hospitalInfo.notes.trim() && !attachment) {
+      setRfqError(
+        'Add at least one product from the catalog, describe the items in Additional Notes, or attach a list.'
+      );
+      return;
+    }
+    setRfqError('');
+    setRfqSending(true);
+
+    const collected = await collectFiles(
+      attachment ? [attachment] : [],
+      DOCUMENT_EXTENSIONS,
+      'Tender spec / PO / product list'
+    );
+    if (!collected.ok) {
+      setRfqError(collected.error);
+      setRfqSending(false);
+      return;
+    }
+
+    // Each item carries a link to its product page, so the team opens exactly what was picked.
+    // The prefix keeps the GitHub Pages sub-path (/bishnoi-omniverse) when there is one.
+    const path = window.location.pathname;
+    const catalogAt = path.indexOf('/catalog');
+    const siteRoot = window.location.origin + (catalogAt > 0 ? path.slice(0, catalogAt) : '');
+
+    const result = await sendInquiry(
+      {
+        formType: 'product',
+        inquiryType: 'Hospital Requisition',
+        name: hospitalInfo.name,
+        email: hospitalInfo.email,
+        phone: hospitalInfo.phone,
+        message: hospitalInfo.notes,
+        details: [
+          { label: 'Hospital / Facility', value: hospitalInfo.name },
+          { label: 'Delivery City / Region', value: hospitalInfo.delivery },
+          { label: 'Quantity Needed', value: hospitalInfo.quantity },
+          { label: 'Tender / Bid Reference', value: hospitalInfo.tenderRef },
+        ],
+        items: quoteItems.map((item) => ({
+          name: `${item.name} (${subcategoryName(item.subcategoryId)})`,
+          url: `${siteRoot}/catalog/${item.id}/`,
+        })),
+        files: collected.files,
+        requireItems: true,
+      },
+      { captchaToken: rfqToken, honeypot: rfqGuardRef.current?.honeypot() ?? '' }
+    );
+
+    // Turnstile tokens are single-use: a retry always needs a fresh one.
+    rfqGuardRef.current?.reset();
+    setRfqSending(false);
+    if (result.ok) {
+      setRfqSubmitted(true);
+    } else {
+      setRfqError(result.message);
+    }
   };
 
   const isFiltered = selectedCategory !== 'all' || selectedSubcategory !== 'all';
@@ -737,7 +820,7 @@ export default function CatalogPage() {
       {isRfqModalOpen && (
         // Sits above the sticky site header (z-index 100) and blurs everything behind it.
         <div className="fixed inset-0 z-[200] bg-ink/50 backdrop-blur-md flex items-center justify-center p-4">
-          <div className="bg-surface rounded-2xl max-w-2xl w-full max-h-[calc(100vh-2rem)] overflow-y-auto p-6 md:p-8 space-y-6 shadow-2xl">
+          <div className="rfq-modal bg-surface rounded-2xl max-w-2xl w-full max-h-[calc(100vh-2rem)] overflow-y-auto p-6 md:p-8 space-y-6 shadow-2xl">
             <div className="flex items-center justify-between border-b border-line pb-4">
               <div>
                 <h3 className="font-sans text-xl font-bold text-ink m-0">Submit Hospital Requisition List</h3>
@@ -759,6 +842,9 @@ export default function CatalogPage() {
                     setRfqSubmitted(false);
                     setIsRfqModalOpen(false);
                     setQuoteItems([]);
+                    setHospitalInfo(EMPTY_RFQ);
+                    setAttachment(null);
+                    setRfqError('');
                   }}
                   className="btn btn-outline !py-2 !px-4 !text-xs mt-2"
                 >
@@ -767,23 +853,41 @@ export default function CatalogPage() {
               </div>
             ) : (
               <form onSubmit={handleRfqSubmit} className="rfq-form space-y-4">
-                {quoteItems.length > 0 && (
-                  <div className="p-4 bg-paper-2 rounded border border-line space-y-2">
-                    <span className="text-xs font-semibold text-ink-soft block">Selected Items from Catalog ({quoteItems.length}):</span>
-                    <ul className="space-y-1 text-xs text-ink m-0 p-0 list-none">
+                {/* The quote list as pills: each opens its product page in a new tab (so this
+                    requisition is not lost), and × takes the product off the list. */}
+                <div>
+                  <span id="rfq-items-label" className="field-label">
+                    Items Requested ({quoteItems.length})
+                  </span>
+                  {quoteItems.length > 0 ? (
+                    <ul className="rfq-items" aria-labelledby="rfq-items-label">
                       {quoteItems.map((item) => (
-                        <li key={item.id} className="flex justify-between items-center">
-                          <span>
-                            • {item.name} ({subcategoryName(item.subcategoryId)})
-                          </span>
-                          <button type="button" onClick={() => removeFromQuote(item.id)} className="text-accent-dark hover:underline font-semibold">
-                            Remove
+                        <li key={item.id} className="rfq-pill">
+                          <Link
+                            href={`/catalog/${item.id}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            title={`${item.name} · ${subcategoryName(item.subcategoryId)} (opens in a new tab)`}
+                          >
+                            {item.name}
+                          </Link>
+                          <button
+                            type="button"
+                            onClick={() => removeFromQuote(item.id)}
+                            aria-label={`Remove ${item.name} from this requisition`}
+                          >
+                            <X className="w-3.5 h-3.5" aria-hidden="true" />
                           </button>
                         </li>
                       ))}
                     </ul>
-                  </div>
-                )}
+                  ) : (
+                    <p className="rfq-items-empty">
+                      No products added yet. Use Send Inquiry on any product, describe the items in
+                      Additional Notes, or attach a list.
+                    </p>
+                  )}
+                </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
@@ -814,38 +918,124 @@ export default function CatalogPage() {
                       className="field-input"
                     />
                   </div>
+                  <div>
+                    <label htmlFor="rfq-phone" className="field-label">
+                      Contact Number
+                    </label>
+                    <input
+                      id="rfq-phone"
+                      type="tel"
+                      required
+                      placeholder="e.g. +91 98765 43210"
+                      value={hospitalInfo.phone}
+                      onChange={(e) => setHospitalInfo({ ...hospitalInfo, phone: e.target.value })}
+                      className="field-input"
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="rfq-delivery" className="field-label">
+                      Delivery City / Region <span className="rfq-optional">(optional)</span>
+                    </label>
+                    <input
+                      id="rfq-delivery"
+                      type="text"
+                      placeholder="e.g. Cebu City, Central Visayas"
+                      value={hospitalInfo.delivery}
+                      onChange={(e) => setHospitalInfo({ ...hospitalInfo, delivery: e.target.value })}
+                      className="field-input"
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="rfq-quantity" className="field-label">
+                      Quantity Needed
+                    </label>
+                    <input
+                      id="rfq-quantity"
+                      type="text"
+                      required
+                      placeholder='e.g. 500 boxes, or "unsure — advise"'
+                      value={hospitalInfo.quantity}
+                      onChange={(e) => setHospitalInfo({ ...hospitalInfo, quantity: e.target.value })}
+                      className="field-input"
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="rfq-tender" className="field-label">
+                      Tender / Bid Reference No. <span className="rfq-optional">(optional)</span>
+                    </label>
+                    <input
+                      id="rfq-tender"
+                      type="text"
+                      placeholder="e.g. PhilGEPS reference, if any"
+                      value={hospitalInfo.tenderRef}
+                      onChange={(e) => setHospitalInfo({ ...hospitalInfo, tenderRef: e.target.value })}
+                      className="field-input"
+                    />
+                  </div>
                 </div>
 
                 <div>
-                  <label htmlFor="rfq-phone" className="field-label">
-                    Contact Number
+                  <label htmlFor="rfq-file" className="field-label">
+                    Tender Spec, PO or Product List <span className="rfq-optional">(optional)</span>
                   </label>
                   <input
-                    id="rfq-phone"
-                    type="tel"
-                    placeholder="e.g. +91 98765 43210"
-                    value={hospitalInfo.phone}
-                    onChange={(e) => setHospitalInfo({ ...hospitalInfo, phone: e.target.value })}
-                    className="field-input"
+                    ref={fileInputRef}
+                    id="rfq-file"
+                    type="file"
+                    accept=".pdf,.docx,.xlsx"
+                    onChange={(e) => setAttachment(e.target.files?.[0] ?? null)}
+                    className="field-input rfq-file"
                   />
+                  {attachment ? (
+                    <div className="rfq-attachment">
+                      <span className="rfq-hint">Attached:</span>
+                      <span className="rfq-pill">
+                        <span className="rfq-pill-label" title={attachment.name}>
+                          {attachment.name}
+                        </span>
+                        <button
+                          type="button"
+                          onClick={clearAttachment}
+                          aria-label={`Remove the attached file ${attachment.name}`}
+                        >
+                          <X className="w-3.5 h-3.5" aria-hidden="true" />
+                        </button>
+                      </span>
+                    </div>
+                  ) : (
+                    <p className="rfq-hint">PDF, DOCX or XLSX.</p>
+                  )}
                 </div>
 
                 <div>
                   <label htmlFor="rfq-notes" className="field-label">
-                    Requisition Details / Additional Items
+                    Additional Notes <span className="rfq-optional">(optional)</span>
                   </label>
                   <textarea
                     id="rfq-notes"
                     rows={3}
-                    placeholder="e.g. Nitrile examination gloves (M) – 200 boxes; Pulse oximeters – 50 units"
+                    placeholder="e.g. items not in the catalog, preferred brands, sizes, delivery timing"
                     value={hospitalInfo.notes}
                     onChange={(e) => setHospitalInfo({ ...hospitalInfo, notes: e.target.value })}
                     className="field-textarea"
                   />
                 </div>
 
-                <button type="submit" className="btn btn-primary w-full justify-center">
-                  Submit Requisition
+                <InquiryGuard ref={rfqGuardRef} onToken={setRfqToken} />
+
+                {rfqError && (
+                  <p className="rfq-error" role="alert">
+                    {rfqError}
+                  </p>
+                )}
+
+                {/* Stays disabled until "Verify you are human" has passed, and while sending. */}
+                <button
+                  type="submit"
+                  disabled={rfqSending || (CAPTCHA_ENABLED && !rfqToken)}
+                  className="btn btn-primary w-full justify-center disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {rfqSending ? 'Sending…' : 'Submit Requisition'}
                 </button>
               </form>
             )}

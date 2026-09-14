@@ -1,0 +1,14 @@
+# Copy to .dev.vars for `npm run dev` (local testing). Never commit .dev.vars.
+# In production these are set with `npx wrangler secret put <NAME>` instead.
+
+# Brevo — the Bishnoi Omniverse account, not Getmeds'
+BREVO_API_KEY=xkeysib-your-key
+BREVO_SENDER_EMAIL=no-reply@yourdomain.com
+
+# Cloudflare Turnstile secret. Leave blank for a first test; never go live without it.
+TURNSTILE_SECRET_KEY=
+
+# Where inquiries arrive
+CONTACT_RECIPIENT_EMAIL=you@example.com
+# Optional — medical equipment inquiries. Blank = same as CONTACT_RECIPIENT_EMAIL
+PRODUCT_INQUIRY_RECIPIENT_EMAIL=

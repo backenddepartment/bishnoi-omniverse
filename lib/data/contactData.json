@@ -22,6 +22,8 @@
       "category": "For Clinicians & Oncology Teams (Named-Patient Access)",
       "tagline": "I need to source a medicine that is not registered or not available in my market for a named patient.",
       "buttonText": "Request a Specific Medicine",
+      "inquiryType": "Named-Patient Access",
+      "nameField": "physicianName",
       "formFields": [
         {
           "name": "physicianName",
@@ -35,6 +37,20 @@
           "label": "Medical Facility / Hospital",
           "type": "text",
           "placeholder": "Hospital or Clinic Name",
+          "required": true
+        },
+        {
+          "name": "email",
+          "label": "Email",
+          "type": "email",
+          "placeholder": "e.g., doctor@hospital.com",
+          "required": true
+        },
+        {
+          "name": "phone",
+          "label": "Contact Number",
+          "type": "tel",
+          "placeholder": "Include country code",
           "required": true
         },
         {
@@ -76,6 +92,8 @@
       "category": "For Hospitals & Procurement Teams (Institutional Supply)",
       "tagline": "I need a quote against a requirement or tender line list — consumables, transfusion products, airway, or medical gas.",
       "buttonText": "Request a Quote",
+      "inquiryType": "Institutional Supply",
+      "nameField": "procurementOfficer",
       "formFields": [
         {
           "name": "hospitalName",
@@ -92,11 +110,32 @@
           "required": true
         },
         {
+          "name": "email",
+          "label": "Procurement Email",
+          "type": "email",
+          "placeholder": "e.g., procurement@hospital.com",
+          "required": true
+        },
+        {
+          "name": "phone",
+          "label": "Contact Number",
+          "type": "tel",
+          "placeholder": "e.g., +63 9XX XXX XXXX",
+          "required": true
+        },
+        {
           "name": "department",
           "label": "Department",
           "type": "text",
           "placeholder": "e.g., ICU, Oncology, Central Pharmacy, Surgery",
           "required": true
+        },
+        {
+          "name": "deliveryLocation",
+          "label": "Delivery City / Region",
+          "type": "text",
+          "placeholder": "e.g., Cebu City, Central Visayas",
+          "required": false
         },
         {
           "name": "supplyType",
@@ -114,8 +153,31 @@
           "name": "estimatedVolume",
           "label": "Estimated Volume / Quantity",
           "type": "text",
-          "placeholder": "e.g., 5,000 units monthly or 50 cylinders",
+          "placeholder": "e.g., 5,000 units monthly, 50 cylinders, or \"unsure — advise\"",
           "required": true
+        },
+        {
+          "name": "tenderReference",
+          "label": "Tender / Bid Reference No.",
+          "type": "text",
+          "placeholder": "e.g., PhilGEPS reference, if any",
+          "required": false
+        },
+        {
+          "name": "attachment",
+          "label": "Tender Spec, PO or Product List",
+          "type": "file",
+          "accept": ".pdf,.docx,.xlsx",
+          "hint": "Optional. PDF, DOCX or XLSX.",
+          "wide": true,
+          "required": false
+        },
+        {
+          "name": "itemsRequested",
+          "label": "Items Requested",
+          "type": "textarea",
+          "placeholder": "Product names, sizes, or catalog references",
+          "required": false
         },
         {
           "name": "additionalNotes",
@@ -131,12 +193,28 @@
       "category": "For Patients & Families",
       "tagline": "My doctor recommended a medicine that is not available in my country, and I need help finding it.",
       "buttonText": "Patient Support & Guidance",
+      "inquiryType": "Patient Support",
+      "nameField": "patientName",
       "formFields": [
         {
           "name": "patientName",
           "label": "Patient Name",
           "type": "text",
           "placeholder": "Patient or Relative Name",
+          "required": true
+        },
+        {
+          "name": "email",
+          "label": "Email",
+          "type": "email",
+          "placeholder": "So we can reply to you",
+          "required": true
+        },
+        {
+          "name": "phone",
+          "label": "Contact Number",
+          "type": "tel",
+          "placeholder": "Include country code",
           "required": true
         },
         {
@@ -175,12 +253,28 @@
       "category": "For Manufacturers, Distributors & Trade Partners",
       "tagline": "I represent a manufacturer or distributor looking for cross-border reach through your India and Philippines hubs.",
       "buttonText": "Explore Partnership",
+      "inquiryType": "Trade Partnership",
+      "nameField": "companyName",
       "formFields": [
         {
           "name": "companyName",
           "label": "Company Name",
           "type": "text",
           "placeholder": "Manufacturer / Brand Name",
+          "required": true
+        },
+        {
+          "name": "email",
+          "label": "Email",
+          "type": "email",
+          "placeholder": "e.g., partnerships@company.com",
+          "required": true
+        },
+        {
+          "name": "phone",
+          "label": "Contact Number",
+          "type": "tel",
+          "placeholder": "Include country code",
           "required": true
         },
         {

@@ -1,0 +1,14 @@
+{
+  "name": "bishnoi-inquiry-worker",
+  "private": true,
+  "description": "Cloudflare Worker that emails the website's inquiry forms through Brevo.",
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "tail": "wrangler tail"
+  },
+  "devDependencies": {
+    "wrangler": "^4.131.1"
+  }
+}
