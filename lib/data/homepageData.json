@@ -50,8 +50,8 @@
   },
   "whoWeHelp": {
     "sectionTag": "Who We Serve",
-    "title": "Built for institutional procurement and specialist access",
-    "lead": "Four groups rely on us for the requirements that standard distribution does not cover — each with its own intake route, documentation set, and point of contact.",
+    "title": "Medical Products for Healthcare Facilities",
+    "lead": "We provide medical equipment, medical supplies, and healthcare products for hospitals, clinics, laboratories, healthcare professionals, and business partners.",
     "items": [
       {
         "id": "hospitals",
@@ -74,10 +74,10 @@
         "desc": "Guidance through the named-patient process, coordinated with your treating doctor."
       }
     ],
-    "ctaText": "See all audiences",
+    "ctaText": "See who we serve",
     "ctaHref": "/global"
   },
-  "responseCommitment": "Every institutional requisition and specialty-access request is reviewed by a named case manager, with a response inside 24 hours. No login required to request a quote.",
+  "responseCommitment": "We review every request carefully and connect you with the right team for support. Request a quote easily—no login required.",
   "globalFootprint": {
     "sectionTag": "Operating Footprint",
     "title": "Two Hubs, One Continuous Line of Supply",
@@ -103,8 +103,8 @@
   },
   "whatWeSupply": {
     "sectionTag": "What We Supply",
-    "title": "The Bishnoi Omniverse Essential Hospital Line",
-    "lead": "A snapshot of what ships most often. Full specifications, certifications, and the complete brand list live on the catalog.",
+    "title": "Essential Hospital Products",
+    "lead": "We provide reliable medicines, medical supplies, equipment, and healthcare products to support hospitals, clinics, and healthcare professionals.",
     "featured": [
       {
         "id": "gloves",

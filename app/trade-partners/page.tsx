@@ -76,7 +76,7 @@ const PARTNER_TYPES = [
 export default function TradePartnersPage() {
   return (
     <div className="w-full trade-page">
-      <section className="page-hero">
+      <section className="page-hero page-hero-banner">
         <div className="hero-media">
           <img src={IMG.hero} alt="Container cranes at a shipping port" loading="eager" />
         </div>

@@ -13,7 +13,7 @@ export default function GovernancePage() {
 
   return (
     <div className="w-full">
-      <section className="page-hero">
+      <section className="page-hero page-hero-banner">
         <div className="hero-media">
           <img src={IMG.hero} alt="A certified medical supply box, ready for sterile shipment" loading="eager" />
         </div>

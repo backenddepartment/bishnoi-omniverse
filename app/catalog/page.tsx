@@ -22,7 +22,7 @@ import catalogData from '@/lib/data/catalogData.json';
 import { PRODUCT_GALLERIES } from '@/lib/productImageOverrides';
 import { InquiryGuard, type InquiryGuardHandle } from '@/components/InquiryGuard';
 import { CAPTCHA_ENABLED, DOCUMENT_EXTENSIONS, collectFiles, sendInquiry } from '@/lib/inquiry';
-import heroImg from '@/app/assets/ppe.jpg';
+import heroImg from '@/app/assets/medicinebgpage.png';
 
 const IMG = {
   hero: heroImg.src,
@@ -408,16 +408,10 @@ export default function CatalogPage() {
 
   return (
     <div className="w-full catalog-page">
-      {/* Hero */}
-      <section className="page-hero">
-        <div className="hero-media">
-          <img
-            src={IMG.hero}
-            alt="Personal protective equipment laid out on a blue surgical gown — safety goggles, a face mask and latex gloves"
-            loading="eager"
-          />
-        </div>
-        <div className="hero-content">
+      {/* Hero — stacked, not overlaid: the copy sits on white at the top and the photograph runs
+          full width beneath it, so nothing has to fight the image for legibility. */}
+      <section className="catalog-hero">
+        <div className="wrap catalog-hero-copy">
           <h1>{hero.headline}</h1>
           <p className="lede">{hero.subheadline}</p>
           <div className="hero-actions">
@@ -425,6 +419,13 @@ export default function CatalogPage() {
               {hero.ctaExplore}
             </a>
           </div>
+        </div>
+        <div className="catalog-hero-media">
+          <img
+            src={IMG.hero}
+            alt="Medical instruments and supplies laid out on a pale blue surface — a stethoscope, thermometer, blood pressure monitor, gloves, dressings and medication"
+            loading="eager"
+          />
         </div>
       </section>
 

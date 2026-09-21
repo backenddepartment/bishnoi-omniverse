@@ -2,7 +2,7 @@ import React from 'react';
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { FileCheck2, FlaskConical, Gauge, Thermometer } from 'lucide-react';
-
+import qualityHeroImg from '@/app/assets/qualityandcompliancehero.png';
 // Draft process per the content upgrade package. Awaiting regulatory-affairs ratification
 // (Section 6, item 1) and a dedicated regulatory/quality contact channel (item 2); until that
 // address exists, the closing line routes through the existing contact page.
@@ -36,7 +36,7 @@ export const metadata: Metadata = {
 };
 
 const IMG = {
-  hero: 'https://upload.wikimedia.org/wikipedia/commons/c/c3/Ethylene_oxide_sterilisation_sticker_on_box_of_medical_supplies.jpg',
+  hero: qualityHeroImg.src,
 };
 
 const EVIDENCE = [
@@ -69,23 +69,26 @@ const EVIDENCE = [
 export default function QualityCompliancePage() {
   return (
     <div className="w-full">
-      <section className="page-hero">
+      <section className="page-hero page-hero-slide">
         <div className="hero-media">
-          <img src={IMG.hero} alt="A certified medical supply carton prepared for sterile shipment" loading="eager" />
+          <img
+            src={IMG.hero}
+            alt="A clinician reviewing product documentation, and product specifications and a Certificate of Analysis laid beside boxed medicines"
+            loading="eager"
+          />
         </div>
-        <div className="hero-content">
-          <span className="eyebrow on-dark">Quality &amp; Compliance</span>
-          <h1>Documented at the product level</h1>
-          <p className="lede">
-            Certification and regulatory documentation vary by product category and destination
-            market. Rather than one blanket claim, we document quality where it can be checked.
-          </p>
-        </div>
+        {/* The hero image carries the headline and intro itself, so the page's heading is kept for
+            screen readers and search engines only. */}
+        <h1 className="sr-only">
+          Quality &amp; Compliance — Documented at the product level. Certification and regulatory
+          documentation vary by product category and destination market; rather than one blanket
+          claim, we document quality where it can be checked.
+        </h1>
       </section>
 
-      <section className="section section-tight">
+      <section className="section section-tight section-white">
         <div className="wrap grid-2">
-          <div>
+          <div className="heading-lg">
             <span className="eyebrow">Our Position</span>
             <h2 className="mb-0">No single guarantee covers every product</h2>
           </div>
@@ -104,22 +107,25 @@ export default function QualityCompliancePage() {
         </div>
       </section>
 
-      <section className="section section-line section-2col">
+      <section className="section section-line section-white">
         <div className="wrap">
-          <span className="eyebrow">Evidence by Category</span>
-          <h2 className="mb-10">What we document, and where it comes from</h2>
+          <div className="heading-lg">
+            <span className="eyebrow">Evidence by Category</span>
+            <h2 className="mb-10">What we document, and where it comes from</h2>
+          </div>
 
-          <div className="grid-2">
-            {EVIDENCE.map((item) => {
+          {/* One row of four on desktop, alternating orange and white cards. */}
+          <div className="evidence-grid">
+            {EVIDENCE.map((item, idx) => {
               const Icon = item.icon;
               return (
-                <div key={item.category} className="info-card">
-                  <Icon className="w-6 h-6 text-accent mb-4" strokeWidth={1.5} />
-                  <h3 className="font-sans text-lg font-bold text-ink mb-1">{item.category}</h3>
-                  <span className="text-xs font-semibold uppercase tracking-wide text-accent-dark block mb-3">
-                    {item.standard}
-                  </span>
-                  <p className="text-sm text-ink-soft leading-relaxed m-0">{item.desc}</p>
+                <div
+                  key={item.category}
+                  className={`evidence-card${idx % 2 === 0 ? ' is-orange' : ''}`}
+                >
+                  <Icon className="evidence-card-icon" strokeWidth={1.5} aria-hidden="true" />
+                  <h3>{item.category}</h3>
+                  <p>{item.desc}</p>
                 </div>
               );
             })}
@@ -127,12 +133,12 @@ export default function QualityCompliancePage() {
         </div>
       </section>
 
-      <section className="section">
+      <section className="section section-white">
         <div className="wrap grid-2 items-start">
-          <div>
+          <div className="heading-lg">
             <span className="eyebrow">On Request</span>
             <h2 className="mb-3">Documentation available for review</h2>
-            <p className="text-ink-soft max-w-md">
+            <p className="text-lg leading-relaxed text-ink-soft max-w-md">
               Procurement, pharmacy, and regulatory reviewers can request the underlying documents
               before an order is placed — not after delivery.
             </p>

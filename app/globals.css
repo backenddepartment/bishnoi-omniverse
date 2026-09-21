@@ -28,6 +28,11 @@
   }
   html {
     scroll-behavior: smooth;
+    /* The header is sticky, so an in-page anchor would otherwise land its target underneath it.
+       --header-h is the navbar's measured height, published by Header on mount and on resize, so
+       a jump lands the target flush beneath the bar: no clipped heading, and no strip of the
+       previous section left showing above it. The fallback covers the first paint. */
+    scroll-padding-top: var(--header-h, 72px);
   }
   body {
     @apply antialiased;
@@ -94,6 +99,11 @@
   .heading-lg h2 {
     font-size: clamp(28px, 3vw, 40px);
   }
+  /* About page: every section title takes the lighter weight the operating-principles heading
+     carried inline, so the page reads at one level. Size is inherited from .heading-lg h2. */
+  .about-page .heading-lg h2 {
+    font-weight: 500;
+  }
   .direct-channels-heading .eyebrow,
   .assist-heading .eyebrow,
   .offices-heading .eyebrow {
@@ -159,6 +169,24 @@
   .btn-outline.on-light:hover {
     background: var(--ink);
     color: #fff;
+  }
+  /* Orange twin of .btn-outline.on-light, for pill CTAs sitting on white beside body copy. */
+  .btn-outline.on-accent {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+  .btn-outline.on-accent:hover {
+    background: var(--accent);
+    color: #fff;
+  }
+  /* Filled black pill, for use over light photography where the orange would not hold up. */
+  .btn-ink {
+    background: var(--ink);
+    color: #fff;
+  }
+  .btn-ink:hover {
+    background: var(--ink-2);
+    transform: translateY(-1px);
   }
   .btn svg {
     width: 14px;
@@ -308,9 +336,11 @@
   }
 
   /* Sections */
-  .section { padding: 104px 0; }
-  .section-tight { padding: 80px 0; }
-  .section-line { border-top: 1px solid var(--line); }
+  .section { padding: 76px 0; }
+  .section-tight { padding: 58px 0; }
+  /* Section dividers are off site-wide: sections are separated by their padding alone.
+     The class is kept so the markup does not need to change if a rule is wanted again. */
+  .section-line { border-top: 0; }
   .section-dark { background: var(--ink); color: #e9e5db; }
   .section-dark p { color: #b9b2a2; }
   .section-dark h2, .section-dark h3 { color: #fff; }
@@ -320,31 +350,58 @@
   .home-page .section-2col { background: #ffffff; }
   .contact-page { background: #ffffff; }
   .contact-page .section-2col { background: #ffffff; }
-  .contact-page .page-hero { min-height: 90vh; }
-  .about-page .page-hero { min-height: 90vh; }
-  /* About Us shows its hero photo without the shared dark gradient overlay. The photo is mostly
-     white, so the hero's text switches from white to the dark ink colours to stay readable. */
-  .about-page .page-hero .hero-media::after { display: none; }
-  .about-page .page-hero { color: var(--ink); }
-  .about-page .page-hero h1 { color: var(--ink); }
-  .about-page .page-hero .lede { color: var(--ink-soft); }
-  .about-page .page-hero .eyebrow.on-dark { color: var(--accent-dark); }
+  /* Slide heroes (About Us, Quality & Compliance): the hero image is a designed 1920×820 slide that
+     carries its own headline. The band takes the image's exact proportions instead of a fixed
+     height, so the whole slide shows at every screen width — laptop, desktop or full screen —
+     without being cropped. It also drops the shared dark overlay, which would dim the slide. */
+  .page-hero.page-hero-slide { min-height: 0; aspect-ratio: 1920 / 820; }
+  /* Stronger than the shared `.page-hero .hero-media::after` scrim, so the slide is never dimmed
+     whatever order the rules end up in. */
+  .page-hero.page-hero-slide .hero-media::after { display: none; }
+  /* The other pages in the About Us menu share that band's proportions: 42.7vw tall, the height a
+     1920×820 image has at any screen width. A minimum rather than a fixed ratio, so on a narrow
+     screen a long headline can still grow the band instead of being clipped by overflow: hidden.
+     The top padding keeps grown-to-fit text clear of the navbar. */
+  .page-hero.page-hero-banner { min-height: 42.7083vw; }
+  .page-hero-banner .hero-content { padding-top: 48px; }
   .catalog-page { background: #ffffff; }
-  /* Type only — the hero keeps its shared .page-hero min-height (48vh) and its image, so
-     shrinking the copy does not change the band's height. */
-  .catalog-page .page-hero h1 { font-size: clamp(22px, 2.6vw, 34px); }
-  .catalog-page .page-hero .lede { font-size: 15px; }
-  .catalog-page .page-hero .eyebrow { font-size: 9.5px; }
+  /* Catalog hero: copy on white at the top, photograph full width underneath. Nothing is overlaid,
+     so the type needs no scrim, panel or outline to stay readable. */
+  .catalog-hero { background: #ffffff; }
+  .catalog-hero-copy {
+    text-align: center;
+    padding: 60px 32px 44px;
+  }
+  .catalog-hero-copy h1 {
+    font-size: clamp(26px, 3.2vw, 42px);
+    color: var(--ink);
+    max-width: 900px;
+    margin: 0 auto 16px;
+  }
+  .catalog-hero-copy .lede {
+    font-size: clamp(15px, 1.3vw, 17px);
+    color: var(--ink-soft);
+    max-width: 760px;
+    margin: 0 auto 28px;
+  }
+  .catalog-hero-copy .hero-actions { justify-content: center; }
+  /* A band rather than the whole frame: the photo's top third is empty backdrop, and anchoring the
+     crop to the bottom keeps the instruments while throwing that away. */
+  .catalog-hero-media img {
+    display: block;
+    width: 100%;
+    height: clamp(240px, 30vw, 440px);
+    object-fit: cover;
+    object-position: center bottom;
+  }
   .catalog-page .section-2col { background: #ffffff; }
   .businesses-page { background: #ffffff; }
   .businesses-page .section-2col { background: #ffffff; }
-  .businesses-page .page-hero { min-height: 90vh; }
   /* Scoped to this page: its hero headline runs long, so it sits a step below the shared
      .page-hero h1 scale rather than dominating the viewport. The explicit min-height keeps the
      hero image the same size it was at the larger type, so only the text changed. */
   .trade-page { background: #ffffff; }
   .trade-page .section-2col { background: #ffffff; }
-  .trade-page .page-hero { min-height: 60vh; }
   .trade-page .page-hero h1 { font-size: clamp(24px, 3.2vw, 40px); }
   .lead-block { max-width: 640px; }
 
@@ -354,7 +411,39 @@
   .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 28px; }
 
   /* Pillars */
-  .pillar { padding: 34px 8px 0 0; border-top: 1px solid var(--line); }
+  .pillar { padding: 12px 8px 0 0; }
+  /* Optional photo at the top of a pillar card, with the card's icon centred on top of it.
+     The scrim keeps the white icon legible over light areas of the photo. */
+  .pillar-media {
+    position: relative;
+    margin-bottom: 22px;
+  }
+  .pillar-media::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 16px;
+    background: rgba(15, 14, 12, 0.34);
+    pointer-events: none;
+  }
+  .pillar-img {
+    display: block;
+    width: 100%;
+    aspect-ratio: 16 / 10;
+    object-fit: cover;
+    border-radius: 16px;
+    background: var(--paper-2);
+  }
+  .pillar-media-icon {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 44px;
+    height: 44px;
+    color: #fff;
+    z-index: 1;
+  }
   .pillar .num {
     font-family: var(--font-poppins), sans-serif;
     font-size: 13px;
@@ -363,7 +452,81 @@
     display: block;
   }
   .pillar h3 { font-size: 20px; margin-bottom: 10px; }
+  /* What We Do cards on the About page: body copy in full ink at a medium size, rather than the
+     smaller soft-grey the other pillar grids use. */
+  .what-we-do .pillar p {
+    font-size: 16px;
+    color: var(--ink);
+  }
   .pillar p { font-size: 14.5px; margin: 0; color: var(--ink-soft); }
+
+  /* What We Do band: a full-width photograph pinned to the top of the section, with the section's
+     content riding on a white panel that overlaps it. */
+  .what-we-do-band {
+    position: relative;
+    /* Set per-frame by WhatWeDoBand while the band scrolls in: 0 = inset and rounded, 1 = full
+       bleed. It defaults to the settled state, so with no JS the band just renders full width. */
+    --band-progress: 1;
+    --band-inset: clamp(16px, 6vw, 110px);
+    /* The photo is shown whole at its own 16:9 ratio, so it is 56.25% of the viewport width tall.
+       This top padding is what holds the panel down over it, and being a percentage of that same
+       width it keeps the overlap proportional at every size: 56.25 - 42 = the bottom ~14% of the
+       photo sits under the panel. Lower this number to pull the panel further up over the photo.
+       It has to be padding, not a margin on the panel — a top margin there collapses out through
+       .wrap and the section, taking the whole band with it. */
+    padding: 42% 0 76px;
+  }
+  /* Widens from the inset to the full viewport as --band-progress runs 0 → 1, squaring off its
+     corners on the way. Only this box moves: the panel below is positioned by the section's
+     padding, which does not change, so nothing reflows while scrolling. */
+  .what-we-do-media {
+    position: absolute;
+    top: 0;
+    left: calc(var(--band-inset) * (1 - var(--band-progress)));
+    right: calc(var(--band-inset) * (1 - var(--band-progress)));
+    border-radius: calc(28px * (1 - var(--band-progress)));
+    overflow: hidden;
+    line-height: 0;
+  }
+  /* Natural height, no object-fit: cropping a collage slices the photographs inside it. */
+  .what-we-do-media img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+  .what-we-do-panel {
+    position: relative;
+    z-index: 1;
+    padding: 64px 56px;
+    background: #fff;
+    border-radius: 28px;
+    box-shadow: 0 16px 40px rgba(15, 14, 12, 0.07);
+  }
+  /* The panel fades up into place once it reaches the viewport. Gated on data-armed so the hidden
+     state only ever exists when the script that clears it is running. */
+  .what-we-do-band[data-armed='true'] .what-we-do-panel {
+    opacity: 0;
+    transform: translateY(56px);
+    transition: opacity 0.75s var(--ease), transform 0.75s var(--ease);
+  }
+  .what-we-do-band[data-armed='true'].is-revealed .what-we-do-panel {
+    opacity: 1;
+    transform: none;
+  }
+
+  @media (max-width: 900px) {
+    .what-we-do-panel {
+      padding: 48px 32px;
+      border-radius: 22px;
+    }
+  }
+
+  @media (max-width: 560px) {
+    .what-we-do-panel {
+      padding: 36px 22px;
+      border-radius: 18px;
+    }
+  }
   /* The facility-type list folded into the Hospitals & Procurement Teams card: set apart from
      the card's paragraph so it reads as a list of who we supply, not another sentence. */
   .pillar-serves {
@@ -399,7 +562,7 @@
   .biz-tile:hover img { transform: scale(1.06); }
 
   /* Division-style full sections */
-  .division { padding: 88px 0; border-top: 1px solid var(--line); }
+  .division { padding: 66px 0; }
   .division-grid { display: grid; grid-template-columns: 0.9fr 1.1fr; gap: 56px; align-items: center; }
   .division:nth-child(even) .division-grid { direction: rtl; }
   .division:nth-child(even) .division-grid > * { direction: ltr; }
@@ -499,42 +662,6 @@
     /* Illustration below the message, so the text is never pushed off the fold. */
     .uc-art { order: 2; max-width: 380px; }
   }
-
-  /* Standards & Compliance, group-level tier. Green rather than the near-black it used to be,
-     matching the bento's panel green, with its heading sized to the page's section headings. */
-  .standards-tier {
-    background: var(--green);
-    color: #fff;
-  }
-  .standards-tier .eyebrow {
-    font-size: 14px;
-    text-transform: none;
-    letter-spacing: 0.01em;
-    color: rgba(255, 255, 255, 0.82);
-  }
-  .standards-tier h3 {
-    margin: 0;
-    font-size: clamp(28px, 3vw, 40px);
-    line-height: 1.12;
-    letter-spacing: -0.01em;
-    color: #fff;
-  }
-  .standards-tier p {
-    margin: 0 0 18px;
-    color: #fff;
-    line-height: 1.7;
-  }
-  /* The orange link colour reads poorly on green, so the CTA goes white and underlines on hover. */
-  .standards-tier-cta {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 14px;
-    font-weight: 600;
-    color: #fff;
-    text-decoration: none;
-  }
-  .standards-tier-cta:hover { text-decoration: underline; }
 
   /* Response-commitment band with a photographic background. .section-dark already paints
      --ink behind it, so dimming the photo (rather than layering a scrim over it) is enough to
@@ -1121,14 +1248,19 @@
        the search field - which read as a phantom container below the header. */
   }
   .nav-links a { position: relative; padding: 4px 0; }
+  /* That rule is for plain nav links. A .btn inside the nav is a pill and keeps its own padding:
+     .btn lives in the same layer, so the more specific .nav-links a would otherwise win and
+     collapse it. (Menu links styled with Tailwind py-* are unaffected — utilities out-rank both.) */
+  .nav-links a.btn { padding: 11px 22px; }
 
   /* Footer */
-  .site-footer { padding: 64px 0 30px; background: var(--ink); color: #cfc9ba; }
+  /* Brand-orange footer, flat: no shadow, all text white. */
+  .site-footer { padding: 64px 0 30px; background: var(--accent); color: #fff; box-shadow: none; }
   .footer-grid { display: grid; grid-template-columns: 1.4fr 1fr 1fr 1fr; gap: 40px; margin-bottom: 48px; }
   .footer-grid h4 {
     font-size: 16px;
     margin-bottom: 16px;
-    color: #8f8877;
+    color: #fff;
     letter-spacing: 0.01em;
     text-transform: none;
     font-weight: 600;
@@ -1136,9 +1268,9 @@
   }
   .footer-grid ul { list-style: none; padding: 0; margin: 0; }
   .footer-grid li { margin-bottom: 10px; font-size: 14px; }
-  .footer-grid a { text-decoration: none; color: #d7d2c1; transition: color 0.2s; }
-  .footer-grid a:hover { color: #fff; }
-  .footer-grid p { color: #a79f8f; font-size: 13.5px; max-width: 300px; }
+  .footer-grid a { text-decoration: none; color: #fff; transition: color 0.2s; }
+  .footer-grid a:hover { color: var(--accent-tint); }
+  .footer-grid p { color: #fff; font-size: 13.5px; max-width: 300px; }
   .footer-bottom {
     display: flex;
     justify-content: space-between;
@@ -1146,9 +1278,9 @@
     flex-wrap: wrap;
     gap: 12px;
     padding-top: 26px;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    border-top: 1px solid rgba(255, 255, 255, 0.28);
     font-size: 12.5px;
-    color: #807a6a;
+    color: #fff;
   }
 
   /* Fade in on scroll (progressive enhancement, harmless without JS) */
@@ -1740,22 +1872,25 @@
 
 /* Homepage "What We Supply" featured lines: an image tile (grey placeholder until a photo is
    added) above the name, with the whole card linking through. */
-.featured-line { display: block; padding: 0; border-top: 0; color: inherit; text-decoration: none; }
-.featured-line-media {
-  aspect-ratio: 4 / 3;
-  margin-bottom: 20px;
+/* What We Supply cards: a full-bleed photo with the line name and a round arrow sitting on an
+   orange shade that fades up out of the image. */
+.featured-line {
+  position: relative;
+  display: block;
   overflow: hidden;
-  border-radius: 12px;
+  border-radius: 18px;
+  aspect-ratio: 1 / 1;
   background: #f1f1f1;
+  color: inherit;
+  text-decoration: none;
 }
-.featured-line-media img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s var(--ease); }
-.featured-line:hover .featured-line-media img { transform: scale(1.03); }
-/* White-background packshots sit whole (not cropped) on a white tile lifted by a soft shadow. */
-.featured-line-media.has-photo {
-  background: #fff;
-  box-shadow: 0 1px 2px rgba(15, 14, 12, 0.04), 0 4px 12px rgba(15, 14, 12, 0.04);
+.featured-line-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s var(--ease);
 }
-.featured-line-media.has-photo img { object-fit: contain; padding: 16px; }
+.featured-line:hover .featured-line-img { transform: scale(1.04); }
 .featured-line-empty {
   display: flex;
   flex-direction: column;
@@ -1767,18 +1902,58 @@
 }
 .featured-line-empty svg { width: 44px; height: 44px; color: #a8a8a8; }
 .featured-line-empty span { font-size: 13px; font-weight: 500; color: #8c8c8c; }
-/* Name with a top-right arrow beside it, matching the Global Network hub cards. */
-.featured-line-title { margin: 0; transition: color 0.25s var(--ease); }
-.featured-line-arrow {
-  display: inline-block;
-  vertical-align: -0.08em;
-  color: var(--ink);
-  transition: color 0.25s var(--ease), transform 0.25s var(--ease);
+/* The shade bottoms out at --accent-dark rather than --accent so the white name clears AA
+   contrast (4.5:1) where it actually sits. */
+.featured-line-foot {
+  position: absolute;
+  inset: auto 0 0 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 52px 20px 20px;
 }
-.featured-line-arrow svg { display: block; width: 0.9em; height: 0.9em; }
-.featured-line:hover .featured-line-title,
-.featured-line:hover .featured-line-arrow { color: var(--accent); }
-.featured-line:hover .featured-line-arrow { transform: translate(2px, -2px); }
+/* The shade is a frosted band: it blurs the photo behind it and fades out towards the top, so
+   there is no hard edge across the picture. The neutral tint is only there to keep the white
+   name legible over light photos. Drawn as a layer of its own so the name and arrow stay sharp. */
+.featured-line-foot::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to top,
+    rgba(15, 14, 12, 0.34) 0%,
+    rgba(15, 14, 12, 0.2) 46%,
+    rgba(15, 14, 12, 0) 100%
+  );
+  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(14px);
+  -webkit-mask-image: linear-gradient(to top, #000 0%, #000 46%, transparent 100%);
+  mask-image: linear-gradient(to top, #000 0%, #000 46%, transparent 100%);
+}
+.featured-line-title,
+.featured-line-arrow { position: relative; z-index: 1; }
+.featured-line-title {
+  margin: 0;
+  font-size: 19px;
+  font-weight: 600;
+  line-height: 1.25;
+  color: #fff;
+}
+.featured-line-arrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 34px;
+  height: 34px;
+  border-radius: 999px;
+  background: #fff;
+  color: var(--accent-dark);
+  transition: transform 0.25s var(--ease);
+}
+.featured-line-arrow svg { width: 18px; height: 18px; }
+.featured-line:hover .featured-line-arrow { transform: translateX(3px); }
 
 /* ------------------------------------------------------------------ *
  * Navbar site search: instant-results dropdown, small-screen panel, and the /search page
@@ -2266,6 +2441,32 @@ html.nav-search-open body { overflow: hidden; overscroll-behavior: none; }
 .inquiry-turnstile { display: flex; min-height: 65px; }
 .inquiry-error { margin: 0; font-size: 13px; font-weight: 500; color: var(--accent-dark); }
 
+/* Quality & Compliance "Evidence by Category" cards: one row of four on desktop (two on tablets,
+   one on phones), rounded, alternating brand-orange and white. */
+.evidence-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 20px; }
+@media (max-width: 1100px) {
+  .evidence-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 640px) {
+  .evidence-grid { grid-template-columns: 1fr; }
+}
+.evidence-card {
+  display: flex;
+  flex-direction: column;
+  padding: 28px 24px;
+  border-radius: 16px;
+  background: #ffffff;
+  box-shadow: 0 1px 2px rgba(15, 14, 12, 0.04), 0 4px 12px rgba(15, 14, 12, 0.06);
+}
+.evidence-card-icon { width: 40px; height: 40px; margin-bottom: 20px; color: var(--accent); }
+.evidence-card h3 { margin: 0 0 10px; font-size: 18px; font-weight: 700; line-height: 1.3; color: var(--ink); }
+.evidence-card p { margin: 0; font-size: 14px; line-height: 1.6; color: var(--ink-soft); }
+
+.evidence-card.is-orange { background: var(--accent); box-shadow: none; }
+.evidence-card.is-orange .evidence-card-icon,
+.evidence-card.is-orange h3 { color: #ffffff; }
+.evidence-card.is-orange p { color: #ffffff; }
+
 /* ------------------------------------------------------------------ *
  * PDP additions for the sheet-driven catalog
  * ------------------------------------------------------------------ */
@@ -2393,4 +2594,126 @@ html.nav-search-open body { overflow: hidden; overscroll-behavior: none; }
 
 @media (max-width: 640px) {
   .pdp-summary-list > div { grid-template-columns: 1fr; gap: 2px; }
+}
+
+/* Cards that take the brand orange on hover and carry their contents to white with them.
+   Deliberately outside @layer components: Tailwind's utilities layer out-ranks any layered rule
+   regardless of specificity, so the text-ink / text-ink-soft / text-accent classes on the card
+   contents would otherwise keep their colour on hover. */
+.card-hover {
+  transition: background-color 0.3s var(--ease), border-color 0.3s var(--ease),
+    transform 0.3s var(--ease);
+}
+.card-hover:hover {
+  background: var(--accent);
+  border-color: var(--accent);
+  transform: translateY(-4px);
+}
+/* Lucide icons stroke with currentColor, so the colour change carries them too. */
+.card-hover:hover h3,
+.card-hover:hover p,
+.card-hover:hover svg {
+  color: #fff;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card-hover:hover { transform: none; }
+}
+
+/* Statement line on the About page: one oversized sentence marqueeing right to left, with orange
+   icon chips and face avatars set inline in it. The track holds the sentence twice, so translating
+   it by half its own width lands the second copy exactly where the first started — a seamless
+   loop with no JavaScript. */
+.marquee-line {
+  overflow: hidden;
+  padding: 40px 0 56px;
+  background: #fff;
+}
+.marquee-track {
+  display: flex;
+  width: max-content;
+  animation: marquee-scroll 34s linear infinite;
+}
+.marquee-group {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  padding-right: 24px;
+  white-space: nowrap;
+  font-family: var(--font-poppins), sans-serif;
+  font-size: clamp(40px, 7.5vw, 100px);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  color: var(--ink);
+}
+.marquee-cluster {
+  display: flex;
+  align-items: center;
+}
+.marquee-chip {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: clamp(46px, 8.2vw, 106px);
+  height: clamp(46px, 8.2vw, 106px);
+  border-radius: 50%;
+  background: var(--accent);
+  color: #fff;
+  /* The white ring plus the negative margin is what makes the three read as an overlapping set. */
+  box-shadow: 0 0 0 4px #fff;
+  margin-left: -16px;
+}
+.marquee-cluster .marquee-chip:first-child {
+  margin-left: 0;
+}
+.marquee-chip svg {
+  width: 46%;
+  height: 46%;
+}
+.marquee-avatar {
+  overflow: hidden;
+  background: var(--paper-2);
+}
+.marquee-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+@keyframes marquee-scroll {
+  to { transform: translateX(-50%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track { animation: none; }
+}
+
+/* Our Approach on the About page: one row per principle, alternating which side the photograph
+   sits on. Unlayered so the row's own rules are not out-ranked by Tailwind utilities. */
+.principle-rows {
+  display: grid;
+  gap: 40px;
+}
+.principle-media img {
+  display: block;
+  /* Same width as the section's lead paragraph: both fill a grid-2 column, and this mirrors
+     .lead-block's own cap so the two stay matched if the layout ever widens. */
+  width: 100%;
+  max-width: 640px;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  border-radius: 18px;
+  background: var(--paper-2);
+}
+/* Even-numbered rows lead with the photograph. */
+.principle-row-reversed .principle-copy { order: 2; }
+.principle-row-reversed .principle-media { order: 1; }
+
+@media (max-width: 900px) {
+  .principle-rows { gap: 32px; }
+  /* Stacked, order is dropped so every row reads copy-then-photo rather than flipping. */
+  .principle-row-reversed .principle-copy,
+  .principle-row-reversed .principle-media { order: 0; }
 }

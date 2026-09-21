@@ -66,7 +66,7 @@ export default function GlobalNetworkPage() {
 
   return (
     <div className="w-full">
-      <section className="page-hero">
+      <section className="page-hero page-hero-banner">
         <div className="hero-media">
           <img src={IMG.hero} alt="The Metro Manila skyline, home to our Asia-Pacific logistics hub" loading="eager" />
         </div>

@@ -13,7 +13,7 @@ export const Footer: React.FC = () => {
         <div className="footer-grid">
           <div>
             <Link href="/" className="inline-flex items-center mb-5 no-underline">
-              {/* brightness-0 invert flattens the colour logo to a white silhouette for the dark footer. */}
+              {/* brightness-0 invert flattens the colour logo to a white silhouette for the orange footer. */}
               <Image src={logo} alt={brand.name} className="h-14 w-auto brightness-0 invert" />
             </Link>
             <p>
@@ -21,7 +21,7 @@ export const Footer: React.FC = () => {
               through our India and Philippines hubs and delivered to healthcare providers
               worldwide.
             </p>
-            <p className="text-xs italic !text-[#8f8877]">{brand.affiliation}</p>
+            <p className="text-xs italic !text-white">{brand.affiliation}</p>
           </div>
 
           <div>
@@ -51,7 +51,7 @@ export const Footer: React.FC = () => {
             <h4>Contact</h4>
             <ul>
               <li><a href={`mailto:${brand.email}`}>{brand.email}</a></li>
-              <li className="!text-[#d7d2c1]">{brand.phone}</li>
+              <li className="!text-white">{brand.phone}</li>
               <li><Link href="/contact">Get in touch</Link></li>
             </ul>
           </div>

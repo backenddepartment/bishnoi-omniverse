@@ -15,7 +15,7 @@ export default function VisionValuesPage() {
 
   return (
     <div className="w-full">
-      <section className="page-hero">
+      <section className="page-hero page-hero-banner">
         <div className="hero-media">
           <img src={IMG.hero} alt="A modern hospital corridor" loading="eager" />
         </div>

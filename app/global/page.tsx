@@ -25,7 +25,7 @@ export default function GlobalBusinessesPage() {
 
   return (
     <div className="w-full businesses-page">
-      <section className="page-hero">
+      <section className="page-hero page-hero-banner">
         <div className="hero-media">
           <img src={IMG.hero} alt="Hospital corridor representing our healthcare infrastructure" loading="eager" />
         </div>

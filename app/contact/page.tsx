@@ -110,7 +110,7 @@ export default function ContactPage() {
   return (
     <div className="w-full contact-page">
       {/* Page Header */}
-      <section className="page-hero">
+      <section className="page-hero page-hero-banner">
         <div className="hero-media">
           <img src={IMG.hero} alt="A calm hospital waiting area" loading="eager" />
         </div>

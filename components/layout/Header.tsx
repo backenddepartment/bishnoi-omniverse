@@ -5,12 +5,11 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { AnimatePresence, motion } from 'framer-motion';
-import { Menu, X, ChevronDown, ChevronRight, ArrowRight, ArrowUpRight, Phone } from 'lucide-react';
+import { Menu, X, ChevronDown, ArrowUpRight, Phone } from 'lucide-react';
 import logo from '@/app/assets/logo.png';
 import globalNetworkLogo from '@/app/assets/globalnetworklogo.png';
 import countriesMap from '@/app/assets/countries.png';
 import catalogData from '@/lib/data/catalogData.json';
-import { getCategoryIcon } from '@/lib/catalogIcons';
 import { NavSearch } from '@/components/NavSearch';
 import { PH_PHONE_DISPLAY, PH_TEL_HREF } from '@/lib/contactChannels';
 
@@ -24,19 +23,6 @@ const ABOUT_LINKS: { label: string; href: string }[] = [
   { label: 'Global Network', href: '/global-network' },
   { label: 'Trade & Partners', href: '/trade-partners' },
   { label: 'Contact Us', href: '/contact' },
-];
-
-const ENTITY_LINKS: { label: string; href: string; desc: string }[] = [
-  {
-    label: 'LLP',
-    href: '/llp',
-    desc: 'Bishnoi Omniverse LLP — our global sourcing hub in India, the pharmaceutical capital of the world, delivering fast, affordable access to high-quality medicines.',
-  },
-  {
-    label: 'CORP',
-    href: '/corp',
-    desc: 'Bishnoi Omniverse Corp — our Asia-Pacific logistics hub in the Philippines, bridging Southeast Asia with the rest of our global distribution network.',
-  },
 ];
 
 // `external: true` leaves the site — rendered as a plain anchor opening in a new tab.
@@ -62,12 +48,9 @@ export const Header: React.FC = () => {
   const [networkOpen, setNetworkOpen] = useState(false);
   const [catalogOpen, setCatalogOpen] = useState(false);
   const [aboutOpen, setAboutOpen] = useState(false);
-  const [entityOpen, setEntityOpen] = useState(false);
-  const [activeCategoryId, setActiveCategoryId] = useState(catalogData.categories[0].id);
-  const [categorySelected, setCategorySelected] = useState(false);
   const pathname = usePathname();
-  const catalogRef = useRef<HTMLDivElement>(null);
   const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const headerRef = useRef<HTMLElement>(null);
 
   // Every mega-menu panel is a full-width overlay under the navbar, so two of them open at once
   // would stack and flash. These helpers keep exactly one menu open and put a short delay on
@@ -83,17 +66,15 @@ export const Header: React.FC = () => {
   const closeHoverMenus = () => {
     clearCloseTimer();
     setAboutOpen(false);
-    setEntityOpen(false);
     setNetworkOpen(false);
+    setCatalogOpen(false);
   };
 
-  const openHoverMenu = (menu: 'about' | 'entity' | 'network') => {
+  const openHoverMenu = (menu: 'about' | 'network' | 'catalog') => {
     clearCloseTimer();
     setAboutOpen(menu === 'about');
-    setEntityOpen(menu === 'entity');
     setNetworkOpen(menu === 'network');
-    setCatalogOpen(false);
-    setCategorySelected(false);
+    setCatalogOpen(menu === 'catalog');
   };
 
   const scheduleHoverClose = () => {
@@ -103,22 +84,28 @@ export const Header: React.FC = () => {
 
   useEffect(() => clearCloseTimer, []);
 
-  // Catalog opens on click (not hover), so close it on an outside click instead of mouseleave.
+  // The header is sticky, so anything an in-page anchor scrolls to would land underneath it.
+  // Publishing the measured height lets `html { scroll-padding-top }` hold every jump exactly
+  // clear of the navbar — measured rather than hard-coded, since the bar's height moves with the
+  // logo, the search field and the viewport width.
   useEffect(() => {
-    if (!catalogOpen) return;
-    const handleClickOutside = (e: MouseEvent) => {
-      if (catalogRef.current && !catalogRef.current.contains(e.target as Node)) {
-        setCatalogOpen(false);
-        setCategorySelected(false);
-      }
+    const el = headerRef.current;
+    if (!el) return;
+
+    const apply = () => {
+      const height = Math.round(el.getBoundingClientRect().height);
+      document.documentElement.style.setProperty('--header-h', `${height}px`);
     };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, [catalogOpen]);
+
+    apply();
+    const observer = new ResizeObserver(apply);
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
 
   const navLinks = [
     { href: '/', label: 'Home' },
-    { href: '/global', label: 'Businesses' },
+    { href: '/articles', label: 'Articles' },
   ];
 
   // Mobile menu keeps plain links (no nested mega-menus on small screens).
@@ -128,27 +115,23 @@ export const Header: React.FC = () => {
     { href: '/trade-partners', label: 'Trade & Partners' },
     { href: '/quality', label: 'Quality & Compliance' },
     { href: '/global-network', label: 'Global Network' },
-    { href: '/global', label: 'Businesses' },
+    { href: '/articles', label: 'Articles' },
     { href: '/about', label: 'About Us' },
     { href: '/about/leadership', label: 'Leadership' },
     { href: '/contact', label: 'Contact' },
     { href: '/contact?type=quote', label: 'Request a Quote' },
   ];
 
-  const activeCategory = catalogData.categories.find((c) => c.id === activeCategoryId) || catalogData.categories[0];
-  const activeCategoryProducts = catalogData.products.filter((p) => p.categoryId === activeCategoryId);
-  const activeCategorySubs = catalogData.subcategories.filter((s) => s.categoryId === activeCategoryId);
-
   const isActive = (path: string) => {
     if (path === '/') return pathname === '/';
-    // Match the section, not the prefix — otherwise /global-network lights up "Businesses" (/global).
+    // Match the section, not the prefix, so a sibling route never lights up its neighbour.
     return pathname === path || pathname.startsWith(`${path}/`);
   };
 
   const isCorp = pathname.startsWith('/corp');
 
   return (
-    <header className="site-header">
+    <header ref={headerRef} className="site-header">
       <div className="wrap max-w-[1400px] px-5 flex items-stretch justify-between py-3">
         <div className="flex items-center gap-2.5 text-ink">
           <Link href="/" className="flex items-center gap-2.5 text-ink no-underline">
@@ -166,140 +149,85 @@ export const Header: React.FC = () => {
             Home
           </Link>
 
-          {/* Catalog — click trigger (not hover) opens a floating sidebar (not attached to the
-              navbar, not full width). Clicking a category slides a second panel in beside it. */}
-          <div ref={catalogRef} className="flex items-stretch" onMouseEnter={closeHoverMenus}>
-            <button
-              type="button"
-              onClick={() => {
-                closeHoverMenus();
-                setCatalogOpen((v) => !v);
-                setCategorySelected(false);
-              }}
-              aria-expanded={catalogOpen}
-              className={`flex items-center h-full gap-1 text-sm font-medium transition-colors ${
-                isActive('/catalog') ? 'text-accent' : 'text-ink-soft hover:text-ink'
-              }`}
-            >
-              Medical Equipment
-              <ChevronDown className={`w-3.5 h-3.5 transition-transform ${catalogOpen ? 'rotate-180' : ''}`} />
-            </button>
-
-            {/* pt-3 keeps the gap (detached from the navbar) inside the same box, pl-5 keeps the
-                sidebar off the screen edge (matching the header's own horizontal padding).
-                left-0 resolves against .site-header (no relative ancestor here), so the sidebar
-                sits at the left edge of the page like a real sidebar, not just under the trigger. */}
-            <div className={`absolute left-0 top-full pt-3 pl-5 ${catalogOpen ? 'block' : 'hidden'}`}>
-              {/* Anchor box is exactly the sidebar's width; the second panel is positioned off it
-                  (absolute, left-full) so its resting spot never depends on sibling layout. */}
-              <div className="relative w-72">
-              {/* Sidebar — categories only, floating, fixed narrow width */}
-              <div className="relative z-10 w-72 bg-surface rounded-lg border border-line shadow-xl overflow-hidden">
-                <div className="flex items-center justify-between gap-2 px-5 py-3">
-                  <Link
-                    href="/catalog"
-                    onClick={() => setCatalogOpen(false)}
-                    className="inline-flex items-center gap-1.5 no-underline text-xs font-semibold text-ink hover:text-accent"
-                  >
-                    View Full Catalog <ArrowRight className="w-3 h-3" />
-                  </Link>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setCatalogOpen(false);
-                      setCategorySelected(false);
-                    }}
-                    aria-label="Close catalog menu"
-                    className="p-1 rounded-md text-ink-soft hover:bg-paper-2 hover:text-ink transition-colors shrink-0"
-                  >
-                    <X className="w-4 h-4" />
-                  </button>
-                </div>
-                <div className="catalog-category-scroll border-t border-line max-h-[420px] overflow-y-auto py-3">
-                  {catalogData.categories.map((cat) => {
-                    const active = cat.id === activeCategoryId && categorySelected;
-                    const CatIcon = getCategoryIcon(cat.id);
-                    return (
-                      <button
-                        key={cat.id}
-                        type="button"
-                        onMouseEnter={() => {
-                          setActiveCategoryId(cat.id);
-                          setCategorySelected(true);
-                        }}
-                        onClick={() => {
-                          setActiveCategoryId(cat.id);
-                          setCategorySelected(true);
-                        }}
-                        className={`w-full flex items-center gap-3 text-left px-5 py-3 text-sm font-semibold transition-colors ${
-                          active ? 'bg-[var(--accent)] text-white' : 'text-ink-soft hover:bg-paper-2 hover:text-ink'
-                        }`}
-                      >
-                        <CatIcon className="w-4 h-4 shrink-0" strokeWidth={1.5} />
-                        <span className="flex-1">{cat.name}</span>
-                        <ChevronRight className={`w-3.5 h-3.5 shrink-0 ${active ? 'text-white' : 'text-accent'}`} />
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-
-              {/* Second panel — subcategories/products. Not keyed by category, so switching
-                  categories only swaps content: it never remounts and never re-animates.
-                  It starts tucked behind the sidebar (z-0) and slides left-to-right into place. */}
-              <AnimatePresence initial={false}>
-                {categorySelected && (
-                  <motion.div
-                    initial={{ x: -300, opacity: 0 }}
-                    animate={{ x: 0, opacity: 1 }}
-                    exit={{ x: -300, opacity: 0 }}
-                    transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-                    className="absolute z-0 left-full top-0 ml-3 w-80 bg-surface rounded-lg border border-line shadow-xl p-6"
-                  >
-                    <span className="inline-block text-sm font-semibold text-white bg-[var(--accent)] rounded-full px-3 py-1 mb-2">
-                      {activeCategory.name}
-                    </span>
-                    <p className="text-xs text-ink-soft mb-4">{activeCategory.description}</p>
-                    <div className="space-y-1 mb-4">
-                      {activeCategorySubs.map((sub) => (
-                        <Link
-                          key={sub.id}
-                          href={`/catalog?subcategory=${sub.id}`}
-                          onClick={() => setCatalogOpen(false)}
-                          className="flex items-center justify-between gap-3 no-underline text-sm font-medium text-ink hover:text-accent py-1.5"
-                        >
-                          <span>{sub.name}</span>
-                          <span className="text-xs text-muted">
-                            {activeCategoryProducts.filter((p) => p.subcategoryId === sub.id).length}
-                          </span>
-                        </Link>
-                      ))}
-                    </div>
-                    <Link
-                      href={`/catalog?category=${activeCategory.id}`}
-                      onClick={() => setCatalogOpen(false)}
-                      className="inline-flex items-center gap-1.5 no-underline text-xs font-semibold text-accent-dark hover:underline"
-                    >
-                      View all {activeCategory.name} <ArrowRight className="w-3 h-3" />
-                    </Link>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-              </div>
+          {/* Medical Equipment — hover mega-menu, the same full-width treatment as About Us /
+              LLP / Global Network: an intro column on the left, every catalog category laid out
+              in columns beside it. */}
+          <div
+            className="flex items-stretch"
+            onMouseEnter={() => openHoverMenu('catalog')}
+            onMouseLeave={scheduleHoverClose}
+          >
+            <div className="relative flex items-stretch">
+              <button
+                type="button"
+                onClick={() => (catalogOpen ? closeHoverMenus() : openHoverMenu('catalog'))}
+                aria-expanded={catalogOpen}
+                className={`flex items-center h-full gap-1 text-sm font-medium transition-colors ${
+                  isActive('/catalog') ? 'text-accent' : 'text-ink-soft hover:text-ink'
+                }`}
+              >
+                Medical Equipment
+                <ChevronDown className={`w-3.5 h-3.5 transition-transform ${catalogOpen ? 'rotate-180' : ''}`} />
+              </button>
+              {/* Invisible bridge over the header's bottom padding, so the pointer can travel
+                  from the trigger into the panel without crossing a dead gap. */}
+              <div className="absolute left-0 right-0 top-full h-4" />
             </div>
-          </div>
 
-          {navLinks.slice(1).map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              className={`flex items-center h-full no-underline text-sm font-medium transition-colors ${
-                isActive(link.href) ? 'text-accent' : 'text-ink-soft hover:text-ink'
-              }`}
-            >
-              {link.label}
-            </Link>
-          ))}
+            <AnimatePresence initial={false}>
+              {catalogOpen && (
+                <motion.div
+                  initial={{ opacity: 0, y: -12 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -12 }}
+                  transition={{ duration: 0.32, ease: [0.16, 1, 0.3, 1] }}
+                  className="absolute left-0 right-0 top-full origin-top"
+                >
+                  <div className="bg-surface border-b border-line rounded-b-2xl shadow-xl overflow-hidden">
+                    <div className="grid grid-cols-1 lg:grid-cols-[260px_1fr] gap-12 items-start p-10">
+                      <motion.div
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.35, delay: 0.06 }}
+                      >
+                        <h3 className="font-poppins font-semibold text-3xl text-ink mb-3 leading-tight">
+                          Medical Equipment
+                        </h3>
+                        <p className="text-sm text-ink-soft leading-relaxed mb-5">
+                          Browse our hospital-grade catalog by category, or open the full catalog to
+                          search across every product.
+                        </p>
+                        <Link href="/catalog" onClick={closeHoverMenus} className="btn btn-primary">
+                          View Full Catalog
+                        </Link>
+                      </motion.div>
+
+                      <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-8 gap-y-1">
+                        {catalogData.categories.map((cat, idx) => (
+                          <motion.div
+                            key={cat.id}
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            // Capped stagger: at 25 categories an uncapped one would still be
+                            // animating long after the menu has settled.
+                            transition={{ duration: 0.35, delay: 0.06 + Math.min(idx, 10) * 0.025 }}
+                          >
+                            <Link
+                              href={`/catalog?category=${cat.id}`}
+                              onClick={closeHoverMenus}
+                              className="menu-link inline-block py-2.5 text-[15px] font-medium text-ink hover:text-accent no-underline transition-colors leading-snug"
+                            >
+                              {cat.name}
+                            </Link>
+                          </motion.div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
 
           {/* About Us — hover mega-menu, same full-width treatment as Catalog. The trigger
               stretches to the header's full height and an invisible bridge covers the header's
@@ -361,83 +289,35 @@ export const Header: React.FC = () => {
             </AnimatePresence>
           </div>
 
-          {/* LLP / CORP — hover mega-menu, same full-width treatment as Catalog / About Us. */}
-          <div
-            className="flex items-stretch"
-            onMouseEnter={() => openHoverMenu('entity')}
-            onMouseLeave={scheduleHoverClose}
+          {navLinks.slice(1).map((link) => (
+            <Link
+              key={link.href}
+              href={link.href}
+              className={`flex items-center h-full no-underline text-sm font-medium transition-colors ${
+                isActive(link.href) ? 'text-accent' : 'text-ink-soft hover:text-ink'
+              }`}
+            >
+              {link.label}
+            </Link>
+          ))}
+
+          {/* LLP / CORP — a plain link now; the two entities each have their own page and the
+              dropdown only ever held those two. */}
+          <Link
+            href={isCorp ? '/corp' : '/llp'}
+            onMouseEnter={closeHoverMenus}
+            className={`flex items-center h-full no-underline text-sm font-medium transition-colors ${
+              isActive(isCorp ? '/corp' : '/llp') ? 'text-accent' : 'text-ink-soft hover:text-ink'
+            }`}
           >
-            <div className="relative flex items-stretch">
-              <button
-                type="button"
-                aria-expanded={entityOpen}
-                className="flex items-center h-full gap-1.5 text-sm font-medium text-ink-soft hover:text-ink transition-colors"
-              >
-                <span>{isCorp ? 'CORP' : 'LLP'}</span>
-                <ChevronDown className={`w-3.5 h-3.5 transition-transform ${entityOpen ? 'rotate-180' : ''}`} />
-              </button>
-              <div className="absolute left-0 right-0 top-full h-4" />
-            </div>
-
-            <AnimatePresence initial={false}>
-              {entityOpen && (
-              <motion.div
-                initial={{ opacity: 0, y: -12 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -12 }}
-                transition={{ duration: 0.32, ease: [0.16, 1, 0.3, 1] }}
-                className="absolute left-0 right-0 top-full origin-top"
-              >
-              <div className="bg-surface border-b border-line rounded-b-2xl shadow-xl overflow-hidden">
-                <div className="grid grid-cols-[260px_1fr] gap-14 items-start p-10">
-                  <div>
-                    <h4 className="font-poppins font-semibold text-xl text-accent mb-3 leading-snug">Our Entities</h4>
-                    <p className="text-sm text-ink-soft leading-relaxed m-0">
-                      Two legal entities, one continuous line of supply — LLP and CORP are the only pages
-                      you&apos;ll find under this menu.
-                    </p>
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-x-10 gap-y-4">
-                    {ENTITY_LINKS.map((item) => (
-                      <Link
-                        key={item.href}
-                        href={item.href}
-                        onClick={() => setEntityOpen(false)}
-                        className="block no-underline group"
-                      >
-                        <span className="menu-link flex items-center gap-1.5 text-xl font-semibold text-ink group-hover:text-accent transition-colors leading-snug mb-2">
-                          {item.label}
-                          <ArrowUpRight className="w-4 h-4 text-accent shrink-0" strokeWidth={2} />
-                        </span>
-                        <span className="text-sm text-ink-soft leading-relaxed block">{item.desc}</span>
-                      </Link>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
+            {isCorp ? 'CORP' : 'LLP'}
+          </Link>
         </nav>
 
         <div className="flex items-stretch gap-6">
           {/* Site search — inline field with instant results from 1024px, an icon and full-width
               panel below that. Opening the panel closes the mobile menu. */}
           <NavSearch onPanelOpen={() => setMobileMenuOpen(false)} />
-
-          {/* Tap-to-call the PH hub. The header is full below 1536px, so the number itself only
-              shows at 2xl; narrower screens get the phone icon (the label still names it). */}
-          <a
-            href={PH_TEL_HREF}
-            aria-label={`Call us on ${PH_PHONE_DISPLAY}`}
-            title={`Call ${PH_PHONE_DISPLAY}`}
-            className="hidden md:flex items-center gap-1.5 h-full no-underline whitespace-nowrap text-sm font-medium text-ink-soft hover:text-ink transition-colors"
-          >
-            <Phone className="w-4 h-4 shrink-0" aria-hidden="true" />
-            <span className="hidden 2xl:inline">{PH_PHONE_DISPLAY}</span>
-          </a>
 
           {/* Contact */}
           <Link
