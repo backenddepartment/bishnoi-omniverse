@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useRef, useState } from 'react';
-import { ArrowRight, Mail, Phone, Clock3 } from 'lucide-react';
+import { ArrowRight, Phone } from 'lucide-react';
 import contactData from '@/lib/data/contactData.json';
 import { InquiryGuard, type InquiryGuardHandle } from '@/components/InquiryGuard';
 import { CAPTCHA_ENABLED, DOCUMENT_EXTENSIONS, collectFiles, sendInquiry } from '@/lib/inquiry';
@@ -9,13 +9,34 @@ import { CAPTCHA_ENABLED, DOCUMENT_EXTENSIONS, collectFiles, sendInquiry } from 
 // Fields sent as the email's own header rows (or its message panel) rather than as detail rows.
 const CORE_FIELDS = ['email', 'phone', 'additionalNotes', 'message'];
 import contactbg from '@/app/assets/contactbg.png';
+import team from '@/app/assets/team.jpg';
+import { PatternSection, SectionHead, Prose, Split, Stepper } from '@/components/about/Patterns';
+import {
+  ContactChannelCards,
+  OfficeCards,
+  QuoteBox,
+  UploadPrompt,
+  RouteCards,
+  TalkPanel,
+} from '@/components/about/contact/ContactBlocks';
+import { PH_TEL_HREF } from '@/lib/contactChannels';
 
 const IMG = {
   hero: contactbg.src,
+  portrait: team.src,
 };
 
+// The response steps drawn beside the "What Happens After You Reach Out" copy.
+const NEXT_STEPS = [
+  { title: 'We review your requirement and any files you send' },
+  { title: 'We contact you if anything needs clarifying' },
+  { title: 'We check sourcing options and documents with our suppliers' },
+  { title: 'You receive a quotation with quantities, prices, lead times and documents' },
+];
+
 export default function ContactPage() {
-  const { pageHeader, directContact, assistSection, personas, whatHappens } = contactData;
+  const { pageHeader, directContact, quoteSection, listSection, assistSection, personas, whatHappens, closing } =
+    contactData;
 
   const [activePersonaId, setActivePersonaId] = useState<string>('doctor');
   const [formData, setFormData] = useState<Record<string, string>>({});
@@ -26,6 +47,8 @@ export default function ContactPage() {
   const [sendError, setSendError] = useState<string>('');
   const [captchaToken, setCaptchaToken] = useState<string>('');
   const guardRef = useRef<InquiryGuardHandle>(null);
+  const personaTabsRef = useRef<HTMLDivElement>(null);
+  const formRef = useRef<HTMLDivElement>(null);
 
   // CTAs across the site carry ?type=... so a visitor lands on the right intake route
   // (institutional quote, named-patient access, patient guidance, or partnership).
@@ -46,7 +69,14 @@ export default function ContactPage() {
       trade: 'partner',
     };
     const persona = routes[type];
-    if (persona) setActivePersonaId(persona);
+    if (persona) {
+      setActivePersonaId(persona);
+      // Take the visitor straight to the tab they came for. Deferred a frame so the selected tab
+      // has rendered; its scroll-margin-top (.scroll-target) keeps it clear of the sticky header.
+      requestAnimationFrame(() => {
+        personaTabsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+    }
 
     // Arriving from a product page (?product=…&size=…): carry the item into the request, so the
     // buyer edits it rather than retyping it.
@@ -58,6 +88,25 @@ export default function ContactPage() {
   }, []);
 
   const activePersona = personas.find((p) => p.id === activePersonaId) || personas[0];
+
+  // Route buttons around the page (hero, quote box, upload area, route cards, closing panel) select a
+  // persona and bring the visitor to it. Choosing the persona already open keeps what they typed,
+  // including a product carried in from ?product=.
+  const selectPersona = (id: string) => {
+    if (id !== activePersonaId) {
+      setActivePersonaId(id);
+      setSubmitted(false);
+      setFormData({});
+      setFiles({});
+      setSendError('');
+    }
+  };
+  const goToPersona = (id: string, target: 'tabs' | 'form' = 'tabs') => {
+    selectPersona(id);
+    requestAnimationFrame(() => {
+      (target === 'form' ? formRef : personaTabsRef).current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  };
 
   const handleInputChange = (fieldName: string, value: string) => {
     setFormData((prev) => ({ ...prev, [fieldName]: value }));
@@ -118,56 +167,50 @@ export default function ContactPage() {
           <span className="eyebrow on-dark">{pageHeader.title}</span>
           <h1>{pageHeader.headline}</h1>
           <p className="lede">{pageHeader.subheadline}</p>
-        </div>
-      </section>
-
-      {/* Direct Reach Us */}
-      <section className="section-tight section-2col">
-        <div className="wrap">
-          <div className="direct-channels-heading">
-            <span className="eyebrow">Direct Channels</span>
-            <h2 className="mb-3">{directContact.title}</h2>
-            <p className="lead-block text-ink-soft mb-10">{directContact.description}</p>
-          </div>
-
-          <div className="grid-3 text-sm">
-            <div className="info-card contact-detail-card">
-              <Mail className="w-7 h-7 text-accent mb-3" strokeWidth={1.75} />
-              <span className="text-xs font-semibold tracking-wide text-accent block mb-1">Global Email</span>
-              <a href={`mailto:${directContact.email}`} className="text-base font-semibold text-ink hover:text-accent-dark block">
-                {directContact.email}
-              </a>
-              <span className="text-xs text-muted block mt-1">Confidential &amp; Direct Case Handler</span>
-            </div>
-
-            <div className="info-card contact-detail-card">
-              <Phone className="w-7 h-7 text-accent mb-3" strokeWidth={1.75} />
-              <span className="text-xs font-semibold tracking-wide text-accent block mb-1">International Hotline</span>
-              <span className="text-base font-semibold text-ink block">{directContact.hotline}</span>
-              <span className="text-xs text-muted block mt-1">Global Operations Desk</span>
-            </div>
-
-            <div className="info-card contact-detail-card">
-              <Clock3 className="w-7 h-7 text-accent mb-3" strokeWidth={1.75} />
-              <span className="text-xs font-semibold tracking-wide text-accent block mb-1">Operating Hours</span>
-              <span className="text-base font-semibold text-ink block">{directContact.hours}</span>
-              <span className="text-xs text-muted block mt-1">Always Available for Emergencies</span>
-            </div>
+          <div className="hero-actions">
+            <button type="button" onClick={() => goToPersona('hospital')} className="btn btn-primary">
+              Request a Quote
+            </button>
+            <a href={PH_TEL_HREF} className="btn btn-outline">
+              <Phone className="w-4 h-4" strokeWidth={1.5} aria-hidden="true" /> Talk to Our Team
+            </a>
           </div>
         </div>
       </section>
 
-      {/* How Can We Assist You Today? */}
-      <section className="section !pt-0">
+      {/* 1 · Contact details */}
+      <PatternSection>
+        <SectionHead eyebrow={directContact.eyebrow} title={directContact.title} />
+        <Prose paras={directContact.paragraphs} className="max-w-3xl mb-10" />
+        <ContactChannelCards email={directContact.email} phone={directContact.hotline} />
+        <OfficeCards offices={directContact.offices} />
+      </PatternSection>
+
+      {/* 2 · Request a quote */}
+      <PatternSection tone="paper">
+        <Split side="right" media={<QuoteBox onRequest={() => goToPersona('hospital')} />}>
+          <SectionHead eyebrow={quoteSection.eyebrow} title={quoteSection.title} />
+          <Prose paras={quoteSection.paragraphs} />
+        </Split>
+      </PatternSection>
+
+      {/* 3 · Send your list */}
+      <PatternSection>
+        <Split side="right" media={<UploadPrompt onOpen={() => goToPersona('hospital', 'form')} />}>
+          <SectionHead eyebrow={listSection.eyebrow} title={listSection.title} />
+          <Prose paras={listSection.paragraphs} />
+        </Split>
+      </PatternSection>
+
+      {/* 4 · Inquiry routes, then the persona tabs and the form itself */}
+      <section className="section ap-paper">
         <div className="wrap">
-          <div className="assist-heading">
-            <span className="eyebrow">Targeted Inquiry</span>
-            <h2 className="mb-3">{assistSection.title}</h2>
-            <p className="lead-block text-ink-soft italic mb-10">{assistSection.subtitle}</p>
-          </div>
+          <SectionHead eyebrow={assistSection.eyebrow} title={assistSection.title} />
+          <Prose paras={assistSection.paragraphs} className="max-w-3xl mb-10" />
+          <RouteCards activeId={activePersonaId} onSelect={(id) => goToPersona(id)} />
 
           {/* Persona Selector */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-12">
+          <div ref={personaTabsRef} className="scroll-target grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-12 mb-12">
             {personas.map((p) => {
               const selected = p.id === activePersonaId;
               return (
@@ -181,6 +224,7 @@ export default function ContactPage() {
                     setFiles({});
                     setSendError('');
                   }}
+                  aria-pressed={selected}
                   className={`p-5 text-left rounded-xl border transition flex flex-col justify-between ${
                     selected ? 'border-ink bg-ink text-white' : 'border-line bg-surface text-ink hover:border-accent'
                   }`}
@@ -197,7 +241,7 @@ export default function ContactPage() {
           </div>
 
           {/* Active Persona Form */}
-          <div className="info-card max-w-4xl !p-8 !rounded-2xl">
+          <div ref={formRef} className="scroll-target info-card max-w-4xl !p-8 !rounded-2xl">
             <div className="border-b border-line pb-6 mb-6">
               <span className="text-xs font-semibold uppercase tracking-wide text-muted block mb-1">Active Selection</span>
               <h3 className="font-sans text-xl font-bold text-ink">{activePersona.category}</h3>
@@ -328,17 +372,30 @@ export default function ContactPage() {
         </div>
       </section>
 
-      {/* What Happens After You Contact Us? */}
-      <section className="section-dark section-tight">
-        <div className="wrap">
-          <span className="eyebrow on-dark">Response Commitment</span>
-          <h2 className="mb-6 max-w-2xl">{whatHappens.title}</h2>
-          <div className="max-w-2xl space-y-4">
-            <p>{whatHappens.body}</p>
-            <p className="font-serif text-lg text-white border-l-2 border-accent pl-4 py-1">{whatHappens.guarantee}</p>
+      {/* 5 · Next steps */}
+      <section className="section-dark section">
+        <div className="wrap grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-start">
+          <div>
+            <SectionHead eyebrow={whatHappens.eyebrow} title={whatHappens.title} onDark />
+            <Prose paras={whatHappens.paragraphs} />
           </div>
+          <Stepper
+            vertical
+            steps={NEXT_STEPS}
+            className="[&_.ap-step-marker]:!bg-ink [&_.ap-step_h3]:!text-white [&_.ap-step_h3]:!mt-3"
+          />
         </div>
       </section>
+
+      {/* Closing · talk to us */}
+      <TalkPanel
+        eyebrow={closing.eyebrow}
+        title={closing.title}
+        text={closing.text}
+        portrait={IMG.portrait}
+        email={directContact.email}
+        onRequestQuote={() => goToPersona('hospital')}
+      />
     </div>
   );
 }

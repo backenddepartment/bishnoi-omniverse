@@ -1,26 +1,27 @@
 import React from 'react';
 import Link from 'next/link';
 import {
-  Ambulance, ArrowRight, BedDouble, Building2, FileCheck2, Globe2, Handshake, HeartHandshake,
+  Ambulance, BedDouble, Building2, FileCheck2, Globe2, Handshake, HeartHandshake,
   HeartPulse, Hospital, Route, Snowflake, Split, Stethoscope, Syringe, UserCheck,
 } from 'lucide-react';
 import businessesData from '@/lib/data/businessesData.json';
 import { WhatWeDoBand } from '@/components/WhatWeDoBand';
 import { FadeIn } from '@/components/FadeIn';
-import facilityImg from '@/app/assets/aboutushero.png';
+import storyHeroImg from '@/app/assets/aboutusstorybg.png';
 import cphiImg from '@/app/assets/cphi.jpeg';
 import whatWeDoBandImg from '@/app/assets/backgroundabout.png';
-import suppliesImg from '@/app/assets/supplies.jpg';
-import medicinesImg from '@/app/assets/medicines.jpg';
-import sourcingImg from '@/app/assets/sourcing.jpg';
 import familiesImg from '@/app/assets/families.jpg';
 import teamImg from '@/app/assets/team.jpg';
+import howWeWorkImg from '@/app/assets/howwework.jpg';
+import askImg from '@/app/assets/documents.png';
 
 // Local assets: the two Wikimedia URLs previously used here both 404'd, leaving a broken hero.
 const IMG = {
-  hero: facilityImg.src,
+  hero: storyHeroImg.src,
   whoWeAre: cphiImg.src,
   whatWeDoBand: whatWeDoBandImg.src,
+  howWeWork: howWeWorkImg.src,
+  ask: askImg.src,
 };
 
 // The rotating statement line. Hospitals and clinics get orange icon chips; patients get faces.
@@ -86,45 +87,20 @@ const WHO_WE_SERVE = [
   },
 ];
 
-// Our Business & Network — the two registered entities, each with the hub it runs. Business
-// structure and operating footprint were two sections saying the same thing; they are one now.
-const OUR_BUSINESS = [
-  {
-    name: 'Bishnoi Omniverse LLP',
-    role: 'India Hub · Sourcing',
-    desc: 'Manufacturer qualification, specification review, and certification documentation, run out of New Delhi.',
-    address: 'Okhla Industrial Area, Phase III, New Delhi, India 110020',
-    href: '/llp',
-  },
-  {
-    name: 'Bishnoi Omniverse Corp',
-    role: 'Philippines Hub · Logistics & Operations',
-    desc: 'Consolidation, cold-chain handling, export documentation, and delivery, run out of Metro Manila.',
-    address: 'Unit 301 & 305, 17 Vatican Bldg., Vatican City Drive, B.F. Resort Village, Talon II, Las Piñas City, Metro Manila, Philippines',
-    href: '/corp',
-  },
-];
-
 // Operating principles, distinct from the homepage's commercial framing.
 const PRINCIPLES = [
   {
     icon: FileCheck2,
-    img: suppliesImg.src,
-    imgAlt: 'Certification documentation packed alongside hospital-grade consumables',
     title: 'Clear Product Documents',
     desc: 'Product information depends on the product and destination. We provide the available certificates, specifications, and supporting documents for each product so you can review the information you need.',
   },
   {
     icon: Split,
-    img: medicinesImg.src,
-    imgAlt: 'Specialty medicines handled through their own supply process',
     title: 'Separate Supply Processes',
     desc: 'Hospital orders and patient-specific requests have different requirements. We handle each request through the appropriate process to keep documentation, approvals, and delivery requirements clear.',
   },
   {
     icon: Route,
-    img: sourcingImg.src,
-    imgAlt: 'Sourcing and consolidation across our New Delhi and Metro Manila hubs',
     title: 'Connected Supply Network',
     desc: 'Our New Delhi and Metro Manila hubs support product sourcing, consolidation, and distribution. Our teams work together to manage the supply process from product sourcing to delivery.',
   },
@@ -139,7 +115,7 @@ export default function AboutPage() {
         <div className="hero-media">
           <img
             src={IMG.hero}
-            alt="Bishnoi Omniverse team members at an international exhibition, and the wider team at a company event"
+            alt="Driving innovation for modern business: Bishnoi Omniverse representatives at CPHI Japan 2026, and the team at a company summit"
             loading="eager"
           />
         </div>
@@ -267,10 +243,14 @@ export default function AboutPage() {
           {/* grid-4 rather than Tailwind columns, so these follow the site's own breakpoints:
               four across, two at 900px, one at 560px. */}
           <div className="grid-4 mt-12">
-            {WHO_WE_SERVE.map((item) => {
+            {WHO_WE_SERVE.map((item, idx) => {
               const Icon = item.icon;
+              // The first audience card is shown in its orange state from the start.
               return (
-                <div key={item.title} className="border border-line rounded-2xl p-6 card-hover">
+                <div
+                  key={item.title}
+                  className={`border border-line rounded-2xl p-6 card-hover${idx === 0 ? ' is-active' : ''}`}
+                >
                   <Icon className="w-10 h-10 text-accent mb-5" strokeWidth={1.5} aria-hidden="true" />
                   <h3 className="font-sans text-base font-bold text-ink mb-2">{item.title}</h3>
                   <p className="text-sm text-ink-soft leading-relaxed m-0">{item.desc}</p>
@@ -281,136 +261,109 @@ export default function AboutPage() {
         </div>
       </section>
 
-      <section className="section section-line section-white">
-        <div className="wrap">
-          <div className="grid-2 items-start">
+      {/* How We Work — full-width band on the team photo, mirrored so the wall is on the left.
+          The heading sits on the left and the three principles on the right, each over its own
+          dark fade. */}
+      <section id="values" className="how-we-work">
+        <img
+          src={IMG.howWeWork}
+          alt="A Bishnoi Omniverse team member talking a client through a requirement at her desk"
+          className="how-we-work-media"
+          loading="lazy"
+        />
+        <div className="wrap how-we-work-inner">
+          <FadeIn className="how-we-work-head" from="left">
             <div className="heading-lg">
-              <span className="eyebrow">Our Approach</span>
-              <h2 className="mb-0">How We Work</h2>
+              <span className="eyebrow on-dark">Our Approach</span>
+              <h2>How We Work</h2>
             </div>
-            <div className="lead-block">
-              <p className="text-ink-soft leading-relaxed m-0">
-                We keep the process simple: clear product information, reliable supply support, and
-                direct communication from inquiry to delivery.
-              </p>
-            </div>
-          </div>
-
-          {/* One row per principle, alternating which side the photograph sits on. */}
-          <div id="values" className="principle-rows mt-14">
-            {PRINCIPLES.map((principle, idx) => {
-              const Icon = principle.icon;
-              // Each half enters from the edge it already sits against, so a reversed row's
-              // photograph comes in from the left and its copy from the right.
-              const reversed = idx % 2 === 1;
-              return (
-                <div
-                  key={principle.title}
-                  className={`grid-2 principle-row${reversed ? ' principle-row-reversed' : ''}`}
-                >
-                  <FadeIn className="principle-copy" from={reversed ? 'right' : 'left'}>
-                    <Icon className="w-10 h-10 text-accent mb-5" strokeWidth={1.5} aria-hidden="true" />
-                    <h3 className="text-ink text-4xl font-medium mb-3 leading-tight">{principle.title}</h3>
-                    <p className="text-ink-soft leading-relaxed m-0 text-[19px]">{principle.desc}</p>
-                  </FadeIn>
-                  <FadeIn className="principle-media" from={reversed ? 'left' : 'right'}>
-                    <img src={principle.img} alt={principle.imgAlt} loading="lazy" />
-                  </FadeIn>
-                </div>
-              );
-            })}
-          </div>
+            <p className="how-we-work-lead">
+              We keep the process simple: clear product information, reliable supply support, and
+              direct communication from inquiry to delivery.
+            </p>
+          </FadeIn>
+          <FadeIn className="how-we-work-panel" from="right">
+            <ul className="how-we-work-list">
+              {PRINCIPLES.map((principle) => {
+                const Icon = principle.icon;
+                return (
+                  <li key={principle.title}>
+                    <span className="how-we-work-icon" aria-hidden="true">
+                      <Icon strokeWidth={1.5} />
+                    </span>
+                    <div>
+                      <h3>{principle.title}</h3>
+                      <p>{principle.desc}</p>
+                    </div>
+                  </li>
+                );
+              })}
+            </ul>
+          </FadeIn>
         </div>
       </section>
 
-
-      {/* Our Business & Network — one section: who the trading entities are and where each one
-          runs. The detail behind the footprint stays on /global-network. */}
-      <section className="section section-white pt-0">
-        <div className="wrap">
-          <div className="grid-2 items-start">
+      {/* Our Business & Network and Sustainability & Governance — one section, two columns, each
+          with its own heading. Entity and footprint detail live on /global and /global-network. */}
+      <section className="section section-white">
+        <div className="wrap grid-2 items-start">
+          <div>
             <div className="heading-lg">
               <span className="eyebrow">Our Business &amp; Network</span>
-              <h2 className="mb-0">How We Source and Deliver Healthcare Products</h2>
+              <h2>How We Source and Deliver Healthcare Products</h2>
             </div>
-            <div className="lead-block">
-              <p className="text-ink-soft leading-relaxed m-0">
-                Bishnoi Omniverse is the healthcare supply business of the Bishnoi Group. It trades
-                through two registered entities, each running its own hub — New Delhi sources, Metro
-                Manila consolidates and moves — so a hospital, a clinician, or a distributor deals
-                with a single accountable counterparty from quotation through to handover. Between
-                them we serve hospitals, clinics, and trade partners across more than 50 countries.
-              </p>
-              <Link
-                href="/global-network"
-                className="inline-flex items-center gap-1.5 no-underline text-sm font-semibold text-accent-dark hover:underline mt-4"
-              >
-                See the full operating footprint <ArrowRight className="w-3.5 h-3.5" />
-              </Link>
-            </div>
+            <p className="text-ink-soft leading-relaxed m-0">
+              Bishnoi Omniverse is the healthcare supply business of the Bishnoi Group. It trades
+              through two registered entities, each running its own hub — New Delhi sources, Metro
+              Manila consolidates and moves — so a hospital, a clinician, or a distributor deals
+              with a single accountable counterparty from quotation through to handover. Between
+              them we serve hospitals, clinics, and trade partners across more than 50 countries.
+            </p>
+            <Link href="/global-network" className="btn btn-outline on-accent mt-6">
+              See the full operating footprint
+            </Link>
           </div>
-
-          <div className="grid-2 mt-12">
-            {OUR_BUSINESS.map((entity) => (
-              <div key={entity.name} className="border border-line rounded-2xl p-8">
-                <span className="eyebrow">{entity.role}</span>
-                <h3 className="font-sans text-lg font-bold text-ink mb-2">{entity.name}</h3>
-                <p className="text-sm text-ink-soft leading-relaxed m-0">{entity.desc}</p>
-                <p className="text-sm text-muted leading-relaxed mt-4 pt-4 border-t border-line mb-0">
-                  {entity.address}
-                </p>
-                <Link
-                  href={entity.href}
-                  className="inline-flex items-center gap-1.5 no-underline text-sm font-semibold text-accent-dark hover:underline mt-4"
-                >
-                  Entity details <ArrowRight className="w-3.5 h-3.5" />
-                </Link>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section className="section section-line section-white">
-        <div className="wrap">
-          <div className="grid-2 items-start">
+          <div>
             <div className="heading-lg">
               <span className="eyebrow">Sustainability &amp; Governance</span>
-              <h2 className="mb-0">Governed to one standard, commercial and philanthropic alike</h2>
+              <h2>Governed to one standard, commercial and philanthropic alike</h2>
             </div>
-            <div className="lead-block">
-              <p className="text-ink-soft leading-relaxed m-0">
-                Bishnoi Omniverse&apos;s approach to sustainability is set at the Bishnoi Group level,
-                where the Group has been an active UN Global Compact participant since November 2024,
-                filing Communications on Progress for 2025 and 2026. This commitment sits alongside
-                the Group&apos;s long-standing philanthropic work through the Naresh Bishnoi
-                Foundation, reflecting a view that responsible sourcing, transparent documentation,
-                and social-impact work are governed under the same standard rather than run as
-                separate initiatives.
-              </p>
-            </div>
+            <p className="text-ink-soft leading-relaxed m-0">
+              Bishnoi Omniverse&apos;s approach to sustainability is set at the Bishnoi Group level,
+              where the Group has been an active UN Global Compact participant since November 2024,
+              filing Communications on Progress for 2025 and 2026. This commitment sits alongside
+              the Group&apos;s long-standing philanthropic work through the Naresh Bishnoi
+              Foundation, reflecting a view that responsible sourcing, transparent documentation,
+              and social-impact work are governed under the same standard rather than run as
+              separate initiatives.
+            </p>
           </div>
         </div>
       </section>
 
-      <section className="section section-white pt-0 pb-24">
-        <div className="wrap">
-          <div className="section-dark rounded-3xl px-8 py-20">
-            <div className="heading-lg text-center max-w-2xl mx-auto">
-              <span className="eyebrow on-dark text-[#f8ae85]">Work With Us</span>
-              <h2>Send us the requirement, and we&apos;ll send back the quote and the paperwork.</h2>
-              <p className="mt-2 mb-8">
-                Whether you run a hospital, treat patients, or manufacture the products the world
-                needs — a case manager responds within 24 hours.
-              </p>
-              <div className="flex flex-wrap justify-center gap-4">
-                <Link href="/contact?type=quote" className="btn btn-primary">
-                  Request a Quote
-                </Link>
-                <Link href="/global" className="btn btn-outline">
-                  See The Group Structure
-                </Link>
-              </div>
+      {/* Closing banner: the documents photo with an orange gradient bar across its foot, carrying
+          the question prompt and the two routes (FAQs, email). */}
+      <section className="about-ask">
+        <img
+          src={IMG.ask}
+          alt="A Bishnoi Omniverse team member working through documents at an office workstation"
+          className="about-ask-media"
+          loading="lazy"
+        />
+        <div className="about-ask-bar">
+          <div className="wrap about-ask-inner">
+            <h2 className="about-ask-title">
+              Suggestions?
+              <br />
+              Questions?
+            </h2>
+            <div className="about-ask-actions">
+              <Link href="/faq" className="about-ask-btn is-light">
+                See FAQs
+              </Link>
+              <a href="mailto:contact@bishnoi.ai" className="about-ask-btn is-orange">
+                Send an Email
+              </a>
             </div>
           </div>
         </div>

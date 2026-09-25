@@ -85,9 +85,9 @@ export const Header: React.FC = () => {
   useEffect(() => clearCloseTimer, []);
 
   // The header is sticky, so anything an in-page anchor scrolls to would land underneath it.
-  // Publishing the measured height lets `html { scroll-padding-top }` hold every jump exactly
-  // clear of the navbar — measured rather than hard-coded, since the bar's height moves with the
-  // logo, the search field and the viewport width.
+  // Publishing the measured height lets the targets' `scroll-margin-top` (see globals.css) hold
+  // every jump exactly clear of the navbar — measured rather than hard-coded, since the bar's
+  // height moves with the logo, the search field and the viewport width.
   useEffect(() => {
     const el = headerRef.current;
     if (!el) return;
@@ -158,17 +158,18 @@ export const Header: React.FC = () => {
             onMouseLeave={scheduleHoverClose}
           >
             <div className="relative flex items-stretch">
-              <button
-                type="button"
-                onClick={() => (catalogOpen ? closeHoverMenus() : openHoverMenu('catalog'))}
-                aria-expanded={catalogOpen}
-                className={`flex items-center h-full gap-1 text-sm font-medium transition-colors ${
+              {/* A link, like About Us: hovering opens the mega-menu, clicking goes to the
+                  catalog itself. The panel closes on click so it never lingers over the new page. */}
+              <Link
+                href="/catalog"
+                onClick={closeHoverMenus}
+                className={`flex items-center h-full gap-1 no-underline text-sm font-medium transition-colors ${
                   isActive('/catalog') ? 'text-accent' : 'text-ink-soft hover:text-ink'
                 }`}
               >
                 Medical Equipment
                 <ChevronDown className={`w-3.5 h-3.5 transition-transform ${catalogOpen ? 'rotate-180' : ''}`} />
-              </button>
+              </Link>
               {/* Invisible bridge over the header's bottom padding, so the pointer can travel
                   from the trigger into the panel without crossing a dead gap. */}
               <div className="absolute left-0 right-0 top-full h-4" />

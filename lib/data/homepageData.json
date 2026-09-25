@@ -77,7 +77,99 @@
     "ctaText": "See who we serve",
     "ctaHref": "/global"
   },
-  "responseCommitment": "We review every request carefully and connect you with the right team for support. Request a quote easily—no login required.",
+  "aboutOverview": {
+    "sectionTag": "About Us",
+    "title": "One Accountable Partner, Backed by the Bishnoi Group",
+    "lead": "Bishnoi Omniverse is the healthcare supply business of the Bishnoi Group. Our team in the Philippines works with our sourcing hub in India, so you get local service and wider product choice from one partner.",
+    "ctaText": "Learn More About Us",
+    "ctaHref": "/about",
+    "links": [
+      {
+        "text": "Leadership",
+        "href": "/about/leadership"
+      },
+      {
+        "text": "Vision & Values",
+        "href": "/about/vision-values"
+      },
+      {
+        "text": "Group Structure",
+        "href": "/global"
+      }
+    ]
+  },
+  "qualityOverview": {
+    "sectionTag": "Quality & Compliance",
+    "title": "The Right Product, With the Right Documents",
+    "lead": "In healthcare, a missing document can hold up an order as much as a missing product. That is why we check products, suppliers and paperwork before you buy.",
+    "ctaText": "See Our Quality Approach",
+    "ctaHref": "/quality",
+    "cards": [
+      {
+        "icon": "FileCheck2",
+        "title": "Product Checks",
+        "desc": "We confirm each product matches your specification before we quote."
+      },
+      {
+        "icon": "ClipboardList",
+        "title": "Clear Documents",
+        "desc": "Every quotation lists the documents available for each item."
+      },
+      {
+        "icon": "MessageSquare",
+        "title": "Honest Updates",
+        "desc": "If anything is missing, we tell you before you commit."
+      }
+    ]
+  },
+  "howItWorks": {
+    "sectionTag": "How It Works",
+    "title": "From Requirement to Delivery",
+    "lead": "Send us your product list, and one team takes care of the rest. You get updates at every stage.",
+    "ctaText": "See How It Works",
+    "ctaHref": "/global-network",
+    "steps": [
+      {
+        "title": "Send Your Requirement",
+        "desc": "Share your product list, quantities and delivery location."
+      },
+      {
+        "title": "We Source and Check",
+        "desc": "We find suitable suppliers and collect the documents."
+      },
+      {
+        "title": "You Approve the Quote",
+        "desc": "Clear prices, lead times and documents, line by line."
+      },
+      {
+        "title": "We Deliver",
+        "desc": "We manage shipping and delivery to your facility."
+      }
+    ],
+    "secondaryCtaText": "Send Your Requirement",
+    "secondaryCtaHref": "/contact?type=quote"
+  },
+  "partnersOverview": {
+    "sectionTag": "Trade & Partners",
+    "title": "A Trusted Route Into Philippine Healthcare",
+    "lead": "We work with partners who want to reach hospitals and clinics in the Philippines. We handle the coordination and communication in between.",
+    "ctaText": "Become a Partner",
+    "ctaHref": "/contact?type=partner",
+    "partners": [
+      {
+        "title": "Manufacturers & Suppliers",
+        "desc": "Reach hospitals and clinics that need your products."
+      },
+      {
+        "title": "Distributors",
+        "desc": "A practical route into the Philippine market."
+      },
+      {
+        "title": "Logistics Partners",
+        "desc": "Clear communication and written terms on every shipment."
+      }
+    ]
+  },
   "globalFootprint": {
     "sectionTag": "Operating Footprint",
     "title": "Two Hubs, One Continuous Line of Supply",
@@ -126,6 +218,27 @@
         "desc": "Dialysis machines, dialysers, bloodline sets and related consumables for renal care units, sourced on request.",
         "href": "/catalog?category=dialysis-equipment",
         "linkText": "Browse Dialysis Equipment"
+      },
+      {
+        "id": "patient-monitoring",
+        "name": "Patient Monitoring",
+        "desc": "Vital signs and advanced monitors for wards, theatres and intensive care units.",
+        "href": "/catalog?category=patient-monitoring",
+        "linkText": "Browse Patient Monitoring"
+      },
+      {
+        "id": "respiratory-care",
+        "name": "Respiratory Care",
+        "desc": "Oxygen therapy, respiratory support and airway management for acute and long-term care.",
+        "href": "/catalog?category=respiratory-care",
+        "linkText": "Browse Respiratory Care"
+      },
+      {
+        "id": "surgical-equipment",
+        "name": "Surgical Equipment",
+        "desc": "Surgical instruments, electrosurgery and operating room equipment for theatre teams.",
+        "href": "/catalog?category=surgical-equipment",
+        "linkText": "Browse Surgical Equipment"
       }
     ],
     "ctaText": "Explore the Full Catalog",

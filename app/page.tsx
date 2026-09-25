@@ -1,10 +1,14 @@
 import React from 'react';
 import Link from 'next/link';
-import { ArrowUpRight, ChevronRight, ImageIcon } from 'lucide-react';
+import {
+  ArrowUpRight, ClipboardList, FileCheck2, ImageIcon, MessageSquare,
+  type LucideIcon,
+} from 'lucide-react';
 import homepageData from '@/lib/data/homepageData.json';
 import { HeroSlider } from '@/components/HeroSlider';
 import { FaqAccordion } from '@/components/FaqAccordion';
 import { CountUp } from '@/components/CountUp';
+import { CardSlider } from '@/components/CardSlider';
 import heroBg from '@/app/assets/background.png';
 import heroSlideTwo from '@/app/assets/slidertwo.png';
 import heroSlideThree from '@/app/assets/sliderthree.png';
@@ -20,6 +24,11 @@ import familiesImg from '@/app/assets/families.jpg';
 import featuredGlovesImg from '@/app/assets/gloves.png';
 import featuredPpeImg from '@/app/assets/ppesuit.jpg';
 import featuredDialysisImg from '@/app/assets/dialysis.jpg';
+import featuredMonitoringImg from '@/app/assets/patientmonitoring.png';
+import featuredRespiratoryImg from '@/app/assets/respiratorycare.png';
+import featuredSurgicalImg from '@/app/assets/surgical.png';
+import aboutBgImg from '@/app/assets/overviewaboutusbg.png';
+import worldMapImg from '@/app/assets/countries.png';
 
 // Images sourced from Wikimedia Commons (CC BY / CC BY-SA / public domain)
 const IMG = {
@@ -31,10 +40,6 @@ const IMG = {
   patients: familiesImg.src,
   logistics:
     'https://upload.wikimedia.org/wikipedia/commons/5/59/Shipping_cranes_by_Cartagena.jpg',
-  // Behind the response-commitment band: a medical supply requisition being handled.
-  // Wikimedia Commons, public domain, verified to resolve. 1920px thumbnail, not the original.
-  responseBand:
-    'https://upload.wikimedia.org/wikipedia/commons/thumb/0/09/Reserve_Soldiers_support_medical_supply_mission_during_pandemic_%286154094%29.jpg/1920px-Reserve_Soldiers_support_medical_supply_mission_during_pandemic_%286154094%29.jpg',
 };
 
 // What We Supply card photos, keyed by the featured line's id in homepageData.json. A line with no
@@ -51,6 +56,18 @@ const FEATURED_LINE_IMAGES: Record<string, { src: string; alt: string } | undefi
   dialysis: {
     src: featuredDialysisImg.src,
     alt: 'A haemodialysis machine running a treatment, with the drip chamber and bloodline tubing in focus and a patient resting behind it',
+  },
+  'patient-monitoring': {
+    src: featuredMonitoringImg.src,
+    alt: 'A bedside patient monitor showing ECG, SpO2, respiration and blood pressure readings beside a hospital bed',
+  },
+  'respiratory-care': {
+    src: featuredRespiratoryImg.src,
+    alt: 'Two green oxygen cylinders with flowmeters and humidifier bottles beside a hospital bed',
+  },
+  'surgical-equipment': {
+    src: featuredSurgicalImg.src,
+    alt: 'Surgical instruments — forceps, scissors and a scalpel — laid out on a blue sterile drape',
   },
 };
 
@@ -88,10 +105,14 @@ const provideCards: Record<string, { src: string; alt: string; tone: 'green' | '
   },
 };
 
+// Quality & Compliance card icons, keyed by the icon name in homepageData.json.
+const QUALITY_ICONS: Record<string, LucideIcon> = { FileCheck2, ClipboardList, MessageSquare };
+
 export default function HomePage() {
   const {
-    hero, whatWeProvide, whoWeHelp, responseCommitment,
+    hero, whatWeProvide, whoWeHelp,
     whatWeSupply, faq, statsStrip,
+    aboutOverview, qualityOverview, howItWorks, partnersOverview,
   } = homepageData;
 
   return (
@@ -197,16 +218,50 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* What We Supply — three featured lines: the catalog's first two categories plus Dialysis
-          Equipment. Each card links through to its category, or to a quote request for dialysis. */}
-      <section className="section section-line section-white">
+      {/* About Us overview — styled on a full-bleed brand photo: the wordmark baked into the top of
+          overviewaboutusbg, headline bottom-left and summary + button bottom-right over a dark
+          fade, with the links into the About pages beside the main button. The panel runs edge to
+          edge. Full story on /about. */}
+      <section>
+        <div className="home-about-panel">
+          <img
+            src={aboutBgImg.src}
+            alt="The Bishnoi Omniverse team in a meeting, with the bishnoiomniverse wordmark above"
+            className="home-about-bg"
+            loading="lazy"
+          />
+          <div className="home-about-overlay">
+            <div className="wrap home-about-overlay-inner">
+              <div className="home-about-title">
+                <span className="eyebrow on-dark">{aboutOverview.sectionTag}</span>
+                <h2>{aboutOverview.title}</h2>
+              </div>
+              <div className="home-about-summary">
+                <p>{aboutOverview.lead}</p>
+                <div className="home-about-buttons">
+                  <Link href={aboutOverview.ctaHref} className="btn btn-primary">
+                    {aboutOverview.ctaText}
+                  </Link>
+                  {aboutOverview.links.map((link) => (
+                    <Link key={link.href} href={link.href} className="btn btn-outline">
+                      {link.text}
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* What We Supply — six featured lines in a single swipeable row (touch, trackpad, or mouse
+          drag). Each card links through to its catalog category. */}
+      <section className="section section-line section-white !pb-12">
         <div className="wrap">
           <div className="grid-2 items-start">
             <div className="heading-lg">
               <span className="eyebrow">{whatWeSupply.sectionTag}</span>
-              <h2 className="mb-0" style={{ fontSize: 'clamp(32px, 3.6vw, 46px)', fontWeight: 500 }}>
-                {whatWeSupply.title}
-              </h2>
+              <h2 className="mb-0">{whatWeSupply.title}</h2>
             </div>
             <div className="lead-block">
               <p className="text-ink-soft leading-relaxed m-0">{whatWeSupply.lead}</p>
@@ -215,8 +270,11 @@ export default function HomePage() {
               </Link>
             </div>
           </div>
+        </div>
 
-          <div className="grid-3 mt-14">
+        {/* Outside .wrap so the row runs edge to edge. */}
+        <div className="mt-14">
+          <CardSlider label="Featured product lines" className="featured-slider">
             {whatWeSupply.featured.map((line) => {
               const image = FEATURED_LINE_IMAGES[line.id];
               return (
@@ -234,21 +292,56 @@ export default function HomePage() {
                       <span>Image coming soon</span>
                     </span>
                   )}
-                  {/* Name and arrow sit on an orange shade that fades up out of the photo. */}
+                  {/* Photo fades to white at the foot; the name, an orange pill and a short line sit
+                      centered on the white. */}
                   <div className="featured-line-foot">
                     <h3 className="featured-line-title">{line.name}</h3>
-                    <span className="featured-line-arrow" aria-hidden="true">
-                      <ChevronRight strokeWidth={2.5} />
-                    </span>
+                    <span className="featured-line-pill">{line.linkText}</span>
+                    <p className="featured-line-desc">{line.desc}</p>
                   </div>
                 </Link>
               );
             })}
-          </div>        </div>
+          </CardSlider>
+        </div>
+      </section>
+
+      {/* Quality & Compliance overview — on the paper tone so it separates from the white What
+          We Supply above. Full approach on /quality. */}
+      <section className="section !pt-10 !pb-10">
+        <div className="wrap">
+          <div className="grid-2 items-end">
+            <div className="heading-lg">
+              <span className="eyebrow">{qualityOverview.sectionTag}</span>
+              <h2 className="mb-0">{qualityOverview.title}</h2>
+            </div>
+            <div className="lead-block">
+              <p className="text-ink-soft leading-relaxed m-0">{qualityOverview.lead}</p>
+            </div>
+          </div>
+
+          {/* Cards run black, brand orange, then white, left to right. */}
+          <div className="grid-3 mt-12">
+            {qualityOverview.cards.map((card, idx) => {
+              const Icon = QUALITY_ICONS[card.icon];
+              return (
+                <div key={card.title} className={`home-quality-card is-shade-${idx + 1}`}>
+                  {Icon && <Icon aria-hidden="true" />}
+                  <h3>{card.title}</h3>
+                  <p>{card.desc}</p>
+                </div>
+              );
+            })}
+          </div>
+
+          <Link href={qualityOverview.ctaHref} className="btn btn-primary mt-10">
+            {qualityOverview.ctaText}
+          </Link>
+        </div>
       </section>
 
       {/* Who We Serve — teaser only. The full four-audience detail lives on /global. */}
-      <section className="section section-line section-2col">
+      <section className="section section-line section-2col !pt-10">
         <div className="wrap">
           {/* items-end drops the lead to sit level with the foot of the heading, rather than
               starting at its top edge. */}
@@ -275,22 +368,61 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Response commitment — backed by the contact photography, since this band is the
-          request-a-quote promise. The image is dimmed rather than scrimmed with an overlay, so
-          the white text keeps its contrast against the dark ground underneath. */}
-      <section className="section-dark section-tight response-band">
-        <img src={IMG.responseBand} alt="" className="response-band-media" loading="lazy" />
+      {/* How It Works — no photo; the numbered steps are the visual, and give a break between the
+          Who We Serve tiles and the dark partners band below. Top padding is trimmed so it sits
+          closer to Who We Serve. Full process on /global-network. */}
+      <section className="section section-white !pt-12">
         <div className="wrap">
-          <div className="quote-block max-w-2xl mx-auto text-center">
-            <span className="mark">&ldquo;</span>
-            <blockquote>{responseCommitment}</blockquote>
-            <cite>Our response commitment, every quote and every case</cite>
-            <div className="mt-7">
-              <Link className="btn btn-outline" href="/contact?type=quote">
-                Request a Quote
-              </Link>
-            </div>
+          <div className="heading-lg text-center max-w-2xl mx-auto">
+            <span className="eyebrow">{howItWorks.sectionTag}</span>
+            <h2>{howItWorks.title}</h2>
+            <p className="text-ink-soft leading-relaxed m-0">{howItWorks.lead}</p>
           </div>
+
+          <ol className="home-steps">
+            {howItWorks.steps.map((step, idx) => (
+              <li key={step.title} className="home-step">
+                <span className="home-step-num font-poppins">{String(idx + 1).padStart(2, '0')}</span>
+                <h3>{step.title}</h3>
+                <p>{step.desc}</p>
+              </li>
+            ))}
+          </ol>
+
+          <div className="flex flex-wrap justify-center gap-4 mt-12">
+            <Link href={howItWorks.ctaHref} className="btn btn-primary">
+              {howItWorks.ctaText}
+            </Link>
+            <Link href={howItWorks.secondaryCtaHref} className="btn btn-outline on-light">
+              {howItWorks.secondaryCtaText}
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* Trade & Partners — dark band over the faded world map. Full detail on /trade-partners. */}
+      <section className="section section-dark home-partners">
+        <img src={worldMapImg.src} alt="" className="home-partners-map" loading="lazy" />
+        {/* Grid areas put the button under the copy on desktop but after the cards on mobile. */}
+        <div className="wrap home-partners-grid">
+          <div className="heading-lg home-partners-copy">
+            <span className="eyebrow on-dark">{partnersOverview.sectionTag}</span>
+            <h2>{partnersOverview.title}</h2>
+            <p className="leading-relaxed m-0">{partnersOverview.lead}</p>
+          </div>
+          <div className="home-partners-cta">
+            <Link href={partnersOverview.ctaHref} className="btn btn-primary">
+              {partnersOverview.ctaText}
+            </Link>
+          </div>
+          <ul className="home-partner-cards">
+            {partnersOverview.partners.map((partner) => (
+              <li key={partner.title}>
+                <h3>{partner.title}</h3>
+                <p>{partner.desc}</p>
+              </li>
+            ))}
+          </ul>
         </div>
       </section>
 

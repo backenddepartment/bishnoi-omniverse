@@ -174,6 +174,17 @@ export default function CatalogPage() {
     if (search) {
       setSearchQuery(search);
     }
+
+    // Arriving for a specific category or subcategory (the homepage featured cards, the
+    // mega-menu): let the hero show for a beat, then glide down to the filtered listing.
+    // The section's scroll-margin-top (main [id] in globals.css) keeps the sticky header clear of it.
+    const validCategory = category && categories.some((c) => c.id === category);
+    if (validCategory || parent) {
+      const timer = window.setTimeout(() => {
+        document.getElementById('catalog-browser')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 450);
+      return () => window.clearTimeout(timer);
+    }
   }, [categories, subcategories]);
 
   // Restore the visitor's last Grid/Table choice; storage can be unavailable (private mode).

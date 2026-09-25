@@ -1,209 +1,133 @@
 import React from 'react';
-import { FileCheck2, UserCheck, RouteOff } from 'lucide-react';
+import type { Metadata } from 'next';
 import founderImg from '@/app/assets/CEO.png';
-import groupImpactImg from '@/app/assets/bishnoiteam.jpg';
-import suppliesImg from '@/app/assets/supplies.jpg';
-import doctorsImg from '@/app/assets/doctors.jpg';
-import sourcingImg from '@/app/assets/sourcing.jpg';
+import heroImg from '@/app/assets/leadershipbghero.png';
+import experienceBg from '@/app/assets/experience.png';
+import { ArrowRight } from 'lucide-react';
+import { FadeIn } from '@/components/FadeIn';
+import {
+  PatternSection,
+  Prose,
+  SectionHead,
+} from '@/components/about/Patterns';
+import { LeaderGrid, type Leader } from '@/components/about/leadership/LeaderCard';
 
-const IMG = {
-  hero: 'https://upload.wikimedia.org/wikipedia/commons/a/a0/Facial_plastic_surgeon_wearing_surgical_loupes_and_headlight_during_an_operating_room_procedure.jpg',
-  // Imported rather than referenced by path, so the build fingerprints it and adds the GitHub Pages
-  // sub-path (/bishnoi-omniverse) — a bare "/file.jpg" path breaks there.
-  founder: founderImg.src,
+export const metadata: Metadata = {
+  title: 'Leadership | Bishnoi Omniverse',
+  description:
+    'The people behind Bishnoi Omniverse and what they are accountable for, from choosing suppliers to making sure every commitment to a customer is kept.',
 };
 
-// The two operating hubs, described structurally. Deliberately no individual names — only the
-// functions each hub is accountable for are confirmed.
-const OPERATING_HUBS = [
-  {
-    entity: 'Bishnoi Omniverse LLP',
-    place: 'New Delhi, India',
-    desc: 'Leads sourcing, manufacturer qualification, and documentation for the hospital supplies and specialty medicines lines.',
-  },
-  {
-    entity: 'Bishnoi Omniverse Corp',
-    place: 'Metro Manila, Philippines — legally tied to Getmeds Philippines Inc. / 2MG Inc.',
-    desc: 'Leads Asia-Pacific logistics, cold-chain fulfillment, and regional distribution.',
-  },
-];
+/**
+ * Further leadership profiles (round photo, name, title, LinkedIn). The design guide calls for 2–4
+ * more, to be supplied — the grid under the founder profile only renders once this has entries.
+ */
+const LEADERS: Leader[] = [];
 
-const SOURCING_PRINCIPLES = [
+/** Our Commitment: one promise per audience, listed beside the heading. */
+const COMMITMENTS = [
   {
-    icon: FileCheck2,
-    img: suppliesImg.src,
-    imgAlt: 'Hospital-grade consumables prepared for institutional supply',
-    title: 'Documentation before delivery',
-    desc: 'No product ships without the certification and testing paperwork behind it already in hand — not promised, not “available on request.” If a manufacturer can’t produce a Certificate of Analysis or the applicable compliance mark before shipment, we don’t carry that product.',
+    title: 'Customers',
+    text: 'To customers, we promise honest answers, including when a product cannot be sourced to your specification.',
   },
-  {
-    icon: UserCheck,
-    img: doctorsImg.src,
-    imgAlt: 'Clinicians reviewing a case together',
-    title: 'Named accountability',
-    desc: 'Every institutional order has a single point of contact on our side, from initial quote to delivered shipment. Procurement teams working with named-patient or cold-chain-sensitive orders should never have to chase down which hub or which person owns their request.',
-  },
-  {
-    icon: RouteOff,
-    img: sourcingImg.src,
-    imgAlt: 'Sourcing and logistics across our India and Philippines hubs',
-    title: 'Confirm-then-commit sourcing',
-    desc: 'For categories with binding regulatory pathways — named-patient access to unregistered medicines, in particular — we confirm the regulatory route with the receiving country before committing to a sourcing timeline, rather than promising a delivery date and working backward.',
-  },
+  { title: 'Suppliers', text: 'To suppliers, we promise clear requirements and fair communication.' },
+  { title: 'Partners', text: 'To every partner, we promise to follow through on what we agree.' },
 ];
 
 export default function LeadershipPage() {
   return (
     <div className="w-full">
-      <section className="page-hero page-hero-banner">
+      {/* Slide hero, the same band as About Us: a designed 1920×1080 slide that carries its own
+          headline, shown whole at every width. The page heading is kept for screen readers. */}
+      <section className="page-hero page-hero-slide">
         <div className="hero-media">
-          <img src={IMG.hero} alt="Leadership guiding hospital procurement worldwide" loading="eager" />
+          <img
+            src={heroImg.src}
+            alt="Leadership: the people and regional teams steering Bishnoi Omniverse's global supply mission. Founder Naresh Bishnoi, and leaders walking past stacked medical supply cartons"
+            loading="eager"
+          />
         </div>
-        <div className="hero-content">
-          <span className="eyebrow on-dark">About Us</span>
-          <h1>Leadership</h1>
-          <p className="lede">The people and regional teams steering Bishnoi Omniverse&apos;s global supply mission.</p>
-        </div>
+        <h1 className="sr-only">Leadership — Experienced Leadership, Accountable for Every Order</h1>
       </section>
 
-      <section className="section-tight section-white">
-        {/* From 1024px the portrait column is only as wide as the portrait, so the biography sits
-            right beside it rather than across an empty half-width column. */}
-        <div className="wrap grid-2 items-start lg:grid-cols-[minmax(0,420px)_minmax(0,1fr)] lg:gap-12">
-          <div className="heading-lg">
-            <span className="eyebrow">Founder</span>
-            <h2 className="mb-6">Naresh Bishnoi</h2>
+      {/* 1 · Our Leadership — P6 founder profile, on white. No bottom padding: the Our Experience
+          slide below butts straight up against it. */}
+      <PatternSection tone="white" className="!pb-0">
+        <div className="grid grid-cols-1 items-center gap-10 lg:grid-cols-[minmax(0,2fr)_minmax(0,3fr)] lg:gap-16">
+          <FadeIn from="left">
             <img
-              src={IMG.founder}
+              src={founderImg.src}
               alt="Naresh Bishnoi, Founder and Chairman of the Bishnoi Group"
               // The portrait is a cut-out with a transparent background; the soft fill gives the
-              // rounded frame an edge against the white section.
-              className="w-full aspect-[3/4] object-cover object-top rounded-2xl bg-paper-2"
-              style={{ maxWidth: 420 }}
+              // rounded frame an edge against the paper section.
+              className="mx-auto block w-full aspect-[4/5] object-cover object-top rounded-2xl bg-paper-2"
+              style={{ maxWidth: 460 }}
               loading="lazy"
             />
-          </div>
-          <div className="lead-block">
-            <p className="font-poppins text-xl font-semibold text-accent leading-snug mb-4">
-              Founder &amp; Chairman, Bishnoi Group
-            </p>
-            <p className="text-ink-soft leading-relaxed">
-              A proud member of the Bishnoi Group, Naresh Bishnoi founded the Omniverse ecosystem to close the
-              gap between the world&apos;s medical resources and the hospitals and patients who need them most —
-              spanning healthcare infrastructure, pharmaceutical access, global logistics, and social
-              philanthropy across borders.
-            </p>
-            <p className="text-ink-soft leading-relaxed">
-              Under his leadership, Bishnoi Omniverse has built its dual-hub sourcing and logistics model —
-              connecting India&apos;s manufacturing base with Southeast Asia&apos;s distribution corridor — while
-              extending the Group&apos;s commitments as an active participant in the United Nations Global Compact
-              since November 2024, with Communications on Progress filed for 2025 and 2026. Mr. Bishnoi
-              represents the Group at major regional forums, including the UN Global Compact Forward Faster
-              Now | APAC Conference 2026 in Colombo, Sri Lanka, where sustainable healthcare supply and
-              SDG-aligned business practice were central themes.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      {/* Operating Structure — replaces the old "Two Hubs, Led Locally" placeholder, which promised
-          regional leadership teams that were never named. This describes the structure instead. */}
-      <section className="section section-line section-white">
-        <div className="wrap">
-          <div className="grid-2 items-start">
-            <div className="heading-lg">
-              <span className="eyebrow">How Bishnoi Omniverse Is Organized</span>
-              <h2 className="mb-0">Operating Structure &amp; Governance</h2>
-            </div>
-            <div className="lead-block">
-              <p className="text-ink-soft leading-relaxed m-0">
-                Bishnoi Omniverse operates as the healthcare infrastructure and hospital supply business
-                within the wider Bishnoi Group, structured around two operating hubs and two accountable
-                functions:
-              </p>
-            </div>
-          </div>
-
-          <div className="grid-2 items-start mt-14">
-            {OPERATING_HUBS.map((hub) => (
-              <div key={hub.entity} className="info-card">
-                <h3 className="font-sans text-lg font-bold text-ink mb-1">{hub.entity}</h3>
-                <div className="text-sm font-semibold text-ink-soft mb-3">{hub.place}</div>
-                <p className="text-sm text-ink-soft leading-relaxed">{hub.desc}</p>
-              </div>
-            ))}
-          </div>
-
-          <p className="lead-block text-ink-soft leading-relaxed mt-10 mb-0">
-            Each product category is assigned a named quality and regulatory owner internally, and every
-            order — whether a hospital purchase order or a named-patient specialty request — is tracked from
-            sourcing through delivery by the hub responsible for that market. This structure is designed to
-            keep accountability close to the product: the team that qualifies a manufacturer is the same team
-            that stands behind the documentation you receive with your order.
-          </p>
-        </div>
-      </section>
-
-      <section className="section section-line section-white">
-        <div className="wrap">
-          <div className="grid-2 items-start">
-            <div className="heading-lg">
-              <span className="eyebrow">Leadership Philosophy</span>
-              <h2 className="mb-0">How We Make Sourcing Decisions</h2>
-            </div>
-            <div className="lead-block">
-              <p className="text-ink-soft leading-relaxed m-0">
-                Three principles guide every sourcing and partnership decision at Bishnoi Omniverse:
-              </p>
-            </div>
-          </div>
-
-          <div className="grid-3 mt-14">
-            {SOURCING_PRINCIPLES.map((principle) => {
-              const Icon = principle.icon;
-              return (
-                <div key={principle.title} className="pillar">
-                  <div className="pillar-media">
-                    <img src={principle.img} alt={principle.imgAlt} className="pillar-img" loading="lazy" />
-                    <Icon className="pillar-media-icon" strokeWidth={1.5} aria-hidden="true" />
-                  </div>
-                  <h3>{principle.title}</h3>
-                  <p>{principle.desc}</p>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      </section>
-
-      <section className="section section-line section-white">
-        <div className="wrap">
-          {/* Heading runs full width; the image and the paragraph sit side by side beneath it, so
-              the text starts level with the top of the image rather than with the heading. */}
-          <div className="heading-lg text-center">
-            <span className="eyebrow">Group Leadership</span>
-            <h2 className="mb-0" style={{ fontSize: 'clamp(32px, 3.6vw, 46px)', fontWeight: 500 }}>
-              Bishnoi Group &amp; Social Impact Leadership
+          </FadeIn>
+          <div>
+            <span className="eyebrow">Our Leadership</span>
+            <h2 className="font-poppins text-[clamp(32px,3.6vw,48px)] font-semibold leading-tight text-ink mt-3 mb-2">
+              Naresh Bishnoi
             </h2>
-          </div>
-
-          <div className="grid-2 items-start mt-10">
-            <img
-              src={groupImpactImg.src}
-              alt="The Bishnoi Group team"
-              className="w-full h-auto rounded-2xl"
-              loading="lazy"
+            <p className="font-poppins text-xl font-semibold text-accent leading-snug mb-6">
+              Founder and Chairman
+            </p>
+            <Prose
+              paras={[
+                'Naresh Bishnoi founded the Bishnoi Group and the Omniverse business with one aim. He wanted to connect medical products with the hospitals and patients who need them. His work covers healthcare supply, access to medicines, logistics and community work.',
+                'Under his leadership, Bishnoi Omniverse built its two-hub model, pairing sourcing strength in India with local service in the Philippines. He has led the Group’s part in the UN Global Compact since November 2024. He also represents the Group at regional events, such as the UN Global Compact Asia-Pacific conference in Colombo, Sri Lanka, in 2026.',
+              ]}
             />
-            <div className="lead-block">
-              <p className="text-ink-soft leading-relaxed m-0">
-                Bishnoi Omniverse sits within the wider Bishnoi Group, which also includes the Getmeds
-                pharmaceutical access network (operating in the Philippines, India, Vanuatu, Latin America, and
-                Southeast Asia) and the Naresh Bishnoi Foundation, the Group&apos;s philanthropic and
-                social-impact arm. Leadership across the Group participates jointly in the Group&apos;s UN Global
-                Compact commitments, reflecting a shared view that commercial healthcare supply and
-                social-impact work are run under the same governance standards rather than as separate efforts.
-              </p>
-            </div>
+          </div>
+        </div>
+        <LeaderGrid leaders={LEADERS} />
+      </PatternSection>
+
+      {/* 2 · Our Experience — the designed 1920×1080 slide is the whole section background: photo
+          tiles and an orange sweep on its right half, so the copy keeps to the white left half.
+          On phones the copy sits above and the slide shows whole beneath it. */}
+      <section className="section experience-section" style={{ backgroundImage: `url(${experienceBg.src})` }}>
+        <div className="wrap">
+          <div className="experience-copy">
+            <SectionHead eyebrow="Our Experience" title="Experience Across Medicines, Supplies and Borders" />
+            <Prose
+              paras={[
+                'Our leaders bring experience from across the Bishnoi Group. This includes the Getmeds network’s work supplying medicines in several countries, and experience in sourcing, trade and shipping across borders.',
+                'That experience means we understand both sides of every order. We know what manufacturers need in order to quote accurately, and we know what hospital procurement teams need in order to approve a purchase. That is how we save you time and avoid problems with your order.',
+              ]}
+            />
+          </div>
+        </div>
+      </section>
+
+      {/* 3 · Our Commitment — heading left, the three promises as an arrowed list on the right.
+          The section fades into orange at its foot so it runs straight into the footer. */}
+      <section className="section section-white commitment-section">
+        <div className="wrap commitment-grid">
+          <SectionHead eyebrow="Our Commitment" title="Our Promise to Customers and Partners" />
+          <div>
+            {/* The promises stack one at a time as the section scrolls into view: Customers
+                first, then Suppliers, then Partners, each rising and fading in on its own beat. */}
+            <ul className="commitment-list">
+              {COMMITMENTS.map((item, i) => (
+                <li key={item.title}>
+                  <FadeIn delay={i * 0.55} className="commitment-item">
+                    <ArrowRight className="commitment-arrow" strokeWidth={2} aria-hidden="true" />
+                    <div>
+                      <h3>{item.title}</h3>
+                      <p>{item.text}</p>
+                    </div>
+                  </FadeIn>
+                </li>
+              ))}
+            </ul>
+            <Prose
+              className="mt-10 max-w-3xl"
+              paras={[
+                'These commitments come from the top and apply to everyone on our team. If we ever fall short, we want to hear about it directly.',
+              ]}
+            />
           </div>
         </div>
       </section>

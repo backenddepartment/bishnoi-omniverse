@@ -1,19 +1,56 @@
 {
   "pageHeader": {
-    "title": "REQUEST A QUOTE · CONTACT BISHNOI OMNIVERSE",
-    "headline": "Send the requirement. We'll send back the quote and the paperwork.",
-    "subheadline": "Institutional requisitions, specialty and named-patient access, partnership enquiries, and patient guidance each route to a different specialist. Pick your route below — no login or account required."
+    "title": "Contact Us",
+    "headline": "One Team for Quotes, Requirements and Partnerships",
+    "subheadline": "Send us a product list, an equipment requirement or a partnership inquiry. The more detail you share, the faster we can come back with useful options. No login or account needed."
   },
   "directContact": {
-    "title": "Reach Us Directly",
-    "description": "For urgent requirements, use our global contact lines. Every enquiry is reviewed by a named case manager and treated confidentially.",
+    "eyebrow": "Contact Details",
+    "title": "Ways to Reach Us",
+    "paragraphs": [
+      "Email us at contact@bishnoi.ai, or call our Philippines line on +63 917 156 9029. For quick questions, you can also reach us on WhatsApp and Viber.",
+      "You can visit or write to our Philippine office, Bishnoi Omniverse Corp, at Unit 301 and 305, 17 Vatican Building, Vatican City Drive, B.F. Resort Village, Talon II, Las Piñas City, Metro Manila, or our India office, Bishnoi Omniverse LLP, at Okhla Industrial Area, Phase III, New Delhi 110020."
+    ],
     "email": "contact@bishnoi.ai",
-    "hotline": "+63 917 156 9029 | +91 (11) 4000-0000",
-    "hours": "24/7 Support for Urgent Medical Requests"
+    "hotline": "+63 917 156 9029",
+    "offices": [
+      {
+        "country": "Philippines",
+        "entity": "Bishnoi Omniverse Corp",
+        "address": "Unit 301 and 305, 17 Vatican Building, Vatican City Drive, B.F. Resort Village, Talon II, Las Piñas City, Metro Manila",
+        "mapQuery": "17 Vatican Building, Vatican City Drive, BF Resort Village, Talon II, Las Piñas City, Metro Manila, Philippines"
+      },
+      {
+        "country": "India",
+        "entity": "Bishnoi Omniverse LLP",
+        "address": "Okhla Industrial Area, Phase III, New Delhi 110020",
+        "mapQuery": "Okhla Industrial Area Phase III, New Delhi 110020, India"
+      }
+    ]
+  },
+  "quoteSection": {
+    "eyebrow": "Request a Quote",
+    "title": "Line-by-Line Quotations",
+    "paragraphs": [
+      "Already know what you need? A quotation request is the fastest route. Share the product names, sizes or catalog references, your specifications or preferred brands, the quantities, and the delivery location. If the purchase is part of a tender, include the reference.",
+      "You will receive a line-by-line quotation with product details, prices, lead times and the documents for each item. It is ready for your team to review and compare."
+    ]
+  },
+  "listSection": {
+    "eyebrow": "Send Your List",
+    "title": "Equipment and Product Lists",
+    "paragraphs": [
+      "For larger requirements, such as equipping a new ward or facility, upload your equipment list as a PDF, Word or Excel file. Photos, reference documents and specification sheets help us get it right the first time.",
+      "Don't have every detail yet? Send what you have, along with your timeline and delivery location, and we will help you fill in the gaps. If you are unsure which product fits your need, simply describe how it will be used."
+    ]
   },
   "assistSection": {
-    "title": "How Can We Assist You Today?",
-    "subtitle": "Select the route that matches your requirement so your request reaches the right specialist with the right documentation set."
+    "eyebrow": "Inquiry Routes",
+    "title": "The Right Route for Every Inquiry",
+    "paragraphs": [
+      "Hospitals and procurement teams can use the quotation or requirement forms. Doctors and hospital pharmacies looking for a specialty medicine for a specific patient can use our specialty medicine form. It asks only for the details that process needs.",
+      "Manufacturers, suppliers, distributors and logistics providers can reach us through the Supplier and Partnership Inquiry. Share your company profile, the products or services you offer, your available documents and the markets you serve."
+    ]
   },
   "personas": [
     {
@@ -327,8 +364,16 @@
     ]
   },
   "whatHappens": {
-    "title": "What Happens After You Contact Us?",
-    "body": "Your request is reviewed by a named case manager, who confirms the specification, checks sourcing and documentation against your destination market, and comes back with quantities, lead times, and supporting paperwork together.",
-    "guarantee": "You will receive a direct response from a dedicated case manager within 24 hours."
+    "eyebrow": "Next Steps",
+    "title": "What Happens After You Reach Out",
+    "paragraphs": [
+      "We review your requirement and any files you send, and contact you if anything needs clarifying. We then check sourcing options and documents with our suppliers and send you a quotation with quantities, prices, lead times and supporting documents.",
+      "There is no obligation until you approve the quotation. Timelines and documents vary by product and destination, and we will tell you clearly what to expect at each step."
+    ]
+  },
+  "closing": {
+    "eyebrow": "Talk to Us",
+    "title": "Prefer to Talk First?",
+    "text": "Every good supply relationship starts with one clear conversation. Call, email or message us, and we will help you find the best way forward."
   }
 }
