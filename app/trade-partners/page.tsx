@@ -14,7 +14,7 @@ import {
 } from '@/components/about/Patterns';
 import { FadeIn } from '@/components/FadeIn';
 import { OrderTermsCard, PartnerHub, RouteMap } from '@/components/about/trade-partners/TradeDiagrams';
-import heroImg from '@/app/assets/sourcing.jpg';
+import heroImg from '@/app/assets/tradeandpartners.png';
 import meetingImg from '@/app/assets/companyone.png';
 import countriesImg from '@/app/assets/countries.png';
 
@@ -36,15 +36,18 @@ const PROMISES = [
 export default function TradePartnersPage() {
   return (
     <div className="w-full">
-      {/* HERO · P5 short. Interim photo until the warehouse/shipping photo is supplied. */}
+      {/* HERO · P5, the same band as Vision & Values: a designed 1920×820 slide with its left half
+          kept clear, so the copy sits there in ink with no scrim and the headline in the orange
+          sweep. */}
       <AboutHero
-        short
+        banner
         eyebrow="Trade & Partners"
         title="A Trusted Route Into Philippine Healthcare"
         lede="Healthcare providers in the Philippines need reliable products, and suppliers need a trusted route to reach them. We bring the two together, handling the coordination, documentation and communication that make cross-border healthcare trade work."
         image={heroImg.src}
-        imageAlt="Delivery van with its rear doors open, loaded with cardboard shipping boxes"
-        imagePosition="center 58%"
+        imageAlt="A stethoscope and pulse oximeter on a desk, beside photographs of the Bishnoi team with partners at trade exhibitions and the founder at a UN Global Compact event"
+        imagePosition="center"
+        overlay="none"
       />
 
       {/* 1 · SUPPLIER RELATIONSHIPS · P1 photo left */}

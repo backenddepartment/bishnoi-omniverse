@@ -7,7 +7,8 @@ import {
 import businessesData from '@/lib/data/businessesData.json';
 import { WhatWeDoBand } from '@/components/WhatWeDoBand';
 import { FadeIn } from '@/components/FadeIn';
-import storyHeroImg from '@/app/assets/aboutusstorybg.png';
+import { AboutHero } from '@/components/about/Patterns';
+import storyHeroImg from '@/app/assets/aboutusherobg.png';
 import cphiImg from '@/app/assets/cphi.jpeg';
 import whatWeDoBandImg from '@/app/assets/backgroundabout.png';
 import familiesImg from '@/app/assets/families.jpg';
@@ -111,18 +112,18 @@ export default function AboutPage() {
 
   return (
     <div className="w-full about-page">
-      <section className="page-hero page-hero-slide">
-        <div className="hero-media">
-          <img
-            src={IMG.hero}
-            alt="Driving innovation for modern business: Bishnoi Omniverse representatives at CPHI Japan 2026, and the team at a company summit"
-            loading="eager"
-          />
-        </div>
-        {/* The hero image carries its own headline, so the page's heading is kept for screen
-            readers and search engines only. */}
-        <h1 className="sr-only">About Us — The healthcare supply business inside the Bishnoi Group</h1>
-      </section>
+      {/* P5 hero, the same band as Vision & Values and Leadership: a designed 1920×820 slide with
+          its left half kept clear, so the copy sits there in ink with no scrim. */}
+      <AboutHero
+        eyebrow="Our Story"
+        title="The Right Medical Supplies, Wherever Care Needs Them"
+        lede="We are the healthcare supply business of the Bishnoi Group. With teams in New Delhi and Metro Manila, we help hospitals and clinics in the Philippines get the products they need, with the right documents and one team managing every step."
+        image={IMG.hero}
+        imageAlt="Bishnoi Omniverse leaders speaking at a team event and smiling together, beside a stethoscope and pulse oximeter"
+        imagePosition="center"
+        overlay="none"
+        banner
+      />
 
       <section className="section section-tight section-white">
         <div className="wrap grid-2 items-start">

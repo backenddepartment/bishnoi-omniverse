@@ -18,11 +18,9 @@ const ABOUT_LINKS: { label: string; href: string }[] = [
   { label: 'Leadership', href: '/about/leadership' },
   { label: 'Vision & Values', href: '/about/vision-values' },
   { label: 'Quality & Compliance', href: '/quality' },
-  { label: 'Governance & Standards', href: '/about/governance' },
   { label: 'Group Structure', href: '/global' },
   { label: 'Global Network', href: '/global-network' },
   { label: 'Trade & Partners', href: '/trade-partners' },
-  { label: 'Contact Us', href: '/contact' },
 ];
 
 // `external: true` leaves the site — rendered as a plain anchor opening in a new tab.

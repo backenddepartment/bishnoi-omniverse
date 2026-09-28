@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { ArrowLeft, ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react';
 
 /**
  * Horizontal scroll-snap track with arrow controls.
@@ -16,10 +16,13 @@ export function CardSlider({
   children,
   label = 'Card slider',
   className = '',
+  arrows = false,
 }: {
   children: React.ReactNode;
   label?: string;
   className?: string;
+  /** Small arrows on the buttons in place of the chevrons. */
+  arrows?: boolean;
 }) {
   const trackRef = useRef<HTMLDivElement>(null);
   const drag = useRef({ active: false, startX: 0, startScroll: 0, moved: false });
@@ -113,7 +116,7 @@ export function CardSlider({
         disabled={!canPrev}
         aria-label="Previous"
       >
-        <ChevronLeft className="w-5 h-5" strokeWidth={2.5} />
+        {arrows ? <ArrowLeft className="w-4 h-4" strokeWidth={2.5} /> : <ChevronLeft className="w-5 h-5" strokeWidth={2.5} />}
       </button>
       <button
         type="button"
@@ -122,7 +125,7 @@ export function CardSlider({
         disabled={!canNext}
         aria-label="Next"
       >
-        <ChevronRight className="w-5 h-5" strokeWidth={2.5} />
+        {arrows ? <ArrowRight className="w-4 h-4" strokeWidth={2.5} /> : <ChevronRight className="w-5 h-5" strokeWidth={2.5} />}
       </button>
     </div>
   );

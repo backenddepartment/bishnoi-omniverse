@@ -28,7 +28,10 @@ export function SiteChrome({ children }: { children: React.ReactNode }) {
   return (
     <>
       <Header />
-      <main className="flex-grow">{children}</main>
+      {/* Content that slides in from the right (<FadeIn from="right">) waits 64px past the edge of
+          the page until it scrolls into view. Clipping sideways here stops that from widening the
+          page; `clip` rather than `hidden`, so sticky elements inside keep working. */}
+      <main className="flex-grow overflow-x-clip">{children}</main>
       <Footer />
       <MessagingButtons />
     </>

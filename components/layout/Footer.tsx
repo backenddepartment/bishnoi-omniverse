@@ -59,7 +59,9 @@ export const Footer: React.FC = () => {
 
         <div className="footer-bottom">
           <span>© {new Date().getFullYear()} Bishnoi Omniverse LLP. All rights reserved.</span>
-          <span>A proud member of the Bishnoi Group</span>
+          <span>
+            A proud member of the Bishnoi Group · <Link href="/site-map">Sitemap</Link>
+          </span>
         </div>
       </div>
     </footer>

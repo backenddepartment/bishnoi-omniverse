@@ -1,23 +1,18 @@
 import React from 'react';
 import type { Metadata } from 'next';
-import Link from 'next/link';
-import { ArrowRight, BadgeCheck, Globe2, Handshake, Ship } from 'lucide-react';
+import { Globe2, Handshake, Ship } from 'lucide-react';
 import {
   PatternSection,
   SectionHead,
   Prose,
   AboutHero,
   Split,
-  DiagramSplit,
-  IconCards,
-  CtaBand,
+  Stepper,
 } from '@/components/about/Patterns';
 import { FadeIn } from '@/components/FadeIn';
-import { OrgChart } from '@/components/about/group-structure/OrgChart';
-import hospitalsImg from '@/app/assets/hospitals.png';
-import suppliesImg from '@/app/assets/supplies.jpg';
-import corpImg from '@/app/assets/CORPIMAGE.png';
-import llpImg from '@/app/assets/LLPIMAGE.png';
+import { GroupShowcase } from '@/components/about/group-structure/GroupShowcase';
+import heroImg from '@/app/assets/groupstructure.png';
+import roleImg from '@/app/assets/omniverseabout.png';
 
 export const metadata: Metadata = {
   title: 'Group Structure | Bishnoi Omniverse',
@@ -25,135 +20,38 @@ export const metadata: Metadata = {
     'Who you are dealing with: the Bishnoi Group at a glance, where Bishnoi Omniverse fits, and how its India and Philippine entities divide responsibility.',
 };
 
-/* ---------- Entity cards (P1 twin cards) ---------- */
-
-type Entity = {
-  name: string;
-  href: string;
-  image: string;
-  imageAlt: string;
-  /** The approved sentence, verbatim, with the entity name set in bold. */
-  text: React.ReactNode;
-};
-
-const ENTITIES: Entity[] = [
-  {
-    name: 'Bishnoi Omniverse LLP',
-    href: '/llp',
-    image: llpImg.src,
-    imageAlt: 'Glass and brick facade of an office building, representing Bishnoi Omniverse LLP in New Delhi',
-    text: (
-      <>
-        <strong className="text-ink">Bishnoi Omniverse LLP</strong> is registered at Okhla Industrial
-        Area, Phase III, New Delhi 110020, India, and is responsible for sourcing, supplier review and
-        documentation.
-      </>
-    ),
-  },
-  {
-    name: 'Bishnoi Omniverse Corp',
-    href: '/corp',
-    image: corpImg.src,
-    imageAlt: 'White office building with balconies, representing Bishnoi Omniverse Corp in Metro Manila',
-    text: (
-      <>
-        <strong className="text-ink">Bishnoi Omniverse Corp</strong> is registered at Unit 301 and 305,
-        17 Vatican Building, Vatican City Drive, B.F. Resort Village, Talon II, Las Piñas City, Metro
-        Manila, Philippines, and is responsible for operations, logistics and customer service.
-      </>
-    ),
-  },
-];
-
-function EntityCard({ entity }: { entity: Entity }) {
-  return (
-    <Link
-      href={entity.href}
-      className="group flex h-full flex-col overflow-hidden rounded-2xl border border-line bg-white transition duration-300 hover:-translate-y-0.5 hover:border-accent"
-    >
-      {/* The source images are title slides with text on the left; zooming in from the top-right
-          corner keeps only the building. */}
-      <div className="relative overflow-hidden" style={{ aspectRatio: '16 / 10' }}>
-        <img
-          src={entity.image}
-          alt={entity.imageAlt}
-          loading="lazy"
-          className="absolute inset-0 h-full w-full object-cover"
-          style={{ objectPosition: 'right top', transform: 'scale(2)', transformOrigin: 'right top' }}
-        />
-      </div>
-      <div className="flex flex-1 flex-col p-7">
-        <h3 className="mb-3 flex items-center justify-between gap-3 text-lg font-semibold text-ink">
-          {entity.name}
-          <ArrowRight
-            className="h-6 w-6 shrink-0 text-accent transition-transform duration-300 group-hover:translate-x-1"
-            strokeWidth={1.5}
-            aria-hidden="true"
-          />
-        </h3>
-        <p className="m-0 text-[15px] leading-relaxed text-ink-soft">{entity.text}</p>
-      </div>
-    </Link>
-  );
-}
-
-/* ---------- Page ---------- */
-
 export default function GroupStructurePage() {
   return (
     <div className="w-full">
-      {/* Hero · P5 */}
+      {/* Hero · P5, the same band as Vision & Values: the group slide as the background, its left
+          half kept clear, so the copy sits there in ink with no scrim. */}
       <AboutHero
         eyebrow="Group Structure"
         title="The Strength of a Group, Focused on Your Supply"
         lede="Bishnoi Omniverse is the healthcare supply business of the Bishnoi Group. Being part of a wider group gives our customers access to broader experience and relationships, with one clear, accountable business to deal with."
-        image={hospitalsImg.src}
-        imageAlt="Modern white hospital building with blue glass windows"
-        imagePosition="center 35%"
-        short
+        image={heroImg.src}
+        imageAlt="A stethoscope and pulse oximeter on a desk, beside photographs of the Bishnoi team gathered outside a venue, at a training session and greeting guests"
+        imagePosition="center"
+        overlay="none"
+        banner
       />
 
-      {/* 1 · The Bishnoi Group · P8 */}
-      <PatternSection tone="white">
-        <DiagramSplit
-          diagram={
-            <>
-              <OrgChart />
-              <p className="mt-5 flex items-center justify-center gap-2 text-sm text-ink-soft">
-                <BadgeCheck className="h-6 w-6 shrink-0 text-accent" strokeWidth={1.5} aria-hidden="true" />
-                UN Global Compact participant since November 2024
-              </p>
-            </>
-          }
-        >
-          <SectionHead eyebrow="The Bishnoi Group" title="One Group, Three Areas of Work" />
-          <Prose
-            paras={[
-              'The Bishnoi Group, founded by Naresh Bishnoi, brings together healthcare supply, access to medicines and community work. Bishnoi Omniverse supplies healthcare providers. The Getmeds network supplies medicines across the Philippines, India, the Pacific, Latin America and Southeast Asia. The Naresh Bishnoi Foundation leads the Group’s community work.',
-              'The Group has participated in the UN Global Compact since November 2024. Its commercial and philanthropic work is kept clearly separate, so each is accountable in its own right.',
-            ]}
-          />
-        </DiagramSplit>
-      </PatternSection>
+      {/* 1 · The Bishnoi Group: headline and leadership avatars on the left, the three businesses
+          as portrait cards on the right. */}
+      <GroupShowcase />
 
-      {/* 2 · Our Role · P1, photo right */}
-      <PatternSection tone="paper">
+      {/* 2 · Our Role · P1, photo left. The image is a collage of photos on its own white ground,
+          so it is shown whole and without the usual frame and shadow, which would box it in. */}
+      <PatternSection tone="white">
         <Split
-          side="right"
+          side="left"
           media={
-            <div className="relative">
-              <img
-                src={suppliesImg.src}
-                alt="Sterile drainage bags and tubing laid out on a stainless steel hospital trolley"
-                loading="lazy"
-                className="ap-split-img"
-                style={{ aspectRatio: '4 / 3', objectPosition: 'center 60%' }}
-              />
-              <div className="absolute bottom-4 left-4 rounded-xl bg-white px-4 py-3 shadow-lg">
-                <span className="block font-poppins text-2xl font-semibold leading-none text-accent">300+</span>
-                <span className="mt-1 block text-xs text-ink-soft">catalog products</span>
-              </div>
-            </div>
+            <img
+              src={roleImg.src}
+              alt="A collage of the Bishnoi team at work: leading training sessions, helping patients at community health events, and meeting partners at trade exhibitions"
+              loading="lazy"
+              className="block h-auto w-full"
+            />
           }
         >
           <SectionHead eyebrow="Our Role" title="The Group’s Healthcare Supply Specialist" />
@@ -170,8 +68,9 @@ export default function GroupStructurePage() {
           PENDING (P8 diagram, on hold until the legal wording is confirmed): Bishnoi Omniverse Corp
           linked by dotted lines to Getmeds Philippines Inc. and 2MG Inc. (Philippine operations);
           Bishnoi Omniverse LLP shown beside Getmeds Healthcare (India). When approved, swap this
-          grid for <DiagramSplit> with a RelationshipDiagram in components/about/group-structure/. */}
-      <PatternSection tone="dark">
+          grid for <DiagramSplit> with a RelationshipDiagram in components/about/group-structure/.
+          The ground is the orange sweep of the About page's closing bar, with the copy in white. */}
+      <PatternSection tone="dark" className="ap-sweep">
         <div className="grid items-start gap-8 md:grid-cols-2 md:gap-16">
           <SectionHead
             eyebrow="Business Relationships"
@@ -189,52 +88,32 @@ export default function GroupStructurePage() {
         </div>
       </PatternSection>
 
-      {/* 4 · Group Capabilities · P3 */}
-      <PatternSection tone="paper">
-        <SectionHead eyebrow="Group Capabilities" title="The Strength Behind Your Supply" center />
-        <Prose
-          className="mx-auto mb-10 max-w-[720px] text-center"
-          paras={['Being part of a larger group gives us experience that a small, single supplier may not have.']}
-        />
-        <IconCards
-          variant="white"
-          items={[
-            { icon: Globe2, text: 'We know how medical supply works in several countries.' },
-            { icon: Handshake, text: 'We have supplier relationships in India.' },
-            { icon: Ship, text: 'And we have experience with shipping and paperwork across borders.' },
-          ]}
-        />
-        <Prose
-          className="mx-auto mt-10 max-w-[720px] text-center"
-          paras={[
-            'For you, the benefit is practical. Complex requirements involving specialty medicines, several suppliers or more than one market are handled by people who have done this work before.',
-          ]}
-        />
-      </PatternSection>
-
-      {/* 5 · Corporate Structure · P1 twin cards */}
+      {/* 4 · Group Capabilities, laid out like Quality · Our Approach: heading and intro on the
+          left, the benefit on the right, then the three capabilities as plain columns with no
+          cards, each an icon over large text in the orange sweep. */}
       <PatternSection tone="white">
-        <SectionHead eyebrow="Corporate Structure" title="Who Does What" center />
-        <div className="mt-10 grid gap-6 md:grid-cols-2">
-          {ENTITIES.map((entity, i) => (
-            <FadeIn key={entity.href} delay={i * 0.08} className="h-full">
-              <EntityCard entity={entity} />
-            </FadeIn>
-          ))}
+        <div className="grid-2 items-start mb-12 max-[900px]:gap-5">
+          <div>
+            <SectionHead eyebrow="Group Capabilities" title="The Strength Behind Your Supply" />
+            <Prose
+              paras={['Being part of a larger group gives us experience that a small, single supplier may not have.']}
+            />
+          </div>
+          <Prose
+            paras={[
+              'For you, the benefit is practical. Complex requirements involving specialty medicines, several suppliers or more than one market are handled by people who have done this work before.',
+            ]}
+          />
         </div>
-        <p className="mx-auto mt-8 max-w-[720px] text-center text-ink-soft">
-          Company registration details for supplier onboarding are available on request.
-        </p>
+        <Stepper
+          className="is-plain"
+          steps={[
+            { icon: Globe2, title: 'We know how medical supply works in several countries.' },
+            { icon: Handshake, title: 'We have supplier relationships in India.' },
+            { icon: Ship, title: 'And we have experience with shipping and paperwork across borders.' },
+          ]}
+        />
       </PatternSection>
-
-      {/* Closing · P9 light */}
-      <CtaBand
-        tone="light"
-        eyebrow="Contact Us"
-        title="The Right Contact for Every Inquiry"
-        text="Our team will direct your inquiry to the right entity and the right person."
-        primary={{ label: 'Contact Us', href: '/contact' }}
-      />
     </div>
   );
 }

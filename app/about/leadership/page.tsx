@@ -1,11 +1,16 @@
 import React from 'react';
 import type { Metadata } from 'next';
 import founderImg from '@/app/assets/CEO.png';
-import heroImg from '@/app/assets/leadershipbghero.png';
-import experienceBg from '@/app/assets/experience.png';
+import sameenImg from '@/app/assets/sirsameen.png';
+import sumitImg from '@/app/assets/sirsumit.png';
+import chiImg from '@/app/assets/maamchi.png';
+import debbieImg from '@/app/assets/maamdebbie.png';
+import heroImg from '@/app/assets/Leadership.png';
+import experienceBg from '@/app/assets/backgroundsection.png';
 import { ArrowRight } from 'lucide-react';
 import { FadeIn } from '@/components/FadeIn';
 import {
+  AboutHero,
   PatternSection,
   Prose,
   SectionHead,
@@ -18,11 +23,33 @@ export const metadata: Metadata = {
     'The people behind Bishnoi Omniverse and what they are accountable for, from choosing suppliers to making sure every commitment to a customer is kept.',
 };
 
-/**
- * Further leadership profiles (round photo, name, title, LinkedIn). The design guide calls for 2–4
- * more, to be supplied — the grid under the founder profile only renders once this has entries.
- */
-const LEADERS: Leader[] = [];
+/** The leadership team, shown as small portrait cards in a slider under the founder profile. */
+const LEADERS: Leader[] = [
+  {
+    name: 'Sameen Bishnoi',
+    title: 'Co-Founder',
+    photo: sameenImg.src,
+    photoAlt: 'Sameen Bishnoi, Co-Founder, in a white Bishnoi Omniverse polo with arms folded',
+  },
+  {
+    name: 'Sumit Bishnoi',
+    title: 'Co-Founder',
+    photo: sumitImg.src,
+    photoAlt: 'Sumit Bishnoi, Co-Founder',
+  },
+  {
+    name: 'Esther Roselle Chong',
+    title: 'Inlicensing Coach',
+    photo: chiImg.src,
+    photoAlt: 'Esther Roselle Chong, Inlicensing Coach, in a black Bishnoi Omniverse blazer',
+  },
+  {
+    name: 'Dhebbie Valerie B. Rillera',
+    title: 'Inlicensing Mentor',
+    photo: debbieImg.src,
+    photoAlt: 'Dhebbie Valerie B. Rillera, Inlicensing Mentor',
+  },
+];
 
 /** Our Commitment: one promise per audience, listed beside the heading. */
 const COMMITMENTS = [
@@ -37,18 +64,18 @@ const COMMITMENTS = [
 export default function LeadershipPage() {
   return (
     <div className="w-full">
-      {/* Slide hero, the same band as About Us: a designed 1920×1080 slide that carries its own
-          headline, shown whole at every width. The page heading is kept for screen readers. */}
-      <section className="page-hero page-hero-slide">
-        <div className="hero-media">
-          <img
-            src={heroImg.src}
-            alt="Leadership: the people and regional teams steering Bishnoi Omniverse's global supply mission. Founder Naresh Bishnoi, and leaders walking past stacked medical supply cartons"
-            loading="eager"
-          />
-        </div>
-        <h1 className="sr-only">Leadership — Experienced Leadership, Accountable for Every Order</h1>
-      </section>
+      {/* P5 hero, the same band as Vision & Values: a designed 1920×820 slide with its left half
+          kept clear, so the copy sits there in ink with no scrim. */}
+      <AboutHero
+        eyebrow="Leadership"
+        title="Experienced Leadership, Accountable for Every Order"
+        lede="The people behind Bishnoi Omniverse and what they are accountable for, from choosing suppliers to making sure every commitment to a customer is kept."
+        image={heroImg.src}
+        imageAlt="Bishnoi leaders speaking at a team event and smiling together, beside a stethoscope and pulse oximeter"
+        imagePosition="center"
+        overlay="none"
+        banner
+      />
 
       {/* 1 · Our Leadership — P6 founder profile, on white. No bottom padding: the Our Experience
           slide below butts straight up against it. */}
@@ -84,10 +111,10 @@ export default function LeadershipPage() {
         <LeaderGrid leaders={LEADERS} />
       </PatternSection>
 
-      {/* 2 · Our Experience — the designed 1920×1080 slide is the whole section background: photo
-          tiles and an orange sweep on its right half, so the copy keeps to the white left half.
-          On phones the copy sits above and the slide shows whole beneath it. */}
-      <section className="section experience-section" style={{ backgroundImage: `url(${experienceBg.src})` }}>
+      {/* 2 · Our Experience — a team photo as the section background: the woman in the lab coat on
+          the right, the Bishnoi Omniverse wall logo on the left under a white fade so the copy
+          reads over it. On phones the copy sits above and the photo shows whole beneath it. */}
+      <section className="section experience-section" style={{ '--experience-bg': `url(${experienceBg.src})` } as React.CSSProperties}>
         <div className="wrap">
           <div className="experience-copy">
             <SectionHead eyebrow="Our Experience" title="Experience Across Medicines, Supplies and Borders" />

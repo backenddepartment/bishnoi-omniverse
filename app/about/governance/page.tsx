@@ -76,6 +76,7 @@ export default function GovernancePage() {
         imageAlt="Modern white hospital building with tall blue glass windows"
         imagePosition="center 35%"
         overlay="dark"
+        banner
         actions={
           <div className="ap-hero-stats" style={{ marginTop: 8 }}>
             {PROOF_POINTS.map((s) => (

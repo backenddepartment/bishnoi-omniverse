@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { Fraunces, Inter, Poppins } from 'next/font/google';
 import './globals.css';
 import { SiteChrome } from '@/components/layout/SiteChrome';
+import { RouteProgress } from '@/components/layout/RouteProgress';
 
 const fraunces = Fraunces({
   subsets: ['latin'],
@@ -31,6 +32,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className={`${fraunces.variable} ${inter.variable} ${poppins.variable}`}>
       <body className="flex flex-col min-h-screen">
+        <RouteProgress />
         <SiteChrome>{children}</SiteChrome>
       </body>
     </html>
