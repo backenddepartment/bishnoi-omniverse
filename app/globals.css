@@ -1368,6 +1368,24 @@
   .footer-grid a { text-decoration: none; color: #fff; transition: color 0.2s; }
   .footer-grid a:hover { color: var(--accent-tint); }
   .footer-grid p { color: #fff; font-size: 13.5px; max-width: 300px; }
+  /* Contact column: each detail beside its icon, the text lined up in a column of its own. */
+  .footer-contact li { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 14px; line-height: 1.5; color: #fff; }
+  .footer-contact li > a,
+  .footer-contact address { min-width: 0; padding-top: 5px; overflow-wrap: anywhere; }
+  .footer-contact-icon {
+    display: inline-flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.18);
+  }
+  .footer-contact-icon svg { width: 16px; height: 16px; }
+  /* "Get in touch" sits under the text, not under the icons. */
+  .footer-contact li.is-link { padding-left: 44px; }
+  .footer-contact li.is-link > a { padding-top: 0; font-weight: 600; text-decoration: underline; text-underline-offset: 4px; }
   .footer-bottom {
     display: flex;
     justify-content: space-between;
@@ -1405,6 +1423,10 @@
   .grid-3, .grid-4, .biz-grid {
     grid-template-columns: 1fr;
   }
+  /* Footer on phones: the brand across the top, the two lists of links side by side, and the
+     contact details across the bottom, where the number, email and address have room to read. */
+  .footer-grid > :first-child,
+  .footer-grid > :last-child { grid-column: 1 / -1; }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -2198,7 +2220,7 @@ html.nav-search-open body { overflow: hidden; overscroll-behavior: none; }
 .search-mark { padding: 0 2px; border-radius: 3px; background: var(--accent-tint); color: inherit; }
 
 /* ------------------------------------------------------------------ *
- * Floating WhatsApp / Viber shortcuts, bottom-right on every page
+ * Floating WhatsApp / Viber / LinkedIn shortcuts, bottom-right on every page
  * ------------------------------------------------------------------ */
 
 .msg-fab {
@@ -2225,10 +2247,11 @@ html.nav-search-open body { overflow: hidden; overscroll-behavior: none; }
   box-shadow: 0 4px 12px rgba(15, 14, 12, 0.16), 0 10px 24px rgba(15, 14, 12, 0.12);
   transition: filter 0.2s var(--ease), transform 0.2s var(--ease);
 }
-/* Official brand colours (WhatsApp and Viber brand guidelines, via Simple Icons). Hover darkens
+/* Official brand colours (each service's brand guidelines, via Simple Icons). Hover darkens
    with a filter rather than a second, invented shade. */
 .msg-fab-btn.is-whatsapp { background: #25d366; }
 .msg-fab-btn.is-viber { background: #7360f2; }
+.msg-fab-btn.is-linkedin { background: #0a66c2; }
 .msg-fab-btn:hover { filter: brightness(0.92); transform: translateY(-2px); }
 .msg-fab-btn:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
 .msg-fab-btn svg { width: 24px; height: 24px; }
@@ -2249,6 +2272,58 @@ html.nav-search-open body { overflow: hidden; overscroll-behavior: none; }
   transform: translate(4px, -50%);
   transition: opacity 0.2s var(--ease), transform 0.2s var(--ease);
 }
+/* What the Viber button shows when the app did not open: the number to message, and a way on. */
+.msg-fab-item { position: relative; display: flex; }
+.msg-fab-note {
+  position: absolute;
+  right: calc(100% + 12px);
+  bottom: 0;
+  width: min(260px, calc(100vw - 96px));
+  padding: 16px 18px;
+  border-radius: 14px;
+  background: #fff;
+  box-shadow: 0 4px 12px rgba(15, 14, 12, 0.14), 0 16px 40px rgba(15, 14, 12, 0.18);
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--ink-soft);
+}
+.msg-fab-note strong { display: block; margin-bottom: 4px; padding-right: 24px; font-size: 14px; color: var(--ink); }
+.msg-fab-note p { margin: 0 0 8px; }
+.msg-fab-note-number { display: block; margin-bottom: 12px; font-size: 17px; font-weight: 600; color: var(--ink); }
+.msg-fab-note-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.msg-fab-note-actions button,
+.msg-fab-note-actions a {
+  padding: 7px 14px;
+  border: 1px solid #7360f2;
+  border-radius: 999px;
+  background: #7360f2;
+  font: inherit;
+  font-size: 12.5px;
+  font-weight: 600;
+  line-height: 1.2;
+  text-decoration: none;
+  color: #fff;
+  cursor: pointer;
+}
+.msg-fab-note-actions a { background: #fff; color: #5b49d6; }
+.msg-fab-note-close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--ink-soft);
+  cursor: pointer;
+}
+.msg-fab-note-close:hover { background: var(--paper-2); }
+.msg-fab-note-close svg { width: 14px; height: 14px; }
 .msg-fab-btn:hover .msg-fab-label,
 .msg-fab-btn:focus-visible .msg-fab-label { opacity: 1; transform: translate(0, -50%); }
 @media (prefers-reduced-motion: reduce) {
@@ -3475,6 +3550,117 @@ html.nav-search-open body { overflow: hidden; overscroll-behavior: none; }
   .ap-split.is-media-right .ap-split-media { order: 2; }
   .ap-split-img { display: block; width: 100%; object-fit: cover; border-radius: 16px; box-shadow: 0 14px 36px rgba(15, 14, 12, 0.12); }
 
+  /* A collage of three in a split's media column: one wide photo across the top, two smaller
+     ones side by side beneath. Slight corners, no shadow. */
+  .ap-collage { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+  .ap-collage img { display: block; width: 100%; max-width: none; aspect-ratio: 4 / 3; object-fit: cover; border-radius: 6px; }
+  .ap-collage img.is-wide { grid-column: 1 / -1; aspect-ratio: 16 / 10; }
+
+  /* Trade & Partners · the line of communication: a chain of arrows, each one's head lying over
+     the start of the next. Every arrow carries the hero headline's orange sweep, so the chain
+     reads as separate arrows where one's deep end meets the next one's light start.
+     --ap-chain-head is the length of an arrowhead; the body is inset from the head's full
+     height by --ap-chain-inset on each side. */
+  .ap-chain {
+    --ap-chain-head: 50px;
+    --ap-chain-inset: 16%;
+    display: flex;
+    margin: 56px 0 0;
+    padding: 18px 0;
+    list-style: none;
+  }
+  .ap-chain-step {
+    position: relative;
+    display: flex;
+    flex: 1 1 0;
+    min-width: 0;
+    height: 110px;
+    align-items: center;
+    justify-content: center;
+    padding: 0 var(--ap-chain-head);
+  }
+  /* Each arrow starts under the head of the one before it, which sits on top. */
+  .ap-chain-step + .ap-chain-step { margin-left: calc(var(--ap-chain-head) * -1); }
+  .ap-chain-step:nth-child(1) { z-index: 4; padding-left: 36px; }
+  .ap-chain-step:nth-child(2) { z-index: 3; }
+  .ap-chain-step:nth-child(3) { z-index: 2; }
+  .ap-chain-step:nth-child(4) { z-index: 1; }
+  .ap-chain-shape {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 70% 120% at 18% 0%, rgba(255, 196, 0, 0.85) 0%, rgba(255, 150, 0, 0) 60%),
+      linear-gradient(135deg, #ff9a0a 0%, #f36b21 45%, #e8401c 80%, #c7331a 100%);
+    clip-path: polygon(
+      0 var(--ap-chain-inset),
+      calc(100% - var(--ap-chain-head)) var(--ap-chain-inset),
+      calc(100% - var(--ap-chain-head)) 0,
+      100% 50%,
+      calc(100% - var(--ap-chain-head)) 100%,
+      calc(100% - var(--ap-chain-head)) calc(100% - var(--ap-chain-inset)),
+      0 calc(100% - var(--ap-chain-inset))
+    );
+  }
+  /* The first arrow's tail is cut on the slant. */
+  .ap-chain-step:first-child .ap-chain-shape {
+    clip-path: polygon(
+      0 var(--ap-chain-inset),
+      calc(100% - var(--ap-chain-head)) var(--ap-chain-inset),
+      calc(100% - var(--ap-chain-head)) 0,
+      100% 50%,
+      calc(100% - var(--ap-chain-head)) 100%,
+      calc(100% - var(--ap-chain-head)) calc(100% - var(--ap-chain-inset)),
+      44px calc(100% - var(--ap-chain-inset))
+    );
+  }
+  .ap-chain-label {
+    position: relative;
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 1.2;
+    text-align: center;
+    color: #fff;
+  }
+  /* The logo in white, as in the footer. */
+  .ap-chain-label img { display: block; width: auto; height: 50px; max-width: none; filter: brightness(0) invert(1); }
+  /* The entrance. Armed, the arrows wait out of sight, each a little behind its place along the
+     chain. Shown, they ease in one at a time (--ap-i counts them, first to last) and settle where
+     they always were. Leaving the screen re-arms them at once, with no transition. */
+  .ap-chain.is-armed .ap-chain-step { opacity: 0; transform: translateX(-28px); }
+  .ap-chain.is-shown .ap-chain-step {
+    transition:
+      opacity 0.5s ease calc(var(--ap-i) * 0.32s),
+      transform 0.8s cubic-bezier(0.16, 1, 0.3, 1) calc(var(--ap-i) * 0.32s);
+  }
+
+  /* Phones: the arrows stack and point down. */
+  @media (max-width: 760px) {
+    .ap-chain { flex-direction: column; align-items: center; margin-top: 40px; padding: 0; }
+    .ap-chain-step,
+    .ap-chain-step:nth-child(1) {
+      flex: none;
+      width: min(100%, 300px);
+      height: 116px;
+      padding: 0 0 var(--ap-chain-head);
+    }
+    .ap-chain-step + .ap-chain-step { margin-left: 0; margin-top: calc(var(--ap-chain-head) * -1); }
+    .ap-chain-step + .ap-chain-step .ap-chain-label { padding-top: 40px; }
+    .ap-chain-step + .ap-chain-step { height: 156px; }
+    .ap-chain-shape,
+    .ap-chain-step:first-child .ap-chain-shape {
+      clip-path: polygon(
+        var(--ap-chain-inset) 0,
+        calc(100% - var(--ap-chain-inset)) 0,
+        calc(100% - var(--ap-chain-inset)) calc(100% - var(--ap-chain-head)),
+        100% calc(100% - var(--ap-chain-head)),
+        50% 100%,
+        0 calc(100% - var(--ap-chain-head)),
+        var(--ap-chain-inset) calc(100% - var(--ap-chain-head))
+      );
+    }
+    .ap-chain.is-armed .ap-chain-step { transform: translateY(-24px); }
+  }
+
   /* P8 diagram frame */
   .ap-diagram { width: 100%; }
   .ap-diagram svg { display: block; width: 100%; height: auto; }
@@ -3694,6 +3880,35 @@ html.nav-search-open body { overflow: hidden; overscroll-behavior: none; }
   .ap-callout.is-lg { font-size: clamp(20px, 1.9vw, 24px); }
   .ap-callout p { margin: 0 0 10px; }
   .ap-callout p:last-child { margin-bottom: 0; }
+  /* The statement on the hero headline's orange sweep, in white. The line down the left edge
+     goes: on the sweep it would not show. */
+  .ap-callout.is-sweep {
+    border-left: 0;
+    border-radius: 14px;
+    background:
+      radial-gradient(ellipse 70% 120% at 18% 0%, rgba(255, 196, 0, 0.85) 0%, rgba(255, 150, 0, 0) 60%),
+      linear-gradient(135deg, #ff9a0a 0%, #f36b21 45%, #e8401c 80%, #c7331a 100%);
+    font-weight: 500;
+    color: #fff;
+  }
+  /* A statement with a button under it. The words are set a size down from the plain callout. */
+  .ap-callout.has-action { display: flex; flex-direction: column; align-items: flex-start; gap: 18px; }
+  .ap-callout.has-action.is-lg { font-size: clamp(17px, 1.5vw, 20px); }
+  .ap-callout.has-action p { margin: 0; }
+  /* White, since the site's orange button would be lost on the sweep; its words carry the sweep
+     instead, clipped to the letters. */
+  .ap-callout-btn { flex: none; padding: 9px 20px; background: #fff; font-size: 13px; }
+  .ap-callout-btn span {
+    background:
+      radial-gradient(ellipse 70% 120% at 18% 0%, rgba(255, 196, 0, 0.85) 0%, rgba(255, 150, 0, 0) 60%),
+      linear-gradient(135deg, #ff9a0a 0%, #f36b21 45%, #e8401c 80%, #c7331a 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+  }
+  .ap-callout-btn:hover { background: var(--ink); transform: translateY(-1px); }
+  .ap-callout-btn:hover span { background: none; color: #fff; -webkit-text-fill-color: #fff; }
 
   /* P9 CTA band */
   .ap-cta { position: relative; overflow: hidden; border-radius: 24px; padding: 80px 32px; text-align: center; }
@@ -3927,5 +4142,555 @@ html.nav-search-open body { overflow: hidden; overscroll-behavior: none; }
     .about-ask-inner { flex-direction: column; align-items: flex-start; }
     .about-ask-actions { width: 100%; }
     .about-ask-btn { flex: 1 1 160px; }
+  }
+}
+
+/* Articles · news feed: a headline and introduction side by side with a search box under the
+   introduction, then the articles as cards in three columns. Each card is a rounded photo
+   carrying the category (in the hero headline's orange sweep) and the date, with the title,
+   excerpt, source and link beneath. The title takes the sweep when the card is hovered. */
+@layer components {
+  .news-head {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 40%);
+    gap: 32px 48px;
+    align-items: start;
+    margin-bottom: 26px;
+  }
+  .news-title {
+    max-width: 460px;
+    margin: 0;
+    font-size: clamp(32px, 3.6vw, 44px);
+    font-weight: 600;
+    line-height: 1.16;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+  }
+  .news-lede { margin: 0 0 24px; padding-left: 18px; font-size: 16px; line-height: 1.6; color: #64748b; }
+  .news-search { position: relative; display: block; }
+  .news-search svg {
+    position: absolute;
+    top: 50%;
+    left: 14px;
+    width: 15px;
+    height: 15px;
+    transform: translateY(-50%);
+    color: #94a3b8;
+    pointer-events: none;
+  }
+  .news-search input {
+    width: 100%;
+    height: 34px;
+    padding: 0 16px 0 36px;
+    border: 1px solid #e2e8f0;
+    border-radius: 999px;
+    background: #fff;
+    font: inherit;
+    font-size: 14px;
+    color: var(--ink);
+    outline: none;
+    transition: border-color 0.2s var(--ease), box-shadow 0.2s var(--ease);
+  }
+  .news-search input::placeholder { color: #94a3b8; }
+  .news-search input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(243, 107, 33, 0.16); }
+  .news-search input::-webkit-search-cancel-button { cursor: pointer; }
+
+  .news-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 32px; }
+  /* Nothing to show: the picture, a line on what happened, and a way back. */
+  .news-empty { display: flex; flex-direction: column; align-items: center; padding: 8px 0 24px; text-align: center; }
+  .news-empty-art { display: block; width: min(100%, 340px); height: auto; margin-bottom: 8px; }
+  .news-empty h3 { margin: 0 0 8px; font-size: 22px; font-weight: 600; line-height: 1.3; color: var(--ink); }
+  .news-empty p { max-width: 440px; margin: 0 0 24px; font-size: 15px; line-height: 1.6; color: #64748b; overflow-wrap: anywhere; }
+
+  .news-card { position: relative; display: flex; flex-direction: column; height: 100%; }
+  .news-card-media {
+    position: relative;
+    aspect-ratio: 16 / 10;
+    overflow: hidden;
+    border-radius: 16px;
+    background: var(--paper-2);
+    box-shadow: 0 1px 3px rgba(15, 14, 12, 0.12);
+  }
+  .news-card-media img { display: block; width: 100%; height: 100%; max-width: none; object-fit: cover; }
+  /* In place of a photo that is missing or did not load: a plain panel naming the source. */
+  .news-card-blank {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 48px 24px 16px;
+    font-size: 13px;
+    font-weight: 500;
+    text-align: center;
+    color: #94a3b8;
+  }
+  .news-card-blank svg { width: 40px; height: 40px; color: #cbd5e1; }
+  .news-card-category,
+  .news-card-date {
+    position: absolute;
+    top: 16px;
+    display: inline-flex;
+    align-items: center;
+    height: 28px;
+    padding: 0 12px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 600;
+    line-height: 1;
+    white-space: nowrap;
+    color: #fff;
+  }
+  .news-card-category {
+    left: 16px;
+    background:
+      radial-gradient(ellipse 70% 120% at 18% 0%, rgba(255, 196, 0, 0.85) 0%, rgba(255, 150, 0, 0) 60%),
+      linear-gradient(135deg, #ff9a0a 0%, #f36b21 45%, #e8401c 80%, #c7331a 100%);
+    box-shadow: 0 2px 8px rgba(120, 30, 0, 0.25);
+  }
+  .news-card-date {
+    right: 16px;
+    background: rgba(15, 14, 12, 0.55);
+    -webkit-backdrop-filter: blur(6px);
+    backdrop-filter: blur(6px);
+  }
+
+  .news-card-body { display: flex; flex: 1; flex-direction: column; padding: 18px 4px 0; }
+  .news-card-title { margin: 0 0 8px; font-size: 20px; font-weight: 600; line-height: 1.4; letter-spacing: 0; }
+  .news-card-link { color: var(--ink); text-decoration: none; }
+  /* Stretched over the card, so the whole card is the link. */
+  .news-card-link::after { content: ""; position: absolute; inset: 0; z-index: 1; }
+  .news-card-link:focus-visible { outline: none; }
+  .news-card-link:focus-visible::after { outline: 2px solid var(--accent); outline-offset: 6px; border-radius: 16px; }
+  /* The sweep, clipped to the letters. `box-decoration-break` runs it across each line of a
+     title that wraps, rather than once across the whole block. */
+  .news-card:hover .news-card-link,
+  .news-card-link:focus-visible {
+    background:
+      radial-gradient(ellipse 70% 120% at 18% 0%, rgba(255, 196, 0, 0.85) 0%, rgba(255, 150, 0, 0) 60%),
+      linear-gradient(135deg, #ff9a0a 0%, #f36b21 45%, #e8401c 80%, #c7331a 100%);
+    -webkit-box-decoration-break: clone;
+    box-decoration-break: clone;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+  }
+  .news-card-excerpt {
+    display: -webkit-box;
+    margin: 0;
+    overflow: hidden;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+    font-size: 14px;
+    line-height: 1.6;
+    color: #64748b;
+  }
+  .news-card-foot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-top: auto;
+    padding-top: 20px;
+  }
+  .news-card-source { display: inline-flex; min-width: 0; align-items: center; gap: 6px; font-size: 13px; color: #94a3b8; }
+  .news-card-source-icon { flex: none; width: 14px; height: 14px; border-radius: 3px; object-fit: contain; }
+  .news-card-source-icon.is-letter {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--accent);
+    font-size: 9px;
+    font-weight: 700;
+    line-height: 1;
+    color: #fff;
+  }
+  .news-card-more {
+    display: inline-flex;
+    flex: none;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--ink);
+  }
+  .news-card-more svg { width: 14px; height: 14px; transition: transform 0.25s var(--ease); }
+  .news-card:hover .news-card-more svg { transform: translateX(3px); }
+
+  /* Page numbers under the cards; the current page carries the orange sweep. */
+  .news-pages { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 8px; margin-top: 56px; }
+  .news-page {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 40px;
+    height: 40px;
+    padding: 0 12px;
+    border: 1px solid #e2e8f0;
+    border-radius: 999px;
+    background: #fff;
+    font: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--ink);
+    cursor: pointer;
+    transition: border-color 0.2s var(--ease), color 0.2s var(--ease);
+  }
+  .news-page svg { width: 16px; height: 16px; }
+  .news-page:hover:not(:disabled):not(.is-current) { border-color: var(--accent); color: var(--accent); }
+  .news-page:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .news-page:disabled { opacity: 0.4; cursor: default; }
+  .news-page.is-current {
+    border-color: transparent;
+    background:
+      radial-gradient(ellipse 70% 120% at 18% 0%, rgba(255, 196, 0, 0.85) 0%, rgba(255, 150, 0, 0) 60%),
+      linear-gradient(135deg, #ff9a0a 0%, #f36b21 45%, #e8401c 80%, #c7331a 100%);
+    color: #fff;
+    cursor: default;
+  }
+  .news-page-gap { min-width: 24px; text-align: center; color: #94a3b8; }
+
+  @media (max-width: 1000px) {
+    .news-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 32px 24px; }
+  }
+  @media (max-width: 760px) {
+    .news-head { grid-template-columns: 1fr; gap: 16px; }
+    .news-title { max-width: none; }
+    .news-lede { padding-left: 0; margin-bottom: 18px; }
+    .news-search input { height: 40px; }
+  }
+  @media (max-width: 640px) {
+    .news-grid { grid-template-columns: 1fr; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .news-card-more svg { transition: none; }
+    .news-card:hover .news-card-more svg { transform: none; }
+  }
+}
+
+/* Contact Us · the guide under the form: headline, copy and buttons on the left; on the right a
+   stack of cards that open one at a time. Every card carries the hero headline's orange sweep,
+   with its copy in white. */
+@layer components {
+  .ap-guide { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 48px 64px; align-items: start; }
+
+  /* The pair of dots above the headline: one in the sweep, one in a soft grey, overlapping. */
+  .ap-guide-mark { display: flex; margin-bottom: 22px; }
+  .ap-guide-mark span { width: 30px; height: 30px; border-radius: 999px; }
+  .ap-guide-mark span:first-child {
+    position: relative;
+    z-index: 1;
+    background:
+      radial-gradient(ellipse 70% 120% at 18% 0%, rgba(255, 196, 0, 0.85) 0%, rgba(255, 150, 0, 0) 60%),
+      linear-gradient(135deg, #ff9a0a 0%, #f36b21 45%, #e8401c 80%, #c7331a 100%);
+  }
+  .ap-guide-mark span:last-child { margin-left: -9px; background: #c9c3b6; }
+  .ap-guide-copy .eyebrow { display: block; margin-bottom: 10px; }
+  .ap-guide-copy h2 {
+    margin: 0 0 20px;
+    font-size: clamp(32px, 4vw, 54px);
+    font-weight: 600;
+    line-height: 1.12;
+    letter-spacing: -0.015em;
+    color: var(--ink);
+  }
+  .ap-guide-copy p { max-width: 520px; margin: 0; font-size: 17px; line-height: 1.6; color: #6e675a; }
+  .ap-guide-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-top: 44px; }
+  /* The filled button, in the sweep, with its round arrow alongside as part of the same button. */
+  .ap-guide-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 0;
+    border: 0;
+    background: none;
+    font: inherit;
+    cursor: pointer;
+  }
+  .ap-guide-btn-label {
+    display: inline-flex;
+    align-items: center;
+    height: 40px;
+    padding: 0 22px;
+    border-radius: 999px;
+    background:
+      radial-gradient(ellipse 70% 120% at 18% 0%, rgba(255, 196, 0, 0.85) 0%, rgba(255, 150, 0, 0) 60%),
+      linear-gradient(135deg, #ff9a0a 0%, #f36b21 45%, #e8401c 80%, #c7331a 100%);
+    font-size: 13px;
+    font-weight: 600;
+    color: #fff;
+  }
+  .ap-guide-btn-arrow {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    border: 1px solid var(--ink);
+    border-radius: 999px;
+    color: var(--ink);
+    transition: transform 0.25s var(--ease);
+  }
+  .ap-guide-btn-arrow svg { width: 16px; height: 16px; }
+  .ap-guide-btn:hover .ap-guide-btn-arrow { transform: translate(2px, -2px); }
+  .ap-guide-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; border-radius: 999px; }
+  .ap-guide-actions .btn { height: 40px; }
+
+  .ap-guide-cards { display: flex; flex-direction: column; gap: 14px; }
+  .ap-guide-card {
+    border-radius: 22px;
+    background:
+      radial-gradient(ellipse 70% 120% at 18% 0%, rgba(255, 196, 0, 0.85) 0%, rgba(255, 150, 0, 0) 60%),
+      linear-gradient(135deg, #ff9a0a 0%, #f36b21 45%, #e8401c 80%, #c7331a 100%);
+    color: #fff;
+  }
+  .ap-guide-card-head { margin: 0; font-size: inherit; font-weight: inherit; letter-spacing: 0; }
+  .ap-guide-card-head button {
+    display: flex;
+    width: 100%;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 26px 28px;
+    border: 0;
+    border-radius: 22px;
+    background: none;
+    font: inherit;
+    text-align: left;
+    color: inherit;
+    cursor: pointer;
+  }
+  .ap-guide-card-head button:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
+  .ap-guide-card-eyebrow { display: block; margin-bottom: 4px; font-size: 12.5px; font-weight: 600; opacity: 0.9; }
+  .ap-guide-card-title { display: block; font-size: clamp(21px, 2vw, 28px); font-weight: 500; line-height: 1.2; letter-spacing: -0.01em; }
+  .ap-guide-card-toggle {
+    display: inline-flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    border-radius: 999px;
+    background: #fff;
+    color: var(--ink);
+  }
+  .ap-guide-card-toggle svg { width: 18px; height: 18px; }
+  /* Opens and shuts by height: a one-row grid whose row runs from nothing to its content. */
+  /* A shut panel is hidden outright once it has closed, which also keeps its button out of reach
+     of the keyboard and of screen readers. */
+  .ap-guide-card-panel {
+    display: grid;
+    grid-template-rows: 0fr;
+    visibility: hidden;
+    transition: grid-template-rows 0.45s var(--ease), visibility 0s linear 0.45s;
+  }
+  .ap-guide-card.is-open .ap-guide-card-panel {
+    grid-template-rows: 1fr;
+    visibility: visible;
+    transition: grid-template-rows 0.45s var(--ease), visibility 0s;
+  }
+  .ap-guide-card-body { min-height: 0; overflow: hidden; padding: 0 28px; }
+  .ap-guide-card-body > :first-child { margin-top: 36px; }
+  .ap-guide-card-body > :last-child { margin-bottom: 26px; }
+  .ap-guide-card-body p { max-width: 640px; margin: 0 0 12px; font-size: 15px; line-height: 1.6; color: #fff; }
+  .ap-guide-card-go {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    margin-top: 6px;
+    padding: 0;
+    border: 1px solid #fff;
+    border-radius: 999px;
+    background: none;
+    color: #fff;
+    cursor: pointer;
+    transition: background-color 0.2s var(--ease), color 0.2s var(--ease);
+  }
+  .ap-guide-card-go svg { width: 17px; height: 17px; }
+  .ap-guide-card-go:hover,
+  .ap-guide-card-go:focus-visible { background: #fff; color: var(--accent-dark); outline: none; }
+
+  @media (max-width: 900px) {
+    .ap-guide { grid-template-columns: 1fr; }
+    .ap-guide-actions { margin-top: 28px; }
+    .ap-guide-card-head button { padding: 22px; }
+    .ap-guide-card-body { padding: 0 22px; }
+    .ap-guide-card-body > :first-child { margin-top: 20px; }
+    .ap-guide-card-body > :last-child { margin-bottom: 22px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .ap-guide-card-panel,
+    .ap-guide-btn-arrow { transition: none; }
+  }
+}
+
+/* Contact Us · an office's country and name above its map, both in the hero headline's orange
+   sweep. Each is sized to its own words, so a short one still runs the whole sweep. */
+@layer components {
+  .office-country,
+  .office-name {
+    width: fit-content;
+    max-width: 100%;
+    font-weight: 600;
+    background:
+      radial-gradient(ellipse 70% 120% at 18% 0%, rgba(255, 196, 0, 0.85) 0%, rgba(255, 150, 0, 0) 60%),
+      linear-gradient(135deg, #ff9a0a 0%, #f36b21 45%, #e8401c 80%, #c7331a 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+  }
+  .office-country { display: block; margin: 0 0 6px; font-size: 17px; line-height: 1.4; }
+  .office-name { margin: 0 0 10px; font-size: clamp(24px, 2.2vw, 30px); line-height: 1.25; letter-spacing: -0.01em; }
+}
+
+/* Contact Us · the inquiry form, in a card across the page with only a faint shadow. */
+@layer components {
+  .ct-reach { display: block; }
+
+  /* Four across, above the form; two across on tablets, one on small phones. */
+  /* Each column is at least as wide as its own words, so a title never breaks onto two lines. */
+  .ct-channels { display: grid; grid-template-columns: repeat(4, minmax(max-content, 1fr)); gap: 32px; margin: 28px 0 48px; }
+  .ct-channel h3 { white-space: nowrap; display: flex; align-items: center; gap: 14px; margin: 0 0 16px; font-size: 19px; font-weight: 600; line-height: 1.3; color: var(--ink); }
+  /* The small circle beside each title, in the hero headline's orange sweep. */
+  .ct-channel-icon {
+    display: inline-flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background:
+      radial-gradient(ellipse 70% 120% at 18% 0%, rgba(255, 196, 0, 0.85) 0%, rgba(255, 150, 0, 0) 60%),
+      linear-gradient(135deg, #ff9a0a 0%, #f36b21 45%, #e8401c 80%, #c7331a 100%);
+    color: #fff;
+  }
+  .ct-channel-icon svg { width: 22px; height: 22px; }
+  .ct-channel ul { margin: 0; padding: 0; list-style: none; }
+  .ct-channel li { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 10px; font-size: 16px; line-height: 1.45; color: var(--ink-soft); }
+  .ct-channel li > svg { flex: none; width: 17px; height: 17px; margin-top: 3px; color: var(--accent); }
+  .ct-channel li > span { min-width: 0; overflow-wrap: anywhere; }
+  .ct-channel a { color: inherit; text-decoration: none; }
+  .ct-channel a:hover { color: var(--accent-dark); text-decoration: underline; text-underline-offset: 3px; }
+  .ct-channel-note { display: block; font-size: 13.5px; color: var(--muted); }
+
+  .ct-form-card {
+    padding: 40px;
+    border: 1px solid #efece5;
+    border-radius: 24px;
+    background: #fff;
+    box-shadow: 0 1px 3px rgba(15, 14, 12, 0.05), 0 8px 24px rgba(15, 14, 12, 0.06);
+  }
+  /* The small line over the heading, in the sweep. */
+  .ct-form-eyebrow {
+    display: block;
+    width: fit-content;
+    margin-bottom: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 1.4;
+    background:
+      radial-gradient(ellipse 70% 120% at 18% 0%, rgba(255, 196, 0, 0.85) 0%, rgba(255, 150, 0, 0) 60%),
+      linear-gradient(135deg, #ff9a0a 0%, #f36b21 45%, #e8401c 80%, #c7331a 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+  }
+  .ct-form-title { margin: 0 0 24px; font-size: clamp(24px, 2.2vw, 28px); font-weight: 700; line-height: 1.2; letter-spacing: -0.01em; color: var(--ink); }
+  .ct-form-tagline { margin: 10px 0 22px; font-size: 13px; font-style: italic; line-height: 1.55; color: var(--ink-soft); }
+
+  /* The form's fields: outlined, on white. Labels keep to one line. */
+  .ct-form-card .field-label { margin-bottom: 7px; font-size: 13.5px; font-weight: 500; line-height: 1.35; letter-spacing: 0; color: var(--ink); }
+  .ct-form-card .field-input,
+  .ct-form-card .field-textarea,
+  .ct-form-card .field-select {
+    padding: 12px 14px;
+    border-color: #d9d5cb;
+    border-radius: 10px;
+    background: #fff;
+    font-size: 14.5px;
+  }
+  /* One height for fields and dropdowns, so two in a row line up. */
+  .ct-form-card input.field-input:not([type="file"]),
+  .ct-form-card .field-select { height: 48px; }
+  /* Dropdowns and text areas take the site's typeface; left alone they use the browser's. */
+  .ct-form-card .field-select,
+  .ct-form-card .field-textarea,
+  .ct-form-card .field-input { font-family: inherit; }
+  /* The hints inside the fields are a size down, and end in an ellipsis where one is too long
+     for its field, rather than being cut mid-word. */
+  .ct-form-card .field-input { text-overflow: ellipsis; }
+  .ct-form-card .field-input::placeholder,
+  .ct-form-card .field-textarea::placeholder { font-size: 13.5px; color: #9b958a; }
+  .ct-form-card .field-input:focus,
+  .ct-form-card .field-textarea:focus,
+  .ct-form-card .field-select:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(243, 107, 33, 0.14); }
+  .ct-form-card .field-input[type="file"] { padding: 10px 14px; font-size: 13.5px; }
+  .ct-form-card .field-textarea { display: block; resize: vertical; }
+
+  /* The kind of inquiry: a dropdown in the sweep, with its words and arrow in white. */
+  .ct-persona { position: relative; }
+  .ct-persona select {
+    width: 100%;
+    height: 48px;
+    padding: 0 42px 0 14px;
+    border: 0;
+    border-radius: 10px;
+    background:
+      radial-gradient(ellipse 70% 120% at 18% 0%, rgba(255, 196, 0, 0.85) 0%, rgba(255, 150, 0, 0) 60%),
+      linear-gradient(135deg, #ff9a0a 0%, #f36b21 45%, #e8401c 80%, #c7331a 100%);
+    font: inherit;
+    font-size: 14.5px;
+    font-weight: 600;
+    text-overflow: ellipsis;
+    color: #fff;
+    cursor: pointer;
+    -webkit-appearance: none;
+    appearance: none;
+  }
+  .ct-persona select:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+  /* The open list is the browser's own; it has to be told not to take the white text with it. */
+  .ct-persona option { background: #fff; font-weight: 500; color: var(--ink); }
+  .ct-persona svg { position: absolute; top: 50%; right: 14px; width: 17px; height: 17px; transform: translateY(-50%); color: #fff; pointer-events: none; }
+
+  .ct-submit {
+    display: flex;
+    width: 100%;
+    height: 50px;
+    align-items: center;
+    justify-content: center;
+    border: 0;
+    border-radius: 999px;
+    background:
+      radial-gradient(ellipse 70% 120% at 18% 0%, rgba(255, 196, 0, 0.85) 0%, rgba(255, 150, 0, 0) 60%),
+      linear-gradient(135deg, #ff9a0a 0%, #f36b21 45%, #e8401c 80%, #c7331a 100%);
+    font: inherit;
+    font-size: 15px;
+    font-weight: 600;
+    color: #fff;
+    cursor: pointer;
+    transition: filter 0.2s var(--ease), transform 0.2s var(--ease);
+  }
+  .ct-submit:hover:not(:disabled) { filter: brightness(0.95); transform: translateY(-1px); }
+  .ct-submit:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
+  .ct-submit:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  @media (max-width: 1080px) {
+    .ct-channels { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+  @media (max-width: 900px) {
+    .ct-channels { margin-bottom: 36px; }
+    .ct-form-card { padding: 26px 20px; }
+  }
+  @media (max-width: 420px) {
+    .ct-channels { grid-template-columns: 1fr; gap: 24px; }
   }
 }

@@ -28,14 +28,18 @@ Recipient inbox     Reply-To = the visitor, so "Reply" answers them
 | Form | formType | Recipient |
 | --- | --- | --- |
 | Catalog "Submit Hospital Requisition List" | `product` | `PRODUCT_INQUIRY_RECIPIENT_EMAIL`, or `CONTACT_RECIPIENT_EMAIL` if blank |
-| Contact page — Hospitals & Procurement (where product pages send buyers) | `product` | same |
-| Contact page — Clinicians, Patients, Trade Partners | `contact` | `CONTACT_RECIPIENT_EMAIL` |
+| Contact page — all four inquiry types (Clinicians, Hospitals, Patients, Trade Partners) | `product` | same |
+
+The contact page sends every inquiry type as `product`, so all of them reach the inbox that receives
+the medical equipment inquiries. The Worker therefore heads these emails "Medical Equipment Inquiry";
+the **Inquiry Type** row and the subject line say which of the four it is. Nothing on the site sends
+as `contact` any more, so `CONTACT_RECIPIENT_EMAIL` is only the fallback when the product inbox is blank.
 
 Limits (same as Getmeds): each file under 4 MB, at most 10 MB and 6 files per inquiry. The forms
 accept PDF, DOCX and XLSX.
 
 **Until the endpoint is configured, the forms do not pretend to send**: they tell the visitor to
-email `contact@bishnoi.ai` instead.
+email `naresh@getmeds.ph` instead (`directContact.email` in `lib/data/contactData.json`).
 
 ## Setup
 

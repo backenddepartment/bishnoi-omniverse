@@ -1,42 +1,50 @@
 'use client';
 
 import React, { useEffect, useRef, useState } from 'react';
-import { ArrowRight, Phone } from 'lucide-react';
+import { ArrowUpRight, ChevronDown, Phone } from 'lucide-react';
 import contactData from '@/lib/data/contactData.json';
 import { InquiryGuard, type InquiryGuardHandle } from '@/components/InquiryGuard';
 import { CAPTCHA_ENABLED, DOCUMENT_EXTENSIONS, collectFiles, sendInquiry } from '@/lib/inquiry';
 
 // Fields sent as the email's own header rows (or its message panel) rather than as detail rows.
 const CORE_FIELDS = ['email', 'phone', 'additionalNotes', 'message'];
-import contactbg from '@/app/assets/contactbg.png';
-import team from '@/app/assets/team.jpg';
-import { PatternSection, SectionHead, Prose, Split, Stepper } from '@/components/about/Patterns';
-import {
-  ContactChannelCards,
-  OfficeCards,
-  QuoteBox,
-  UploadPrompt,
-  RouteCards,
-  TalkPanel,
-} from '@/components/about/contact/ContactBlocks';
+import contactbg from '@/app/assets/contact.png';
+import { AboutHero, PatternSection, SectionHead } from '@/components/about/Patterns';
+import { ContactChannels, OfficeCards } from '@/components/about/contact/ContactBlocks';
+import { GuideAccordion } from '@/components/about/contact/GuideAccordion';
 import { PH_TEL_HREF } from '@/lib/contactChannels';
 
 const IMG = {
   hero: contactbg.src,
-  portrait: team.src,
 };
 
-// The response steps drawn beside the "What Happens After You Reach Out" copy.
-const NEXT_STEPS = [
-  { title: 'We review your requirement and any files you send' },
-  { title: 'We contact you if anything needs clarifying' },
-  { title: 'We check sourcing options and documents with our suppliers' },
-  { title: 'You receive a quotation with quantities, prices, lead times and documents' },
-];
+/** One field of an inquiry form, as written in contactData.json. */
+type FormField = {
+  name: string;
+  label: string;
+  type: string;
+  placeholder?: string;
+  required?: boolean;
+  options?: string[];
+  accept?: string;
+  hint?: string;
+  /** Takes a whole row of the form. */
+  wide?: boolean;
+};
+type Persona = {
+  id: string;
+  category: string;
+  tagline: string;
+  buttonText: string;
+  inquiryType: string;
+  nameField: string;
+  formFields: FormField[];
+};
 
 export default function ContactPage() {
-  const { pageHeader, directContact, quoteSection, listSection, assistSection, personas, whatHappens, closing } =
+  const { pageHeader, directContact, formSection, quoteSection, listSection, assistSection, whatHappens, guide } =
     contactData;
+  const personas = contactData.personas as Persona[];
 
   const [activePersonaId, setActivePersonaId] = useState<string>('doctor');
   const [formData, setFormData] = useState<Record<string, string>>({});
@@ -89,8 +97,28 @@ export default function ContactPage() {
 
   const activePersona = personas.find((p) => p.id === activePersonaId) || personas[0];
 
-  // Route buttons around the page (hero, quote box, upload area, route cards, closing panel) select a
-  // persona and bring the visitor to it. Choosing the persona already open keeps what they typed,
+  // The form's fields sit two to a row. A field marked wide takes a whole row, and so does one
+  // that would otherwise be left alone in a row with an empty place beside it.
+  const fullWidth = new Set<string>();
+  let inRow: string[] = [];
+  const closeRow = () => {
+    if (inRow.length === 1) fullWidth.add(inRow[0]);
+    inRow = [];
+  };
+  for (const field of activePersona.formFields) {
+    if (field.type === 'textarea') continue;
+    if (field.wide) {
+      closeRow();
+      fullWidth.add(field.name);
+    } else {
+      inRow.push(field.name);
+      if (inRow.length === 2) inRow = [];
+    }
+  }
+  closeRow();
+
+  // Buttons around the page (the hero, and the guide under the form) select a persona and bring
+  // the visitor to it. Choosing the persona already open keeps what they typed,
   // including a product carried in from ?product=.
   const selectPersona = (id: string) => {
     if (id !== activePersonaId) {
@@ -131,8 +159,9 @@ export default function ContactPage() {
 
     const result = await sendInquiry(
       {
-        // Institutional supply is where product pages send buyers, so it is an equipment inquiry.
-        formType: activePersona.id === 'hospital' ? 'product' : 'contact',
+        // Every inquiry type goes to the inbox that receives the medical equipment inquiries.
+        // The email's Inquiry Type row says which of the four it is.
+        formType: 'product',
         inquiryType: activePersona.inquiryType,
         name: formData[activePersona.nameField] ?? '',
         email: formData.email ?? '',
@@ -158,96 +187,59 @@ export default function ContactPage() {
 
   return (
     <div className="w-full contact-page">
-      {/* Page Header */}
-      <section className="page-hero page-hero-banner">
-        <div className="hero-media">
-          <img src={IMG.hero} alt="A calm hospital waiting area" loading="eager" />
-        </div>
-        <div className="hero-content">
-          <span className="eyebrow on-dark">{pageHeader.title}</span>
-          <h1>{pageHeader.headline}</h1>
-          <p className="lede">{pageHeader.subheadline}</p>
-          <div className="hero-actions">
+      {/* Page Header · P5, the same band as Vision & Values: a designed 1920×820 slide with its
+          left half kept clear, so the copy sits there in ink with no scrim and the headline in
+          the orange sweep. */}
+      <AboutHero
+        banner
+        overlay="none"
+        eyebrow={pageHeader.title}
+        title={pageHeader.headline}
+        lede={pageHeader.subheadline}
+        image={IMG.hero}
+        imageAlt="A stethoscope and pulse oximeter on a desk, beside photographs of a hand typing a message on a phone and of the team talking with students at community health events"
+        imagePosition="center"
+        actions={
+          <>
             <button type="button" onClick={() => goToPersona('hospital')} className="btn btn-primary">
               Request a Quote
             </button>
-            <a href={PH_TEL_HREF} className="btn btn-outline">
+            <a href={PH_TEL_HREF} className="btn btn-outline on-light">
               <Phone className="w-4 h-4" strokeWidth={1.5} aria-hidden="true" /> Talk to Our Team
             </a>
-          </div>
-        </div>
-      </section>
+          </>
+        }
+      />
 
-      {/* 1 · Contact details */}
-      <PatternSection>
-        <SectionHead eyebrow={directContact.eyebrow} title={directContact.title} />
-        <Prose paras={directContact.paragraphs} className="max-w-3xl mb-10" />
-        <ContactChannelCards email={directContact.email} phone={directContact.hotline} />
-        <OfficeCards offices={directContact.offices} />
-      </PatternSection>
-
-      {/* 2 · Request a quote */}
-      <PatternSection tone="paper">
-        <Split side="right" media={<QuoteBox onRequest={() => goToPersona('hospital')} />}>
-          <SectionHead eyebrow={quoteSection.eyebrow} title={quoteSection.title} />
-          <Prose paras={quoteSection.paragraphs} />
-        </Split>
-      </PatternSection>
-
-      {/* 3 · Send your list */}
-      <PatternSection>
-        <Split side="right" media={<UploadPrompt onOpen={() => goToPersona('hospital', 'form')} />}>
-          <SectionHead eyebrow={listSection.eyebrow} title={listSection.title} />
-          <Prose paras={listSection.paragraphs} />
-        </Split>
-      </PatternSection>
-
-      {/* 4 · Inquiry routes, then the persona tabs and the form itself */}
-      <section className="section ap-paper">
+      {/* 1 · The ways to reach us, set out in a row, and under them the inquiry form in a card
+          across the page, with the kind of inquiry chosen from a dropdown at its head. Under
+          that, the offices with their maps. */}
+      <section className="section section-white">
         <div className="wrap">
-          <SectionHead eyebrow={assistSection.eyebrow} title={assistSection.title} />
-          <Prose paras={assistSection.paragraphs} className="max-w-3xl mb-10" />
-          <RouteCards activeId={activePersonaId} onSelect={(id) => goToPersona(id)} />
+          <SectionHead eyebrow={directContact.eyebrow} title={directContact.title} />
+          <ContactChannels email={directContact.email} phone={directContact.hotline} />
 
-          {/* Persona Selector */}
-          <div ref={personaTabsRef} className="scroll-target grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-12 mb-12">
-            {personas.map((p) => {
-              const selected = p.id === activePersonaId;
-              return (
-                <button
-                  key={p.id}
-                  type="button"
-                  onClick={() => {
-                    setActivePersonaId(p.id);
-                    setSubmitted(false);
-                    setFormData({});
-                    setFiles({});
-                    setSendError('');
-                  }}
-                  aria-pressed={selected}
-                  className={`p-5 text-left rounded-xl border transition flex flex-col justify-between ${
-                    selected ? 'border-ink bg-ink text-white' : 'border-line bg-surface text-ink hover:border-accent'
-                  }`}
-                >
-                  <div>
-                    <h3 className="font-sans text-lg font-bold leading-snug m-0">{p.category}</h3>
-                  </div>
-                  <span className={`mt-4 text-xs font-semibold flex items-center gap-1 ${selected ? 'text-accent' : 'text-accent-dark'}`}>
-                    Select <ArrowRight className="w-3 h-3" />
-                  </span>
-                </button>
-              );
-            })}
-          </div>
+          <div className="ct-reach">
+            <div ref={personaTabsRef} className="scroll-target ct-form-card">
+              <span className="ct-form-eyebrow">{formSection.eyebrow}</span>
+              <h2 className="ct-form-title">{formSection.title}</h2>
 
-          {/* Active Persona Form */}
-          <div ref={formRef} className="scroll-target info-card max-w-4xl !p-8 !rounded-2xl">
-            <div className="border-b border-line pb-6 mb-6">
-              <span className="text-xs font-semibold uppercase tracking-wide text-muted block mb-1">Active Selection</span>
-              <h3 className="font-sans text-xl font-bold text-ink">{activePersona.category}</h3>
-              <p className="text-sm text-ink-soft mt-2 italic">&quot;{activePersona.tagline}&quot;</p>
-            </div>
+              <label className="field-label" htmlFor="inquiry-type">
+                Inquiry Type
+              </label>
+              <div className="ct-persona">
+                <select id="inquiry-type" value={activePersonaId} onChange={(e) => selectPersona(e.target.value)}>
+                  {personas.map((p) => (
+                    <option key={p.id} value={p.id}>
+                      {p.category}
+                    </option>
+                  ))}
+                </select>
+                <ChevronDown strokeWidth={2} aria-hidden="true" />
+              </div>
+              <p className="ct-form-tagline">&quot;{activePersona.tagline}&quot;</p>
 
+              <div ref={formRef} className="scroll-target">
             {submitted ? (
               <div className="p-6 bg-ink text-white rounded space-y-3">
                 <h4 className="font-sans text-lg font-bold text-white m-0">Inquiry Submitted Successfully</h4>
@@ -269,19 +261,12 @@ export default function ContactPage() {
                 </button>
               </div>
             ) : (
-              <form onSubmit={handleSubmit} className="space-y-6">
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+              <form onSubmit={handleSubmit} className="space-y-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 items-end">
                   {activePersona.formFields.map((field) => {
                     if (field.type === 'textarea') return null;
                     return (
-                      <div
-                        key={field.name}
-                        className={
-                          field.wide || field.name === 'additionalNotes' || field.name === 'message'
-                            ? 'sm:col-span-2'
-                            : ''
-                        }
-                      >
+                      <div key={field.name} className={fullWidth.has(field.name) ? 'sm:col-span-2' : ''}>
                         <label className="field-label">
                           {field.label} {field.required && <span className="text-accent">*</span>}
                         </label>
@@ -337,7 +322,7 @@ export default function ContactPage() {
                         {field.label} {field.required && <span className="text-accent">*</span>}
                       </label>
                       <textarea
-                        rows={4}
+                        rows={3}
                         required={field.required}
                         placeholder={field.placeholder}
                         value={formData[field.name] || ''}
@@ -356,46 +341,71 @@ export default function ContactPage() {
                   </p>
                 )}
 
-                <div className="pt-2">
+                <div className="pt-1">
                   {/* Stays disabled until "Verify you are human" has passed, and while sending. */}
-                  <button
-                    type="submit"
-                    disabled={sending || (CAPTCHA_ENABLED && !captchaToken)}
-                    className="btn btn-primary w-full sm:w-auto justify-center disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    {sending ? 'Sending…' : activePersona.buttonText}
+                  <button type="submit" disabled={sending || (CAPTCHA_ENABLED && !captchaToken)} className="ct-submit">
+                    {sending ? 'Sending…' : 'Submit'}
                   </button>
                 </div>
               </form>
             )}
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-16">
+            <OfficeCards offices={directContact.offices} />
           </div>
         </div>
       </section>
 
-      {/* 5 · Next steps */}
-      <section className="section-dark section">
-        <div className="wrap grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-start">
-          <div>
-            <SectionHead eyebrow={whatHappens.eyebrow} title={whatHappens.title} onDark />
-            <Prose paras={whatHappens.paragraphs} />
-          </div>
-          <Stepper
-            vertical
-            steps={NEXT_STEPS}
-            className="[&_.ap-step-marker]:!bg-ink [&_.ap-step_h3]:!text-white [&_.ap-step_h3]:!mt-3"
-          />
-        </div>
-      </section>
-
-      {/* Closing · talk to us */}
-      <TalkPanel
-        eyebrow={closing.eyebrow}
-        title={closing.title}
-        text={closing.text}
-        portrait={IMG.portrait}
-        email={directContact.email}
-        onRequestQuote={() => goToPersona('hospital')}
-      />
+      {/* 3 · The guide: what used to be four sections (request a quote, send your list, inquiry
+          routes, next steps) as cards that open one at a time, beside a headline and two buttons.
+          Each card's arrow takes the visitor back up to the part of the form it is about. No
+          padding on top: it follows on from the form section, white as well, with that section's
+          own padding as the space between them. */}
+      <PatternSection className="!pt-0">
+        <GuideAccordion
+          eyebrow={guide.eyebrow}
+          title={guide.title}
+          text={guide.text}
+          actions={
+            <>
+              <button type="button" onClick={() => goToPersona('hospital')} className="ap-guide-btn">
+                <span className="ap-guide-btn-label">Request a Quote</span>
+                <span className="ap-guide-btn-arrow" aria-hidden="true">
+                  <ArrowUpRight strokeWidth={1.5} />
+                </span>
+              </button>
+              <a href={PH_TEL_HREF} className="btn btn-outline on-light">
+                Talk to Our Team
+              </a>
+            </>
+          }
+          items={[
+            {
+              ...quoteSection,
+              actionLabel: 'Go to the quotation form',
+              onAction: () => goToPersona('hospital'),
+            },
+            {
+              ...listSection,
+              actionLabel: 'Go to the form to attach your list',
+              onAction: () => goToPersona('hospital', 'form'),
+            },
+            {
+              ...assistSection,
+              actionLabel: 'Go to the inquiry forms',
+              onAction: () => goToPersona(activePersonaId),
+            },
+            {
+              ...whatHappens,
+              actionLabel: 'Go to the inquiry form',
+              onAction: () => goToPersona(activePersonaId, 'form'),
+            },
+          ]}
+        />
+      </PatternSection>
     </div>
   );
 }

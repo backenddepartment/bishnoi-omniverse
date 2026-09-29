@@ -1,11 +1,10 @@
 import React from 'react';
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { Check, FileCheck, Handshake, MessagesSquare, Route, Upload } from 'lucide-react';
+import { Check, Upload } from 'lucide-react';
 import {
   AboutHero,
   Callout,
-  CtaBand,
   DiagramSplit,
   PatternSection,
   Prose,
@@ -13,10 +12,10 @@ import {
   Split,
 } from '@/components/about/Patterns';
 import { FadeIn } from '@/components/FadeIn';
-import { OrderTermsCard, PartnerHub, RouteMap } from '@/components/about/trade-partners/TradeDiagrams';
+import { PartnerChain } from '@/components/about/trade-partners/PartnerChain';
 import heroImg from '@/app/assets/tradeandpartners.png';
-import meetingImg from '@/app/assets/companyone.png';
-import countriesImg from '@/app/assets/countries.png';
+import relationshipImg from '@/app/assets/omniverserelationship-cutout.webp';
+import routeMapImg from '@/app/assets/mapconnection.png';
 
 export const metadata: Metadata = {
   title: 'Trade & Partners | Bishnoi Omniverse',
@@ -50,15 +49,42 @@ export default function TradePartnersPage() {
         overlay="none"
       />
 
-      {/* 1 · SUPPLIER RELATIONSHIPS · P1 photo left */}
+      {/* 1 · PARTNER COMMUNICATION: heading on the left, copy on the right, and the chain of arrows
+          across the full width beneath them. */}
       <PatternSection tone="white">
+        <div className="grid-2 items-start max-[900px]:gap-5">
+          <SectionHead eyebrow="Partner Communication" title="One Clear Line of Communication" />
+          <Prose
+            paras={[
+              'Supply chains break down when information gets lost between parties. We act as the single point of communication between buyer, supplier and logistics partner, so everyone works from the same information at the same time.',
+              'You will always know who to contact on our team. When plans change, such as a new quantity or delivery date, everyone affected hears about it quickly.',
+            ]}
+          />
+        </div>
+        <PartnerChain />
+      </PatternSection>
+
+      {/* 2 · SUPPLIER RELATIONSHIPS · P1, photo left. The image is itself a collage, cut out from
+          its backdrop so the photos sit straight on the section: shown whole, with no frame or
+          shadow, and given the wider of the two columns. No padding on top: it follows on from
+          Partner Communication, white as well, with that section's own padding as the space
+          between them. */}
+      <PatternSection
+        tone="white"
+        className="!pt-0 min-[901px]:[&_.ap-split]:!grid-cols-[minmax(0,1.35fr)_minmax(0,1fr)] min-[901px]:[&_.ap-split]:!gap-12"
+      >
         <Split
-          image={meetingImg.src}
-          imageAlt="Bishnoi Omniverse team in a meeting around a conference table with laptops"
           side="left"
-          imagePosition="center"
+          media={
+            <img
+              src={relationshipImg.src}
+              alt="A collage of the Bishnoi team at trade exhibitions in Japan: meeting suppliers at their stands, looking over products, and gathered outside the CPHI and Medtec venue"
+              loading="lazy"
+              className="block h-auto w-full"
+            />
+          }
         >
-          <SectionHead eyebrow="Supplier Relationships" title="Partnerships Built on Quality and Openness" icon={Handshake} />
+          <SectionHead eyebrow="Supplier Relationships" title="Partnerships Built on Quality and Openness" />
           <Prose
             paras={[
               'We work with manufacturers, suppliers and distributors who meet healthcare requirements and share their information openly. Before discussing commercial terms, we review product documents, certifications where applicable, and registration status for the markets involved.',
@@ -84,10 +110,37 @@ export default function TradePartnersPage() {
         </Split>
       </PatternSection>
 
-      {/* 2 · TRADE COORDINATION · P8 route diagram */}
-      <PatternSection tone="paper">
-        <DiagramSplit diagram={<RouteMap />}>
-          <SectionHead eyebrow="Trade Coordination" title="A Practical Route Into the Philippine Market" icon={Route} />
+      {/* 3 · ORDER COORDINATION: the same band as Group Structure's Business Relationships — the
+          orange sweep as the ground, heading on the left and copy on the right, all in white. */}
+      <PatternSection tone="dark" className="ap-sweep">
+        <div className="grid items-start gap-8 md:grid-cols-2 md:gap-16">
+          <SectionHead eyebrow="Order Coordination" title="Clear Terms, Smooth Orders" onDark />
+          <FadeIn>
+            <Prose
+              paras={[
+                'When a buyer approves a quotation, we confirm the order with you in writing, including price, quantity, lead time, packaging and required documents. We then track dispatch, check trade documents before shipment, and coordinate shipping and delivery.',
+                'Written terms protect everyone. They reduce disputes, speed up hospital approvals and give suppliers confidence that orders will proceed as agreed.',
+              ]}
+            />
+          </FadeIn>
+        </div>
+      </PatternSection>
+
+      {/* 4 · TRADE COORDINATION · P8. The map is a cut-out with its own glow — India and the
+          Philippines, joined from New Delhi to Metro Manila — so it is shown whole, with no frame
+          or shadow. */}
+      <PatternSection tone="white">
+        <DiagramSplit
+          diagram={
+            <img
+              src={routeMapImg.src}
+              alt="Maps of India and the Philippines, with New Delhi and Metro Manila marked and joined by a dotted line, and lines running from each to locations across its country"
+              loading="lazy"
+              className="block h-auto w-full"
+            />
+          }
+        >
+          <SectionHead eyebrow="Trade Coordination" title="A Practical Route Into the Philippine Market" />
           <Prose
             paras={[
               'Our India team works directly with manufacturers to review products and gather documents. Our Philippine team connects that supply to hospitals, clinics and healthcare projects that need it.',
@@ -97,77 +150,38 @@ export default function TradePartnersPage() {
         </DiagramSplit>
       </PatternSection>
 
-      {/* 3 · PARTNER COMMUNICATION · P8 hub and spoke */}
-      <PatternSection tone="white">
-        <DiagramSplit diagram={<PartnerHub />}>
-          <SectionHead eyebrow="Partner Communication" title="One Clear Line of Communication" icon={MessagesSquare} />
-          <Prose
-            paras={[
-              'Supply chains break down when information gets lost between parties. We act as the single point of communication between buyer, supplier and logistics partner, so everyone works from the same information at the same time.',
-              'You will always know who to contact on our team. When plans change, such as a new quantity or delivery date, everyone affected hears about it quickly.',
-            ]}
-          />
-        </DiagramSplit>
-      </PatternSection>
-
-      {/* 4 · ORDER COORDINATION · P1 with a document card */}
-      <PatternSection tone="dark">
-        <Split side="right" media={<OrderTermsCard />}>
-          <SectionHead eyebrow="Order Coordination" title="Clear Terms, Smooth Orders" icon={FileCheck} onDark />
-          <Prose
-            paras={[
-              'When a buyer approves a quotation, we confirm the order with you in writing, including price, quantity, lead time, packaging and required documents. We then track dispatch, check trade documents before shipment, and coordinate shipping and delivery.',
-              'Written terms protect everyone. They reduce disputes, speed up hospital approvals and give suppliers confidence that orders will proceed as agreed.',
-            ]}
-          />
-        </Split>
-      </PatternSection>
-
-      {/* 5 · LONG-TERM PARTNERSHIPS · P7 callout + "What to send us" panel */}
-      <PatternSection tone="paper">
+      {/* 5 · LONG-TERM PARTNERSHIPS · P7 callout, with the button inside it under the words, and
+          the "What to send us" panel. No padding on top: it follows on from Trade Coordination,
+          white as well, with that section's own padding as the space between them. */}
+      <PatternSection tone="white" className="!pt-0">
         <SectionHead eyebrow="Long-Term Partnerships" title="Growing Together, Order After Order" />
         <FadeIn>
-          <Callout size="lg">
+          <Callout size="lg" className="is-sweep has-action">
             <p>
               We are looking for partners, not one-off transactions. Every successful order builds trust and understanding
               on both sides, and makes the next one easier.
             </p>
+            <Link href={PARTNER_CTA.href} className="btn ap-callout-btn">
+              <span>{PARTNER_CTA.label}</span>
+            </Link>
           </Callout>
         </FadeIn>
         <FadeIn delay={0.1}>
-          <div className="mt-10 grid grid-cols-1 items-center gap-8 md:grid-cols-[minmax(0,1fr)_auto]">
-            <div className="rounded-2xl border bg-white p-7 sm:p-8" style={{ borderColor: 'var(--line)' }}>
-              <div className="mb-4 flex items-center gap-3">
-                <Upload className="h-6 w-6 flex-none" color="var(--accent)" strokeWidth={1.5} aria-hidden="true" />
-                <h3 className="m-0 text-[18px] font-semibold" style={{ color: 'var(--ink)' }}>
-                  What to send us
-                </h3>
-              </div>
-              <Prose
-                paras={[
-                  'If you manufacture, supply, distribute or move healthcare products and want to reach the Philippine market, we would like to hear from you. Share your company profile, products or services, available documents and the markets you serve, and we will be in touch when there is a fit.',
-                ]}
-              />
+          <div className="mt-10 rounded-2xl border bg-white p-7 sm:p-8" style={{ borderColor: 'var(--line)' }}>
+            <div className="mb-4 flex items-center gap-3">
+              <Upload className="h-6 w-6 flex-none" color="var(--accent)" strokeWidth={1.5} aria-hidden="true" />
+              <h3 className="m-0 text-[18px] font-semibold" style={{ color: 'var(--ink)' }}>
+                What to send us
+              </h3>
             </div>
-            <div>
-              <Link href={PARTNER_CTA.href} className="btn btn-primary">
-                {PARTNER_CTA.label}
-              </Link>
-            </div>
+            <Prose
+              paras={[
+                'If you manufacture, supply, distribute or move healthcare products and want to reach the Philippine market, we would like to hear from you. Share your company profile, products or services, available documents and the markets you serve, and we will be in touch when there is a fit.',
+              ]}
+            />
           </div>
         </FadeIn>
       </PatternSection>
-
-      {/* CLOSING · P9 dark panel with the countries map faded behind */}
-      <CtaBand
-        eyebrow="Partner With Us"
-        title="Partnership Opportunities"
-        text="We value partners who keep their promises, and we work hard to keep ours."
-        primary={PARTNER_CTA}
-        secondary={{ label: 'Talk to Our Team', href: '/contact' }}
-        image={countriesImg.src}
-        imageOpacity={0.12}
-      />
     </div>
   );
 }

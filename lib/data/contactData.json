@@ -11,8 +11,10 @@
       "Email us at contact@bishnoi.ai, or call our Philippines line on +63 917 156 9029. For quick questions, you can also reach us on WhatsApp and Viber.",
       "You can visit or write to our Philippine office, Bishnoi Omniverse Corp, at Unit 301 and 305, 17 Vatican Building, Vatican City Drive, B.F. Resort Village, Talon II, Las Piñas City, Metro Manila, or our India office, Bishnoi Omniverse LLP, at Okhla Industrial Area, Phase III, New Delhi 110020."
     ],
-    "email": "contact@bishnoi.ai",
+    "email": "naresh@getmeds.ph",
     "hotline": "+63 917 156 9029",
+    "messaging": "+63 919 076 9100",
+    "linkedin": "https://www.linkedin.com/in/nareshbishnoi/",
     "offices": [
       {
         "country": "Philippines",
@@ -23,10 +25,14 @@
       {
         "country": "India",
         "entity": "Bishnoi Omniverse LLP",
-        "address": "Okhla Industrial Area, Phase III, New Delhi 110020",
+        "address": "Okhla Industrial Area, Phase III, New Delhi, Delhi 110020, India",
         "mapQuery": "Okhla Industrial Area Phase III, New Delhi 110020, India"
       }
     ]
+  },
+  "formSection": {
+    "eyebrow": "Inquiry Form",
+    "title": "Send Us Your Inquiry"
   },
   "quoteSection": {
     "eyebrow": "Request a Quote",
@@ -91,17 +97,18 @@
           "required": true
         },
         {
-          "name": "country",
-          "label": "Country",
-          "type": "text",
-          "placeholder": "Country of Practice",
-          "required": true
-        },
-        {
           "name": "medicationName",
           "label": "Medication Name / Active Ingredient",
           "type": "text",
           "placeholder": "e.g., Carboplatin, Bortezomib",
+          "required": true,
+          "wide": true
+        },
+        {
+          "name": "country",
+          "label": "Country",
+          "type": "text",
+          "placeholder": "Country of Practice",
           "required": true
         },
         {
@@ -371,9 +378,9 @@
       "There is no obligation until you approve the quotation. Timelines and documents vary by product and destination, and we will tell you clearly what to expect at each step."
     ]
   },
-  "closing": {
-    "eyebrow": "Talk to Us",
-    "title": "Prefer to Talk First?",
-    "text": "Every good supply relationship starts with one clear conversation. Call, email or message us, and we will help you find the best way forward."
+  "guide": {
+    "eyebrow": "Before You Send",
+    "title": "What to Know Before You Reach Out",
+    "text": "Four short notes on requesting a quotation, sending a list, choosing the right form and what happens next."
   }
 }

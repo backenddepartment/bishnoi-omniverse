@@ -31,7 +31,7 @@ export interface InquiryFile {
 }
 
 export interface InquiryPayload {
-  /** product = medical equipment inquiries; contact = the contact page's other routes. */
+  /** product = the medical equipment inbox, which every form now sends to; contact = the general inbox. */
   formType: 'contact' | 'product';
   inquiryType: string;
   name: string;

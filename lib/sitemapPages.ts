@@ -16,7 +16,7 @@ import patientMonitoringImg from '@/app/assets/patientmonitoring.png';
 import respiratoryCareImg from '@/app/assets/respiratorycare.png';
 import surgicalImg from '@/app/assets/surgical.png';
 import catalogHeroImg from '@/app/assets/medicinebgpage.png';
-import articlesHeroImg from '@/app/assets/sourcing.jpg';
+import articlesHeroImg from '@/app/assets/article.png';
 import qualityHeroImg from '@/app/assets/quality.png';
 import suppliesImg from '@/app/assets/supplies.jpg';
 import medicinesImg from '@/app/assets/medicines.jpg';
@@ -24,14 +24,14 @@ import doctorsImg from '@/app/assets/doctors.jpg';
 import hospitalsImg from '@/app/assets/hospitals.png';
 import groupHeroImg from '@/app/assets/groupstructure.png';
 import groupRoleImg from '@/app/assets/omniverseabout.png';
-import countriesImg from '@/app/assets/countries.png';
 import networkHeroImg from '@/app/assets/globalnetworkbg.png';
 import networkMapImg from '@/app/assets/metromanila.png';
 import networkFlowImg from '@/app/assets/flow.png';
 import networkCtaImg from '@/app/assets/ctabannertwo.jpg';
 import tradeHeroImg from '@/app/assets/tradeandpartners.png';
+import tradeRouteImg from '@/app/assets/mapconnection.png';
+import tradeRelationshipImg from '@/app/assets/omniverserelationship-cutout.webp';
 import teamImg from '@/app/assets/team.jpg';
-import companyOneImg from '@/app/assets/companyone.png';
 import aboutHeroImg from '@/app/assets/aboutusherobg.png';
 import cphiImg from '@/app/assets/cphi.jpeg';
 import howWeWorkImg from '@/app/assets/howwework.jpg';
@@ -44,7 +44,7 @@ import chiImg from '@/app/assets/maamchi.png';
 import debbieImg from '@/app/assets/maamdebbie.png';
 import experienceImg from '@/app/assets/backgroundsection.png';
 import visionHeroImg from '@/app/assets/qualityandcompliance.png';
-import contactHeroImg from '@/app/assets/contactbg.png';
+import contactHeroImg from '@/app/assets/contact.png';
 
 /**
  * One list of the site's public pages, shared by the three sitemaps: sitemap.xml (URLs),
@@ -121,7 +121,7 @@ const STATIC_PAGES: SitemapPage[] = [
   { path: '/quality/', title: 'Quality & Compliance', group: 'Company', ...SECONDARY, images: imgs(qualityHeroImg, suppliesImg, medicinesImg, respiratoryCareImg, doctorsImg) },
   { path: '/global-network/', title: 'Global Network', group: 'Company', ...SECONDARY, images: imgs(networkHeroImg, networkMapImg, teamImg, networkFlowImg, networkCtaImg) },
   { path: '/global/', title: 'Group Structure', group: 'Company', ...SECONDARY, images: imgs(groupHeroImg, groupRoleImg) },
-  { path: '/trade-partners/', title: 'Trade & Partners', group: 'Company', ...SECONDARY, images: imgs(tradeHeroImg, companyOneImg, countriesImg) },
+  { path: '/trade-partners/', title: 'Trade & Partners', group: 'Company', ...SECONDARY, images: imgs(tradeHeroImg, tradeRelationshipImg, tradeRouteImg) },
   { path: '/corp/', title: 'Bishnoi Omniverse Corp', group: 'Company', ...SECONDARY, images: [] },
 
   // Static
@@ -135,7 +135,7 @@ const STATIC_PAGES: SitemapPage[] = [
   },
   { path: '/about/vision-values/', title: 'Vision & Values', group: 'About Us', ...STATIC, images: imgs(visionHeroImg, doctorsImg, suppliesImg, teamImg, familiesImg) },
   { path: '/about/governance/', title: 'Governance & Standards', group: 'About Us', ...STATIC, images: imgs(hospitalsImg) },
-  { path: '/contact/', title: 'Contact Us', group: 'About Us', ...STATIC, images: imgs(contactHeroImg, teamImg) },
+  { path: '/contact/', title: 'Contact Us', group: 'About Us', ...STATIC, images: imgs(contactHeroImg) },
   { path: '/faq/', title: 'Frequently Asked Questions', group: 'About Us', ...STATIC, images: [] },
 ];
 

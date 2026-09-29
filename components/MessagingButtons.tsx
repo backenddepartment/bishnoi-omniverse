@@ -1,5 +1,14 @@
-import React from 'react';
-import { VIBER_HREF, WHATSAPP_HREF } from '@/lib/contactChannels';
+'use client';
+
+import React, { useEffect, useRef, useState } from 'react';
+import { X } from 'lucide-react';
+import {
+  LINKEDIN_HREF,
+  MESSAGING_DISPLAY,
+  VIBER_DOWNLOAD_HREF,
+  VIBER_HREF,
+  WHATSAPP_HREF,
+} from '@/lib/contactChannels';
 
 /** WhatsApp mark (Simple Icons, CC0). */
 function WhatsAppIcon() {
@@ -19,34 +28,144 @@ function ViberIcon() {
   );
 }
 
-// Each channel carries its own brand colour (see .msg-fab-btn.is-whatsapp / .is-viber).
+/** LinkedIn's "in", without the box it usually sits in (Simple Icons, CC0): the button is the box. */
+function LinkedInIcon() {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+      <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452z" />
+    </svg>
+  );
+}
+
+// Each channel carries its own brand colour (see .msg-fab-btn.is-whatsapp and its neighbours).
 const CHANNELS = [
-  { name: 'WhatsApp', href: WHATSAPP_HREF, Icon: WhatsAppIcon, brand: 'is-whatsapp' },
-  { name: 'Viber', href: VIBER_HREF, Icon: ViberIcon, brand: 'is-viber' },
+  {
+    name: 'WhatsApp',
+    href: WHATSAPP_HREF,
+    Icon: WhatsAppIcon,
+    brand: 'is-whatsapp',
+    label: `Message ${MESSAGING_DISPLAY} on WhatsApp`,
+  },
+  {
+    name: 'Viber',
+    href: VIBER_HREF,
+    Icon: ViberIcon,
+    brand: 'is-viber',
+    label: `Message ${MESSAGING_DISPLAY} on Viber`,
+  },
+  {
+    name: 'LinkedIn',
+    href: LINKEDIN_HREF,
+    Icon: LinkedInIcon,
+    brand: 'is-linkedin',
+    label: 'Message Naresh Bishnoi on LinkedIn',
+  },
 ];
 
 /**
+ * The Viber button. Its link hands over to the Viber app, and a web page cannot ask whether that
+ * app is installed: where it is not, the link simply does nothing. So after a click the button
+ * waits a moment, and if the page is still in front — nothing took over — it shows the number to
+ * message, with a way to copy it and to get Viber.
+ */
+function ViberButton() {
+  const [open, setOpen] = useState(false);
+  const [copied, setCopied] = useState(false);
+  const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => () => void (timer.current && clearTimeout(timer.current)), []);
+
+  const onClick = () => {
+    setCopied(false);
+    let handedOver = false;
+    const note = () => {
+      handedOver = true;
+    };
+    // The app opening, or the browser asking whether to open it, takes the page out of focus.
+    window.addEventListener('blur', note, { once: true });
+    document.addEventListener('visibilitychange', note, { once: true });
+    if (timer.current) clearTimeout(timer.current);
+    timer.current = setTimeout(() => {
+      window.removeEventListener('blur', note);
+      document.removeEventListener('visibilitychange', note);
+      if (!handedOver) setOpen(true);
+    }, 1200);
+  };
+
+  const copy = async () => {
+    try {
+      await navigator.clipboard.writeText(MESSAGING_DISPLAY);
+      setCopied(true);
+    } catch {
+      // No clipboard access: the number is on screen to copy by hand.
+    }
+  };
+
+  return (
+    <div className="msg-fab-item">
+      {/* No target="_blank": an app link opened in a new tab leaves an empty tab behind. */}
+      <a
+        href={VIBER_HREF}
+        onClick={onClick}
+        aria-label={`Message ${MESSAGING_DISPLAY} on Viber (opens the Viber app)`}
+        className="msg-fab-btn is-viber"
+      >
+        <ViberIcon />
+        {!open && (
+          <span className="msg-fab-label" aria-hidden="true">
+            Viber
+          </span>
+        )}
+      </a>
+      {open && (
+        <div className="msg-fab-note" role="status">
+          <button type="button" className="msg-fab-note-close" onClick={() => setOpen(false)} aria-label="Close">
+            <X strokeWidth={2} aria-hidden="true" />
+          </button>
+          <strong>Viber did not open</strong>
+          <p>It may not be installed on this device. You can message us on Viber at:</p>
+          <span className="msg-fab-note-number">{MESSAGING_DISPLAY}</span>
+          <div className="msg-fab-note-actions">
+            <button type="button" onClick={copy}>
+              {copied ? 'Copied' : 'Copy number'}
+            </button>
+            <a href={VIBER_DOWNLOAD_HREF} target="_blank" rel="noopener noreferrer">
+              Get Viber
+            </a>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+/**
  * Floating shortcuts, bottom-right on every page, for buyers who would rather message than fill in
- * a form. Both open in a new tab and message the Philippines hub (lib/contactChannels).
+ * a form. WhatsApp opens a chat with the messaging number; Viber does the same in its app;
+ * LinkedIn opens the profile, which carries the Message button (lib/contactChannels).
  */
 export function MessagingButtons() {
   return (
     <nav className="msg-fab" aria-label="Message us">
-      {CHANNELS.map(({ name, href, Icon, brand }) => (
-        <a
-          key={name}
-          href={href}
-          target="_blank"
-          rel="noopener noreferrer"
-          aria-label={`Message us on ${name} (opens in a new tab)`}
-          className={`msg-fab-btn ${brand}`}
-        >
-          <Icon />
-          <span className="msg-fab-label" aria-hidden="true">
-            {name}
-          </span>
-        </a>
-      ))}
+      {CHANNELS.map(({ name, href, Icon, brand, label }) =>
+        name === 'Viber' ? (
+          <ViberButton key={name} />
+        ) : (
+          <a
+            key={name}
+            href={href}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={`${label} (opens in a new tab)`}
+            className={`msg-fab-btn ${brand}`}
+          >
+            <Icon />
+            <span className="msg-fab-label" aria-hidden="true">
+              {name}
+            </span>
+          </a>
+        ),
+      )}
     </nav>
   );
 }

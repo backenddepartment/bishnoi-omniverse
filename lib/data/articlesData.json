@@ -1,8 +1,13 @@
 {
   "header": {
     "eyebrow": "Articles",
-    "title": "Notes from the supply floor",
-    "lede": "Practical writing on sourcing, documentation, and cross-border access — what we learn running hospital supply and named-patient medicine side by side."
+    "title": "Healthcare Industry Insights",
+    "lede": "Stay informed with articles and perspectives on medical equipment, healthcare innovation, global medicine access, and hospital supply operations. Explore practical knowledge, industry developments, and emerging trends shaping healthcare procurement and international distribution."
+  },
+  "feed": {
+    "title": "Global Medical Equipment & Procurement News",
+    "lede": "Curated, worldwide headlines on medical devices, healthcare equipment, hospital technology, procurement, tenders, supply chains, and healthcare infrastructure — sourced from independent news outlets and linked back to the original article.",
+    "searchPlaceholder": "Search news…"
   },
   "emptyState": {
     "title": "First articles are in preparation",
@@ -10,5 +15,45 @@
     "ctaText": "Ask us directly",
     "ctaHref": "/contact"
   },
-  "items": []
+  "items": [
+    {
+      "sample": true,
+      "slug": "where-every-crisis-becomes-visible",
+      "title": "Where every crisis becomes visible",
+      "category": "Global Health",
+      "date": "2026-09-02",
+      "excerpt": "As conflict, climate change and disease converge on the same overwhelmed clinics, Dr Maíra Fedatto of Action for Global Health argues the new UK Government has a rare chance to lead differently.",
+      "image": "families",
+      "imageAlt": "",
+      "source": "Prospect",
+      "sourceColor": "#d9402b",
+      "href": "https://www.prospectmagazine.co.uk/sponsored/74625/where-every-crisis-becomes-visible"
+    },
+    {
+      "sample": true,
+      "slug": "sun-pharma-agrees-to-lower-us-drug-prices",
+      "title": "Sun Pharma agrees to lower US drug prices under Trump plan; analysts see limited financial impact",
+      "category": "Pharmaceuticals",
+      "date": "2026-09-02",
+      "excerpt": "Sun Pharmaceutical Industries will offer its drugs at prices matching other developed nations.",
+      "image": "medicines",
+      "imageAlt": "",
+      "source": "The Economic Times",
+      "sourceColor": "#e03a3e",
+      "href": "https://economictimes.indiatimes.com/"
+    },
+    {
+      "sample": true,
+      "slug": "what-trumps-most-favored-nation-deal-means-for-drug-prices",
+      "title": "What Trump's Most-Favored-Nation Deal Means for Drug Prices",
+      "category": "Pharmaceuticals",
+      "date": "2026-09-01",
+      "excerpt": "A deal with pharmaceutical companies may not be as far-reaching as the administration says, according to experts.",
+      "image": "documents",
+      "imageAlt": "",
+      "source": "TIME",
+      "sourceColor": "#e90606",
+      "href": "https://time.com/article/2026/09/01/what-trump-most-favored-nation-deal-means-for-drug-prices/"
+    }
+  ]
 }

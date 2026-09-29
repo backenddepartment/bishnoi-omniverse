@@ -47,6 +47,15 @@ jobs:
           CATALOG_SHEET_CSV: ${{ secrets.CATALOG_SHEET_CSV }}
         run: npm run catalog:sync
 
+      # Rewrites lib/data/newsData.json from the news API (see docs/news-feed.md). With the secret
+      # unset this is a no-op. A failed or empty fetch only warns: the Articles page then shows
+      # the committed articles, and the rest of the deploy goes ahead.
+      - name: Sync news for the Articles page
+        env:
+          NEWS_API_KEY: ${{ secrets.NEWS_API_KEY }}
+          NEWS_API_PROVIDER: ${{ vars.NEWS_API_PROVIDER }}
+        run: npm run news:sync
+
       - name: Build static Next.js export
         env:
           NEXT_PUBLIC_BASE_PATH: "/bishnoi-omniverse"

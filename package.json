@@ -8,6 +8,7 @@
     "start": "next start",
     "lint": "next lint",
     "catalog:sync": "node scripts/sync-catalog.mjs",
+    "news:sync": "node scripts/sync-news.mjs",
     "catalog:export": "node scripts/export-catalog-csv.mjs",
     "prebuild": "node scripts/sync-catalog.mjs"
   },

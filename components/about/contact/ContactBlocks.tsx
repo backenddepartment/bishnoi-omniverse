@@ -7,92 +7,137 @@ import {
   FileText,
   FileType,
   Handshake,
+  Linkedin,
   Mail,
-  MapPin,
   MessageCircle,
   Phone,
+  Share2,
   Stethoscope,
   UploadCloud,
 } from 'lucide-react';
-import { IconCards } from '@/components/about/Patterns';
-import { PH_TEL_HREF, VIBER_HREF, WHATSAPP_HREF } from '@/lib/contactChannels';
+import { LINKEDIN_HREF, MESSAGING_DISPLAY, PH_TEL_HREF, VIBER_HREF, WHATSAPP_HREF } from '@/lib/contactChannels';
 
 /**
  * Page-specific pieces of the Contact Us page. They only lay out and route: every button that leads
  * to the inquiry form calls back into the page, which selects the persona and scrolls to the form.
  */
 
-const linkClass = 'font-semibold text-ink underline decoration-accent/40 underline-offset-4 hover:text-accent-dark';
+/* ---------- Section 1: the ways to reach us, beside the form ---------- */
 
-/* ---------- Section 1: contact cards (P3) ---------- */
-
-export function ContactChannelCards({ email, phone }: { email: string; phone: string }) {
-  return (
-    <IconCards
-      cols={3}
-      items={[
-        {
-          icon: Mail,
-          title: 'Email',
-          text: (
-            <a href={`mailto:${email}`} className={linkClass}>
-              {email}
-            </a>
-          ),
-        },
+/**
+ * The ways to reach us as blocks in a row: a small icon tile and a title, then the details
+ * beneath, each with its own icon.
+ */
+export function ContactChannels({ email, phone }: { email: string; phone: string }) {
+  const channels: { icon: LucideIcon; title: string; lines: { icon: LucideIcon; node: React.ReactNode }[] }[] = [
+    {
+      icon: Mail,
+      title: 'Email',
+      lines: [{ icon: Mail, node: <a href={`mailto:${email}`}>{email}</a> }],
+    },
+    {
+      icon: Phone,
+      title: 'Phone',
+      lines: [
         {
           icon: Phone,
-          title: 'Phone',
-          text: (
+          node: (
             <>
-              <a href={PH_TEL_HREF} className={linkClass}>
-                {phone}
-              </a>
-              <span className="block text-sm text-muted mt-1">Philippines line</span>
+              <a href={PH_TEL_HREF}>{phone}</a>
+              <span className="ct-channel-note">Philippines line</span>
             </>
           ),
         },
+      ],
+    },
+    {
+      icon: MessageCircle,
+      title: 'WhatsApp and Viber',
+      lines: [
         {
           icon: MessageCircle,
-          title: 'WhatsApp and Viber',
-          text: (
-            <span className="flex flex-wrap gap-x-5 gap-y-1">
-              <a href={WHATSAPP_HREF} target="_blank" rel="noopener noreferrer" className={linkClass}>
-                WhatsApp
+          node: (
+            <>
+              <a href={WHATSAPP_HREF} target="_blank" rel="noopener noreferrer">
+                {MESSAGING_DISPLAY}
               </a>
-              <a href={VIBER_HREF} target="_blank" rel="noopener noreferrer" className={linkClass}>
-                Viber
-              </a>
-            </span>
+              <span className="ct-channel-note">WhatsApp</span>
+            </>
           ),
         },
-      ]}
-    />
+        // No new tab: this link opens the Viber app, and would leave an empty tab behind.
+        {
+          icon: Phone,
+          node: (
+            <>
+              <a href={VIBER_HREF}>{MESSAGING_DISPLAY}</a>
+              <span className="ct-channel-note">Viber</span>
+            </>
+          ),
+        },
+      ],
+    },
+    {
+      icon: Share2,
+      title: 'Social Network',
+      lines: [
+        {
+          icon: Linkedin,
+          node: (
+            <a href={LINKEDIN_HREF} target="_blank" rel="noopener noreferrer">
+              LinkedIn
+            </a>
+          ),
+        },
+      ],
+    },
+  ];
+
+  return (
+    <div className="ct-channels">
+      {channels.map(({ icon: Icon, title, lines }) => (
+        <div key={title} className="ct-channel">
+          <h3>
+            <span className="ct-channel-icon" aria-hidden="true">
+              <Icon strokeWidth={2} />
+            </span>
+            {title}
+          </h3>
+          <ul>
+            {lines.map(({ icon: LineIcon, node }, i) => (
+              <li key={i}>
+                <LineIcon strokeWidth={2} aria-hidden="true" />
+                <span>{node}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))}
+    </div>
   );
 }
 
 export type Office = { country: string; entity: string; address: string; mapQuery: string };
 
-/** The two offices, each with a small lazy-loaded Google Maps embed. */
+/**
+ * The two offices. Each is its details — country and name in the orange sweep, address — set
+ * straight on the section, and beneath them, in a frame of its own, a small lazy-loaded Google
+ * Maps embed.
+ */
 export function OfficeCards({ offices }: { offices: Office[] }) {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mt-5">
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-12">
       {offices.map((o) => (
-        <div key={o.entity} className="rounded-2xl border border-line bg-white overflow-hidden flex flex-col">
-          <div className="p-7">
-            <span className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-accent-dark mb-3">
-              <MapPin className="w-4 h-4 text-accent" strokeWidth={1.5} aria-hidden="true" />
-              {o.country}
-            </span>
-            <h3 className="text-lg font-semibold text-ink leading-snug m-0 mb-2">{o.entity}</h3>
-            <p className="text-[15px] leading-relaxed text-ink-soft m-0">{o.address}</p>
-          </div>
+        <div key={o.entity} className="flex flex-col">
+          <span className="office-country">{o.country}</span>
+          <h3 className="office-name">{o.entity}</h3>
+          <p className="text-[15px] leading-relaxed text-ink m-0 mb-6">{o.address}</p>
           <iframe
             title={`Map showing the ${o.entity} office, ${o.country}`}
             src={`https://www.google.com/maps?q=${encodeURIComponent(o.mapQuery)}&output=embed`}
             loading="lazy"
             referrerPolicy="no-referrer-when-downgrade"
-            className="block w-full h-56 border-0 border-t border-line mt-auto"
+            className="block w-full h-64 mt-auto rounded-2xl border border-line"
           />
         </div>
       ))}
