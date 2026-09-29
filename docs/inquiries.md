@@ -140,5 +140,5 @@ restart `npm run dev`.
 | `inquiry-worker/wrangler.toml` | Worker name and non-secret settings |
 | `lib/inquiry.ts` | Browser helper: file checks, sending, limits |
 | `components/InquiryGuard.tsx` | Honeypot + Turnstile widget for each form |
-| `app/catalog/page.tsx` | Requisition pop-up |
+| `components/catalog/CatalogBrowser.tsx` | Requisition pop-up |
 | `app/contact/page.tsx`, `lib/data/contactData.json` | Contact page forms and their fields |

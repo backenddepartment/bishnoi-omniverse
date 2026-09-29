@@ -1927,8 +1927,11 @@
 .catalog-cat:focus-visible,
 .catalog-cat.is-active { background: var(--accent); color: #fff; font-weight: 600; }
 
-/* Its height, fade and margins are animated from app/catalog/page.tsx (Framer Motion), so it can
-   fold shut smoothly as well as open; overflow stays hidden while it does. */
+/* Categories other than the one being viewed are links to their own pages. */
+a.catalog-cat { text-decoration: none; }
+
+/* Its height, fade and margins are animated from components/catalog/CatalogBrowser.tsx (Framer
+   Motion), so it can fold shut smoothly as well as open; overflow stays hidden while it does. */
 .catalog-subs {
   list-style: none;
   margin: 2px 0 8px;
@@ -1956,6 +1959,151 @@
 .catalog-sub:hover { color: var(--ink); }
 /* A selected subcategory is marked by orange text only, no background. */
 .catalog-sub.is-active { color: var(--accent); font-weight: 600; }
+
+/* ------------------------------------------------------------------ *
+ * Breadcrumb: the trail from Home to the current page, ruled off from
+ * the page beneath it. The separators are drawn here, so the markup
+ * stays a plain list of links.
+ * ------------------------------------------------------------------ */
+
+.breadcrumbs { padding: 18px 0 16px; border-bottom: 1px solid var(--line); }
+.breadcrumbs ol {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 0;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  font-size: 14px;
+  line-height: 1.4;
+  color: var(--muted);
+}
+.breadcrumbs li { display: inline-flex; align-items: center; min-width: 0; }
+.breadcrumbs li + li::before { content: '/'; margin: 0 10px; color: var(--line); }
+.breadcrumbs a { color: var(--ink-soft); text-decoration: none; transition: color 0.2s var(--ease); }
+.breadcrumbs a:hover,
+.breadcrumbs a:focus-visible { color: var(--accent); }
+.breadcrumbs [aria-current='page'] { color: var(--muted); }
+
+/* Above the catalog listing the trail is the first thing in its section, which already spaces it
+   from what is above; it only needs room before the listing below. */
+#catalog-browser .catalog-browser-wrap > .breadcrumbs { padding-top: 0; margin-bottom: 32px; }
+
+/* Category page heading, in place of the Medical Equipment page's hero: the category's name and
+   overview, then the banner photograph. */
+.catalog-page-head { padding-top: 32px; }
+/* A slim promotional strip, inset by the wrap's side padding rather than running edge to edge.
+   It is shallower than the photograph (2170×365), so the photograph is cropped to fill it; the
+   crop sits just above centre, which keeps the row of instruments in frame and drops the paler
+   strip along the photograph's bottom edge. */
+.catalog-page-banner {
+  width: 100%;
+  height: clamp(96px, 8.4vw, 165px);
+  margin-top: 24px;
+  border-radius: 18px;
+  object-fit: cover;
+  object-position: center 42%;
+}
+.catalog-page-head h1 {
+  margin: 0;
+  font-size: clamp(22px, 2.4vw, 32px);
+  color: var(--ink);
+}
+/* No measure set: the overview runs the full width of the page, like the listing beneath it. */
+.catalog-page-head p {
+  margin: 10px 0 0;
+  font-size: 15.5px;
+  line-height: 1.65;
+  color: var(--ink-soft);
+}
+.catalog-page-head + #catalog-browser { padding-top: 32px; }
+
+/* All Categories (/catalog): the header mega-menu's category list laid out as a page, each
+   category heading its own subcategories. */
+.catalog-index { padding: 36px 0 76px; }
+.catalog-index h1 {
+  margin: 0;
+  font-size: clamp(26px, 3.2vw, 40px);
+  color: var(--ink);
+}
+.catalog-index-group {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px 24px;
+  margin: 40px 0 28px;
+}
+.catalog-index-group h2 { margin: 0; font-size: 22px; color: var(--ink); }
+.catalog-index-group h2 a { color: inherit; text-decoration: none; }
+.catalog-index-all {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--accent);
+  text-decoration: none;
+}
+.catalog-index-all svg { width: 15px; height: 15px; }
+.catalog-index-group h2 a:hover,
+.catalog-index-all:hover { color: var(--accent-dark); }
+.catalog-index-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: 40px 44px;
+}
+.catalog-index-cat h3 {
+  margin: 0 0 12px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--line);
+  font-size: 16.5px;
+  line-height: 1.3;
+}
+.catalog-index-cat h3 a {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  color: var(--ink);
+  text-decoration: none;
+  transition: color 0.2s var(--ease);
+}
+.catalog-index-count { flex-shrink: 0; font-size: 12px; font-weight: 500; color: var(--muted); }
+.catalog-index-cat ul { list-style: none; margin: 0; padding: 0; }
+.catalog-index-cat li a {
+  display: block;
+  padding: 5px 0;
+  font-size: 14.5px;
+  line-height: 1.4;
+  color: var(--ink-soft);
+  text-decoration: none;
+  transition: color 0.2s var(--ease);
+}
+.catalog-index-cat li a.catalog-index-more {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 600;
+  color: var(--ink);
+}
+.catalog-index-more svg { width: 15px; height: 15px; }
+.catalog-index-cat h3 a:hover,
+.catalog-index-cat h3 a:focus-visible,
+.catalog-index-cat li a:hover,
+.catalog-index-cat li a:focus-visible { color: var(--accent); }
+
+/* Links here carry the header dropdown's hover (.menu-link): the text turns orange and an
+   orange-to-white rule draws in beneath it. Only where the rule sits is set per link. */
+/* Subcategories: as wide as their text, so the rule underlines the words and not the column. */
+.catalog-index-cat li a.menu-link { display: inline-block; }
+.catalog-index-cat li a.catalog-index-more.menu-link { display: inline-flex; }
+.catalog-index-cat li a.menu-link::after { bottom: 0; }
+/* Category headings: the rule draws over the grey line already ruled beneath the heading (its
+   12px of padding plus the 1px line). */
+.catalog-index-cat h3 a.menu-link::after { bottom: -13px; }
+.catalog-index-group .menu-link::after { bottom: -5px; }
 
 /* Product tiles fall back to their category icon: the sheet ships research links to stock-photo
    pages, not licensed image files, so no photo is published until one is cleared. */
@@ -1990,6 +2138,17 @@
 .product-card-sterility { display: block; margin-top: 6px; font-size: 12.5px; font-weight: 500; color: var(--accent); }
 .product-card .product-card-foot { display: block; }
 .product-card-body .inquiry-btn { width: 100%; justify-content: center; padding: 8px 14px; text-decoration: none; }
+
+/* The catalog grid runs its cards shorter than the product page's "You May Also Like" row: a
+   landscape image tile instead of a square one, and less air between the name and the button,
+   so more of the listing is on screen at once. */
+.product-grid .product-card { padding: 8px; }
+.product-grid .product-card-media { aspect-ratio: 4 / 3; }
+.product-grid .product-card-media.has-photo img { padding: 8px; }
+.product-grid .product-card-empty { gap: 6px; }
+.product-grid .product-card-empty svg { width: 30px; height: 30px; }
+.product-grid .product-card .product-card-body { gap: 10px; padding: 10px 4px 4px; }
+.product-grid .product-card-sterility { margin-top: 4px; }
 
 /* Homepage "What We Supply" cards: a portrait (4:5), full-bleed photo (grey placeholder until one is
    added) that fades to white at the foot, with the whole card linking through. */

@@ -31,7 +31,7 @@
         "title": "Hospital Supplies",
         "desc": "IV and infusion therapy, blood bank and transfusion products, surgical connectivity, airway management, and medical gas — verified, specification-documented consumables for institutional procurement.",
         "ctaText": "Browse hospital supplies",
-        "ctaHref": "/catalog"
+        "ctaHref": "/medical-equipment"
       },
       {
         "id": "specialty-medicines",
@@ -203,42 +203,42 @@
         "id": "gloves",
         "name": "Gloves",
         "desc": "Exam, surgical and specialty gloves for routine patient care through to sterile procedures.",
-        "href": "/catalog?category=gloves",
+        "href": "/medical-equipment/gloves",
         "linkText": "Browse Gloves"
       },
       {
         "id": "ppe",
         "name": "Personal Protective Equipment (PPE)",
         "desc": "Protective clothing, face protection, and head and shoe protection for clinical and infection-control teams.",
-        "href": "/catalog?category=personal-protective-equipment-ppe",
+        "href": "/medical-equipment/personal-protective-equipment-ppe",
         "linkText": "Browse PPE"
       },
       {
         "id": "dialysis",
         "name": "Dialysis Equipment",
         "desc": "Dialysis machines, dialysers, bloodline sets and related consumables for renal care units, sourced on request.",
-        "href": "/catalog?category=dialysis-equipment",
+        "href": "/medical-equipment/dialysis-equipment",
         "linkText": "Browse Dialysis Equipment"
       },
       {
         "id": "patient-monitoring",
         "name": "Patient Monitoring",
         "desc": "Vital signs and advanced monitors for wards, theatres and intensive care units.",
-        "href": "/catalog?category=patient-monitoring",
+        "href": "/medical-equipment/patient-monitoring",
         "linkText": "Browse Patient Monitoring"
       },
       {
         "id": "respiratory-care",
         "name": "Respiratory Care",
         "desc": "Oxygen therapy, respiratory support and airway management for acute and long-term care.",
-        "href": "/catalog?category=respiratory-care",
+        "href": "/medical-equipment/respiratory-care",
         "linkText": "Browse Respiratory Care"
       },
       {
         "id": "surgical-equipment",
         "name": "Surgical Equipment",
         "desc": "Surgical instruments, electrosurgery and operating room equipment for theatre teams.",
-        "href": "/catalog?category=surgical-equipment",
+        "href": "/medical-equipment/surgical-equipment",
         "linkText": "Browse Surgical Equipment"
       }
     ],

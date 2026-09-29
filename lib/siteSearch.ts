@@ -1,4 +1,6 @@
 import catalogData from '@/lib/data/catalogData.json';
+import { getCategoryOverview } from '@/lib/categoryOverviews';
+import { CATALOG_PATH, EQUIPMENT_PATH, categoryPath, productPath } from '@/lib/catalogRoutes';
 
 /**
  * Site search, ported from the Getmeds navbar search (lib/search.php) to run in the browser: this
@@ -53,9 +55,15 @@ const PAGE_INDEX: PageEntry[] = [
   },
   {
     title: 'Medical Equipment',
-    href: '/catalog',
-    summary: 'Browse the full medical equipment catalog by category, from gloves and PPE to dialysis equipment.',
-    keywords: 'catalog catalogue products equipment browse categories list range',
+    href: EQUIPMENT_PATH,
+    summary: 'Browse and search every product in the medical equipment range, from gloves and PPE to dialysis equipment.',
+    keywords: 'products equipment browse list range supplies devices',
+  },
+  {
+    title: 'Catalog: All Categories',
+    href: CATALOG_PATH,
+    summary: 'Every medical equipment category and its subcategories in one place.',
+    keywords: 'catalog catalogue categories subcategories index all browse',
   },
   {
     title: 'About Us',
@@ -215,18 +223,19 @@ function getIndex(): Record<SourceKey, IndexRecord[]> {
         {
           summary: [category, subcategory].filter(Boolean).join(' · '),
           meta: product.sterility,
-          href: `/catalog/${product.id}`,
+          href: productPath(product),
         }
       );
     }),
     categories: catalogData.categories.map((category) => {
       const count = productCount.get(category.id) ?? 0;
       return record(
-        { title: category.name, subtitle: category.description },
+        // The overview names the products people search for, so a category is found by them too.
+        { title: category.name, subtitle: category.description, body: getCategoryOverview(category) },
         {
           summary: category.description,
           meta: `${count} product${count === 1 ? '' : 's'}`,
-          href: `/catalog?category=${category.id}`,
+          href: categoryPath(category.id),
         }
       );
     }),

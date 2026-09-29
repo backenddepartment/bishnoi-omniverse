@@ -40,7 +40,7 @@ export const Footer: React.FC = () => {
           <div>
             <h4>What We Supply</h4>
             <ul>
-              <li><Link href="/catalog">Hospital Supplies</Link></li>
+              <li><Link href="/medical-equipment">Hospital Supplies</Link></li>
               <li><Link href="/contact?type=find-medicine">Specialty &amp; Named-Patient Medicines</Link></li>
               <li><Link href="/trade-partners">Trade &amp; Partners</Link></li>
               <li><Link href="/quality">Quality &amp; Compliance</Link></li>

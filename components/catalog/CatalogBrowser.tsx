@@ -22,10 +22,22 @@ import catalogData from '@/lib/data/catalogData.json';
 import { PRODUCT_GALLERIES } from '@/lib/productImageOverrides';
 import { InquiryGuard, type InquiryGuardHandle } from '@/components/InquiryGuard';
 import { CAPTCHA_ENABLED, DOCUMENT_EXTENSIONS, collectFiles, sendInquiry } from '@/lib/inquiry';
+import { Breadcrumbs } from '@/components/Breadcrumbs';
+import {
+  EQUIPMENT_PATH,
+  categoryPath,
+  equipmentCrumbs,
+  productPath,
+  subcategoryIdFromSlug,
+  subcategorySlug,
+} from '@/lib/catalogRoutes';
+import { getCategoryOverview } from '@/lib/categoryOverviews';
 import heroImg from '@/app/assets/medicinebgpage.png';
+import bannerImg from '@/app/assets/bannermedical.png';
 
 const IMG = {
   hero: heroImg.src,
+  banner: bannerImg.src,
 };
 
 const PRODUCTS_PER_PAGE = 12;
@@ -66,6 +78,9 @@ const SUBCATEGORY_ITEM: Variants = {
 
 type ViewMode = 'grid' | 'table';
 const VIEW_MODE_KEY = 'catalog-view-mode';
+// The quote list has to outlive a move between category pages, each of which mounts a browser of
+// its own. Session storage keeps it for the visit and lets go of it when the tab closes.
+const QUOTE_ITEMS_KEY = 'catalog-quote-items';
 
 type SortKey = 'default' | 'name-asc' | 'name-desc' | 'sterile-first' | 'subcategory-asc';
 const SORT_OPTIONS: { value: SortKey; label: string }[] = [
@@ -117,10 +132,17 @@ interface ProductItem {
   endUser: string;
 }
 
-export default function CatalogPage() {
+/**
+ * The catalog's category rail and product listing. With no `categoryId` it is the Medical
+ * Equipment page, listing every product under the hero; with one it is that category's page.
+ * The category comes from the URL, so the rail's categories are links between pages and only the
+ * subcategory, search and sort are chosen in place.
+ */
+export function CatalogBrowser({ categoryId }: { categoryId?: string }) {
   const { hero, categories, subcategories, products } = catalogData;
 
-  const [selectedCategory, setSelectedCategory] = useState<string>('all');
+  const selectedCategory = categoryId ?? 'all';
+  const category = categories.find((c) => c.id === categoryId);
   const [selectedSubcategory, setSelectedSubcategory] = useState<string>('all');
   // Whether the selected category's subcategory list is expanded; clicking it again folds it.
   const [subsOpen, setSubsOpen] = useState<boolean>(true);
@@ -156,36 +178,39 @@ export default function CatalogPage() {
     return (id: string) => map.get(id) ?? '';
   }, [subcategories]);
 
-  // Pre-select a category (?category=slug), subcategory (?subcategory=slug) or search term
-  // (?search=text) when arriving from the nav's Catalog mega-menu or the navbar search bar.
+  // Pre-select a subcategory (?subcategory=slug, from the All Categories page) or a search term
+  // (?search=text, from the site search results).
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
-    const category = params.get('category');
-    if (category && categories.some((c) => c.id === category)) {
-      setSelectedCategory(category);
-    }
-    const subcategory = params.get('subcategory');
-    const parent = subcategories.find((s) => s.id === subcategory);
-    if (parent) {
-      setSelectedCategory(parent.categoryId);
-      setSelectedSubcategory(parent.id);
+    const slug = params.get('subcategory');
+    const subcategoryId = categoryId && slug ? subcategoryIdFromSlug(categoryId, slug) : null;
+    if (subcategoryId && subcategories.some((s) => s.id === subcategoryId)) {
+      setSelectedSubcategory(subcategoryId);
     }
     const search = params.get('search');
     if (search) {
       setSearchQuery(search);
     }
+  }, [categoryId, subcategories]);
 
-    // Arriving for a specific category or subcategory (the homepage featured cards, the
-    // mega-menu): let the hero show for a beat, then glide down to the filtered listing.
-    // The section's scroll-margin-top (main [id] in globals.css) keeps the sticky header clear of it.
-    const validCategory = category && categories.some((c) => c.id === category);
-    if (validCategory || parent) {
-      const timer = window.setTimeout(() => {
-        document.getElementById('catalog-browser')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }, 450);
-      return () => window.clearTimeout(timer);
-    }
-  }, [categories, subcategories]);
+  // Pick up the quote list started on another catalog page, then keep the stored copy current.
+  const quoteRestored = useRef(false);
+  useEffect(() => {
+    try {
+      const saved: unknown = JSON.parse(window.sessionStorage.getItem(QUOTE_ITEMS_KEY) ?? '[]');
+      if (Array.isArray(saved) && saved.length > 0) {
+        setQuoteItems(products.filter((p: ProductItem) => saved.includes(p.id)));
+      }
+    } catch {}
+    quoteRestored.current = true;
+  }, [products]);
+
+  useEffect(() => {
+    if (!quoteRestored.current) return;
+    try {
+      window.sessionStorage.setItem(QUOTE_ITEMS_KEY, JSON.stringify(quoteItems.map((item) => item.id)));
+    } catch {}
+  }, [quoteItems]);
 
   // Restore the visitor's last Grid/Table choice; storage can be unavailable (private mode).
   useEffect(() => {
@@ -300,19 +325,14 @@ export default function CatalogPage() {
     }
   };
 
-  const selectCategory = (categoryId: string) => {
-    setSelectedCategory(categoryId);
-    setSelectedSubcategory('all');
-    setSubsOpen(true);
-  };
-
-  // A second click on the selected category only folds or unfolds its list; the filter stays.
-  const toggleCategory = (categoryId: string) => {
-    if (categoryId === selectedCategory) {
-      setSubsOpen((open) => !open);
-    } else {
-      selectCategory(categoryId);
-    }
+  // Keeps the address in step with the chosen subcategory, so the filtered view can be shared or
+  // bookmarked. The path is left as it is, which also preserves a GitHub Pages sub-path.
+  const selectSubcategory = (subcategoryId: string) => {
+    setSelectedSubcategory(subcategoryId);
+    const url = new URL(window.location.href);
+    if (subcategoryId === 'all') url.searchParams.delete('subcategory');
+    else url.searchParams.set('subcategory', subcategorySlug(subcategoryId));
+    window.history.replaceState(null, '', url);
   };
 
   const addToQuote = (product: ProductItem) => {
@@ -374,7 +394,7 @@ export default function CatalogPage() {
     // Each item carries a link to its product page, so the team opens exactly what was picked.
     // The prefix keeps the GitHub Pages sub-path (/bishnoi-omniverse) when there is one.
     const path = window.location.pathname;
-    const catalogAt = path.indexOf('/catalog');
+    const catalogAt = path.indexOf(EQUIPMENT_PATH);
     const siteRoot = window.location.origin + (catalogAt > 0 ? path.slice(0, catalogAt) : '');
 
     const result = await sendInquiry(
@@ -393,7 +413,7 @@ export default function CatalogPage() {
         ],
         items: quoteItems.map((item) => ({
           name: `${item.name} (${subcategoryName(item.subcategoryId)})`,
-          url: `${siteRoot}/catalog/${item.id}/`,
+          url: `${siteRoot}${productPath(item)}/`,
         })),
         files: collected.files,
         requireItems: true,
@@ -411,51 +431,70 @@ export default function CatalogPage() {
     }
   };
 
-  const isFiltered = selectedCategory !== 'all' || selectedSubcategory !== 'all';
-  const selectedCategoryName = categories.find((c) => c.id === selectedCategory)?.name;
+  const isFiltered = selectedSubcategory !== 'all';
+  const selectedCategoryName = category?.name;
 
   const inquiryProduct = inquiryMenu ? products.find((p) => p.id === inquiryMenu.productId) : undefined;
   const inquiryAdded = inquiryProduct ? quoteItems.some((item) => item.id === inquiryProduct.id) : false;
 
   return (
     <div className="w-full catalog-page">
-      {/* Hero — stacked, not overlaid: the copy sits on white at the top and the photograph runs
-          full width beneath it, so nothing has to fight the image for legibility. */}
-      <section className="catalog-hero">
-        <div className="wrap catalog-hero-copy">
-          <h1>{hero.headline}</h1>
-          <p className="lede">{hero.subheadline}</p>
-          <div className="hero-actions">
-            <a className="btn btn-primary" href="#catalog-browser">
-              {hero.ctaExplore}
-            </a>
-          </div>
-        </div>
-        <div className="catalog-hero-media">
+      {category ? (
+        // A category page opens with its heading and a short overview, then the banner
+        // photograph, inset from the screen edges.
+        <header className="wrap catalog-browser-wrap catalog-page-head">
+          <h1>{category.name}</h1>
+          <p>{getCategoryOverview(category)}</p>
           <img
-            src={IMG.hero}
-            alt="Medical instruments and supplies laid out on a pale blue surface — a stethoscope, thermometer, blood pressure monitor, gloves, dressings and medication"
+            className="catalog-page-banner"
+            src={IMG.banner}
+            alt="Medical supplies laid out in a row on a pale blue surface: a stethoscope, pulse oximeter, forceps, thermometer, blood pressure monitor, gloves, gauze and face masks"
             loading="eager"
           />
-        </div>
-      </section>
+        </header>
+      ) : (
+        // Hero — stacked, not overlaid: the copy sits on white at the top and the photograph runs
+        // full width beneath it, so nothing has to fight the image for legibility.
+        <section className="catalog-hero">
+          <div className="wrap catalog-hero-copy">
+            <h1>{hero.headline}</h1>
+            <p className="lede">{hero.subheadline}</p>
+            <div className="hero-actions">
+              <a className="btn btn-primary" href="#catalog-browser">
+                {hero.ctaExplore}
+              </a>
+            </div>
+          </div>
+          <div className="catalog-hero-media">
+            <img
+              src={IMG.hero}
+              alt="Medical instruments and supplies laid out on a pale blue surface — a stethoscope, thermometer, blood pressure monitor, gloves, dressings and medication"
+              loading="eager"
+            />
+          </div>
+        </section>
+      )}
 
       {/* Catalog Browser */}
       <section id="catalog-browser" className="section section-tight">
         <div className="wrap catalog-browser-wrap">
+          {/* Directly above the listing, so the trail sits with the products it leads to. */}
+          <Breadcrumbs items={equipmentCrumbs(category)} />
+
           <div className="catalog-shell">
-            {/* Category rail — the selected category expands to its subcategories */}
+            {/* Category rail — each category links to its own page; the one being viewed expands
+                to its subcategories */}
             <aside className="catalog-sidebar">
               <h3 className="catalog-side-title">Category</h3>
               <ul className="catalog-cats">
                 <li>
-                  <button
-                    type="button"
-                    onClick={() => selectCategory('all')}
+                  <Link
+                    href={EQUIPMENT_PATH}
+                    aria-current={selectedCategory === 'all' ? 'page' : undefined}
                     className={`catalog-cat${selectedCategory === 'all' ? ' is-active' : ''}`}
                   >
                     <span>All Clinical Categories</span>
-                  </button>
+                  </Link>
                 </li>
                 <MotionConfig reducedMotion="user">
                 {categories.map((cat) => {
@@ -464,18 +503,27 @@ export default function CatalogPage() {
                   const subs = subcategories.filter((s) => s.categoryId === cat.id);
                   return (
                     <li key={cat.id}>
-                      <button
-                        type="button"
-                        onClick={() => toggleCategory(cat.id)}
-                        aria-expanded={isOpen}
-                        className={`catalog-cat${isSelected ? ' is-active' : ''}`}
-                      >
-                        <span className="catalog-cat-label">{cat.name}</span>
-                        <ChevronRight
-                          className={`catalog-cat-chevron${isOpen ? ' is-open' : ''}`}
-                          aria-hidden="true"
-                        />
-                      </button>
+                      {/* The category being viewed only folds or unfolds its list; the rest are
+                          links to their own pages. */}
+                      {isSelected ? (
+                        <button
+                          type="button"
+                          onClick={() => setSubsOpen((open) => !open)}
+                          aria-expanded={isOpen}
+                          className="catalog-cat is-active"
+                        >
+                          <span className="catalog-cat-label">{cat.name}</span>
+                          <ChevronRight
+                            className={`catalog-cat-chevron${isOpen ? ' is-open' : ''}`}
+                            aria-hidden="true"
+                          />
+                        </button>
+                      ) : (
+                        <Link href={categoryPath(cat.id)} className="catalog-cat">
+                          <span className="catalog-cat-label">{cat.name}</span>
+                          <ChevronRight className="catalog-cat-chevron" aria-hidden="true" />
+                        </Link>
+                      )}
 
                       {/* Kept mounted through its exit, so closing animates instead of vanishing. */}
                       <AnimatePresence>
@@ -491,7 +539,7 @@ export default function CatalogPage() {
                             <motion.li variants={SUBCATEGORY_ITEM}>
                               <button
                                 type="button"
-                                onClick={() => setSelectedSubcategory('all')}
+                                onClick={() => selectSubcategory('all')}
                                 className={`catalog-sub${selectedSubcategory === 'all' ? ' is-active' : ''}`}
                               >
                                 <span>All {cat.name}</span>
@@ -501,7 +549,7 @@ export default function CatalogPage() {
                               <motion.li key={sub.id} variants={SUBCATEGORY_ITEM}>
                                 <button
                                   type="button"
-                                  onClick={() => setSelectedSubcategory(sub.id)}
+                                  onClick={() => selectSubcategory(sub.id)}
                                   className={`catalog-sub${selectedSubcategory === sub.id ? ' is-active' : ''}`}
                                 >
                                   <span>{sub.name}</span>
@@ -542,7 +590,9 @@ export default function CatalogPage() {
                     )}
                     {selectedSubcategory !== 'all'
                       ? subcategoryName(selectedSubcategory)
-                      : selectedCategoryName ?? 'All Clinical Categories'}
+                      : selectedCategoryName
+                        ? `All ${selectedCategoryName}`
+                        : 'All Clinical Categories'}
                   </h2>
                   <span className="inline-block rounded-full bg-accent px-3 py-1.5 text-[13px] font-medium text-white">
                     {filteredProducts.length > PRODUCTS_PER_PAGE
@@ -553,7 +603,7 @@ export default function CatalogPage() {
                 {isFiltered && (
                   <button
                     type="button"
-                    onClick={() => selectCategory('all')}
+                    onClick={() => selectSubcategory('all')}
                     className="inline-flex items-center gap-1.5 text-sm font-medium text-muted hover:text-ink transition-colors"
                   >
                     <RotateCcw className="w-3.5 h-3.5" aria-hidden="true" />
@@ -662,7 +712,7 @@ export default function CatalogPage() {
                       {pagedProducts.map((product: ProductItem) => (
                         <tr key={product.id}>
                           <td className="product-table-name">
-                            <Link href={`/catalog/${product.id}`}>{product.name}</Link>
+                            <Link href={productPath(product)}>{product.name}</Link>
                           </td>
                           <td>{subcategoryName(product.subcategoryId)}</td>
                           <td>{product.sterility || '—'}</td>
@@ -693,7 +743,7 @@ export default function CatalogPage() {
                     return (
                       <div key={product.id} className="product-card">
                         <Link
-                          href={`/catalog/${product.id}`}
+                          href={productPath(product)}
                           aria-label={product.name}
                           className={`product-card-media${photo ? ' has-photo' : ' is-empty'}`}
                         >
@@ -709,7 +759,7 @@ export default function CatalogPage() {
 
                         <div className="product-card-body">
                           <div>
-                            <Link href={`/catalog/${product.id}`}>
+                            <Link href={productPath(product)}>
                               <h3>{product.name}</h3>
                             </Link>
                             {product.sterility && (
@@ -876,7 +926,7 @@ export default function CatalogPage() {
                       {quoteItems.map((item) => (
                         <li key={item.id} className="rfq-pill">
                           <Link
-                            href={`/catalog/${item.id}`}
+                            href={productPath(item)}
                             target="_blank"
                             rel="noopener noreferrer"
                             title={`${item.name} · ${subcategoryName(item.subcategoryId)} (opens in a new tab)`}

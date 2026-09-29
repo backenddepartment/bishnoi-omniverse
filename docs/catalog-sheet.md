@@ -1,8 +1,8 @@
 # Running the medical equipment catalog from a Google Sheet
 
-The catalog — the grid at `/catalog/`, the header's Catalog mega-menu, and every
-`/catalog/<id>/` product detail page — is generated from `lib/data/catalogData.json`, which is
-in turn generated from a Google Sheet.
+The catalog — the All Categories page at `/catalog/`, the product grid at `/medical-equipment/`,
+each category's page, every product detail page and the header's mega-menu — is generated from
+`lib/data/catalogData.json`, which is in turn generated from a Google Sheet.
 
 Source sheet: **Medical Equipment Catalog** — 306 products, 24 categories, 59 subcategories.
 
@@ -93,19 +93,43 @@ The site reflects that. Those values are never presented as claims about a speci
 
 **Do not remove those notes** without a decision about regulatory exposure.
 
-## Product URLs
+## Page URLs
 
-The page URL is derived from the product name: *"Nitrile Examination Gloves"* becomes
-`/catalog/nitrile-examination-gloves/`.
+Each level of the catalog is a page, and each page's URL is its parent's with one more segment,
+so the address reads the same as the breadcrumb shown at the top of the page:
 
-**Renaming a product changes its URL and breaks any existing link to it.**
+| Page | URL | Breadcrumb |
+| --- | --- | --- |
+| All Categories | `/catalog/` | Home / Catalog |
+| Every product | `/medical-equipment/` | Home / Catalog / Medical Equipment |
+| A category | `/medical-equipment/gloves/` | … / Gloves |
+| A product | `/medical-equipment/gloves/nitrile-examination-gloves/` | … / Gloves / Nitrile Examination Gloves |
+
+The category segment is derived from the `Category` column and the product segment from the
+`Product` column: *"Nitrile Examination Gloves"* under *"Gloves"* becomes
+`/medical-equipment/gloves/nitrile-examination-gloves/`.
+
+A subcategory filters its category's page rather than having a page of its own:
+`/medical-equipment/gloves/?subcategory=exam-gloves`.
+
+**Renaming a product or a category changes its URL and breaks any existing link to it.**
+
+All of these paths are built in `lib/catalogRoutes.ts`.
+
+### Old addresses
+
+Products used to live at `/catalog/<product>/`, and categories at `/catalog?category=<category>`.
+Both still work: the site is a static export and cannot issue a server redirect, so each old
+address is kept as a stub that forwards to the new page (`app/catalog/[productId]/page.tsx` and
+`components/catalog/LegacyRedirect.tsx`). The stubs are marked `noindex` and left out of the
+sitemap.
 
 Twelve product names appear under more than one category. The first occurrence keeps the plain
 slug and later ones get the category appended, so both stay reachable and readable:
 
 ```
-/catalog/ventilators/                                    (Respiratory Care)
-/catalog/ventilators-emergency-and-critical-care/         (Emergency & Critical Care)
+/medical-equipment/respiratory-care/ventilators/
+/medical-equipment/emergency-and-critical-care/ventilators-emergency-and-critical-care/
 ```
 
 That means **reordering rows can reassign which of a duplicated pair gets the short URL.** If
@@ -148,8 +172,8 @@ Add a row. Category and Subcategory are matched by name — reusing an existing 
 product under the existing branch, and a new spelling creates a new one. Then wait for the hourly
 rebuild, or trigger one under **Actions → Deploy to GitHub Pages → Run workflow**.
 
-New products appear in the grid, in the sidebar counts, in the mega-menu, in the sitemap, and get
-their own detail page automatically.
+New products appear in the grid, in the All Categories counts, in the sitemap, and get their own
+detail page automatically. A new category also gets its own page and joins the mega-menu.
 
 ## When something goes wrong
 
@@ -192,6 +216,9 @@ JSON — so `npm run build` works offline and on a fork.
   each time. The committed copy is the seed and the offline fallback.
 - The file also holds hand-edited page copy (`hero`, `trustBanner`, `rfqCheckout`) that the sheet
   does not own. The sync replaces only `categories`, `subcategories` and `products`.
+- Each category page's overview text is written by hand in `lib/categoryOverviews.ts`, keyed by
+  category slug. A new or renamed category has no entry there and shows its list of subcategory
+  names until one is added.
 - Category icons are mapped by category slug in `lib/catalogIcons.tsx`. Renaming a category in the
   sheet changes its slug, and it falls back to a generic icon until the new key is added there.
 - GitHub disables scheduled workflows on repositories with no activity for 60 days. If the hourly

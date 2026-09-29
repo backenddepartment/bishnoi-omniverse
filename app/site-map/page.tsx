@@ -12,8 +12,12 @@ const GROUPS: { key: SitemapPage['group']; title: string }[] = [
   { key: 'Main', title: 'Main Pages' },
   { key: 'Company', title: 'Company' },
   { key: 'About Us', title: 'About Us' },
+  { key: 'Categories', title: 'Medical Equipment Categories' },
   { key: 'Products', title: 'Medical Equipment' },
 ];
+
+// The catalog's groups run to dozens or hundreds of links, so they take the full width.
+const isWide = (key: SitemapPage['group']) => key === 'Categories' || key === 'Products';
 
 /** HTML sitemap: the same page list as sitemap.xml, grouped for people rather than crawlers. */
 export default function SiteMapPage() {
@@ -36,12 +40,12 @@ export default function SiteMapPage() {
                 <nav
                   key={group.key}
                   aria-label={group.title}
-                  className={group.key === 'Products' ? 'md:col-span-2 lg:col-span-3' : ''}
+                  className={isWide(group.key) ? 'md:col-span-2 lg:col-span-3' : ''}
                 >
                   <h2 className="font-poppins text-xl font-semibold text-ink mb-4">{group.title}</h2>
                   <ul
                     className={`m-0 p-0 list-none grid gap-x-8 gap-y-2.5 ${
-                      group.key === 'Products' ? 'sm:grid-cols-2 lg:grid-cols-3' : ''
+                      isWide(group.key) ? 'sm:grid-cols-2 lg:grid-cols-3' : ''
                     }`}
                   >
                     {pages.map((page) => (

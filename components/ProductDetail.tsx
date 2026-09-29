@@ -23,6 +23,8 @@ import {
 } from 'lucide-react';
 import type { ProductImage } from '@/lib/catalogImages';
 import { parseSizes } from '@/lib/catalogSizes';
+import { Breadcrumbs } from '@/components/Breadcrumbs';
+import { EQUIPMENT_PATH, categoryPath, equipmentCrumbs, productPath } from '@/lib/catalogRoutes';
 
 export interface PdpProduct {
   id: string;
@@ -115,6 +117,15 @@ export function ProductDetail({ product, categoryName, categoryId, subcategoryNa
 
   return (
     <div className="w-full catalog-page pdp">
+      <div className="wrap">
+        <Breadcrumbs
+          items={equipmentCrumbs(
+            categoryId && categoryName ? { id: categoryId, name: categoryName } : undefined,
+            product.name
+          )}
+        />
+      </div>
+
       {/* ── Gallery + quote box ───────────────────────────────────────── */}
       <section className="pdp-top">
         <div className="wrap pdp-top-grid">
@@ -485,7 +496,7 @@ export function ProductDetail({ product, categoryName, categoryId, subcategoryNa
           <div className="wrap">
             <div className="pdp-related-head">
               <h2>You May Also Like</h2>
-              <Link href={categoryId ? `/catalog?category=${categoryId}` : '/catalog'}>
+              <Link href={categoryId ? categoryPath(categoryId) : EQUIPMENT_PATH}>
                 View All <ArrowRight className="w-4 h-4" />
               </Link>
             </div>
@@ -495,7 +506,7 @@ export function ProductDetail({ product, categoryName, categoryId, subcategoryNa
               {related.map((item) => (
                 <article key={item.id} className="product-card">
                   <Link
-                    href={`/catalog/${item.id}`}
+                    href={productPath(item)}
                     aria-label={item.name}
                     className={`product-card-media${item.image ? ' has-photo' : ' is-empty'}`}
                   >
@@ -510,7 +521,7 @@ export function ProductDetail({ product, categoryName, categoryId, subcategoryNa
                   </Link>
                   <div className="product-card-body">
                     <div>
-                      <Link href={`/catalog/${item.id}`}>
+                      <Link href={productPath(item)}>
                         <h3>{item.name}</h3>
                       </Link>
                       {item.sterility && (

@@ -1,6 +1,8 @@
 import type { MetadataRoute } from 'next';
 import catalogData from '@/lib/data/catalogData.json';
 import { PRODUCT_GALLERIES } from '@/lib/productImageOverrides';
+import { CATALOG_PATH, EQUIPMENT_PATH, categoryPath, productPath } from '@/lib/catalogRoutes';
+import { SITE_URL, absoluteUrl } from '@/lib/siteUrl';
 
 import homeHeroImg from '@/app/assets/background.png';
 import homeSlideTwoImg from '@/app/assets/slidertwo.png';
@@ -16,6 +18,7 @@ import patientMonitoringImg from '@/app/assets/patientmonitoring.png';
 import respiratoryCareImg from '@/app/assets/respiratorycare.png';
 import surgicalImg from '@/app/assets/surgical.png';
 import catalogHeroImg from '@/app/assets/medicinebgpage.png';
+import categoryBannerImg from '@/app/assets/bannermedical.png';
 import articlesHeroImg from '@/app/assets/article.png';
 import qualityHeroImg from '@/app/assets/quality.png';
 import suppliesImg from '@/app/assets/supplies.jpg';
@@ -53,22 +56,16 @@ import contactHeroImg from '@/app/assets/contact.png';
  *
  * Priority tiers:
  *   1.0  main pages — the top-level navigation (Home, Medical Equipment, Articles, LLP)
- *   0.8  secondary pages — supporting sections and every product page
+ *   0.8  secondary pages — supporting sections, and every category and product page
  *   0.5  static pages — About Us and its sub-pages, Contact Us and FAQ
  *
  * Left out on purpose: /search (results page, marked noindex) and /coming-soon/* (placeholders,
  * also noindex). Both are disallowed in robots.txt as well.
  */
 
-/** Public site address, without a trailing slash. Set NEXT_PUBLIC_SITE_URL for the live domain. */
-export const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL || 'https://bishnoi.ai').replace(/\/+$/, '');
+export { SITE_URL, absoluteUrl };
 
 const BASE_PATH = (process.env.NEXT_PUBLIC_BASE_PATH || '').replace(/\/+$/, '');
-
-/** Absolute URL for a site path, e.g. `/about/` → `https://bishnoi.ai/about/`. */
-export function absoluteUrl(path: string) {
-  return `${SITE_URL}${path}`;
-}
 
 /**
  * Absolute URL for a static image import's `.src`. On a sub-path build (GitHub Pages) `.src`
@@ -86,7 +83,7 @@ export type SitemapPage = {
   /** Path with the trailing slash the static export serves (next.config `trailingSlash`). */
   path: string;
   title: string;
-  group: 'Main' | 'Company' | 'About Us' | 'Products';
+  group: 'Main' | 'Company' | 'About Us' | 'Categories' | 'Products';
   priority: 1.0 | 0.8 | 0.5;
   changeFrequency: Frequency;
   /** Absolute image URLs shown on the page, for the image sitemap. */
@@ -113,7 +110,8 @@ const STATIC_PAGES: SitemapPage[] = [
       patientMonitoringImg, respiratoryCareImg, surgicalImg,
     ),
   },
-  { path: '/catalog/', title: 'Medical Equipment Catalog', group: 'Main', ...MAIN, changeFrequency: 'daily', images: imgs(catalogHeroImg) },
+  { path: `${EQUIPMENT_PATH}/`, title: 'Medical Equipment', group: 'Main', ...MAIN, changeFrequency: 'daily', images: imgs(catalogHeroImg) },
+  { path: `${CATALOG_PATH}/`, title: 'Catalog: All Categories', group: 'Main', ...MAIN, changeFrequency: 'daily', images: imgs(categoryBannerImg) },
   { path: '/articles/', title: 'Articles', group: 'Main', ...MAIN, images: imgs(articlesHeroImg) },
   { path: '/llp/', title: 'Bishnoi Omniverse LLP', group: 'Main', ...MAIN, images: [] },
 
@@ -139,14 +137,23 @@ const STATIC_PAGES: SitemapPage[] = [
   { path: '/faq/', title: 'Frequently Asked Questions', group: 'About Us', ...STATIC, images: [] },
 ];
 
-// Product pages come from the catalog data (synced from the Google Sheet), so a new product is
-// listed without a code change.
+// Category and product pages come from the catalog data (synced from the Google Sheet), so a new
+// category or product is listed without a code change.
+const CATEGORY_PAGES: SitemapPage[] = catalogData.categories.map((category) => ({
+  path: `${categoryPath(category.id)}/`,
+  title: category.name,
+  group: 'Categories',
+  ...SECONDARY,
+  changeFrequency: 'weekly',
+  images: imgs(categoryBannerImg),
+}));
+
 const PRODUCT_PAGES: SitemapPage[] = catalogData.products.map((product) => ({
-  path: `/catalog/${product.id}/`,
+  path: `${productPath(product)}/`,
   title: product.name,
   group: 'Products',
   ...SECONDARY,
   images: (PRODUCT_GALLERIES[product.id] ?? []).map((img) => imageUrl(img.src)),
 }));
 
-export const SITEMAP_PAGES: SitemapPage[] = [...STATIC_PAGES, ...PRODUCT_PAGES];
+export const SITEMAP_PAGES: SitemapPage[] = [...STATIC_PAGES, ...CATEGORY_PAGES, ...PRODUCT_PAGES];

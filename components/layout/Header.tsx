@@ -12,6 +12,7 @@ import countriesMap from '@/app/assets/countries.png';
 import catalogData from '@/lib/data/catalogData.json';
 import { NavSearch } from '@/components/NavSearch';
 import { PH_PHONE_DISPLAY, PH_TEL_HREF } from '@/lib/contactChannels';
+import { CATALOG_PATH, EQUIPMENT_PATH, categoryPath } from '@/lib/catalogRoutes';
 
 const ABOUT_LINKS: { label: string; href: string }[] = [
   { label: 'Our Story', href: '/about' },
@@ -109,7 +110,8 @@ export const Header: React.FC = () => {
   // Mobile menu keeps plain links (no nested mega-menus on small screens).
   const mobileNavLinks = [
     { href: '/', label: 'Home' },
-    { href: '/catalog', label: 'Medical Equipment' },
+    { href: EQUIPMENT_PATH, label: 'Medical Equipment' },
+    { href: CATALOG_PATH, label: 'All Categories' },
     { href: '/trade-partners', label: 'Trade & Partners' },
     { href: '/quality', label: 'Quality & Compliance' },
     { href: '/global-network', label: 'Global Network' },
@@ -125,6 +127,9 @@ export const Header: React.FC = () => {
     // Match the section, not the prefix, so a sibling route never lights up its neighbour.
     return pathname === path || pathname.startsWith(`${path}/`);
   };
+
+  // The catalog spans two sections: the All Categories page and everything under Medical Equipment.
+  const inCatalog = isActive(CATALOG_PATH) || isActive(EQUIPMENT_PATH);
 
   const isCorp = pathname.startsWith('/corp');
 
@@ -157,12 +162,13 @@ export const Header: React.FC = () => {
           >
             <div className="relative flex items-stretch">
               {/* A link, like About Us: hovering opens the mega-menu, clicking goes to the
-                  catalog itself. The panel closes on click so it never lingers over the new page. */}
+                  Medical Equipment page. The panel closes on click so it never lingers over the
+                  new page. */}
               <Link
-                href="/catalog"
+                href={EQUIPMENT_PATH}
                 onClick={closeHoverMenus}
                 className={`flex items-center h-full gap-1 no-underline text-sm font-medium transition-colors ${
-                  isActive('/catalog') ? 'text-accent' : 'text-ink-soft hover:text-ink'
+                  inCatalog ? 'text-accent' : 'text-ink-soft hover:text-ink'
                 }`}
               >
                 Medical Equipment
@@ -194,9 +200,9 @@ export const Header: React.FC = () => {
                         </h3>
                         <p className="text-sm text-ink-soft leading-relaxed mb-5">
                           Browse our hospital-grade catalog by category, or open the full catalog to
-                          search across every product.
+                          see every category and what it covers.
                         </p>
-                        <Link href="/catalog" onClick={closeHoverMenus} className="btn btn-primary">
+                        <Link href={CATALOG_PATH} onClick={closeHoverMenus} className="btn btn-primary">
                           View Full Catalog
                         </Link>
                       </motion.div>
@@ -212,7 +218,7 @@ export const Header: React.FC = () => {
                             transition={{ duration: 0.35, delay: 0.06 + Math.min(idx, 10) * 0.025 }}
                           >
                             <Link
-                              href={`/catalog?category=${cat.id}`}
+                              href={categoryPath(cat.id)}
                               onClick={closeHoverMenus}
                               className="menu-link inline-block py-2.5 text-[15px] font-medium text-ink hover:text-accent no-underline transition-colors leading-snug"
                             >

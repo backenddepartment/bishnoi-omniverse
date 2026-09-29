@@ -4,7 +4,7 @@
  *
  * The site is a static export, so there is no server to query the sheet at request time. Instead
  * the sheet is read once per build: edit the sheet, rebuild, and the catalog page, the header's
- * mega-menu and every /catalog/<id>/ detail page follow.
+ * mega-menu, each category page and every product detail page follow.
  *
  * Configure the sheet with one environment variable:
  *   CATALOG_SHEET_CSV   CSV URL of the "Medical Equipment Catalog" tab

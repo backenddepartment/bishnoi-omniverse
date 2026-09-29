@@ -82,7 +82,7 @@ export function SearchResultsView() {
                   {group.key === 'products' && (
                     <>
                       {' '}
-                      <Link href={`/catalog?search=${encodeURIComponent(query)}`}>
+                      <Link href={`/medical-equipment?search=${encodeURIComponent(query)}`}>
                         See all matching products in the catalog →
                       </Link>
                     </>
