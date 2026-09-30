@@ -27,11 +27,15 @@ export function SiteChrome({ children }: { children: React.ReactNode }) {
 
   return (
     <>
+      {/* First thing a keyboard reaches: jumps past the navigation. Hidden until focused. */}
+      <a href="#main" className="skip-link">
+        Skip to content
+      </a>
       <Header />
       {/* Content that slides in from the right (<FadeIn from="right">) waits 64px past the edge of
           the page until it scrolls into view. Clipping sideways here stops that from widening the
           page; `clip` rather than `hidden`, so sticky elements inside keep working. */}
-      <main className="flex-grow overflow-x-clip">{children}</main>
+      <main id="main" tabIndex={-1} className="flex-grow overflow-x-clip outline-none">{children}</main>
       <Footer />
       <MessagingButtons />
     </>

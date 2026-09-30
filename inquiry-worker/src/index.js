@@ -17,6 +17,9 @@
  *   CONTACT_RECIPIENT_EMAIL          inbox for contact-page inquiries
  *   PRODUCT_INQUIRY_RECIPIENT_EMAIL  optional inbox for medical equipment inquiries; blank = contact
  *   ALLOWED_ORIGINS                  comma-separated origins allowed to submit ("*" = any)
+ *   SHEETS_WEBHOOK_URL               optional; the Google Apps Script web app that logs each
+ *                                    inquiry to a Google Sheet (google-sheets/Code.gs). Blank = off
+ *   SHEETS_WEBHOOK_SECRET            secret shared with that script, so only this Worker can write
  */
 
 // Attachment limits, the same numbers as the PHP original. Brevo refuses any single attachment of
@@ -364,6 +367,63 @@ async function sendMail(msg, env) {
 }
 
 /* ------------------------------------------------------------------ *
+ * Google Sheets log
+ * ------------------------------------------------------------------ */
+
+/**
+ * Appends the inquiry to a Google Sheet through the Apps Script web app in google-sheets/Code.gs,
+ * one tab per inquiry type. A record of every inquiry, not a way of delivering it: it runs after the
+ * visitor has had their reply, and a failure here is only logged — the email is what reaches the
+ * team, and it has already been sent or reported by then.
+ *
+ * The record is ordered label/value pairs; the script turns a label it has not seen before into a
+ * new column. "Received" is left blank for the script to stamp in the sheet's own time zone.
+ */
+async function logToSheet(entry, env) {
+  const url = String(env.SHEETS_WEBHOOK_URL ?? '').trim();
+  const secret = String(env.SHEETS_WEBHOOK_SECRET ?? '').trim();
+  if (url === '') return;
+  if (secret === '') {
+    log('SHEETS_WEBHOOK_URL is set but SHEETS_WEBHOOK_SECRET is not — inquiry not logged to the sheet.');
+    return;
+  }
+
+  const record = [
+    ['Received', ''],
+    ['Inquiry Type', entry.inquiryType],
+    ['Name', entry.name],
+    ['Email', entry.email],
+    ['Phone', entry.phone],
+    ...entry.details,
+    ['Items Requested', entry.items.map((item) => item.name).join('\n')],
+    ['Item Links', entry.items.map((item) => item.url).filter(Boolean).join('\n')],
+    ['Message', entry.message],
+    // Only the names: the files themselves travel with the email.
+    ['Attachments', entry.files.map((file) => file.name).join('\n')],
+    ['Email Delivered', entry.emailed ? 'Yes' : 'No — check the inbox or Brevo logs'],
+  ];
+
+  try {
+    // Apps Script answers a POST with a redirect to its result; fetch follows it.
+    const res = await fetchWithTimeout(
+      url,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ secret, tab: entry.inquiryType, record }),
+      },
+      20000
+    );
+    const body = await res.json().catch(() => ({}));
+    if (!res.ok || !body.ok) {
+      log(`Sheet log failed: HTTP ${res.status} ${body.error ?? ''}`.trim());
+    }
+  } catch (err) {
+    log(`Sheet log failed: ${err}`);
+  }
+}
+
+/* ------------------------------------------------------------------ *
  * The pipeline
  * ------------------------------------------------------------------ */
 
@@ -396,7 +456,7 @@ function normaliseItems(raw) {
     .filter((item) => item.name !== '');
 }
 
-async function processInquiry(payload, env, ip) {
+async function processInquiry(payload, env, ip, ctx) {
   if (!payload || typeof payload !== 'object' || Array.isArray(payload)) {
     return result(400, 'Invalid request body.');
   }
@@ -481,6 +541,12 @@ async function processInquiry(payload, env, ip) {
     env
   );
 
+  // Logged whether or not the email went out: an inquiry the inbox never received is the one
+  // most worth having on record. waitUntil lets it finish after the visitor has their answer.
+  const sheetEntry = { inquiryType, name, email: mail, phone, details, items, message, files: files.listed, emailed: sent.ok };
+  if (ctx) ctx.waitUntil(logToSheet(sheetEntry, env));
+  else await logToSheet(sheetEntry, env);
+
   if (!sent.ok) {
     // Names which providers were tried, never why in detail.
     return result(500, 'We could not send your message. Please try again later.', {
@@ -506,7 +572,7 @@ function isAllowedOrigin(origin, env) {
 }
 
 export default {
-  async fetch(request, env) {
+  async fetch(request, env, ctx) {
     const origin = request.headers.get('Origin') || '';
     const allowed = isAllowedOrigin(origin, env);
 
@@ -560,7 +626,7 @@ export default {
     }
 
     try {
-      const out = await processInquiry(payload, env, request.headers.get('CF-Connecting-IP') || '');
+      const out = await processInquiry(payload, env, request.headers.get('CF-Connecting-IP') || '', ctx);
       return reply(out.status, out.body);
     } catch (err) {
       log(`Unhandled error: ${err && err.stack ? err.stack : err}`);

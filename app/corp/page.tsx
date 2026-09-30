@@ -1,4 +1,5 @@
 import React from 'react';
+import type { Metadata } from 'next';
 import Link from 'next/link';
 import { MapPin, Mail } from 'lucide-react';
 import contactData from '@/lib/data/contactData.json';
@@ -6,6 +7,12 @@ import sectionDetail from '@/lib/data/sectionDetailData.json';
 
 const IMG = {
   hero: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/Manila_Skyline_March_2020.jpg/1920px-Manila_Skyline_March_2020.jpg',
+};
+
+export const metadata: Metadata = {
+  title: 'Bishnoi Omniverse Corp | Philippines Logistics Hub',
+  description:
+    'Bishnoi Omniverse Corp, the group’s Asia-Pacific logistics hub in the Philippines, linking Southeast Asia with the global network.',
 };
 
 export default function CorpPage() {

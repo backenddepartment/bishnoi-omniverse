@@ -23,6 +23,11 @@ inquiry-worker/     Cloudflare Worker (this site has no server — GitHub Pages 
 Brevo API           api.brevo.com/v3/smtp/email
   ▼
 Recipient inbox     Reply-To = the visitor, so "Reply" answers them
+
+  … and, after the visitor has their answer (optional, see "Google Sheets log"):
+Apps Script         google-sheets/Code.gs, bound to the log spreadsheet
+  ▼
+Google Sheet        one row per inquiry, one tab per form
 ```
 
 | Form | formType | Recipient |
@@ -120,6 +125,60 @@ Then **Actions → Deploy to GitHub Pages → Run workflow**. The build bakes bo
 For local development, copy `.env.example` to `.env.local`, fill in the same two values and
 restart `npm run dev`.
 
+### 5. Google Sheets log (optional)
+
+Every inquiry can also be recorded as a row in a Google Sheet, alongside the email. It is a
+record, not a second delivery: the email is still what reaches the team.
+
+- **One tab per form**, named after the inquiry type: *Hospital Requisition* (the catalog pop-up),
+  *Named-Patient Access*, *Institutional Supply*, *Patient Support* and *Trade Partnership* (the
+  Contact page). A tab is created the first time its form is used.
+- **Columns come from the form.** Every tab starts with Received, Inquiry Type, Name, Email and
+  Phone, then that form's own fields, then Items Requested, Item Links, Message, Attachments and
+  Email Delivered. A field the tab has not seen before is added as a new column at the end, so
+  adding a field to a form on the website needs no change to the sheet. Columns can be reordered
+  or hidden by hand; they are matched by their header text.
+- **Attachments are listed by name only.** The files themselves travel with the email.
+- **Email Delivered** says *No* when Brevo could not send the email. That inquiry is still in the
+  sheet, so nothing is lost, but the visitor was told it failed and may have tried again.
+- **It never slows or breaks a form.** The row is written after the visitor has their reply, and a
+  Sheets problem is only logged (`npm run tail` shows `Sheet log failed: …`).
+- **Spam is not logged.** Honeypot and failed-Turnstile submissions stop before this step.
+
+Setup:
+
+1. **Create the spreadsheet** in the Google account that should own the records, e.g. *Bishnoi
+   Omniverse Inquiries*. Set its time zone under **File → Settings** (e.g. GMT+08:00 Manila); the
+   Received column uses it.
+2. **Extensions → Apps Script.** Delete the sample code, paste in the whole of
+   `inquiry-worker/google-sheets/Code.gs`, and save.
+3. **Project Settings (gear icon) → Script properties → Add script property.** Name
+   `WEBHOOK_SECRET`, value a long random string — for example the output of
+   `node -e "console.log(require('crypto').randomBytes(24).toString('hex'))"`. Keep it; the Worker
+   needs the same value.
+4. **Deploy → New deployment →** type **Web app**. *Execute as:* **Me**. *Who has access:*
+   **Anyone**. Deploy, approve the permissions Google asks for, and copy the **Web app URL**
+   (`https://script.google.com/macros/s/…/exec`).
+   - "Anyone" is needed because the Worker is not signed in to Google. The secret is what keeps
+     everyone else out: a request without it is refused and writes nothing.
+5. **Give the Worker the two values** and redeploy it:
+
+   ```bash
+   cd inquiry-worker
+   npx wrangler secret put SHEETS_WEBHOOK_URL      # the Web app URL
+   npx wrangler secret put SHEETS_WEBHOOK_SECRET   # the same value as WEBHOOK_SECRET
+   npm run deploy
+   ```
+
+6. **Test:** submit one form and check its tab appears with the row.
+
+**Changing the script later:** edit it, then **Deploy → Manage deployments → edit (pencil) →
+Version: New version → Deploy**. This keeps the same URL. "New deployment" would give a new URL,
+which the Worker would then need.
+
+To turn the log off, delete the `SHEETS_WEBHOOK_URL` secret (`npx wrangler secret delete
+SHEETS_WEBHOOK_URL`) and redeploy. The forms carry on emailing as before.
+
 ## Test before going live
 
 1. **First test without Turnstile**: leave `TURNSTILE_SECRET_KEY` unset on the Worker and
@@ -131,12 +190,15 @@ restart `npm run dev`.
 4. If something fails, run `npm run tail` in `inquiry-worker/` while submitting. Lines start with
    `[bishnoi-inquiry]` and name the problem, e.g. `Provider brevo failed: HTTP 401 …` or
    `No valid recipient configured for form type product`.
+5. If the Google Sheets log is set up, each test inquiry should appear in its form's tab within a
+   few seconds. `Sheet log failed: … unauthorised` means the two secrets do not match.
 
 ## Where the code is
 
 | File | Role |
 | --- | --- |
-| `inquiry-worker/src/index.js` | The endpoint: honeypot, Turnstile, validation, email, Brevo |
+| `inquiry-worker/src/index.js` | The endpoint: honeypot, Turnstile, validation, email, Brevo, sheet log |
+| `inquiry-worker/google-sheets/Code.gs` | Apps Script for the Google Sheets log (pasted into the sheet) |
 | `inquiry-worker/wrangler.toml` | Worker name and non-secret settings |
 | `lib/inquiry.ts` | Browser helper: file checks, sending, limits |
 | `components/InquiryGuard.tsx` | Honeypot + Turnstile widget for each form |

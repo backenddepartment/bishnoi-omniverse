@@ -83,6 +83,26 @@ export const Header: React.FC = () => {
 
   useEffect(() => clearCloseTimer, []);
 
+  // A touch screen has no hover, so a menu trigger that is also a link would go straight to its
+  // page and its dropdown could never be reached. There, the first tap opens the menu instead and
+  // a second tap follows the link. Returns true when the tap was taken for opening.
+  const openOnTap = (e: React.MouseEvent, menu: 'catalog', isOpen: boolean) => {
+    if (isOpen || window.matchMedia('(hover: hover)').matches) return false;
+    e.preventDefault();
+    openHoverMenu(menu);
+    return true;
+  };
+
+  // With no pointer to leave the menu, a tap anywhere outside the header closes it.
+  useEffect(() => {
+    if (!aboutOpen && !catalogOpen && !networkOpen) return;
+    const onPointerDown = (e: PointerEvent) => {
+      if (!headerRef.current?.contains(e.target as Node)) closeHoverMenus();
+    };
+    document.addEventListener('pointerdown', onPointerDown);
+    return () => document.removeEventListener('pointerdown', onPointerDown);
+  }, [aboutOpen, catalogOpen, networkOpen]);
+
   // The header is sticky, so anything an in-page anchor scrolls to would land underneath it.
   // Publishing the measured height lets the targets' `scroll-margin-top` (see globals.css) hold
   // every jump exactly clear of the navbar — measured rather than hard-coded, since the bar's
@@ -131,7 +151,7 @@ export const Header: React.FC = () => {
   // The catalog spans two sections: the All Categories page and everything under Medical Equipment.
   const inCatalog = isActive(CATALOG_PATH) || isActive(EQUIPMENT_PATH);
 
-  const isCorp = pathname.startsWith('/corp');
+  const inCompany = ABOUT_LINKS.some((item) => item.href !== '/about' && isActive(item.href));
 
   return (
     <header ref={headerRef} className="site-header">
@@ -142,7 +162,7 @@ export const Header: React.FC = () => {
           </Link>
         </div>
 
-        <nav className="nav-links hidden md:flex items-stretch gap-9">
+        <nav className="nav-links hidden lg:flex items-stretch gap-9">
           <Link
             href="/"
             className={`flex items-center h-full no-underline text-sm font-medium transition-colors ${
@@ -166,7 +186,8 @@ export const Header: React.FC = () => {
                   new page. */}
               <Link
                 href={EQUIPMENT_PATH}
-                onClick={closeHoverMenus}
+                onClick={(e) => (openOnTap(e, 'catalog', catalogOpen) ? undefined : closeHoverMenus())}
+                aria-expanded={catalogOpen}
                 className={`flex items-center h-full gap-1 no-underline text-sm font-medium transition-colors ${
                   inCatalog ? 'text-accent' : 'text-ink-soft hover:text-ink'
                 }`}
@@ -234,25 +255,51 @@ export const Header: React.FC = () => {
             </AnimatePresence>
           </div>
 
-          {/* About Us — hover mega-menu, same full-width treatment as Catalog. The trigger
-              stretches to the header's full height and an invisible bridge covers the header's
-              own bottom padding so the pointer never leaves the tracked hover area while
-              descending into the panel. */}
+          {/* About Us — a plain link to the story page. The pages around it (Leadership, Vision &
+              Values and the rest) sit in the Company menu at the end of the bar. */}
+          <Link
+            href="/about"
+            onMouseEnter={closeHoverMenus}
+            className={`flex items-center h-full no-underline text-sm font-medium transition-colors ${
+              isActive('/about') && !inCompany ? 'text-accent' : 'text-ink-soft hover:text-ink'
+            }`}
+          >
+            About Us
+          </Link>
+
+          {navLinks.slice(1).map((link) => (
+            <Link
+              key={link.href}
+              href={link.href}
+              className={`flex items-center h-full no-underline text-sm font-medium transition-colors ${
+                isActive(link.href) ? 'text-accent' : 'text-ink-soft hover:text-ink'
+              }`}
+            >
+              {link.label}
+            </Link>
+          ))}
+
+          {/* Company — hover mega-menu, same full-width treatment as Medical Equipment. It has no
+              page of its own, so the trigger is a button: hovering, clicking or tapping it opens
+              the panel. An invisible bridge covers the header's bottom padding so the pointer
+              never leaves the tracked hover area while descending into the panel. */}
           <div
             className="flex items-stretch"
             onMouseEnter={() => openHoverMenu('about')}
             onMouseLeave={scheduleHoverClose}
           >
             <div className="relative flex items-stretch">
-              <Link
-                href="/about"
-                className={`flex items-center h-full gap-1 no-underline text-sm font-medium transition-colors ${
-                  isActive('/about') ? 'text-accent' : 'text-ink-soft hover:text-ink'
+              <button
+                type="button"
+                onClick={() => (aboutOpen ? closeHoverMenus() : openHoverMenu('about'))}
+                aria-expanded={aboutOpen}
+                className={`flex items-center h-full gap-1 text-sm font-medium transition-colors ${
+                  inCompany ? 'text-accent' : 'text-ink-soft hover:text-ink'
                 }`}
               >
-                About Us
+                Company
                 <ChevronDown className={`w-3.5 h-3.5 transition-transform ${aboutOpen ? 'rotate-180' : ''}`} />
-              </Link>
+              </button>
               <div className="absolute left-0 right-0 top-full h-4" />
             </div>
 
@@ -268,7 +315,7 @@ export const Header: React.FC = () => {
               <div className="bg-surface border-b border-line rounded-b-2xl shadow-xl overflow-hidden">
                 <div className="grid grid-cols-[260px_1fr] gap-14 items-start p-10">
                   <div>
-                    <h4 className="font-poppins font-semibold text-xl text-accent mb-3 leading-snug">About Us</h4>
+                    <h4 className="font-poppins font-semibold text-xl text-accent mb-3 leading-snug">Company</h4>
                     <p className="text-sm text-ink-soft leading-relaxed m-0">
                       Our story, the people behind it, and the standards we hold every shipment to.
                     </p>
@@ -293,30 +340,6 @@ export const Header: React.FC = () => {
               )}
             </AnimatePresence>
           </div>
-
-          {navLinks.slice(1).map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              className={`flex items-center h-full no-underline text-sm font-medium transition-colors ${
-                isActive(link.href) ? 'text-accent' : 'text-ink-soft hover:text-ink'
-              }`}
-            >
-              {link.label}
-            </Link>
-          ))}
-
-          {/* LLP / CORP — a plain link now; the two entities each have their own page and the
-              dropdown only ever held those two. */}
-          <Link
-            href={isCorp ? '/corp' : '/llp'}
-            onMouseEnter={closeHoverMenus}
-            className={`flex items-center h-full no-underline text-sm font-medium transition-colors ${
-              isActive(isCorp ? '/corp' : '/llp') ? 'text-accent' : 'text-ink-soft hover:text-ink'
-            }`}
-          >
-            {isCorp ? 'CORP' : 'LLP'}
-          </Link>
         </nav>
 
         <div className="flex items-stretch gap-6">
@@ -426,7 +449,7 @@ export const Header: React.FC = () => {
 
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="md:hidden p-2 text-ink border border-line rounded"
+            className="lg:hidden p-2 text-ink border border-line rounded"
             aria-label="Toggle Navigation"
           >
             {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
@@ -435,7 +458,9 @@ export const Header: React.FC = () => {
       </div>
 
       {mobileMenuOpen && (
-        <div className="md:hidden bg-paper border-t border-line px-8 py-5 space-y-4">
+        // Never taller than the screen below the bar: the list scrolls on its own, so every link can be
+        // reached on a short phone without first scrolling the page underneath to its end.
+        <div className="lg:hidden max-h-[calc(100dvh-68px)] overflow-y-auto overscroll-contain bg-paper border-t border-line px-8 py-5 space-y-4">
           {mobileNavLinks.map((link) => (
             <Link
               key={link.href}

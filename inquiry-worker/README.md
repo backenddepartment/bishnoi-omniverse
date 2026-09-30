@@ -1,6 +1,7 @@
 # bishnoi-inquiry (Cloudflare Worker)
 
-Receives the website's inquiry forms and emails them through Brevo. The website is a static
+Receives the website's inquiry forms and emails them through Brevo, and optionally records each one
+in a Google Sheet (`google-sheets/Code.gs`). The website is a static
 export on GitHub Pages, so this Worker plays the part `api/inquiry.php` plays on the Getmeds sites.
 
 Full setup, testing and troubleshooting: [`../docs/inquiries.md`](../docs/inquiries.md).

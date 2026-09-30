@@ -4,10 +4,14 @@ import './globals.css';
 import { SiteChrome } from '@/components/layout/SiteChrome';
 import { RouteProgress } from '@/components/layout/RouteProgress';
 
+// `display: 'swap'` is next/font's default, stated here on purpose: changing these options makes
+// the dev server download the fonts afresh instead of reusing a fallback it cached after a failed
+// download from Google Fonts.
 const fraunces = Fraunces({
   subsets: ['latin'],
   weight: ['500', '600', '700'],
   variable: '--font-fraunces',
+  display: 'swap',
 });
 
 const inter = Inter({
@@ -20,6 +24,7 @@ const poppins = Poppins({
   subsets: ['latin'],
   weight: ['500', '600', '700'],
   variable: '--font-poppins',
+  display: 'swap',
 });
 
 export const metadata: Metadata = {

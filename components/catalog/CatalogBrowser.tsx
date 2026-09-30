@@ -146,6 +146,9 @@ export function CatalogBrowser({ categoryId }: { categoryId?: string }) {
   const [selectedSubcategory, setSelectedSubcategory] = useState<string>('all');
   // Whether the selected category's subcategory list is expanded; clicking it again folds it.
   const [subsOpen, setSubsOpen] = useState<boolean>(true);
+  // On a phone the category rail sits above the products, so it starts folded behind one button
+  // (see .catalog-rail-toggle); from 900px it is a sidebar and always shown.
+  const [railOpen, setRailOpen] = useState<boolean>(false);
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [currentPage, setCurrentPage] = useState<number>(1);
   const resultsRef = useRef<HTMLDivElement>(null);
@@ -221,10 +224,16 @@ export function CatalogBrowser({ categoryId }: { categoryId?: string }) {
   }, []);
 
   // The inquiry menu is fixed-positioned (the table's sideways scroll would clip it), so rather
-  // than follow its button it closes on any outside click, scroll, resize or Escape.
+  // than follow its button it closes on any outside click, resize, Escape, or a real scroll. A page
+  // scroll of a few pixels, as a thumb resting on a phone screen causes, leaves it open.
   useEffect(() => {
     if (!inquiryMenu) return;
     const close = () => setInquiryMenu(null);
+    const startY = window.scrollY;
+    const onScroll = (e: Event) => {
+      const pageScrolled = e.target === document || e.target === document.documentElement;
+      if (!pageScrolled || Math.abs(window.scrollY - startY) > 24) close();
+    };
     const onMouseDown = (e: MouseEvent) => {
       if (!(e.target as HTMLElement).closest('.inquiry-menu, .inquiry-btn')) close();
     };
@@ -233,23 +242,33 @@ export function CatalogBrowser({ categoryId }: { categoryId?: string }) {
     };
     document.addEventListener('mousedown', onMouseDown);
     document.addEventListener('keydown', onKeyDown);
-    window.addEventListener('scroll', close, true);
+    window.addEventListener('scroll', onScroll, true);
     window.addEventListener('resize', close);
     return () => {
       document.removeEventListener('mousedown', onMouseDown);
       document.removeEventListener('keydown', onKeyDown);
-      window.removeEventListener('scroll', close, true);
+      window.removeEventListener('scroll', onScroll, true);
       window.removeEventListener('resize', close);
     };
   }, [inquiryMenu]);
 
-  // Freeze the page behind the requisition modal so only the modal is interactive.
+  // Freeze the page behind the requisition modal so only the modal is interactive, move focus
+  // into it so a keyboard or screen reader starts there, and let Escape close it.
+  const rfqModalRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
     if (!isRfqModalOpen) return;
     const previous = document.body.style.overflow;
     document.body.style.overflow = 'hidden';
+    const returnFocus = document.activeElement as HTMLElement | null;
+    rfqModalRef.current?.focus();
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setIsRfqModalOpen(false);
+    };
+    document.addEventListener('keydown', onKeyDown);
     return () => {
       document.body.style.overflow = previous;
+      document.removeEventListener('keydown', onKeyDown);
+      returnFocus?.focus();
     };
   }, [isRfqModalOpen]);
 
@@ -329,6 +348,7 @@ export function CatalogBrowser({ categoryId }: { categoryId?: string }) {
   // bookmarked. The path is left as it is, which also preserves a GitHub Pages sub-path.
   const selectSubcategory = (subcategoryId: string) => {
     setSelectedSubcategory(subcategoryId);
+    setRailOpen(false);
     const url = new URL(window.location.href);
     if (subcategoryId === 'all') url.searchParams.delete('subcategory');
     else url.searchParams.set('subcategory', subcategorySlug(subcategoryId));
@@ -484,9 +504,25 @@ export function CatalogBrowser({ categoryId }: { categoryId?: string }) {
           <div className="catalog-shell">
             {/* Category rail — each category links to its own page; the one being viewed expands
                 to its subcategories */}
-            <aside className="catalog-sidebar">
+            <aside className={`catalog-sidebar${railOpen ? ' is-open' : ''}`}>
               <h3 className="catalog-side-title">Category</h3>
-              <ul className="catalog-cats">
+              {/* Phones only: the rail folds behind this, so the products are not three screens
+                  down the page. It names what is being shown. */}
+              <button
+                type="button"
+                onClick={() => setRailOpen((open) => !open)}
+                aria-expanded={railOpen}
+                aria-controls="catalog-cats"
+                className="catalog-rail-toggle"
+              >
+                <span>
+                  {selectedSubcategory !== 'all'
+                    ? subcategoryName(selectedSubcategory)
+                    : selectedCategoryName ?? 'All Clinical Categories'}
+                </span>
+                <ChevronDown className={`catalog-rail-caret${railOpen ? ' is-open' : ''}`} aria-hidden="true" />
+              </button>
+              <ul id="catalog-cats" className="catalog-cats">
                 <li>
                   <Link
                     href={EQUIPMENT_PATH}
@@ -882,12 +918,24 @@ export function CatalogBrowser({ categoryId }: { categoryId?: string }) {
       {isRfqModalOpen && (
         // Sits above the sticky site header (z-index 100) and blurs everything behind it.
         <div className="fixed inset-0 z-[200] bg-ink/50 backdrop-blur-md flex items-center justify-center p-4">
-          <div className="rfq-modal bg-surface rounded-2xl max-w-2xl w-full max-h-[calc(100vh-2rem)] overflow-y-auto p-6 md:p-8 space-y-6 shadow-2xl">
+          <div
+            ref={rfqModalRef}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="rfq-title"
+            tabIndex={-1}
+            className="rfq-modal bg-surface rounded-2xl max-w-2xl w-full max-h-[calc(100vh-2rem)] overflow-y-auto p-6 md:p-8 space-y-6 shadow-2xl outline-none"
+          >
             <div className="flex items-center justify-between border-b border-line pb-4">
               <div>
-                <h3 className="font-sans text-xl font-bold text-ink m-0">Submit Hospital Requisition List</h3>
+                <h3 id="rfq-title" className="font-sans text-xl font-bold text-ink m-0">Submit Hospital Requisition List</h3>
               </div>
-              <button onClick={() => setIsRfqModalOpen(false)} className="p-1 hover:bg-paper-2 rounded">
+              <button
+                type="button"
+                onClick={() => setIsRfqModalOpen(false)}
+                aria-label="Close"
+                className="p-2 hover:bg-paper-2 rounded"
+              >
                 <X className="w-6 h-6" />
               </button>
             </div>

@@ -34,6 +34,7 @@ export const Footer: React.FC = () => {
               <li><Link href="/global">Group Structure</Link></li>
               <li><Link href="/about/vision-values">Vision &amp; Values</Link></li>
               <li><Link href="/about/governance">Governance &amp; Standards</Link></li>
+              <li><Link href="/faq">FAQ</Link></li>
             </ul>
           </div>
 

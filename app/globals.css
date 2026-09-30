@@ -930,7 +930,9 @@
   .hub-card:hover .hub-card-cta { color: var(--accent); }
 
   /* Catalog browser — category rail beside a product grid. */
-  .catalog-shell { display: grid; grid-template-columns: 1fr; gap: 36px; }
+  /* minmax(0, …) rather than 1fr: a plain 1fr column grows to fit the widest thing in it, so on a
+     phone the table view's own sideways scroll never engaged and its columns ran off the page. */
+  .catalog-shell { display: grid; grid-template-columns: minmax(0, 1fr); gap: 36px; }
   /* The catalog runs wider than the site's standard .wrap, with a slimmer side gutter. */
   .catalog-browser-wrap { max-width: 1680px; padding: 0 16px; }
   @media (min-width: 900px) {
@@ -1927,6 +1929,34 @@
 .catalog-cat:focus-visible,
 .catalog-cat.is-active { background: var(--accent); color: #fff; font-weight: 600; }
 
+/* Phones: the category rail folds behind a button naming what is shown, so the products are not
+   several screens down the page. From 900px the rail is a sidebar and the button is not needed. */
+.catalog-rail-toggle {
+  display: none;
+  width: 100%;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  min-height: 46px;
+  padding: 10px 14px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--surface);
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--ink);
+  text-align: left;
+  cursor: pointer;
+}
+.catalog-rail-caret { width: 18px; height: 18px; flex-shrink: 0; transition: transform 0.25s var(--ease); }
+.catalog-rail-caret.is-open { transform: rotate(180deg); }
+@media (max-width: 899px) {
+  .catalog-side-title { display: none; }
+  .catalog-rail-toggle { display: flex; margin-bottom: 12px; }
+  .catalog-sidebar:not(.is-open) .catalog-cats,
+  .catalog-sidebar:not(.is-open) .catalog-side-rule { display: none; }
+}
+
 /* Categories other than the one being viewed are links to their own pages. */
 a.catalog-cat { text-decoration: none; }
 
@@ -1985,6 +2015,35 @@ a.catalog-cat { text-decoration: none; }
 .breadcrumbs a:hover,
 .breadcrumbs a:focus-visible { color: var(--accent); }
 .breadcrumbs [aria-current='page'] { color: var(--muted); }
+/* Taller than the text, so each crumb is a comfortable tap on a phone without spreading the trail. */
+.breadcrumbs a { display: inline-block; padding: 6px 0; }
+.breadcrumbs ol { gap: 0; }
+
+/* iPhones zoom the whole page when a field under 16px is tapped, and do not zoom back out. Fields
+   are held at 16px on phones; placeholders keep their own smaller size. */
+@media (max-width: 767px) {
+  input:not([type='checkbox']):not([type='radio']):not([type='file']),
+  select,
+  textarea {
+    font-size: 16px !important;
+  }
+}
+
+/* Not-found page */
+.not-found { max-width: 680px; padding-top: 24px; padding-bottom: 24px; }
+.not-found h1 { margin: 10px 0 12px; font-size: clamp(28px, 3.4vw, 42px); color: var(--ink); }
+.not-found p { color: var(--ink-soft); font-size: 16px; line-height: 1.6; }
+.not-found-actions { display: flex; flex-wrap: wrap; gap: 12px; margin: 24px 0 28px; }
+.not-found ul { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--line); }
+.not-found li a {
+  display: block;
+  padding: 13px 0;
+  border-bottom: 1px solid var(--line);
+  color: var(--ink);
+  text-decoration: none;
+  font-weight: 500;
+}
+.not-found li a:hover { color: var(--accent); }
 
 /* Above the catalog listing the trail is the first thing in its section, which already spaces it
    from what is above; it only needs room before the listing below. */
@@ -4853,3 +4912,21 @@ html.nav-search-open body { overflow: hidden; overscroll-behavior: none; }
     .ct-channels { grid-template-columns: 1fr; gap: 24px; }
   }
 }
+
+/* Skip link: off-screen until a keyboard focuses it, then pinned top-left above the header. */
+.skip-link {
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  z-index: 300;
+  padding: 10px 16px;
+  border-radius: 8px;
+  background: var(--ink);
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  transform: translateY(-150%);
+  transition: transform 0.2s var(--ease);
+}
+.skip-link:focus { transform: translateY(0); }

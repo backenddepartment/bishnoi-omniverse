@@ -4,8 +4,9 @@ name = "bishnoi-inquiry"
 main = "src/index.js"
 compatibility_date = "2025-01-01"
 
-# Non-secret settings only. Everything else — the Brevo key and sender, the Turnstile secret and
-# the recipient inboxes — is set with `npx wrangler secret put <NAME>` so it never lands in git.
+# Non-secret settings only. Everything else — the Brevo key and sender, the Turnstile secret, the
+# recipient inboxes and the optional Google Sheets log (SHEETS_WEBHOOK_URL, SHEETS_WEBHOOK_SECRET) —
+# is set with `npx wrangler secret put <NAME>` so it never lands in git.
 [vars]
 # Pages allowed to submit. Add your own domain here once the site moves to one.
 ALLOWED_ORIGINS = "https://backenddepartment.github.io,http://localhost:3000,http://localhost:3001"

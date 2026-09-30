@@ -1,4 +1,5 @@
 import React from 'react';
+import type { Metadata } from 'next';
 import Link from 'next/link';
 import {
   Ambulance, BedDouble, Building2, FileCheck2, Globe2, Handshake, HeartHandshake,
@@ -106,6 +107,12 @@ const PRINCIPLES = [
     desc: 'Our New Delhi and Metro Manila hubs support product sourcing, consolidation, and distribution. Our teams work together to manage the supply process from product sourcing to delivery.',
   },
 ];
+
+export const metadata: Metadata = {
+  title: 'About Us | Our Story | Bishnoi Omniverse',
+  description:
+    'How Bishnoi Omniverse supplies hospitals, clinics and trade partners with medical equipment and specialty medicines, and the standards behind every shipment.',
+};
 
 export default function AboutPage() {
   const { vision } = businessesData;

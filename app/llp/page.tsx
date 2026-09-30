@@ -1,4 +1,5 @@
 import React from 'react';
+import type { Metadata } from 'next';
 import Link from 'next/link';
 import { MapPin, Mail } from 'lucide-react';
 import contactData from '@/lib/data/contactData.json';
@@ -6,6 +7,12 @@ import sectionDetail from '@/lib/data/sectionDetailData.json';
 
 const IMG = {
   hero: 'https://upload.wikimedia.org/wikipedia/commons/d/da/Skyline_of_Cannaught_Place%2C_New_Delhi.jpg',
+};
+
+export const metadata: Metadata = {
+  title: 'Bishnoi Omniverse LLP | India Sourcing Hub',
+  description:
+    'Bishnoi Omniverse LLP, the group’s sourcing hub in India, for fast, affordable access to high-quality medicines.',
 };
 
 export default function LlpPage() {
