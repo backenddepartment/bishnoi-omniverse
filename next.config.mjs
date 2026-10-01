@@ -2,20 +2,11 @@ import { createRequire } from 'node:module';
 
 const require = createRequire(import.meta.url);
 
-const isGithubActions = process.env.GITHUB_ACTIONS || false;
-let repo = '';
-
-if (isGithubActions && process.env.GITHUB_REPOSITORY) {
-  repo = process.env.GITHUB_REPOSITORY.replace(/.*?\//, '');
-} else if (process.env.NEXT_PUBLIC_BASE_PATH) {
-  repo = process.env.NEXT_PUBLIC_BASE_PATH.replace(/^\//, '');
-} else {
-  // Default repo name for GitHub Pages URL: backenddepartment.github.io/bishnoi-omniverse
-  repo = 'bishnoi-omniverse';
-}
-
-const basePath = isGithubActions || process.env.NEXT_PUBLIC_BASE_PATH ? `/${repo}` : undefined;
-const assetPrefix = isGithubActions || process.env.NEXT_PUBLIC_BASE_PATH ? `/${repo}/` : undefined;
+// The site is served from the custom domain root (bishnoiomniverse.com), so there is no base path
+// by default. Set NEXT_PUBLIC_BASE_PATH (e.g. "/bishnoi-omniverse") only when serving from
+// backenddepartment.github.io/bishnoi-omniverse instead.
+const basePath = (process.env.NEXT_PUBLIC_BASE_PATH || '').replace(/\/+$/, '') || undefined;
+const assetPrefix = basePath ? `${basePath}/` : undefined;
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
