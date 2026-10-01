@@ -10,25 +10,26 @@ import { FaqAccordion } from '@/components/FaqAccordion';
 import { CountUp } from '@/components/CountUp';
 import { CardSlider } from '@/components/CardSlider';
 import heroBg from '@/app/assets/background.png';
-import heroSlideTwo from '@/app/assets/slidertwo.png';
-import heroSlideThree from '@/app/assets/sliderthree.png';
+import heroSlideTwo from '@/app/assets/slidertwo.webp';
+import heroSlideThree from '@/app/assets/sliderthree.webp';
 import doctorsImg from '@/app/assets/doctors.jpg';
-import hospitalCardImg from '@/app/assets/hospitalcard.png';
-import clinicsCardImg from '@/app/assets/clinicscard.png';
-import distributorsCardImg from '@/app/assets/distributorscard.png';
-import familiesCardImg from '@/app/assets/familiescard.png';
-import suppliesImg from '@/app/assets/supplies.jpg';
-import medicinesImg from '@/app/assets/medicines.jpg';
-import sourcingImg from '@/app/assets/sourcing.jpg';
+import hospitalCardImg from '@/app/assets/hospitalcard.webp';
+import clinicsCardImg from '@/app/assets/clinicscard.webp';
+import distributorsCardImg from '@/app/assets/distributorscard.webp';
+import familiesCardImg from '@/app/assets/familiescard.webp';
+import suppliesImg from '@/app/assets/supplies.webp';
+import medicinesImg from '@/app/assets/medicines.webp';
+import sourcingImg from '@/app/assets/sourcing.webp';
 import familiesImg from '@/app/assets/families.jpg';
-import featuredGlovesImg from '@/app/assets/gloves.png';
-import featuredPpeImg from '@/app/assets/ppesuit.jpg';
-import featuredDialysisImg from '@/app/assets/dialysis.jpg';
-import featuredMonitoringImg from '@/app/assets/patientmonitoring.png';
-import featuredRespiratoryImg from '@/app/assets/respiratorycare.png';
-import featuredSurgicalImg from '@/app/assets/surgical.png';
-import aboutBgImg from '@/app/assets/overviewaboutusbg.png';
-import worldMapImg from '@/app/assets/countries.png';
+import featuredGlovesImg from '@/app/assets/gloves.webp';
+import featuredPpeImg from '@/app/assets/ppesuit.webp';
+import featuredDialysisImg from '@/app/assets/dialysis.webp';
+import featuredMonitoringImg from '@/app/assets/patientmonitoring.webp';
+import featuredRespiratoryImg from '@/app/assets/respiratorycare.webp';
+import featuredSurgicalImg from '@/app/assets/surgical.webp';
+import aboutBgImg from '@/app/assets/overviewaboutusbg.webp';
+import aboutBgSmallImg from '@/app/assets/overviewaboutusbg-800.webp';
+import worldMapImg from '@/app/assets/countries.webp';
 
 // Images sourced from Wikimedia Commons (CC BY / CC BY-SA / public domain)
 const IMG = {
@@ -226,6 +227,11 @@ export default function HomePage() {
         <div className="home-about-panel">
           <img
             src={aboutBgImg.src}
+            // The panel runs edge to edge, so phones get the 800px cut.
+            srcSet={`${aboutBgSmallImg.src} ${aboutBgSmallImg.width}w, ${aboutBgImg.src} ${aboutBgImg.width}w`}
+            sizes="100vw"
+            width={aboutBgImg.width}
+            height={aboutBgImg.height}
             alt="The Bishnoi Omniverse team in a meeting, with the bishnoiomniverse wordmark above"
             className="home-about-bg"
             loading="lazy"
@@ -361,7 +367,7 @@ export default function HomePage() {
           <div className="biz-grid mt-14">
             {whoWeHelp.items.map((item) => (
               <Link key={item.id} href="/contact?type=quote" className="biz-tile">
-                <img src={tileImages[item.id]} alt={item.title} />
+                <img src={tileImages[item.id]} alt={item.title} loading="lazy" />
               </Link>
             ))}
           </div>

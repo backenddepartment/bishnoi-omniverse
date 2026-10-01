@@ -67,6 +67,11 @@ jobs:
           NODE_OPTIONS: "--max-old-space-size=4096"
         run: npx next build
 
+      # Inlines each page's CSS into its HTML so first paint does not wait on the stylesheet
+      # requests (see the header of scripts/inline-css.mjs).
+      - name: Inline critical CSS
+        run: node scripts/inline-css.mjs out
+
       - name: Upload build artifact
         uses: actions/upload-pages-artifact@v3
         with:

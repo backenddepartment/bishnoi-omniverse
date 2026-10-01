@@ -13,6 +13,11 @@ const INTERVAL_MS = 6000;
  */
 export function HeroSlider({ slides }: { slides: HeroSlide[] }) {
   const [active, setActive] = useState(0);
+  // Later slides get their src only after hydration, so they do not download alongside the first
+  // slide (the LCP image). They have the whole first interval to arrive before the crossfade.
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => setMounted(true), []);
 
   useEffect(() => {
     if (slides.length < 2) return;
@@ -31,10 +36,14 @@ export function HeroSlider({ slides }: { slides: HeroSlide[] }) {
       {slides.map((slide, idx) => (
         <img
           key={slide.src}
-          src={slide.src}
+          src={idx === 0 || mounted ? slide.src : undefined}
           alt={idx === active ? slide.alt : ''}
           className={`hero-slide${idx === active ? ' is-active' : ''}`}
           loading={idx === 0 ? 'eager' : 'lazy'}
+          // The first slide is the page's LCP element: fetchPriority="high" also makes React emit a
+          // <link rel="preload"> for it at the top of <head>. Later slides stay out of its way.
+          fetchPriority={idx === 0 ? 'high' : 'low'}
+          decoding={idx === 0 ? 'sync' : 'async'}
           aria-hidden={idx !== active}
         />
       ))}

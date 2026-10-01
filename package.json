@@ -10,8 +10,16 @@
     "catalog:sync": "node scripts/sync-catalog.mjs",
     "news:sync": "node scripts/sync-news.mjs",
     "catalog:export": "node scripts/export-catalog-csv.mjs",
-    "prebuild": "node scripts/sync-catalog.mjs"
+    "prebuild": "node scripts/sync-catalog.mjs",
+    "postbuild": "node scripts/inline-css.mjs"
   },
+  "browserslist": [
+    "chrome >= 93",
+    "edge >= 93",
+    "firefox >= 92",
+    "safari >= 15.4",
+    "ios_saf >= 15.4"
+  ],
   "dependencies": {
     "@hookform/resolvers": "^3.9.0",
     "clsx": "^2.1.1",

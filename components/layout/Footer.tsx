@@ -3,7 +3,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { Mail, MapPin, Phone } from 'lucide-react';
 import homepageData from '@/lib/data/homepageData.json';
-import logo from '@/app/assets/logo.png';
+import logo from '@/app/assets/logo.webp';
 
 export const Footer: React.FC = () => {
   const { brand } = homepageData;

@@ -1,3 +1,7 @@
+import { createRequire } from 'node:module';
+
+const require = createRequire(import.meta.url);
+
 const isGithubActions = process.env.GITHUB_ACTIONS || false;
 let repo = '';
 
@@ -22,6 +26,15 @@ const nextConfig = {
   assetPrefix: assetPrefix,
   experimental: {
     workerThreads: false,
+  },
+  webpack(config, { dev, isServer }) {
+    // Next 14 always bundles polyfills for Array.prototype.at/flat/flatMap, Object.fromEntries,
+    // Object.hasOwn and String.prototype.trimStart/trimEnd. Every browser in the browserslist in
+    // package.json has these natively, so the production client bundle drops the module.
+    if (!dev && !isServer) {
+      config.resolve.alias[require.resolve('next/dist/build/polyfills/polyfill-module')] = false;
+    }
+    return config;
   },
   images: {
     unoptimized: true,
