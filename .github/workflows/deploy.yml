@@ -58,8 +58,8 @@ jobs:
 
       - name: Build static Next.js export
         env:
-          NEXT_PUBLIC_BASE_PATH: "/bishnoi-omniverse"
-          GITHUB_ACTIONS: "true"
+          # Served from the custom domain root, so no base path (see public/CNAME).
+          NEXT_PUBLIC_SITE_URL: "https://bishnoiomniverse.com"
           # Public inquiry settings — repository Variables, not Secrets (see docs/inquiries.md).
           # Unset, the forms tell visitors to email instead of pretending to send.
           NEXT_PUBLIC_INQUIRY_ENDPOINT: ${{ vars.INQUIRY_ENDPOINT }}
