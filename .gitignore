@@ -49,3 +49,6 @@ md guide
 inquiry-worker/.dev.vars
 inquiry-worker/.wrangler/
 inquiry-worker/node_modules/
+
+# Local Claude plugin data
+.claude/data/
