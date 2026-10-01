@@ -9,5 +9,5 @@ compatibility_date = "2025-01-01"
 # is set with `npx wrangler secret put <NAME>` so it never lands in git.
 [vars]
 # Pages allowed to submit. Add your own domain here once the site moves to one.
-ALLOWED_ORIGINS = "https://backenddepartment.github.io,http://localhost:3000,http://localhost:3001"
+ALLOWED_ORIGINS = "https://bishnoiomniverse.com,https://www.bishnoiomniverse.com,http://bishnoiomniverse.com,http://www.bishnoiomniverse.com,https://backenddepartment.github.io,http://localhost:3000,http://localhost:3001"
 BREVO_SENDER_NAME = "Bishnoi Omniverse"
