@@ -3,6 +3,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { Mail, MapPin, Phone } from 'lucide-react';
 import homepageData from '@/lib/data/homepageData.json';
+import { telHref } from '@/lib/contactChannels';
 import logo from '@/app/assets/logo.webp';
 
 export const Footer: React.FC = () => {
@@ -53,18 +54,22 @@ export const Footer: React.FC = () => {
             <h4>Contact</h4>
             {/* Each detail beside its icon in a soft white disc. */}
             <ul className="footer-contact">
-              <li>
-                <span className="footer-contact-icon" aria-hidden="true">
-                  <Phone strokeWidth={1.75} />
-                </span>
-                <a href={`tel:${brand.phone.replace(/[^+\d]/g, '')}`}>{brand.phone}</a>
-              </li>
-              <li>
-                <span className="footer-contact-icon" aria-hidden="true">
-                  <Mail strokeWidth={1.75} />
-                </span>
-                <a href={`mailto:${brand.email}`}>{brand.email}</a>
-              </li>
+              {brand.phones.map((phone) => (
+                <li key={phone}>
+                  <span className="footer-contact-icon" aria-hidden="true">
+                    <Phone strokeWidth={1.75} />
+                  </span>
+                  <a href={telHref(phone)}>{phone}</a>
+                </li>
+              ))}
+              {brand.emails.map((email) => (
+                <li key={email}>
+                  <span className="footer-contact-icon" aria-hidden="true">
+                    <Mail strokeWidth={1.75} />
+                  </span>
+                  <a href={`mailto:${email}`}>{email}</a>
+                </li>
+              ))}
               <li>
                 <span className="footer-contact-icon" aria-hidden="true">
                   <MapPin strokeWidth={1.75} />

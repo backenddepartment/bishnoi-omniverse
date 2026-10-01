@@ -15,7 +15,7 @@ import {
   Stethoscope,
   UploadCloud,
 } from 'lucide-react';
-import { LINKEDIN_HREF, MESSAGING_DISPLAY, PH_TEL_HREF, VIBER_HREF, WHATSAPP_HREF } from '@/lib/contactChannels';
+import { LINKEDIN_HREF, MESSAGING_DISPLAY, PH_TEL_HREF, VIBER_HREF, WHATSAPP_HREF, telHref } from '@/lib/contactChannels';
 
 /**
  * Page-specific pieces of the Contact Us page. They only lay out and route: every button that leads
@@ -28,27 +28,17 @@ import { LINKEDIN_HREF, MESSAGING_DISPLAY, PH_TEL_HREF, VIBER_HREF, WHATSAPP_HRE
  * The ways to reach us as blocks in a row: a small icon tile and a title, then the details
  * beneath, each with its own icon.
  */
-export function ContactChannels({ email, phone }: { email: string; phone: string }) {
+export function ContactChannels({ emails, phones }: { emails: string[]; phones: string[] }) {
   const channels: { icon: LucideIcon; title: string; lines: { icon: LucideIcon; node: React.ReactNode }[] }[] = [
     {
       icon: Mail,
       title: 'Email',
-      lines: [{ icon: Mail, node: <a href={`mailto:${email}`}>{email}</a> }],
+      lines: emails.map((email) => ({ icon: Mail, node: <a href={`mailto:${email}`}>{email}</a> })),
     },
     {
       icon: Phone,
       title: 'Phone',
-      lines: [
-        {
-          icon: Phone,
-          node: (
-            <>
-              <a href={PH_TEL_HREF}>{phone}</a>
-              <span className="ct-channel-note">Philippines line</span>
-            </>
-          ),
-        },
-      ],
+      lines: phones.map((phone) => ({ icon: Phone, node: <a href={telHref(phone)}>{phone}</a> })),
     },
     {
       icon: MessageCircle,

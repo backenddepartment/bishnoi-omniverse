@@ -130,7 +130,7 @@ export async function sendInquiry(
   if (!INQUIRY_ENDPOINT) {
     return {
       ok: false,
-      message: `Our online form isn't connected yet. Please email ${contactData.directContact.email} and we'll reply within 24 hours.`,
+      message: `Our online form isn't connected yet. Please email ${contactData.directContact.emails[0]} and we'll reply within 24 hours.`,
     };
   }
   if (CAPTCHA_ENABLED && !guard.captchaToken) {

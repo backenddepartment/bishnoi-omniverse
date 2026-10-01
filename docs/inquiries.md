@@ -44,7 +44,7 @@ Limits (same as Getmeds): each file under 4 MB, at most 10 MB and 6 files per in
 accept PDF, DOCX and XLSX.
 
 **Until the endpoint is configured, the forms do not pretend to send**: they tell the visitor to
-email `naresh@getmeds.ph` instead (`directContact.email` in `lib/data/contactData.json`).
+email `il@bishnoiomniverse.com` instead (the first of `directContact.emails` in `lib/data/contactData.json`).
 
 ## Setup
 
@@ -145,7 +145,36 @@ record, not a second delivery: the email is still what reaches the team.
   Sheets problem is only logged (`npm run tail` shows `Sheet log failed: …`).
 - **Spam is not logged.** Honeypot and failed-Turnstile submissions stop before this step.
 
-Setup:
+There are two ways to connect the sheet. Use one, not both — if the service account is set, the
+Apps Script settings are ignored.
+
+#### Option A: Google Cloud service account (no Apps Script)
+
+The Worker signs in as a service account (an `…@….iam.gserviceaccount.com` address) and writes
+through the Google Sheets API. Received is stamped in `SHEETS_TIME_ZONE` (default `Asia/Manila`).
+
+1. **Google Cloud console**, in the service account's project (e.g. `getmedsadmin`):
+   - **APIs & Services → Library → Google Sheets API → Enable.**
+   - **IAM & Admin → Service accounts →** the account → **Keys → Add key → Create new key → JSON.**
+     A `.json` file downloads. Treat it like a password: never commit it or paste it into chat.
+2. **Share the spreadsheet** with the service account's email as **Editor** (Share button).
+3. **Copy the spreadsheet ID** — the part of its URL between `/d/` and `/edit`.
+4. **Give the Worker the two values** and redeploy it:
+
+   ```bash
+   cd inquiry-worker
+   npx wrangler secret put GOOGLE_SERVICE_ACCOUNT_JSON < path/to/key.json
+   npx wrangler secret put SHEETS_SPREADSHEET_ID   # paste the ID
+   npm run deploy
+   ```
+
+5. **Test:** submit one form and check its tab appears with the row. If it does not, `npm run tail`
+   shows why: `HTTP 403` = sheet not shared with the service account or Sheets API not enabled;
+   `HTTP 404` = wrong spreadsheet ID; `Google sign-in failed` = wrong or revoked key.
+
+To turn it off: `npx wrangler secret delete SHEETS_SPREADSHEET_ID`.
+
+#### Option B: Apps Script web app
 
 1. **Create the spreadsheet** in the Google account that should own the records, e.g. *Bishnoi
    Omniverse Inquiries*. Set its time zone under **File → Settings** (e.g. GMT+08:00 Manila); the

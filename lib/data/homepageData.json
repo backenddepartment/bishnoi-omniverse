@@ -3,8 +3,8 @@
     "name": "Bishnoi Omniverse",
     "tagline": "The healthcare supply partner for hard-to-source hospital and specialty requirements",
     "affiliation": "A proud member of the Bishnoi Group",
-    "email": "naresh@getmeds.ph",
-    "phone": "+63 919 076 9100",
+    "emails": ["il@bishnoiomniverse.com"],
+    "phones": ["+63 994 855 9919", "+63 924 230 4700"],
     "address": "Unit 305, 17 Vatican Bldg., Vatican Drive, BF Resort Village, Las Piñas City, Metro Manila 1747"
   },
   "hero": {

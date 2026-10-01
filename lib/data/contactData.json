@@ -8,12 +8,12 @@
     "eyebrow": "Contact Details",
     "title": "Ways to Reach Us",
     "paragraphs": [
-      "Email us at contact@bishnoi.ai, or call our Philippines line on +63 917 156 9029. For quick questions, you can also reach us on WhatsApp and Viber.",
+      "Email us at il@bishnoiomniverse.com, or call us on +63 994 855 9919 or +63 924 230 4700. For quick questions, you can also reach us on WhatsApp and Viber.",
       "You can visit or write to our Philippine office, Bishnoi Omniverse Corp, at Unit 301 and 305, 17 Vatican Building, Vatican City Drive, B.F. Resort Village, Talon II, Las Piñas City, Metro Manila, or our India office, Bishnoi Omniverse LLP, at Okhla Industrial Area, Phase III, New Delhi 110020."
     ],
-    "email": "naresh@getmeds.ph",
-    "hotline": "+63 917 156 9029",
-    "messaging": "+63 919 076 9100",
+    "emails": ["il@bishnoiomniverse.com"],
+    "phones": ["+63 994 855 9919", "+63 924 230 4700"],
+    "messaging": "+63 994 855 9919",
     "linkedin": "https://www.linkedin.com/in/nareshbishnoi/",
     "offices": [
       {

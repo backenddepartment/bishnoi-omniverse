@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { AnimatePresence, motion } from 'framer-motion';
+import { AnimatePresence, m } from 'framer-motion';
 import { ChevronDown } from 'lucide-react';
 
 export type FaqItem = { q: string; a: string };
@@ -37,7 +37,7 @@ export function FaqAccordion({ questions }: { questions: FaqItem[] }) {
 
             <AnimatePresence initial={false}>
               {isOpen && (
-                <motion.div
+                <m.div
                   initial={{ height: 0, opacity: 0 }}
                   animate={{ height: 'auto', opacity: 1 }}
                   exit={{ height: 0, opacity: 0 }}
@@ -45,7 +45,7 @@ export function FaqAccordion({ questions }: { questions: FaqItem[] }) {
                   className="overflow-hidden"
                 >
                   <p className="faq-a">{item.a}</p>
-                </motion.div>
+                </m.div>
               )}
             </AnimatePresence>
           </div>

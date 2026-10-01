@@ -20,6 +20,11 @@
  *   SHEETS_WEBHOOK_URL               optional; the Google Apps Script web app that logs each
  *                                    inquiry to a Google Sheet (google-sheets/Code.gs). Blank = off
  *   SHEETS_WEBHOOK_SECRET            secret shared with that script, so only this Worker can write
+ *   GOOGLE_SERVICE_ACCOUNT_JSON      optional, instead of the two above: a Google Cloud service
+ *                                    account key file (the whole JSON) that writes to the sheet
+ *                                    through the Sheets API
+ *   SHEETS_SPREADSHEET_ID            the sheet that service account writes to (shared with it)
+ *   SHEETS_TIME_ZONE                 optional; time zone of the Received column. Default Asia/Manila
  */
 
 // Attachment limits, the same numbers as the PHP original. Brevo refuses any single attachment of
@@ -371,24 +376,39 @@ async function sendMail(msg, env) {
  * ------------------------------------------------------------------ */
 
 /**
- * Appends the inquiry to a Google Sheet through the Apps Script web app in google-sheets/Code.gs,
- * one tab per inquiry type. A record of every inquiry, not a way of delivering it: it runs after the
- * visitor has had their reply, and a failure here is only logged — the email is what reaches the
- * team, and it has already been sent or reported by then.
+ * Appends the inquiry to a Google Sheet, one tab per inquiry type. A record of every inquiry, not a
+ * way of delivering it: it runs after the visitor has had their reply, and a failure here is only
+ * logged — the email is what reaches the team, and it has already been sent or reported by then.
  *
- * The record is ordered label/value pairs; the script turns a label it has not seen before into a
- * new column. "Received" is left blank for the script to stamp in the sheet's own time zone.
+ * Two ways to reach the sheet; the first one configured wins:
+ *   1. A Google Cloud service account (GOOGLE_SERVICE_ACCOUNT_JSON + SHEETS_SPREADSHEET_ID). The
+ *      Worker signs in as the service account and writes through the Sheets API. The spreadsheet
+ *      only has to be shared with the service account's email as an Editor.
+ *   2. The Apps Script web app in google-sheets/Code.gs (SHEETS_WEBHOOK_URL + SHEETS_WEBHOOK_SECRET).
+ *
+ * Either way the record is ordered label/value pairs, and a label the tab has not seen before
+ * becomes a new column at the end, so adding a field to a form needs no change to the sheet.
  */
 async function logToSheet(entry, env) {
+  const serviceAccountJson = String(env.GOOGLE_SERVICE_ACCOUNT_JSON ?? '').trim();
+  const spreadsheetId = String(env.SHEETS_SPREADSHEET_ID ?? '').trim();
   const url = String(env.SHEETS_WEBHOOK_URL ?? '').trim();
   const secret = String(env.SHEETS_WEBHOOK_SECRET ?? '').trim();
-  if (url === '') return;
-  if (secret === '') {
+
+  const useServiceAccount = serviceAccountJson !== '' || spreadsheetId !== '';
+  if (!useServiceAccount && url === '') return;
+  if (useServiceAccount && (serviceAccountJson === '' || spreadsheetId === '')) {
+    log('Set both GOOGLE_SERVICE_ACCOUNT_JSON and SHEETS_SPREADSHEET_ID — inquiry not logged to the sheet.');
+    return;
+  }
+  if (!useServiceAccount && secret === '') {
     log('SHEETS_WEBHOOK_URL is set but SHEETS_WEBHOOK_SECRET is not — inquiry not logged to the sheet.');
     return;
   }
 
   const record = [
+    // Blank for the Apps Script, which stamps it in the sheet's own time zone; the service account
+    // path fills it in below.
     ['Received', ''],
     ['Inquiry Type', entry.inquiryType],
     ['Name', entry.name],
@@ -402,6 +422,16 @@ async function logToSheet(entry, env) {
     ['Attachments', entry.files.map((file) => file.name).join('\n')],
     ['Email Delivered', entry.emailed ? 'Yes' : 'No — check the inbox or Brevo logs'],
   ];
+
+  if (useServiceAccount) {
+    try {
+      record[0][1] = receivedStamp(env);
+      await appendWithServiceAccount(serviceAccountJson, spreadsheetId, sheetTabName(entry.inquiryType), record);
+    } catch (err) {
+      log(`Sheet log failed: ${err instanceof Error ? err.message : err}`);
+    }
+    return;
+  }
 
   try {
     // Apps Script answers a POST with a redirect to its result; fetch follows it.
@@ -421,6 +451,162 @@ async function logToSheet(entry, env) {
   } catch (err) {
     log(`Sheet log failed: ${err}`);
   }
+}
+
+/** Tabs are named after the inquiry type, cleaned to suit Sheets' rules (as Code.gs does). */
+function sheetTabName(value) {
+  const name = String(value || 'Other').replace(/[[\]*?/\\:]/g, ' ').trim().slice(0, 90);
+  return name || 'Other';
+}
+
+/** "2026-10-01 09:21:33" in SHEETS_TIME_ZONE (default Asia/Manila). */
+function receivedStamp(env) {
+  const timeZone = String(env.SHEETS_TIME_ZONE ?? '').trim() || 'Asia/Manila';
+  const parts = Object.fromEntries(
+    new Intl.DateTimeFormat('en-GB', {
+      timeZone,
+      year: 'numeric', month: '2-digit', day: '2-digit',
+      hour: '2-digit', minute: '2-digit', second: '2-digit', hourCycle: 'h23',
+    })
+      .formatToParts(new Date())
+      .map((part) => [part.type, part.value])
+  );
+  return `${parts.year}-${parts.month}-${parts.day} ${parts.hour}:${parts.minute}:${parts.second}`;
+}
+
+/* --- Service account: OAuth token, then the Sheets API --- */
+
+const SHEETS_SCOPE = 'https://www.googleapis.com/auth/spreadsheets';
+
+// An access token lasts an hour; reused while this Worker instance stays warm.
+let googleToken = null;
+
+function base64url(input) {
+  const bytes = typeof input === 'string' ? new TextEncoder().encode(input) : new Uint8Array(input);
+  let binary = '';
+  for (const byte of bytes) binary += String.fromCharCode(byte);
+  return btoa(binary).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+}
+
+/** Signs a JWT with the service account's private key and trades it for an access token. */
+async function googleAccessToken(serviceAccountJson) {
+  let account;
+  try {
+    account = JSON.parse(serviceAccountJson);
+  } catch {
+    throw new Error('GOOGLE_SERVICE_ACCOUNT_JSON is not valid JSON — upload the whole key file.');
+  }
+  if (!account.client_email || !account.private_key) {
+    throw new Error('GOOGLE_SERVICE_ACCOUNT_JSON has no client_email or private_key — is it a service account key file?');
+  }
+
+  const now = Math.floor(Date.now() / 1000);
+  if (googleToken && googleToken.email === account.client_email && googleToken.expires > now + 60) {
+    return googleToken.value;
+  }
+
+  const der = Uint8Array.from(
+    atob(account.private_key.replace(/-----[^-]+-----/g, '').replace(/\s+/g, '')),
+    (c) => c.charCodeAt(0)
+  );
+  const key = await crypto.subtle.importKey(
+    'pkcs8', der, { name: 'RSASSA-PKCS1-v1_5', hash: 'SHA-256' }, false, ['sign']
+  );
+  const tokenUrl = account.token_uri || 'https://oauth2.googleapis.com/token';
+  const claims = { iss: account.client_email, scope: SHEETS_SCOPE, aud: tokenUrl, iat: now, exp: now + 3600 };
+  const unsigned = `${base64url(JSON.stringify({ alg: 'RS256', typ: 'JWT' }))}.${base64url(JSON.stringify(claims))}`;
+  const signature = await crypto.subtle.sign('RSASSA-PKCS1-v1_5', key, new TextEncoder().encode(unsigned));
+
+  const res = await fetchWithTimeout(
+    tokenUrl,
+    {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams({
+        grant_type: 'urn:ietf:params:oauth:grant-type:jwt-bearer',
+        assertion: `${unsigned}.${base64url(signature)}`,
+      }),
+    },
+    10000
+  );
+  const body = await res.json().catch(() => ({}));
+  if (!res.ok || !body.access_token) {
+    throw new Error(`Google sign-in failed: HTTP ${res.status} ${body.error_description ?? body.error ?? ''}`.trim());
+  }
+  googleToken = { value: body.access_token, email: account.client_email, expires: now + (body.expires_in ?? 3600) };
+  return googleToken.value;
+}
+
+async function sheetsApi(token, spreadsheetId, path, method = 'GET', payload) {
+  const res = await fetchWithTimeout(
+    `https://sheets.googleapis.com/v4/spreadsheets/${encodeURIComponent(spreadsheetId)}${path}`,
+    {
+      method,
+      headers: {
+        Authorization: `Bearer ${token}`,
+        ...(payload ? { 'Content-Type': 'application/json' } : {}),
+      },
+      body: payload ? JSON.stringify(payload) : undefined,
+    },
+    15000
+  );
+  const body = await res.json().catch(() => ({}));
+  if (!res.ok) {
+    // 403 = the sheet is not shared with the service account, or the Sheets API is not enabled in
+    // its Google Cloud project; 404 = wrong SHEETS_SPREADSHEET_ID.
+    throw new Error(`Sheets API ${method} ${path.split('?')[0]}: HTTP ${res.status} ${body.error?.message ?? ''}`.trim());
+  }
+  return body;
+}
+
+/**
+ * Creates the tab on first use (bold, frozen header row), adds columns for labels the header row
+ * lacks, then appends the row under the matching headers. Values are written RAW — stored exactly
+ * as typed — so nothing a visitor enters is read as a formula and phone numbers keep leading zeros.
+ */
+async function appendWithServiceAccount(serviceAccountJson, spreadsheetId, tab, record) {
+  const token = await googleAccessToken(serviceAccountJson);
+
+  const meta = await sheetsApi(token, spreadsheetId, '?fields=sheets.properties(sheetId,title)');
+  if (!(meta.sheets ?? []).some((sheet) => sheet.properties?.title === tab)) {
+    const created = await sheetsApi(token, spreadsheetId, ':batchUpdate', 'POST', {
+      requests: [{ addSheet: { properties: { title: tab, gridProperties: { frozenRowCount: 1 } } } }],
+    });
+    const sheetId = created.replies?.[0]?.addSheet?.properties?.sheetId;
+    if (sheetId !== undefined) {
+      await sheetsApi(token, spreadsheetId, ':batchUpdate', 'POST', {
+        requests: [{
+          repeatCell: {
+            range: { sheetId, startRowIndex: 0, endRowIndex: 1 },
+            cell: { userEnteredFormat: { textFormat: { bold: true } } },
+            fields: 'userEnteredFormat.textFormat.bold',
+          },
+        }],
+      });
+    }
+  }
+
+  const quoted = `'${tab.replace(/'/g, "''")}'`;
+  const range = (a1) => encodeURIComponent(`${quoted}!${a1}`);
+
+  const head = await sheetsApi(token, spreadsheetId, `/values/${range('1:1')}`);
+  let headers = (head.values?.[0] ?? []).map(String);
+  const added = [];
+  for (const [label] of record) {
+    if (!headers.includes(String(label)) && !added.includes(String(label))) added.push(String(label));
+  }
+  if (added.length > 0) {
+    headers = headers.concat(added);
+    await sheetsApi(token, spreadsheetId, `/values/${range('A1')}?valueInputOption=RAW`, 'PUT', { values: [headers] });
+  }
+
+  const row = headers.map(() => '');
+  for (const [label, value] of record) row[headers.indexOf(String(label))] = String(value ?? '');
+  await sheetsApi(
+    token, spreadsheetId,
+    `/values/${range('A1')}:append?valueInputOption=RAW&insertDataOption=INSERT_ROWS`, 'POST',
+    { values: [row] }
+  );
 }
 
 /* ------------------------------------------------------------------ *

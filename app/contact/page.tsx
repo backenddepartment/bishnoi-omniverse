@@ -217,7 +217,7 @@ export default function ContactPage() {
       <section className="section section-white">
         <div className="wrap">
           <SectionHead eyebrow={directContact.eyebrow} title={directContact.title} />
-          <ContactChannels email={directContact.email} phone={directContact.hotline} />
+          <ContactChannels emails={directContact.emails} phones={directContact.phones} />
 
           <div className="ct-reach">
             <div ref={personaTabsRef} className="scroll-target ct-form-card">

@@ -1,16 +1,15 @@
 import contactData from '@/lib/data/contactData.json';
 
+/** A tap-to-call link for a displayed number, e.g. "+63 994 855 9919" -> "tel:+639948559919". */
+export const telHref = (display: string) => `tel:+${display.replace(/\D/g, '')}`;
+
 /**
- * The Philippines hub's phone number, for the tap-to-call link in the header. It is read from the
- * contact page's hotline, so there is one place to change it. The hotline lists the PH number
- * first: "+63 917 156 9029 | +91 …".
+ * The main phone number, for the header's tap-to-call link and the Call buttons. It is the first of
+ * the contact page's phones (contactData → directContact.phones), so there is one place to change it.
  */
-export const PH_PHONE_DISPLAY = contactData.directContact.hotline.split('|')[0].trim();
+export const PH_PHONE_DISPLAY = contactData.directContact.phones[0];
 
-// International format without the "+", e.g. "639171569029".
-const PH_PHONE_DIGITS = PH_PHONE_DISPLAY.replace(/\D/g, '');
-
-export const PH_TEL_HREF = `tel:+${PH_PHONE_DIGITS}`;
+export const PH_TEL_HREF = telHref(PH_PHONE_DISPLAY);
 
 /**
  * The number that answers on WhatsApp and Viber (contactData → directContact.messaging), for the

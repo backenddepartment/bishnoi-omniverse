@@ -26,12 +26,13 @@ function tabName_(value) {
 }
 
 /**
- * A value that starts with = + - or @ would be read by Sheets as a formula. Visitors type these
- * fields, so everything is stored as plain text; the leading apostrophe does not show in the cell.
+ * A value that starts with = + - or @ would be read by Sheets as a formula, and one that starts
+ * with a digit as a number (dropping the leading 0 of a phone number like 0919…). Visitors type
+ * these fields, so they are stored as plain text; the leading apostrophe does not show in the cell.
  */
 function asText_(value) {
   var text = String(value == null ? '' : value);
-  return /^[=+\-@]/.test(text) ? "'" + text : text;
+  return /^[=+\-@0-9]/.test(text) ? "'" + text : text;
 }
 
 function reply_(body) {

@@ -4,7 +4,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { AnimatePresence, motion } from 'framer-motion';
+import { AnimatePresence, m } from 'framer-motion';
 import { Menu, X, ChevronDown, ArrowUpRight, Phone } from 'lucide-react';
 import logo from '@/app/assets/logo.webp';
 import globalNetworkLogo from '@/app/assets/globalnetworklogo.webp';
@@ -202,7 +202,7 @@ export const Header: React.FC = () => {
 
             <AnimatePresence initial={false}>
               {catalogOpen && (
-                <motion.div
+                <m.div
                   initial={{ opacity: 0, y: -12 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -12 }}
@@ -211,7 +211,7 @@ export const Header: React.FC = () => {
                 >
                   <div className="bg-surface border-b border-line rounded-b-2xl shadow-xl overflow-hidden">
                     <div className="grid grid-cols-1 lg:grid-cols-[260px_1fr] gap-12 items-start p-10">
-                      <motion.div
+                      <m.div
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.35, delay: 0.06 }}
@@ -226,11 +226,11 @@ export const Header: React.FC = () => {
                         <Link href={CATALOG_PATH} onClick={closeHoverMenus} className="btn btn-primary">
                           View Full Catalog
                         </Link>
-                      </motion.div>
+                      </m.div>
 
                       <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-8 gap-y-1">
                         {catalogData.categories.map((cat, idx) => (
-                          <motion.div
+                          <m.div
                             key={cat.id}
                             initial={{ opacity: 0, y: 10 }}
                             animate={{ opacity: 1, y: 0 }}
@@ -245,12 +245,12 @@ export const Header: React.FC = () => {
                             >
                               {cat.name}
                             </Link>
-                          </motion.div>
+                          </m.div>
                         ))}
                       </div>
                     </div>
                   </div>
-                </motion.div>
+                </m.div>
               )}
             </AnimatePresence>
           </div>
@@ -305,7 +305,7 @@ export const Header: React.FC = () => {
 
             <AnimatePresence initial={false}>
               {aboutOpen && (
-              <motion.div
+              <m.div
                 initial={{ opacity: 0, y: -12 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -12 }}
@@ -336,7 +336,7 @@ export const Header: React.FC = () => {
                   </div>
                 </div>
               </div>
-            </motion.div>
+            </m.div>
               )}
             </AnimatePresence>
           </div>
@@ -378,7 +378,7 @@ export const Header: React.FC = () => {
 
             <AnimatePresence initial={false}>
               {networkOpen && (
-              <motion.div
+              <m.div
                 initial={{ opacity: 0, y: -12 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -12 }}
@@ -387,7 +387,7 @@ export const Header: React.FC = () => {
               >
               <div className="bg-surface border-b border-line rounded-b-2xl shadow-xl overflow-hidden">
                 <div className="grid grid-cols-1 lg:grid-cols-[260px_1fr] xl:grid-cols-[260px_1fr_340px] gap-12 items-center p-10">
-                  <motion.div
+                  <m.div
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.35, delay: 0.06 }}
@@ -397,11 +397,11 @@ export const Header: React.FC = () => {
                       Bishnoi Omniverse&apos;s growing footprint across the world — connect with any of our regional
                       sites and trusted partners.
                     </p>
-                  </motion.div>
+                  </m.div>
 
                   <div className="grid grid-cols-2 gap-x-8 gap-y-1">
                     {GLOBAL_NETWORK_LINKS.map((item, idx) => (
-                      <motion.div
+                      <m.div
                         key={item.label}
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
@@ -427,11 +427,11 @@ export const Header: React.FC = () => {
                             {item.label}
                           </Link>
                         )}
-                      </motion.div>
+                      </m.div>
                     ))}
                   </div>
 
-                  <motion.div
+                  <m.div
                     className="hidden xl:block"
                     aria-hidden="true"
                     initial={{ opacity: 0, y: 10 }}
@@ -439,10 +439,10 @@ export const Header: React.FC = () => {
                     transition={{ duration: 0.35, delay: 0.06 * (GLOBAL_NETWORK_LINKS.length + 2) }}
                   >
                     <Image src={countriesMap} alt="" className="w-full h-auto" />
-                  </motion.div>
+                  </m.div>
                 </div>
               </div>
-            </motion.div>
+            </m.div>
               )}
             </AnimatePresence>
           </div>

@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import { LazyMotion } from 'framer-motion';
 import { usePathname } from 'next/navigation';
 import { Header } from './Header';
 import { Footer } from './Footer';
@@ -13,6 +14,10 @@ import { MessagingButtons } from '@/components/MessagingButtons';
  */
 const BARE_ROUTES = ['/coming-soon'];
 
+// The animation features behind every `m.*` component (header menus, FAQ answers), fetched as a
+// separate chunk once the page is up instead of in the first-load bundle.
+const loadMotionFeatures = () => import('@/lib/motionFeatures').then((mod) => mod.default);
+
 /**
  * Wraps the app so the header and footer can be dropped per route. `children` stays a server
  * component — it is passed through as a prop, so this client boundary does not pull the page
@@ -22,11 +27,11 @@ export function SiteChrome({ children }: { children: React.ReactNode }) {
   const pathname = usePathname() ?? '';
 
   if (BARE_ROUTES.some((route) => pathname.startsWith(route))) {
-    return <>{children}</>;
+    return <LazyMotion features={loadMotionFeatures}>{children}</LazyMotion>;
   }
 
   return (
-    <>
+    <LazyMotion features={loadMotionFeatures}>
       {/* First thing a keyboard reaches: jumps past the navigation. Hidden until focused. */}
       <a href="#main" className="skip-link">
         Skip to content
@@ -38,6 +43,6 @@ export function SiteChrome({ children }: { children: React.ReactNode }) {
       <main id="main" tabIndex={-1} className="flex-grow overflow-x-clip outline-none">{children}</main>
       <Footer />
       <MessagingButtons />
-    </>
+    </LazyMotion>
   );
 }
