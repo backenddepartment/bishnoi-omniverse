@@ -25,7 +25,12 @@
  *                                    through the Sheets API
  *   SHEETS_SPREADSHEET_ID            the sheet that service account writes to (shared with it)
  *   SHEETS_TIME_ZONE                 optional; time zone of the Received column. Default Asia/Manila
+ *   EMAIL_ASSET_BASE                 optional; where the email's images live. Default: this
+ *                                    Worker's own /email/ folder (see src/email-assets.js)
  */
+
+import { renderHtml } from './email-template.js';
+import { EMAIL_ASSETS } from './email-assets.js';
 
 // Attachment limits, the same numbers as the PHP original. Brevo refuses any single attachment of
 // 4MB or more. lib/inquiry.ts publishes the same values to the browser — keep the two in step.
@@ -222,84 +227,9 @@ async function verifyCaptcha(token, env, ip) {
  * Email rendering (HTML + plain text)
  * ------------------------------------------------------------------ */
 
-const esc = (value) =>
-  String(value)
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#039;');
-
-const FONT = "Georgia,'Times New Roman',serif";
 const BRAND = 'Bishnoi Omniverse';
 
-/**
- * @param {string} context  Sub-title under the masthead.
- * @param {Array<[string,string]>} fields  Ordered label/value rows; empty values dropped.
- * @param {Array<{name:string,url:string}>} items  Catalog products requested.
- * @param {string} message  Free-text notes.
- * @param {Array<{name:string,category:string}>} files  Attachment list.
- * @param {string} footer  Provenance line.
- */
-function renderHtml(context, fields, items, message, files, footer) {
-  const cell = (style, content) => `<td style="padding:12px 24px;border-bottom:1px solid #e4ddd0;font-family:${FONT};font-size:13px;vertical-align:top;${style}">${content}</td>`;
-
-  const rows = fields
-    .filter(([, value]) => value !== '' && value != null)
-    .map(([label, value]) => `<tr>${cell('color:#6e675a;width:160px;white-space:nowrap;', esc(label))}${cell('color:#0f0e0c;', esc(value).replace(/\n/g, '<br>'))}</tr>`)
-    .join('');
-
-  const panel = (title, inner) =>
-    `<tr><td style="padding:20px 24px 8px 24px;"><div style="font-family:${FONT};font-size:13px;color:#6e675a;margin-bottom:8px;">${title}</div>${inner}</td></tr>`;
-
-  const itemsBlock = items.length
-    ? panel(
-        `Items Requested (${items.length})`,
-        `<ul style="margin:0;padding-left:18px;">${items
-          .map((item) => {
-            const label = esc(item.name);
-            const content = item.url ? `<a href="${esc(item.url)}" style="color:#c2561a;">${label}</a>` : label;
-            return `<li style="font-family:${FONT};font-size:13px;color:#0f0e0c;margin-bottom:4px;">${content}</li>`;
-          })
-          .join('')}</ul>`
-      )
-    : '';
-
-  const messageBlock = message.trim()
-    ? panel(
-        'Message',
-        `<div style="font-family:${FONT};font-size:14px;color:#0f0e0c;line-height:1.65;background-color:#faf8f4;border:1px solid #e4ddd0;padding:16px 18px;">${esc(message).replace(/\n/g, '<br>')}</div>`
-      )
-    : '';
-
-  const filesBlock = files.length
-    ? panel(
-        'Attached Files',
-        `<ul style="margin:0;padding-left:18px;">${files
-          .map((file) => {
-            const category = file.category ? ` (${esc(file.category)})` : '';
-            return `<li style="font-family:${FONT};font-size:13px;color:#0f0e0c;">${esc(file.name)}${category} &mdash; attached</li>`;
-          })
-          .join('')}</ul>`
-      )
-    : '';
-
-  return (
-    '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#f2ede2;padding:32px 16px;">' +
-    '<tr><td align="center">' +
-    '<table role="presentation" width="600" cellpadding="0" cellspacing="0" style="background-color:#ffffff;border:1px solid #e4ddd0;max-width:600px;width:100%;">' +
-    `<tr><td style="background-color:#0f0e0c;padding:24px;border-bottom:3px solid #f36b21;">` +
-    `<span style="font-family:${FONT};font-size:17px;font-weight:bold;color:#ffffff;">${BRAND}</span><br>` +
-    `<span style="font-family:${FONT};font-size:12px;color:#cfc8bb;">${esc(context)}</span>` +
-    '</td></tr>' +
-    `<tr><td style="padding:0;"><table role="presentation" width="100%" cellpadding="0" cellspacing="0">${rows}</table></td></tr>` +
-    itemsBlock +
-    messageBlock +
-    filesBlock +
-    `<tr><td style="padding:20px 24px;border-top:1px solid #e4ddd0;"><span style="font-family:${FONT};font-size:11px;color:#6e675a;">${esc(footer)}</span></td></tr>` +
-    '</table></td></tr></table>'
-  );
-}
+// renderHtml lives in email-template.js.
 
 function renderText(context, fields, items, message, files) {
   const lines = [`${context} — ${BRAND}`, ''];
@@ -642,7 +572,7 @@ function normaliseItems(raw) {
     .filter((item) => item.name !== '');
 }
 
-async function processInquiry(payload, env, ip, ctx) {
+async function processInquiry(payload, env, ip, ctx, assets) {
   if (!payload || typeof payload !== 'object' || Array.isArray(payload)) {
     return result(400, 'Invalid request body.');
   }
@@ -719,7 +649,7 @@ async function processInquiry(payload, env, ip, ctx) {
     {
       to: recipient,
       subject,
-      html: renderHtml(context, fields, items, message, files.listed, footer),
+      html: renderHtml(context, fields, items, message, files.listed, footer, assets),
       text: renderText(context, fields, items, message, files.listed),
       replyTo: { name, email: mail },
       attachments: files.attachments,
@@ -759,6 +689,20 @@ function isAllowedOrigin(origin, env) {
 
 export default {
   async fetch(request, env, ctx) {
+    // The email's images, fetched by mail clients (Gmail through its image proxy) with no Origin.
+    const url = new URL(request.url);
+    if (url.pathname.startsWith('/email/') && (request.method === 'GET' || request.method === 'HEAD')) {
+      const image = EMAIL_ASSETS[url.pathname.slice('/email/'.length)];
+      if (!image) return new Response('Not found', { status: 404 });
+      return new Response(request.method === 'HEAD' ? null : image, {
+        headers: {
+          'Content-Type': 'image/png',
+          'Cache-Control': 'public, max-age=604800',
+          'X-Content-Type-Options': 'nosniff',
+        },
+      });
+    }
+
     const origin = request.headers.get('Origin') || '';
     const allowed = isAllowedOrigin(origin, env);
 
@@ -812,7 +756,9 @@ export default {
     }
 
     try {
-      const out = await processInquiry(payload, env, request.headers.get('CF-Connecting-IP') || '', ctx);
+      // Image links in the email point back at this Worker, unless EMAIL_ASSET_BASE says otherwise.
+      const assets = (String(env.EMAIL_ASSET_BASE ?? '').trim() || `${url.origin}/email`).replace(/\/+$/, '') + '/';
+      const out = await processInquiry(payload, env, request.headers.get('CF-Connecting-IP') || '', ctx, assets);
       return reply(out.status, out.body);
     } catch (err) {
       log(`Unhandled error: ${err && err.stack ? err.stack : err}`);

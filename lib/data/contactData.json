@@ -176,10 +176,10 @@
         },
         {
           "name": "deliveryLocation",
-          "label": "Delivery City / Region",
+          "label": "Address",
           "type": "text",
-          "placeholder": "e.g., Cebu City, Central Visayas",
-          "required": false
+          "placeholder": "e.g., 123 Osmeña Blvd, Cebu City, Cebu 6000",
+          "required": true
         },
         {
           "name": "supplyType",
@@ -211,8 +211,6 @@
           "name": "attachment",
           "label": "Tender Spec, PO or Product List",
           "type": "file",
-          "accept": ".pdf,.docx,.xlsx",
-          "hint": "Optional. PDF, DOCX or XLSX.",
           "wide": true,
           "required": false
         },

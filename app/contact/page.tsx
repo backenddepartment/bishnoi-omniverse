@@ -4,7 +4,9 @@ import React, { useEffect, useRef, useState } from 'react';
 import { ArrowUpRight, ChevronDown, Phone } from 'lucide-react';
 import contactData from '@/lib/data/contactData.json';
 import { InquiryGuard, type InquiryGuardHandle } from '@/components/InquiryGuard';
-import { CAPTCHA_ENABLED, DOCUMENT_EXTENSIONS, collectFiles, sendInquiry } from '@/lib/inquiry';
+import { CAPTCHA_ENABLED, DOCUMENT_EXTENSIONS, collectFiles, phoneInput, sendInquiry } from '@/lib/inquiry';
+import { SuccessDialog } from '@/components/SuccessDialog';
+import { AttachmentPicker } from '@/components/attachments/AttachmentPicker';
 
 // Fields sent as the email's own header rows (or its message panel) rather than as detail rows.
 const CORE_FIELDS = ['email', 'phone', 'additionalNotes', 'message'];
@@ -50,7 +52,7 @@ export default function ContactPage() {
   const [formData, setFormData] = useState<Record<string, string>>({});
   const [submitted, setSubmitted] = useState<boolean>(false);
   // Chosen files, by field name (formData keeps only their names, for display).
-  const [files, setFiles] = useState<Record<string, File | null>>({});
+  const [files, setFiles] = useState<Record<string, File[]>>({});
   const [sending, setSending] = useState<boolean>(false);
   const [sendError, setSendError] = useState<string>('');
   const [captchaToken, setCaptchaToken] = useState<string>('');
@@ -148,8 +150,7 @@ export default function ContactPage() {
 
     const chosen = activePersona.formFields
       .filter((field) => field.type === 'file')
-      .map((field) => files[field.name])
-      .filter((file): file is File => !!file);
+      .flatMap((field) => files[field.name] ?? []);
     const collected = await collectFiles(chosen, DOCUMENT_EXTENSIONS, 'Tender spec / PO / product list');
     if (!collected.ok) {
       setSendError(collected.error);
@@ -240,27 +241,22 @@ export default function ContactPage() {
               <p className="ct-form-tagline">&quot;{activePersona.tagline}&quot;</p>
 
               <div ref={formRef} className="scroll-target">
-            {submitted ? (
-              <div className="p-6 bg-ink text-white rounded space-y-3">
-                <h4 className="font-sans text-lg font-bold text-white m-0">Inquiry Submitted Successfully</h4>
-                <p className="text-sm !text-[#d7d2c1] leading-relaxed">
-                  Thank you. Your inquiry for <strong className="text-white">{activePersona.category}</strong> has been
-                  received. A dedicated Bishnoi Omniverse case manager will contact you within{' '}
-                  <strong className="text-white">24 hours</strong>.
+            {/* Once sent, the confirmation opens over the page; closing it clears the form. */}
+            {submitted && (
+              <SuccessDialog
+                title="Inquiry Sent!"
+                onClose={() => {
+                  setSubmitted(false);
+                  setFormData({});
+                  setFiles({});
+                }}
+              >
+                <p>
+                  Thank you. Your inquiry for <strong>{activePersona.category}</strong> has been received.
+                  A Bishnoi Omniverse case manager will contact you within <strong>24 hours</strong>.
                 </p>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setSubmitted(false);
-                    setFormData({});
-                    setFiles({});
-                  }}
-                  className="btn btn-outline !py-2 !px-4 !text-xs mt-2"
-                >
-                  Submit Another Request
-                </button>
-              </div>
-            ) : (
+              </SuccessDialog>
+            )}
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 items-end">
                   {activePersona.formFields.map((field) => {
@@ -286,25 +282,29 @@ export default function ContactPage() {
                             ))}
                           </select>
                         ) : field.type === 'file' ? (
-                          // File inputs can't be controlled; only the chosen file's name is kept.
-                          <input
-                            type="file"
-                            accept={field.accept}
+                          // Several files, each a card that opens a preview; formData keeps only
+                          // their names.
+                          <AttachmentPicker
+                            files={files[field.name] ?? []}
                             required={field.required}
-                            onChange={(e) => {
-                              const file = e.target.files?.[0] ?? null;
-                              setFiles((prev) => ({ ...prev, [field.name]: file }));
-                              handleInputChange(field.name, file?.name ?? '');
+                            onChange={(picked) => {
+                              setFiles((prev) => ({ ...prev, [field.name]: picked }));
+                              handleInputChange(field.name, picked.map((file) => file.name).join(', '));
                             }}
-                            className="field-input"
                           />
                         ) : (
                           <input
                             type={field.type}
+                            inputMode={field.type === 'tel' ? 'tel' : undefined}
                             required={field.required}
                             placeholder={field.placeholder}
                             value={formData[field.name] || ''}
-                            onChange={(e) => handleInputChange(field.name, e.target.value)}
+                            onChange={(e) =>
+                              handleInputChange(
+                                field.name,
+                                field.type === 'tel' ? phoneInput(e.target.value) : e.target.value
+                              )
+                            }
                             className="field-input"
                           />
                         )}
@@ -348,7 +348,6 @@ export default function ContactPage() {
                   </button>
                 </div>
               </form>
-            )}
               </div>
             </div>
           </div>

@@ -14,7 +14,6 @@ import {
   SendHorizontal,
   ShieldAlert,
   ShieldCheck,
-  ShoppingBag,
   Sparkles,
   Truck,
   Users,
@@ -24,6 +23,13 @@ import {
 import type { ProductImage } from '@/lib/catalogImages';
 import { parseSizes } from '@/lib/catalogSizes';
 import { Breadcrumbs } from '@/components/Breadcrumbs';
+import {
+  RequisitionModal,
+  readQuoteIds,
+  writeQuoteIds,
+  type RequisitionItem,
+} from '@/components/catalog/RequisitionModal';
+import catalogData from '@/lib/data/catalogData.json';
 import { EQUIPMENT_PATH, categoryPath, equipmentCrumbs, productPath } from '@/lib/catalogRoutes';
 
 export interface PdpProduct {
@@ -109,6 +115,21 @@ export function ProductDetail({ product, categoryName, categoryId, subcategoryNa
   const [activeSize, setActiveSize] = useState(0);
   const [activeTab, setActiveTab] = useState<Tab>('Use & Setting');
   const [isZoomed, setIsZoomed] = useState(false);
+  const [isInquiryOpen, setIsInquiryOpen] = useState(false);
+  const [quoteItems, setQuoteItems] = useState<RequisitionItem[]>([]);
+
+  // The same quote list the catalog keeps: Send Inquiry adds this product to it and opens the
+  // requisition form, so anything already picked on the catalog pages goes along too.
+  const saveQuote = (items: RequisitionItem[]) => {
+    setQuoteItems(items);
+    writeQuoteIds(items.map((item) => item.id));
+  };
+  const openInquiry = () => {
+    const ids = readQuoteIds();
+    if (!ids.includes(product.id)) ids.push(product.id);
+    saveQuote(catalogData.products.filter((p) => ids.includes(p.id)));
+    setIsInquiryOpen(true);
+  };
 
   // Photos fill the rail's slots in order; any slot past the last photo shows the placeholder.
   const gallery = product.gallery?.length ? product.gallery : image ? [image] : [];
@@ -278,16 +299,9 @@ export function ProductDetail({ product, categoryName, categoryId, subcategoryNa
             )}
 
             <div className="pdp-actions">
-              <Link
-                href={
-                  sizes.length > 0
-                    ? `${requestHref}&size=${encodeURIComponent(sizes[activeSize])}`
-                    : requestHref
-                }
-                className="pdp-cta"
-              >
-                <ShoppingBag className="w-5 h-5" /> Add to Quote
-              </Link>
+              <button type="button" onClick={openInquiry} className="pdp-cta">
+                <SendHorizontal className="w-5 h-5" /> Send Inquiry
+              </button>
             </div>
 
             <div className="pdp-trust">
@@ -545,6 +559,15 @@ export function ProductDetail({ product, categoryName, categoryId, subcategoryNa
           </div>
         </section>
       )}
+
+      <RequisitionModal
+        open={isInquiryOpen}
+        onClose={() => setIsInquiryOpen(false)}
+        items={quoteItems}
+        onRemoveItem={(id) => saveQuote(quoteItems.filter((item) => item.id !== id))}
+        onSent={() => saveQuote([])}
+        initialNotes={sizes.length > 0 ? `Size: ${sizes[activeSize]}` : undefined}
+      />
 
       {/* Zoom overlay */}
       {isZoomed && stageImage && (

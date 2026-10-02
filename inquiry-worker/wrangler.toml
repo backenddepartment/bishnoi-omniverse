@@ -11,3 +11,10 @@ compatibility_date = "2025-01-01"
 # Pages allowed to submit. Add your own domain here once the site moves to one.
 ALLOWED_ORIGINS = "https://bishnoiomniverse.com,https://www.bishnoiomniverse.com,http://bishnoiomniverse.com,http://www.bishnoiomniverse.com,https://backenddepartment.github.io,http://localhost:3000,http://localhost:3001"
 BREVO_SENDER_NAME = "Bishnoi Omniverse"
+
+# The inquiry email's PNG images (src/email-assets) are bundled into the Worker as binary data and
+# served at /email/<name>.png. See src/email-assets.js.
+[[rules]]
+type = "Data"
+globs = ["**/*.png"]
+fallthrough = true
