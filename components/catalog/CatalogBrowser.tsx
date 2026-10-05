@@ -2,26 +2,27 @@
 
 import React, { useState, useMemo, useEffect, useRef } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import {
   Search,
   X,
-  Plus,
   Check,
-  ChevronLeft,
   ChevronRight,
   Info,
   LayoutGrid,
   List,
   ChevronDown,
-  SendHorizontal,
-  ImageIcon,
   RotateCcw,
 } from 'lucide-react';
 import { AnimatePresence, MotionConfig, motion, type Variants } from 'framer-motion';
 import catalogData from '@/lib/data/catalogData.json';
 import { PRODUCT_GALLERIES } from '@/lib/productImageOverrides';
-import { RequisitionModal, readQuoteIds, writeQuoteIds } from '@/components/catalog/RequisitionModal';
+import { RequisitionModal } from '@/components/catalog/RequisitionModal';
+import { InquiryMenu, type InquiryType } from '@/components/catalog/InquiryMenu';
+import { AddToQuoteButton } from '@/components/quote/AddToQuoteButton';
 import { Breadcrumbs } from '@/components/Breadcrumbs';
+import { Pagination } from '@/components/catalog/Pagination';
+import { CategoryArt } from '@/components/catalog/CategoryArt';
 import {
   EQUIPMENT_PATH,
   categoryPath,
@@ -31,7 +32,7 @@ import {
   subcategorySlug,
 } from '@/lib/catalogRoutes';
 import { getCategoryOverview } from '@/lib/categoryOverviews';
-import heroImg from '@/app/assets/medicinebgpage.png';
+import heroImg from '@/app/assets/medicinebgpage.webp';
 import bannerImg from '@/app/assets/bannermedical.png';
 
 const IMG = {
@@ -87,30 +88,6 @@ const SORT_OPTIONS: { value: SortKey; label: string }[] = [
   { value: 'subcategory-asc', label: 'Subcategory: A → Z' },
 ];
 
-// Inquiry dropdown footprint, used to keep it on-screen when positioning it.
-const INQUIRY_MENU_WIDTH = 220;
-const INQUIRY_MENU_HEIGHT = 100;
-
-interface InquiryMenuState {
-  productId: string;
-  left: number;
-  top?: number;
-  bottom?: number;
-}
-
-// Page buttons to render: always the first and last page plus the current page's neighbours,
-// with an ellipsis standing in for each skipped run (e.g. 1 … 4 5 6 … 26).
-const getPageNumbers = (current: number, total: number): (number | 'ellipsis')[] => {
-  if (total <= 7) return Array.from({ length: total }, (_, i) => i + 1);
-  const pages: (number | 'ellipsis')[] = [1];
-  const start = Math.max(2, current - 1);
-  const end = Math.min(total - 1, current + 1);
-  if (start > 2) pages.push('ellipsis');
-  for (let i = start; i <= end; i++) pages.push(i);
-  if (end < total - 1) pages.push('ellipsis');
-  pages.push(total);
-  return pages;
-};
 
 interface ProductItem {
   id: string;
@@ -150,8 +127,6 @@ export function CatalogBrowser({ categoryId }: { categoryId?: string }) {
   const resultsRef = useRef<HTMLDivElement>(null);
   const [viewMode, setViewMode] = useState<ViewMode>('grid');
   const [sortKey, setSortKey] = useState<SortKey>('default');
-  const [inquiryMenu, setInquiryMenu] = useState<InquiryMenuState | null>(null);
-  const [quoteItems, setQuoteItems] = useState<ProductItem[]>([]);
   const [isRfqModalOpen, setIsRfqModalOpen] = useState<boolean>(false);
 
   const subcategoryName = useMemo(() => {
@@ -174,21 +149,6 @@ export function CatalogBrowser({ categoryId }: { categoryId?: string }) {
     }
   }, [categoryId, subcategories]);
 
-  // Pick up the quote list started on another catalog page, then keep the stored copy current.
-  const quoteRestored = useRef(false);
-  useEffect(() => {
-    const saved = readQuoteIds();
-    if (saved.length > 0) {
-      setQuoteItems(products.filter((p: ProductItem) => saved.includes(p.id)));
-    }
-    quoteRestored.current = true;
-  }, [products]);
-
-  useEffect(() => {
-    if (!quoteRestored.current) return;
-    writeQuoteIds(quoteItems.map((item) => item.id));
-  }, [quoteItems]);
-
   // Restore the visitor's last Grid/Table choice; storage can be unavailable (private mode).
   useEffect(() => {
     try {
@@ -196,35 +156,6 @@ export function CatalogBrowser({ categoryId }: { categoryId?: string }) {
       if (saved === 'grid' || saved === 'table') setViewMode(saved);
     } catch {}
   }, []);
-
-  // The inquiry menu is fixed-positioned (the table's sideways scroll would clip it), so rather
-  // than follow its button it closes on any outside click, resize, Escape, or a real scroll. A page
-  // scroll of a few pixels, as a thumb resting on a phone screen causes, leaves it open.
-  useEffect(() => {
-    if (!inquiryMenu) return;
-    const close = () => setInquiryMenu(null);
-    const startY = window.scrollY;
-    const onScroll = (e: Event) => {
-      const pageScrolled = e.target === document || e.target === document.documentElement;
-      if (!pageScrolled || Math.abs(window.scrollY - startY) > 24) close();
-    };
-    const onMouseDown = (e: MouseEvent) => {
-      if (!(e.target as HTMLElement).closest('.inquiry-menu, .inquiry-btn')) close();
-    };
-    const onKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') close();
-    };
-    document.addEventListener('mousedown', onMouseDown);
-    document.addEventListener('keydown', onKeyDown);
-    window.addEventListener('scroll', onScroll, true);
-    window.addEventListener('resize', close);
-    return () => {
-      document.removeEventListener('mousedown', onMouseDown);
-      document.removeEventListener('keydown', onKeyDown);
-      window.removeEventListener('scroll', onScroll, true);
-      window.removeEventListener('resize', close);
-    };
-  }, [inquiryMenu]);
 
   const changeViewMode = (mode: ViewMode) => {
     setViewMode(mode);
@@ -309,37 +240,16 @@ export function CatalogBrowser({ categoryId }: { categoryId?: string }) {
     window.history.replaceState(null, '', url);
   };
 
-  const addToQuote = (product: ProductItem) => {
-    if (!quoteItems.some((item) => item.id === product.id)) {
-      setQuoteItems([...quoteItems, product]);
-    }
-  };
 
-  const removeFromQuote = (productId: string) => {
-    setQuoteItems(quoteItems.filter((item) => item.id !== productId));
-  };
-
-  // Opens below the button, or above it when there is no room left in the viewport.
-  const toggleInquiryMenu = (e: React.MouseEvent<HTMLButtonElement>, productId: string) => {
-    if (inquiryMenu?.productId === productId) {
-      setInquiryMenu(null);
-      return;
-    }
-    const rect = e.currentTarget.getBoundingClientRect();
-    const left = Math.max(8, Math.min(rect.left, window.innerWidth - INQUIRY_MENU_WIDTH - 8));
-    const opensUp = rect.bottom + INQUIRY_MENU_HEIGHT + 8 > window.innerHeight;
-    setInquiryMenu(
-      opensUp
-        ? { productId, left, bottom: window.innerHeight - rect.top + 6 }
-        : { productId, left, top: rect.bottom + 6 }
-    );
+  // Send Inquiry's menu leads to the product's own page, which opens the chosen type's form.
+  const router = useRouter();
+  const inquireAbout = (product: ProductItem, type: InquiryType) => {
+    router.push(`${productPath(product)}/?inquiry=${type}`);
   };
 
   const isFiltered = selectedSubcategory !== 'all';
   const selectedCategoryName = category?.name;
 
-  const inquiryProduct = inquiryMenu ? products.find((p) => p.id === inquiryMenu.productId) : undefined;
-  const inquiryAdded = inquiryProduct ? quoteItems.some((item) => item.id === inquiryProduct.id) : false;
 
   return (
     <div className="w-full catalog-page">
@@ -555,24 +465,10 @@ export function CatalogBrowser({ categoryId }: { categoryId?: string }) {
                   )}
                 </div>
                 <div className="catalog-sort shrink-0">
-                  <label htmlFor="catalog-sort" className="catalog-sort-label">
+                  <span id="catalog-sort-label" className="catalog-sort-label">
                     Sort by:
-                  </label>
-                  <div className="catalog-sort-field">
-                    <select
-                      id="catalog-sort"
-                      value={sortKey}
-                      onChange={(e) => setSortKey(e.target.value as SortKey)}
-                      className="catalog-sort-select"
-                    >
-                      {SORT_OPTIONS.map((option) => (
-                        <option key={option.value} value={option.value}>
-                          {option.label}
-                        </option>
-                      ))}
-                    </select>
-                    <ChevronDown className="catalog-sort-caret" aria-hidden="true" />
-                  </div>
+                  </span>
+                  <SortMenu value={sortKey} onChange={setSortKey} />
                 </div>
                 <div className="catalog-view-toggle shrink-0" role="group" aria-label="Product layout">
                   <button
@@ -616,6 +512,7 @@ export function CatalogBrowser({ categoryId }: { categoryId?: string }) {
               ) : (
                 <>
                 {viewMode === 'table' ? (
+                <>
                 <div className="product-table-wrap">
                   <table className="product-table">
                     <thead>
@@ -624,8 +521,7 @@ export function CatalogBrowser({ categoryId }: { categoryId?: string }) {
                         <th scope="col">Subcategory</th>
                         <th scope="col">Sterility</th>
                         <th scope="col">Reuse</th>
-                        <th scope="col">Regulatory Class</th>
-                        <th scope="col">Inquiry</th>
+                        <th scope="col" className="product-table-actions-head">Quote / Inquiry</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -637,25 +533,55 @@ export function CatalogBrowser({ categoryId }: { categoryId?: string }) {
                           <td>{subcategoryName(product.subcategoryId)}</td>
                           <td>{product.sterility || '—'}</td>
                           <td>{product.reuse || '—'}</td>
-                          <td className="product-table-tag">{product.regulatoryClass || '—'}</td>
-                          <td>
-                            <button
-                              type="button"
-                              aria-haspopup="menu"
-                              aria-expanded={inquiryMenu?.productId === product.id}
-                              onClick={(e) => toggleInquiryMenu(e, product.id)}
-                              className="inquiry-btn"
-                            >
-                              <SendHorizontal className="inquiry-btn-send" aria-hidden="true" />
-                              <span>Send Inquiry</span>
-                              <ChevronDown className="inquiry-btn-caret" aria-hidden="true" />
-                            </button>
+                          <td className="product-table-actions">
+                            <div className="product-actions">
+                              <AddToQuoteButton productId={product.id} productName={product.name} />
+                              <InquiryMenu productName={product.name} onSelect={(type) => inquireAbout(product, type)} />
+                            </div>
                           </td>
                         </tr>
                       ))}
                     </tbody>
                   </table>
                 </div>
+
+                {/* Phones: the table's rows as compact cards, details in two columns, so everything and
+                    the inquiry button fit the screen without scrolling sideways. */}
+                <ul className="product-rows">
+                  {pagedProducts.map((product: ProductItem) => (
+                    // Laid out like a grid card: name, subcategory, Class and Setting with their
+                    // label pills, then Send Inquiry with the round Add to Quote beside it.
+                    <li key={product.id} className="product-row">
+                      <div className="product-row-head">
+                        <Link href={productPath(product)} className="product-row-name">
+                          {product.name}
+                        </Link>
+                        <span className="product-row-sub">{subcategoryName(product.subcategoryId)}</span>
+                        {(product.regulatoryClass || product.useSetting) && (
+                          <dl className="product-card-facts">
+                            {product.regulatoryClass && (
+                              <div className="is-class" title={`Class: ${product.regulatoryClass}`}>
+                                <dt>Class</dt>
+                                <dd>{product.regulatoryClass}</dd>
+                              </div>
+                            )}
+                            {product.useSetting && (
+                              <div className="is-setting" title={`Setting: ${product.useSetting}`}>
+                                <dt>Setting</dt>
+                                <dd>{product.useSetting}</dd>
+                              </div>
+                            )}
+                          </dl>
+                        )}
+                      </div>
+                      <div className="product-actions">
+                        <InquiryMenu productName={product.name} onSelect={(type) => inquireAbout(product, type)} />
+                        <AddToQuoteButton variant="icon" productId={product.id} productName={product.name} />
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+                </>
                 ) : (
                 <div className="product-grid">
                   {pagedProducts.map((product: ProductItem) => {
@@ -671,35 +597,40 @@ export function CatalogBrowser({ categoryId }: { categoryId?: string }) {
                             <img src={photo.src} alt={photo.alt} loading="lazy" />
                           ) : (
                             <span className="product-card-empty">
-                              <ImageIcon strokeWidth={1.5} aria-hidden="true" />
-                              <span>No image</span>
+                              <CategoryArt categoryId={product.categoryId} />
                             </span>
                           )}
                         </Link>
 
                         <div className="product-card-body">
-                          <div>
-                            <Link href={productPath(product)}>
+                          {/* Name, then its subcategory and the key facts, each a small label pill
+                              (Class, Setting) with its value beside it. */}
+                          <div className="product-card-info">
+                            <Link href={productPath(product)} title={product.name}>
                               <h3>{product.name}</h3>
                             </Link>
-                            {product.sterility && (
-                              <span className="product-card-sterility">{product.sterility}</span>
+                            <span className="product-card-sub">{subcategoryName(product.subcategoryId)}</span>
+                            {(product.regulatoryClass || product.useSetting) && (
+                              <dl className="product-card-facts">
+                                {product.regulatoryClass && (
+                                  <div className="is-class" title={`Class: ${product.regulatoryClass}`}>
+                                    <dt>Class</dt>
+                                    <dd>{product.regulatoryClass}</dd>
+                                  </div>
+                                )}
+                                {product.useSetting && (
+                                  <div className="is-setting" title={`Setting: ${product.useSetting}`}>
+                                    <dt>Setting</dt>
+                                    <dd>{product.useSetting}</dd>
+                                  </div>
+                                )}
+                              </dl>
                             )}
                           </div>
 
-                          <div className="product-card-foot">
-                            {/* Same inquiry dropdown as the table: add to the quote list or send now. */}
-                            <button
-                              type="button"
-                              aria-haspopup="menu"
-                              aria-expanded={inquiryMenu?.productId === product.id}
-                              onClick={(e) => toggleInquiryMenu(e, product.id)}
-                              className="inquiry-btn"
-                            >
-                              <SendHorizontal className="inquiry-btn-send" aria-hidden="true" />
-                              <span>Send Inquiry</span>
-                              <ChevronDown className="inquiry-btn-caret" aria-hidden="true" />
-                            </button>
+                          <div className="product-card-foot product-actions">
+                            <InquiryMenu productName={product.name} onSelect={(type) => inquireAbout(product, type)} />
+                            <AddToQuoteButton variant="icon" productId={product.id} productName={product.name} />
                           </div>
                         </div>
                       </div>
@@ -708,46 +639,7 @@ export function CatalogBrowser({ categoryId }: { categoryId?: string }) {
                 </div>
                 )}
 
-                {totalPages > 1 && (
-                  <nav className="catalog-pagination" aria-label="Product pages">
-                    <button
-                      type="button"
-                      onClick={() => goToPage(currentPage - 1)}
-                      disabled={currentPage === 1}
-                      aria-label="Previous page"
-                      className="catalog-page-btn is-arrow"
-                    >
-                      <ChevronLeft className="w-4 h-4" />
-                    </button>
-                    {getPageNumbers(currentPage, totalPages).map((page, idx) =>
-                      page === 'ellipsis' ? (
-                        <span key={`ellipsis-${idx}`} className="catalog-page-ellipsis" aria-hidden="true">
-                          …
-                        </span>
-                      ) : (
-                        <button
-                          key={page}
-                          type="button"
-                          onClick={() => goToPage(page)}
-                          aria-label={`Page ${page}`}
-                          aria-current={page === currentPage ? 'page' : undefined}
-                          className={`catalog-page-btn${page === currentPage ? ' is-active' : ''}`}
-                        >
-                          {page}
-                        </button>
-                      )
-                    )}
-                    <button
-                      type="button"
-                      onClick={() => goToPage(currentPage + 1)}
-                      disabled={currentPage === totalPages}
-                      aria-label="Next page"
-                      className="catalog-page-btn is-arrow"
-                    >
-                      <ChevronRight className="w-4 h-4" />
-                    </button>
-                  </nav>
-                )}
+                <Pagination current={currentPage} total={totalPages} onChange={goToPage} label="Product pages" />
                 </>
               )}
 
@@ -764,47 +656,108 @@ export function CatalogBrowser({ categoryId }: { categoryId?: string }) {
         </div>
       </section>
 
-      {/* Table-view inquiry dropdown */}
-      {inquiryMenu && inquiryProduct && (
-        <div
-          className="inquiry-menu"
-          role="menu"
-          style={{ left: inquiryMenu.left, top: inquiryMenu.top, bottom: inquiryMenu.bottom }}
-        >
-          <button
-            type="button"
-            role="menuitem"
-            onClick={() => {
-              if (inquiryAdded) removeFromQuote(inquiryProduct.id);
-              else addToQuote(inquiryProduct);
-              setInquiryMenu(null);
-            }}
-          >
-            {inquiryAdded ? <Check aria-hidden="true" /> : <Plus aria-hidden="true" />}
-            <span>{inquiryAdded ? 'Remove from quote list' : 'Add to quote list'}</span>
-          </button>
-          <button
-            type="button"
-            role="menuitem"
-            onClick={() => {
-              addToQuote(inquiryProduct);
-              setInquiryMenu(null);
-              setIsRfqModalOpen(true);
-            }}
-          >
-            <SendHorizontal aria-hidden="true" />
-            <span>Send inquiry now</span>
-          </button>
-        </div>
-      )}
-
       <RequisitionModal
         open={isRfqModalOpen}
         onClose={() => setIsRfqModalOpen(false)}
-        items={quoteItems}
-        onRemoveItem={removeFromQuote}
-        onSent={() => setQuoteItems([])}
+        items={[]}
+        onRemoveItem={() => {}}
+        onSent={() => {}}
       />
+    </div>
+  );
+}
+
+/**
+ * Sort picker. A custom list rather than a native <select>, whose option popup the browser draws
+ * at its own (on phones, oversized) scale; this one stays small and centred under its button.
+ */
+function SortMenu({ value, onChange }: { value: SortKey; onChange: (key: SortKey) => void }) {
+  const [open, setOpen] = useState(false);
+  const [focusIdx, setFocusIdx] = useState(0);
+  const rootRef = useRef<HTMLDivElement>(null);
+  const listRef = useRef<HTMLUListElement>(null);
+  const current = SORT_OPTIONS.find((option) => option.value === value) ?? SORT_OPTIONS[0];
+
+  useEffect(() => {
+    if (!open) return;
+    const onPointer = (e: PointerEvent) => {
+      if (!rootRef.current?.contains(e.target as Node)) setOpen(false);
+    };
+    document.addEventListener('pointerdown', onPointer);
+    listRef.current?.focus();
+    return () => document.removeEventListener('pointerdown', onPointer);
+  }, [open]);
+
+  const openMenu = () => {
+    setFocusIdx(Math.max(0, SORT_OPTIONS.findIndex((option) => option.value === value)));
+    setOpen(true);
+  };
+  const choose = (key: SortKey) => {
+    onChange(key);
+    setOpen(false);
+  };
+
+  const onListKey = (e: React.KeyboardEvent) => {
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      setFocusIdx((i) => (i + 1) % SORT_OPTIONS.length);
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      setFocusIdx((i) => (i - 1 + SORT_OPTIONS.length) % SORT_OPTIONS.length);
+    } else if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      choose(SORT_OPTIONS[focusIdx].value);
+    } else if (e.key === 'Escape' || e.key === 'Tab') {
+      setOpen(false);
+    }
+  };
+
+  return (
+    <div ref={rootRef} className="catalog-sort-field">
+      <button
+        type="button"
+        aria-haspopup="listbox"
+        aria-expanded={open}
+        aria-labelledby="catalog-sort-label catalog-sort-button"
+        id="catalog-sort-button"
+        onClick={() => (open ? setOpen(false) : openMenu())}
+        onKeyDown={(e) => {
+          if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+            e.preventDefault();
+            openMenu();
+          }
+        }}
+        className={`catalog-sort-select${open ? ' is-open' : ''}`}
+      >
+        {current.label}
+      </button>
+      <ChevronDown className="catalog-sort-caret" aria-hidden="true" />
+      {open && (
+        <ul
+          ref={listRef}
+          role="listbox"
+          tabIndex={-1}
+          aria-labelledby="catalog-sort-label"
+          aria-activedescendant={`catalog-sort-${SORT_OPTIONS[focusIdx].value}`}
+          onKeyDown={onListKey}
+          className="catalog-sort-menu"
+        >
+          {SORT_OPTIONS.map((option, idx) => (
+            <li
+              key={option.value}
+              id={`catalog-sort-${option.value}`}
+              role="option"
+              aria-selected={option.value === value}
+              onClick={() => choose(option.value)}
+              onMouseEnter={() => setFocusIdx(idx)}
+              className={`catalog-sort-option${idx === focusIdx ? ' is-focused' : ''}${option.value === value ? ' is-selected' : ''}`}
+            >
+              {option.label}
+              {option.value === value && <Check aria-hidden="true" />}
+            </li>
+          ))}
+        </ul>
+      )}
     </div>
   );
 }

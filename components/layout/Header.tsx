@@ -14,6 +14,12 @@ import { NavSearch } from '@/components/NavSearch';
 import { PH_PHONE_DISPLAY, PH_TEL_HREF } from '@/lib/contactChannels';
 import { CATALOG_PATH, EQUIPMENT_PATH, categoryPath } from '@/lib/catalogRoutes';
 
+/** Each mobile menu entry fades up into place, staggered by its parent. */
+const MOBILE_ITEM = {
+  hidden: { opacity: 0, y: 12 },
+  shown: { opacity: 1, y: 0, transition: { duration: 0.32, ease: [0.22, 1, 0.36, 1] } },
+};
+
 const ABOUT_LINKS: { label: string; href: string }[] = [
   { label: 'Our Story', href: '/about' },
   { label: 'Leadership', href: '/about/leadership' },
@@ -44,6 +50,16 @@ const GLOBAL_NETWORK_LINKS: { label: string; href: string; external?: boolean }[
 
 export const Header: React.FC = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  // While the mobile menu fills the screen, the page behind it stays put.
+  useEffect(() => {
+    if (!mobileMenuOpen) return;
+    const previous = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = previous;
+    };
+  }, [mobileMenuOpen]);
   const [networkOpen, setNetworkOpen] = useState(false);
   const [catalogOpen, setCatalogOpen] = useState(false);
   const [aboutOpen, setAboutOpen] = useState(false);
@@ -457,46 +473,69 @@ export const Header: React.FC = () => {
         </div>
       </div>
 
-      {mobileMenuOpen && (
-        // Never taller than the screen below the bar: the list scrolls on its own, so every link can be
-        // reached on a short phone without first scrolling the page underneath to its end.
-        <div className="lg:hidden max-h-[calc(100dvh-68px)] overflow-y-auto overscroll-contain bg-paper border-t border-line px-8 py-5 space-y-4">
-          {mobileNavLinks.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              onClick={() => setMobileMenuOpen(false)}
-              className={`block text-sm font-medium ${isActive(link.href) ? 'text-ink font-semibold' : 'text-ink-soft'}`}
-            >
-              {link.label}
-            </Link>
-          ))}
-
-          <a
-            href={PH_TEL_HREF}
-            className="flex items-center gap-2 text-sm font-semibold text-ink no-underline"
+      <AnimatePresence>
+        {mobileMenuOpen && (
+          // Fills the screen below the bar, on white; the list scrolls on its own if it runs longer,
+          // so every link can be reached on a short phone. Links slide in one after another.
+          <m.div
+            key="mobile-menu"
+            className="lg:hidden h-[calc(100dvh-68px)] overflow-y-auto overscroll-contain bg-white border-t border-line px-8 py-5"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0, transition: { duration: 0.15 } }}
+            transition={{ duration: 0.2 }}
           >
-            <Phone className="w-4 h-4 text-accent" aria-hidden="true" />
-            Call {PH_PHONE_DISPLAY}
-          </a>
-
-          <div className="border-t border-line pt-4">
-            <h4 className="font-poppins font-bold text-sm text-ink mb-3">Global Network</h4>
-            <div className="grid grid-cols-2 gap-x-6 gap-y-2.5">
-              {GLOBAL_NETWORK_LINKS.map((item) => (
-                <Link
-                  key={item.label}
-                  href={item.href}
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="text-xs font-medium text-ink-soft hover:text-ink"
-                >
-                  {item.label}
-                </Link>
+            <m.div
+              className="space-y-4"
+              initial="hidden"
+              animate="shown"
+              variants={{ shown: { transition: { staggerChildren: 0.045, delayChildren: 0.05 } } }}
+            >
+              {mobileNavLinks.map((link) => (
+                <m.div key={link.href} variants={MOBILE_ITEM}>
+                  <Link
+                    href={link.href}
+                    onClick={() => setMobileMenuOpen(false)}
+                    className={`block text-sm font-medium ${isActive(link.href) ? 'text-ink font-semibold' : 'text-ink-soft'}`}
+                  >
+                    {link.label}
+                  </Link>
+                </m.div>
               ))}
-            </div>
-          </div>
-        </div>
-      )}
+
+              <m.div variants={MOBILE_ITEM}>
+                <a
+                  href={PH_TEL_HREF}
+                  className="flex items-center gap-2 text-sm font-semibold text-ink no-underline"
+                >
+                  <Phone className="w-4 h-4 text-accent" aria-hidden="true" />
+                  Call {PH_PHONE_DISPLAY}
+                </a>
+              </m.div>
+
+              <m.div variants={MOBILE_ITEM} className="border-t border-line pt-4">
+                <h4 className="font-poppins font-bold text-sm text-ink mb-3">Global Network</h4>
+                <m.div
+                  className="grid grid-cols-2 gap-x-6 gap-y-2.5"
+                  variants={{ shown: { transition: { staggerChildren: 0.03 } } }}
+                >
+                  {GLOBAL_NETWORK_LINKS.map((item) => (
+                    <m.div key={item.label} variants={MOBILE_ITEM}>
+                      <Link
+                        href={item.href}
+                        onClick={() => setMobileMenuOpen(false)}
+                        className="text-xs font-medium text-ink-soft hover:text-ink"
+                      >
+                        {item.label}
+                      </Link>
+                    </m.div>
+                  ))}
+                </m.div>
+              </m.div>
+            </m.div>
+          </m.div>
+        )}
+      </AnimatePresence>
     </header>
   );
 };

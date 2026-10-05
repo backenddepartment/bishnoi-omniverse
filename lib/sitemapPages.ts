@@ -17,7 +17,7 @@ import dialysisImg from '@/app/assets/dialysis.jpg';
 import patientMonitoringImg from '@/app/assets/patientmonitoring.png';
 import respiratoryCareImg from '@/app/assets/respiratorycare.png';
 import surgicalImg from '@/app/assets/surgical.png';
-import catalogHeroImg from '@/app/assets/medicinebgpage.png';
+import catalogHeroImg from '@/app/assets/medicinebgpage.webp';
 import categoryBannerImg from '@/app/assets/bannermedical.png';
 import articlesHeroImg from '@/app/assets/article.png';
 import qualityHeroImg from '@/app/assets/quality.png';
@@ -47,7 +47,7 @@ import chiImg from '@/app/assets/maamchi.png';
 import debbieImg from '@/app/assets/maamdebbie.png';
 import experienceImg from '@/app/assets/backgroundsection.png';
 import visionHeroImg from '@/app/assets/qualityandcompliance.png';
-import contactHeroImg from '@/app/assets/contact.png';
+import contactHeroImg from '@/app/assets/contact.webp';
 
 /**
  * One list of the site's public pages, shared by the three sitemaps: sitemap.xml (URLs),

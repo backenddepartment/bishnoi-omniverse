@@ -38,27 +38,11 @@ export default function ProductDetailPage({ params }: { params: Params }) {
 
   const category = catalogData.categories.find((c) => c.id === product.categoryId);
   const subcategory = catalogData.subcategories.find((s) => s.id === product.subcategoryId);
-  const subcategoryName = (id: string) =>
-    catalogData.subcategories.find((s) => s.id === id)?.name;
 
-  // Nearest neighbours first: same subcategory, then the rest of the category, then anything.
-  const others = catalogData.products.filter((p) => p.id !== product.id);
-  const related: PdpRelated[] = [
-    ...others.filter((p) => p.subcategoryId === product.subcategoryId),
-    ...others.filter(
-      (p) => p.categoryId === product.categoryId && p.subcategoryId !== product.subcategoryId
-    ),
-    ...others.filter((p) => p.categoryId !== product.categoryId),
-  ]
-    .slice(0, 4)
-    .map((p) => ({
-      id: p.id,
-      name: p.name,
-      categoryId: p.categoryId,
-      subcategoryName: subcategoryName(p.subcategoryId),
-      sterility: p.sterility,
-      image: PRODUCT_GALLERIES[p.id]?.[0],
-    }));
+  // The category's other subcategories, so the foot of the page leads sideways through the range.
+  const related: PdpRelated[] = catalogData.subcategories.filter(
+    (s) => s.categoryId === product.categoryId && s.id !== product.subcategoryId
+  );
 
   return (
     <ProductDetail

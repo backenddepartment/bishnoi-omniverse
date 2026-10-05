@@ -1,28 +1,30 @@
 import {
   Accessibility,
+  Ambulance,
   Armchair,
   Baby,
   Bandage,
+  BedDouble,
   Biohazard,
   Droplets,
+  Filter,
   FlaskConical,
   Hand,
   HeartPulse,
+  HousePlus,
+  Microscope,
+  Milk,
   Package,
   Pill,
-  HousePlus,
   ScanLine,
   Scissors,
-  Shield,
-  Siren,
+  ShieldPlus,
   Smile,
   SprayCan,
   Stethoscope,
   Syringe,
-  TestTubes,
   Waves,
   Wind,
-  BedDouble,
   type LucideIcon,
 } from 'lucide-react';
 
@@ -36,24 +38,25 @@ import {
  * illustrated by category until real photos are licensed and committed to public/products.
  */
 export const categoryIcons: Record<string, LucideIcon> = {
+  'dialysis-equipment': Filter,
   gloves: Hand,
-  'personal-protective-equipment-ppe': Shield,
+  'personal-protective-equipment-ppe': ShieldPlus,
   'infection-control-and-sterilization': SprayCan,
   'patient-monitoring': HeartPulse,
   'diagnostic-equipment': Stethoscope,
   'respiratory-care': Wind,
   'surgical-equipment': Scissors,
   'patient-care-equipment': BedDouble,
-  'emergency-and-critical-care': Siren,
+  'emergency-and-critical-care': Ambulance,
   'infusion-and-injection': Syringe,
-  'laboratory-equipment': TestTubes,
+  'laboratory-equipment': Microscope,
   'medical-furniture': Armchair,
   'wound-care': Bandage,
   'medical-consumables': Package,
   urology: Droplets,
   gastroenterology: Waves,
   'obstetrics-and-gynecology': Baby,
-  'neonatal-and-pediatric': Baby,
+  'neonatal-and-pediatric': Milk,
   'physiotherapy-and-rehabilitation': Accessibility,
   'imaging-equipment': ScanLine,
   'pharmacy-and-medication-storage': Pill,
@@ -64,4 +67,9 @@ export const categoryIcons: Record<string, LucideIcon> = {
 
 export function getCategoryIcon(categoryId: string): LucideIcon {
   return categoryIcons[categoryId] || FlaskConical;
+}
+
+/** The category's icon, or undefined when the category has none mapped yet. */
+export function findCategoryIcon(categoryId: string): LucideIcon | undefined {
+  return categoryIcons[categoryId];
 }

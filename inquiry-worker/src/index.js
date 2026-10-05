@@ -14,8 +14,9 @@
  *   BREVO_SENDER_EMAIL               a sender verified in that Brevo account
  *   BREVO_SENDER_NAME                optional; defaults to "Bishnoi Omniverse"
  *   TURNSTILE_SECRET_KEY             secret; blank skips the challenge (for a first test only)
- *   CONTACT_RECIPIENT_EMAIL          inbox for contact-page inquiries
- *   PRODUCT_INQUIRY_RECIPIENT_EMAIL  optional inbox for medical equipment inquiries; blank = contact
+ *   CONTACT_RECIPIENT_EMAIL          inbox(es) for contact-page inquiries; several = comma-separated
+ *   PRODUCT_INQUIRY_RECIPIENT_EMAIL  optional inbox(es) for medical equipment inquiries, comma-separated;
+ *                                    blank = the contact inboxes
  *   ALLOWED_ORIGINS                  comma-separated origins allowed to submit ("*" = any)
  *   SHEETS_WEBHOOK_URL               optional; the Google Apps Script web app that logs each
  *                                    inquiry to a Google Sheet (google-sheets/Code.gs). Blank = off
@@ -262,7 +263,8 @@ async function sendViaBrevo(msg, env) {
 
   const body = {
     sender: { name: senderName, email: senderEmail },
-    to: [{ email: msg.to }],
+    // Every inbox on the list, in one email, so each can see who else has it.
+    to: msg.to.map((address) => ({ email: address })),
     subject: msg.subject,
     htmlContent: msg.html,
     textContent: msg.text,
@@ -544,14 +546,26 @@ async function appendWithServiceAccount(serviceAccountJson, spreadsheetId, tab, 
  * ------------------------------------------------------------------ */
 
 /**
- * Blank PRODUCT_INQUIRY_RECIPIENT_EMAIL is treated as unset, so leaving it empty falls back to the
- * contact inbox instead of silently breaking equipment inquiries.
+ * The inboxes an inquiry goes to. Each setting holds one address or several, separated by commas
+ * (e.g. "a@example.com, b@example.com"); every valid address gets the email, and a malformed one
+ * is skipped and logged. A blank PRODUCT_INQUIRY_RECIPIENT_EMAIL is treated as unset, so leaving it
+ * empty falls back to the contact inboxes instead of silently breaking equipment inquiries.
  */
-function recipientFor(formType, env) {
-  const fallback = String(env.CONTACT_RECIPIENT_EMAIL ?? '').trim();
+function recipientsFor(formType, env) {
+  const parse = (value) => {
+    const list = [];
+    for (const entry of String(value ?? '').split(/[,;\s]+/)) {
+      if (entry === '') continue;
+      const valid = email(entry);
+      if (valid === '') log(`Skipping malformed recipient address: ${entry}`);
+      else if (!list.some((known) => known.toLowerCase() === valid.toLowerCase())) list.push(valid);
+    }
+    return list;
+  };
+  const fallback = parse(env.CONTACT_RECIPIENT_EMAIL);
   if (formType === 'product') {
-    const specific = String(env.PRODUCT_INQUIRY_RECIPIENT_EMAIL ?? '').trim();
-    return specific !== '' ? specific : fallback;
+    const specific = parse(env.PRODUCT_INQUIRY_RECIPIENT_EMAIL);
+    return specific.length ? specific : fallback;
   }
   return fallback;
 }
@@ -603,8 +617,8 @@ async function processInquiry(payload, env, ip, ctx, assets) {
     return result(400, 'Please fill in every required field with a valid email and phone number.', { code: 'invalid_fields' });
   }
 
-  const recipient = recipientFor(formType, env);
-  if (email(recipient) === '') {
+  const recipients = recipientsFor(formType, env);
+  if (recipients.length === 0) {
     log(`No valid recipient configured for form type ${formType}`);
     return result(500, 'We could not send your message. Please try again later.', { code: 'no_recipient' });
   }
@@ -647,7 +661,7 @@ async function processInquiry(payload, env, ip, ctx, assets) {
 
   const sent = await sendMail(
     {
-      to: recipient,
+      to: recipients,
       subject,
       html: renderHtml(context, fields, items, message, files.listed, footer, assets),
       text: renderText(context, fields, items, message, files.listed),

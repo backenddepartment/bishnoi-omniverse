@@ -6,6 +6,7 @@ import { usePathname } from 'next/navigation';
 import { Header } from './Header';
 import { Footer } from './Footer';
 import { MessagingButtons } from '@/components/MessagingButtons';
+import { QuoteFab } from '@/components/quote/QuoteFab';
 
 /**
  * Routes that render standalone, with no navbar and no footer. Matched by prefix.
@@ -42,6 +43,7 @@ export function SiteChrome({ children }: { children: React.ReactNode }) {
           page; `clip` rather than `hidden`, so sticky elements inside keep working. */}
       <main id="main" tabIndex={-1} className="flex-grow overflow-x-clip outline-none">{children}</main>
       <Footer />
+      <QuoteFab />
       <MessagingButtons />
     </LazyMotion>
   );

@@ -10,31 +10,11 @@ import { EQUIPMENT_PATH, productPath } from '@/lib/catalogRoutes';
 import { SuccessDialog } from '@/components/SuccessDialog';
 import { AttachmentPicker } from '@/components/attachments/AttachmentPicker';
 
-// The quote list has to outlive a move between catalog pages, each of which mounts its own copy of
-// it. Session storage keeps it for the visit and lets go of it when the tab closes.
-export const QUOTE_ITEMS_KEY = 'catalog-quote-items';
-
 export interface RequisitionItem {
   id: string;
   name: string;
   categoryId: string;
   subcategoryId: string;
-}
-
-/** Product ids on the stored quote list; empty when storage is unavailable (private mode). */
-export function readQuoteIds(): string[] {
-  try {
-    const saved: unknown = JSON.parse(window.sessionStorage.getItem(QUOTE_ITEMS_KEY) ?? '[]');
-    return Array.isArray(saved) ? saved.filter((id): id is string => typeof id === 'string') : [];
-  } catch {
-    return [];
-  }
-}
-
-export function writeQuoteIds(ids: string[]) {
-  try {
-    window.sessionStorage.setItem(QUOTE_ITEMS_KEY, JSON.stringify(ids));
-  } catch {}
 }
 
 const EMPTY_RFQ = {
@@ -59,8 +39,8 @@ interface Props {
 }
 
 /**
- * The hospital requisition form, opened from the catalog (Upload Requisition List, Send inquiry
- * now) and from a product page's Send Inquiry. It sends the quote list with the buyer's details.
+ * The hospital requisition form, opened from the catalog (Upload Requisition List, or a product's
+ * Send Inquiry) and from a product page's Send Inquiry. It sends the items with the buyer's details.
  */
 export function RequisitionModal({ open, onClose, items, onRemoveItem, onSent, initialNotes }: Props) {
   const [submitted, setSubmitted] = useState(false);
@@ -221,7 +201,7 @@ export function RequisitionModal({ open, onClose, items, onRemoveItem, onSent, i
         </div>
 
           <form onSubmit={handleSubmit} className="rfq-form space-y-4">
-            {/* The quote list as pills: each opens its product page in a new tab (so this
+            {/* The requested items as pills: each opens its product page in a new tab (so this
                 requisition is not lost), and × takes the product off the list. */}
             <div>
               <span id="rfq-items-label" className="field-label">

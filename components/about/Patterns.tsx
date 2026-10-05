@@ -129,7 +129,7 @@ export function AboutHero({
           <span className={`eyebrow${overlay === 'none' ? '' : ' on-dark'}`}>{eyebrow}</span>
           <h1>{title}</h1>
           <p className="ap-hero-lede">{lede}</p>
-          {actions && <div className="flex flex-wrap gap-4 mt-8">{actions}</div>}
+          {actions && <div className="about-hero-actions flex flex-wrap gap-4 mt-8">{actions}</div>}
           {stats && statsInHero && (
             <div className="ap-hero-stats">
               {stats.map((s) => (
@@ -375,8 +375,9 @@ export function CtaBand({
   aside?: React.ReactNode;
 }) {
   return (
-    <section className="section section-white pt-0 pb-24">
-      <div className="wrap">
+    // Full-bleed closing band: edge to edge, sitting directly on the footer.
+    <section className="ap-cta-band">
+      <div>
         <div className={`ap-cta is-${tone}${aside ? ' has-aside' : ''}`}>
           {image && <img src={image} alt="" className="ap-cta-media" style={{ opacity: imageOpacity }} loading="lazy" />}
           {aside && <div className="ap-cta-aside">{aside}</div>}

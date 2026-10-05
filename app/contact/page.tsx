@@ -3,14 +3,8 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { ArrowUpRight, ChevronDown, Phone } from 'lucide-react';
 import contactData from '@/lib/data/contactData.json';
-import { InquiryGuard, type InquiryGuardHandle } from '@/components/InquiryGuard';
-import { CAPTCHA_ENABLED, DOCUMENT_EXTENSIONS, collectFiles, phoneInput, sendInquiry } from '@/lib/inquiry';
-import { SuccessDialog } from '@/components/SuccessDialog';
-import { AttachmentPicker } from '@/components/attachments/AttachmentPicker';
-
-// Fields sent as the email's own header rows (or its message panel) rather than as detail rows.
-const CORE_FIELDS = ['email', 'phone', 'additionalNotes', 'message'];
-import contactbg from '@/app/assets/contact.png';
+import { PERSONAS, PersonaInquiryForm, productPrefill } from '@/components/PersonaInquiryForm';
+import contactbg from '@/app/assets/contact.webp';
 import { AboutHero, PatternSection, SectionHead } from '@/components/about/Patterns';
 import { ContactChannels, OfficeCards } from '@/components/about/contact/ContactBlocks';
 import { GuideAccordion } from '@/components/about/contact/GuideAccordion';
@@ -20,43 +14,14 @@ const IMG = {
   hero: contactbg.src,
 };
 
-/** One field of an inquiry form, as written in contactData.json. */
-type FormField = {
-  name: string;
-  label: string;
-  type: string;
-  placeholder?: string;
-  required?: boolean;
-  options?: string[];
-  accept?: string;
-  hint?: string;
-  /** Takes a whole row of the form. */
-  wide?: boolean;
-};
-type Persona = {
-  id: string;
-  category: string;
-  tagline: string;
-  buttonText: string;
-  inquiryType: string;
-  nameField: string;
-  formFields: FormField[];
-};
-
 export default function ContactPage() {
   const { pageHeader, directContact, formSection, quoteSection, listSection, assistSection, whatHappens, guide } =
     contactData;
-  const personas = contactData.personas as Persona[];
+  const personas = PERSONAS;
 
   const [activePersonaId, setActivePersonaId] = useState<string>('doctor');
-  const [formData, setFormData] = useState<Record<string, string>>({});
-  const [submitted, setSubmitted] = useState<boolean>(false);
-  // Chosen files, by field name (formData keeps only their names, for display).
-  const [files, setFiles] = useState<Record<string, File[]>>({});
-  const [sending, setSending] = useState<boolean>(false);
-  const [sendError, setSendError] = useState<string>('');
-  const [captchaToken, setCaptchaToken] = useState<string>('');
-  const guardRef = useRef<InquiryGuardHandle>(null);
+  // A product carried in from the catalog (?product=…&size=…), as the form's starting values.
+  const [prefill, setPrefill] = useState<Record<string, string> | undefined>(undefined);
   const personaTabsRef = useRef<HTMLDivElement>(null);
   const formRef = useRef<HTMLDivElement>(null);
 
@@ -91,33 +56,13 @@ export default function ContactPage() {
     // Arriving from a product page (?product=…&size=…): carry the item into the request, so the
     // buyer edits it rather than retyping it.
     const product = params.get('product');
-    if (persona === 'hospital' && product) {
-      const size = params.get('size');
-      setFormData({ itemsRequested: size ? `${product} (size: ${size})` : product });
+    const target = personas.find((p) => p.id === persona);
+    if (target && product) {
+      setPrefill(productPrefill(target, product, params.get('size') ?? undefined));
     }
   }, []);
 
   const activePersona = personas.find((p) => p.id === activePersonaId) || personas[0];
-
-  // The form's fields sit two to a row. A field marked wide takes a whole row, and so does one
-  // that would otherwise be left alone in a row with an empty place beside it.
-  const fullWidth = new Set<string>();
-  let inRow: string[] = [];
-  const closeRow = () => {
-    if (inRow.length === 1) fullWidth.add(inRow[0]);
-    inRow = [];
-  };
-  for (const field of activePersona.formFields) {
-    if (field.type === 'textarea') continue;
-    if (field.wide) {
-      closeRow();
-      fullWidth.add(field.name);
-    } else {
-      inRow.push(field.name);
-      if (inRow.length === 2) inRow = [];
-    }
-  }
-  closeRow();
 
   // Buttons around the page (the hero, and the guide under the form) select a persona and bring
   // the visitor to it. Choosing the persona already open keeps what they typed,
@@ -125,10 +70,7 @@ export default function ContactPage() {
   const selectPersona = (id: string) => {
     if (id !== activePersonaId) {
       setActivePersonaId(id);
-      setSubmitted(false);
-      setFormData({});
-      setFiles({});
-      setSendError('');
+      setPrefill(undefined);
     }
   };
   const goToPersona = (id: string, target: 'tabs' | 'form' = 'tabs') => {
@@ -136,54 +78,6 @@ export default function ContactPage() {
     requestAnimationFrame(() => {
       (target === 'form' ? formRef : personaTabsRef).current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
     });
-  };
-
-  const handleInputChange = (fieldName: string, value: string) => {
-    setFormData((prev) => ({ ...prev, [fieldName]: value }));
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (sending) return;
-    setSendError('');
-    setSending(true);
-
-    const chosen = activePersona.formFields
-      .filter((field) => field.type === 'file')
-      .flatMap((field) => files[field.name] ?? []);
-    const collected = await collectFiles(chosen, DOCUMENT_EXTENSIONS, 'Tender spec / PO / product list');
-    if (!collected.ok) {
-      setSendError(collected.error);
-      setSending(false);
-      return;
-    }
-
-    const result = await sendInquiry(
-      {
-        // Every inquiry type goes to the inbox that receives the medical equipment inquiries.
-        // The email's Inquiry Type row says which of the four it is.
-        formType: 'product',
-        inquiryType: activePersona.inquiryType,
-        name: formData[activePersona.nameField] ?? '',
-        email: formData.email ?? '',
-        phone: formData.phone ?? '',
-        message: formData.additionalNotes ?? formData.message ?? '',
-        details: activePersona.formFields
-          .filter((field) => field.type !== 'file' && !CORE_FIELDS.includes(field.name))
-          .map((field) => ({ label: field.label, value: formData[field.name] ?? '' })),
-        files: collected.files,
-      },
-      { captchaToken, honeypot: guardRef.current?.honeypot() ?? '' }
-    );
-
-    // Turnstile tokens are single-use: a retry always needs a fresh one.
-    guardRef.current?.reset();
-    setSending(false);
-    if (result.ok) {
-      setSubmitted(true);
-    } else {
-      setSendError(result.message);
-    }
   };
 
   return (
@@ -216,9 +110,12 @@ export default function ContactPage() {
           across the page, with the kind of inquiry chosen from a dropdown at its head. Under
           that, the offices with their maps. */}
       <section className="section section-white">
-        <div className="wrap">
-          <SectionHead eyebrow={directContact.eyebrow} title={directContact.title} />
-          <ContactChannels emails={directContact.emails} phones={directContact.phones} />
+        {/* On phones the form comes first and the ways to reach us drop beneath it. */}
+        <div className="wrap ct-reach-wrap">
+          <div className="ct-ways">
+            <SectionHead eyebrow={directContact.eyebrow} title={directContact.title} />
+            <ContactChannels emails={directContact.emails} phones={directContact.phones} />
+          </div>
 
           <div className="ct-reach">
             <div ref={personaTabsRef} className="scroll-target ct-form-card">
@@ -241,118 +138,17 @@ export default function ContactPage() {
               <p className="ct-form-tagline">&quot;{activePersona.tagline}&quot;</p>
 
               <div ref={formRef} className="scroll-target">
-            {/* Once sent, the confirmation opens over the page; closing it clears the form. */}
-            {submitted && (
-              <SuccessDialog
-                title="Inquiry Sent!"
-                onClose={() => {
-                  setSubmitted(false);
-                  setFormData({});
-                  setFiles({});
-                }}
-              >
-                <p>
-                  Thank you. Your inquiry for <strong>{activePersona.category}</strong> has been received.
-                  A Bishnoi Omniverse case manager will contact you within <strong>24 hours</strong>.
-                </p>
-              </SuccessDialog>
-            )}
-              <form onSubmit={handleSubmit} className="space-y-4">
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 items-end">
-                  {activePersona.formFields.map((field) => {
-                    if (field.type === 'textarea') return null;
-                    return (
-                      <div key={field.name} className={fullWidth.has(field.name) ? 'sm:col-span-2' : ''}>
-                        <label className="field-label">
-                          {field.label} {field.required && <span className="text-accent">*</span>}
-                        </label>
-
-                        {field.type === 'select' ? (
-                          <select
-                            required={field.required}
-                            value={formData[field.name] || ''}
-                            onChange={(e) => handleInputChange(field.name, e.target.value)}
-                            className="field-select"
-                          >
-                            <option value="">Select an option...</option>
-                            {field.options?.map((opt) => (
-                              <option key={opt} value={opt}>
-                                {opt}
-                              </option>
-                            ))}
-                          </select>
-                        ) : field.type === 'file' ? (
-                          // Several files, each a card that opens a preview; formData keeps only
-                          // their names.
-                          <AttachmentPicker
-                            files={files[field.name] ?? []}
-                            required={field.required}
-                            onChange={(picked) => {
-                              setFiles((prev) => ({ ...prev, [field.name]: picked }));
-                              handleInputChange(field.name, picked.map((file) => file.name).join(', '));
-                            }}
-                          />
-                        ) : (
-                          <input
-                            type={field.type}
-                            inputMode={field.type === 'tel' ? 'tel' : undefined}
-                            required={field.required}
-                            placeholder={field.placeholder}
-                            value={formData[field.name] || ''}
-                            onChange={(e) =>
-                              handleInputChange(
-                                field.name,
-                                field.type === 'tel' ? phoneInput(e.target.value) : e.target.value
-                              )
-                            }
-                            className="field-input"
-                          />
-                        )}
-                        {field.hint && <p className="text-xs text-muted mt-1.5 mb-0">{field.hint}</p>}
-                      </div>
-                    );
-                  })}
-                </div>
-
-                {activePersona.formFields.map((field) => {
-                  if (field.type !== 'textarea') return null;
-                  return (
-                    <div key={field.name}>
-                      <label className="field-label">
-                        {field.label} {field.required && <span className="text-accent">*</span>}
-                      </label>
-                      <textarea
-                        rows={3}
-                        required={field.required}
-                        placeholder={field.placeholder}
-                        value={formData[field.name] || ''}
-                        onChange={(e) => handleInputChange(field.name, e.target.value)}
-                        className="field-textarea"
-                      />
-                    </div>
-                  );
-                })}
-
-                <InquiryGuard ref={guardRef} onToken={setCaptchaToken} />
-
-                {sendError && (
-                  <p className="inquiry-error" role="alert">
-                    {sendError}
-                  </p>
-                )}
-
-                <div className="pt-1">
-                  {/* Stays disabled until "Verify you are human" has passed, and while sending. */}
-                  <button type="submit" disabled={sending || (CAPTCHA_ENABLED && !captchaToken)} className="ct-submit">
-                    {sending ? 'Sending…' : 'Submit'}
-                  </button>
-                </div>
-              </form>
+                {/* Keyed so a persona change, or a product arriving from the catalog, starts it afresh. */}
+                <PersonaInquiryForm
+                  key={`${activePersona.id}:${prefill ? 'prefill' : ''}`}
+                  persona={activePersona}
+                  initialData={prefill}
+                />
               </div>
             </div>
           </div>
 
-          <div className="mt-16">
+          <div className="ct-offices mt-16">
             <OfficeCards offices={directContact.offices} />
           </div>
         </div>

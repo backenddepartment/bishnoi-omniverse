@@ -287,7 +287,6 @@ export default function HomePage() {
                 <Link
                   key={line.id}
                   href={line.href}
-                  aria-label={line.linkText}
                   className="featured-line"
                 >
                   {image ? (

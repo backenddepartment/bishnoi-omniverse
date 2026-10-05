@@ -27,7 +27,7 @@ export const Footer: React.FC = () => {
           </div>
 
           <div>
-            <h4>Company</h4>
+            <h2>Company</h2>
             <ul>
               <li><Link href="/about">Our Story</Link></li>
               <li><Link href="/about/leadership">Leadership</Link></li>
@@ -40,7 +40,7 @@ export const Footer: React.FC = () => {
           </div>
 
           <div>
-            <h4>What We Supply</h4>
+            <h2>What We Supply</h2>
             <ul>
               <li><Link href="/medical-equipment">Hospital Supplies</Link></li>
               <li><Link href="/contact?type=find-medicine">Specialty &amp; Named-Patient Medicines</Link></li>
@@ -51,7 +51,7 @@ export const Footer: React.FC = () => {
           </div>
 
           <div>
-            <h4>Contact</h4>
+            <h2>Contact</h2>
             {/* Each detail beside its icon in a soft white disc. */}
             <ul className="footer-contact">
               {brand.phones.map((phone) => (

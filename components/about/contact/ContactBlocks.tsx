@@ -280,8 +280,9 @@ export function TalkPanel({
   onRequestQuote: () => void;
 }) {
   return (
-    <section className="section section-white pt-0 pb-24">
-      <div className="wrap">
+    // Full-bleed closing band: edge to edge, sitting directly on the footer.
+    <section className="ap-cta-band">
+      <div>
         <div className="ap-cta is-dark has-aside">
           <div className="ap-cta-aside">
             <img

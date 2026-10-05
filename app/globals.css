@@ -14,6 +14,9 @@
   --accent: #f36b21;
   --accent-dark: #c2561a;
   --accent-tint: #fde9de;
+  /* Product fact pills and the floating View Quote. */
+  --blue: #001b9a;
+  --peel: #ae2905;
   /* Panel green, paired with --accent on the What We Provide bento. Chosen to carry white text
      at AA contrast (4.8:1) while holding the same saturation as the brand orange. */
   --green: #0b8457;
@@ -1356,7 +1359,8 @@
   /* Brand-orange footer, flat: no shadow, all text white. */
   .site-footer { padding: 64px 0 30px; background: var(--accent); color: #fff; box-shadow: none; }
   .footer-grid { display: grid; grid-template-columns: 1.4fr 1fr 1fr 1fr; gap: 40px; margin-bottom: 48px; }
-  .footer-grid h4 {
+  /* h2 in the markup (the footer sits after each page's h1), styled as the small column heading. */
+  .footer-grid h2 {
     font-size: 16px;
     margin-bottom: 16px;
     color: #fff;
@@ -1465,27 +1469,82 @@
  * ------------------------------------------------------------------ */
 
 .pdp { background: #ffffff; }
+/* The product page runs wider than the site's standard .wrap, with a slimmer side gutter, so the
+   details and the inquiry form both have room. */
+.pdp .wrap { max-width: 1480px; padding: 0 20px; }
+@media (min-width: 900px) { .pdp .wrap { padding: 0 40px; } }
 
 /* Gallery + buy box */
 .pdp-top { padding: 40px 0 56px; }
-/* Gallery with the info tabs directly beneath it on the left; the quote box spans both rows. */
+/* The product's details on the left, the inquiry form on the right. */
 .pdp-top-grid {
   display: grid;
-  grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
-  grid-template-areas: "gallery info" "tabs info";
-  grid-template-rows: auto 1fr;
-  gap: 32px 52px;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+  gap: 40px;
   align-items: start;
 }
-.pdp-top-grid > .pdp-gallery { grid-area: gallery; }
-.pdp-top-grid > .pdp-info { grid-area: info; }
-.pdp-top-grid > .pdp-tabs-col { grid-area: tabs; }
+/* Details: a small image with the product header beside it, the description and options across
+   under both, then the tabs in a card. */
+.pdp-main {
+  display: grid;
+  grid-template-columns: 220px minmax(0, 1fr);
+  grid-template-areas: "gallery info" "body body" "tabs tabs";
+  gap: 28px 32px;
+  align-items: start;
+}
+.pdp-main > .pdp-gallery { grid-area: gallery; }
+.pdp-main > .pdp-info { grid-area: info; align-self: center; }
+.pdp-main > .pdp-body { grid-area: body; }
+.pdp-main > .pdp-tabs-col { grid-area: tabs; }
+.pdp-body .pdp-buy { margin-top: 24px; }
+.pdp-body .pdp-lede { max-width: none; }
+.pdp-main > .pdp-tabs-col {
+  padding: 8px 24px 24px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+}
+
+/* Inquiry panel: set off from the details by a rule, no card of its own. The form keeps the
+   contact page's field styles (.ct-form-card) without its box. */
+.pdp-form-col { padding-left: 40px; border-left: 1px solid var(--line); }
+.pdp-form-col .ct-form-card { padding: 0; border: 0; border-radius: 0; background: none; box-shadow: none; }
+.pdp-inquiry-title { margin: 0 0 6px; font-size: 26px; font-weight: 700; line-height: 1.2; letter-spacing: -0.01em; color: var(--ink); }
+.pdp-inquiry-sub { margin: 0 0 26px; font-size: 14.5px; line-height: 1.5; color: var(--muted); }
+.pdp-inquiry-label { margin: 0 0 12px; font-size: 15px; font-weight: 500; color: var(--ink-soft); }
+.pdp-inquiry-types { display: flex; flex-direction: column; gap: 12px; }
+.pdp-inquiry-type {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  padding: 16px 20px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--surface);
+  color: var(--ink);
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.35;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 0.2s var(--ease), background 0.2s var(--ease), box-shadow 0.2s var(--ease);
+}
+.pdp-inquiry-type svg { width: 19px; height: 19px; flex-shrink: 0; color: var(--accent); }
+.pdp-inquiry-type:hover { border-color: var(--accent); }
+.pdp-inquiry-type:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+.pdp-inquiry-type.is-selected {
+  border-color: var(--accent);
+  background: var(--accent-tint);
+  box-shadow: inset 0 0 0 1px var(--accent);
+}
+.pdp-inquiry-continue { margin-top: 24px; }
 
 .pdp-gallery {
   display: grid;
-  grid-template-columns: 78px minmax(0, 1fr);
-  grid-template-areas: "thumbs stage" "credit credit";
-  gap: 16px;
+  grid-template-areas: "stage" "credit";
+  gap: 12px;
+  width: 100%;
 }
 .pdp-thumbs {
   grid-area: thumbs;
@@ -1558,18 +1617,16 @@
 .pdp-credit a:hover { color: var(--accent-dark); }
 
 .pdp-info { padding-top: 4px; }
+/* Category labels above the title: plain black text, no pill. */
 .pdp-pill {
   display: inline-block;
-  padding: 5px 12px;
-  border-radius: 999px;
-  background: var(--paper-2);
-  color: var(--ink-soft);
-  font-size: 11px;
+  color: var(--ink);
+  font-size: 13px;
   font-weight: 600;
   margin-bottom: 16px;
 }
 .pdp-title {
-  font-size: clamp(28px, 3.2vw, 40px);
+  font-size: clamp(24px, 2.6vw, 32px);
   font-weight: 600;
   line-height: 1.1;
   letter-spacing: -0.02em;
@@ -1608,12 +1665,14 @@
   font-size: 14.5px;
   line-height: 1.6;
   color: var(--ink-soft);
-  max-width: 420px;
-  margin: 0 0 24px;
+  margin: 0;
 }
 .pdp-rule { border: 0; border-top: 1px solid var(--line); margin: 0 0 24px; }
 
 .pdp-option { margin-bottom: 24px; }
+/* The Product Form tab: Product form, then Size / capacity. */
+.pdp-panel .pdp-option { margin-bottom: 20px; }
+.pdp-panel .pdp-option:last-child { margin-bottom: 0; }
 .pdp-option-head {
   display: flex;
   align-items: center;
@@ -1671,41 +1730,6 @@
 .pdp-variant:hover { border-color: var(--ink); }
 .pdp-variant.is-active { background: var(--ink); border-color: var(--ink); color: #fff; }
 
-.pdp-actions { display: flex; gap: 12px; margin: 28px 0 22px; }
-.pdp-cta {
-  flex: 1;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  height: 56px;
-  border-radius: 10px;
-  background: var(--ink);
-  color: #fff;
-  font-size: 15px;
-  font-weight: 600;
-  text-decoration: none;
-  border: 0;
-  cursor: pointer;
-  transition: background 0.25s var(--ease);
-}
-.pdp-cta:hover { background: var(--accent); }
-.pdp-save {
-  width: 56px;
-  height: 56px;
-  flex-shrink: 0;
-  border: 1px solid var(--line);
-  border-radius: 10px;
-  background: var(--surface);
-  color: var(--ink);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: all 0.2s var(--ease);
-}
-.pdp-save:hover { border-color: var(--ink); }
-.pdp-save.is-active { color: var(--accent); border-color: var(--accent); }
 
 .pdp-trust {
   display: grid;
@@ -1807,6 +1831,34 @@
   text-decoration: none;
 }
 .pdp-related-head a:hover { color: var(--accent-dark); }
+/* Sibling subcategories: small light-grey pills, name and arrow in dark ink. */
+.pdp-subcat-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.pdp-subcat-card {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border-radius: 999px;
+  background: #f1f1f1;
+  color: var(--ink);
+  font-size: 13.5px;
+  font-weight: 600;
+  line-height: 1.3;
+  text-decoration: none;
+  transition: transform 0.2s var(--ease), background 0.2s var(--ease);
+}
+.pdp-subcat-card svg { flex-shrink: 0; width: 14px; height: 14px; transition: transform 0.2s var(--ease); }
+.pdp-subcat-card:hover { transform: translateY(-1px); background: #e6e6e6; }
+.pdp-subcat-card:hover svg { transform: translateX(3px); }
+@media (max-width: 640px) {
+  .pdp-subcat-grid { gap: 8px; }
+  .pdp-subcat-card { font-size: 12.5px; padding: 7px 13px; }
+}
+
 .pdp-related-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -1878,23 +1930,25 @@
 }
 .pdp-lightbox-close:hover { background: rgba(255, 255, 255, 0.26); }
 
+@media (max-width: 1240px) {
+  .pdp-top-grid { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 32px; }
+  .pdp-main { grid-template-columns: 180px minmax(0, 1fr); gap: 24px; }
+  .pdp-form-col { padding-left: 32px; }
+}
+/* Phones and tablets: the inquiry panel drops under the details, with a rule above it. */
 @media (max-width: 980px) {
-  .pdp-top-grid {
-    grid-template-columns: 1fr;
-    grid-template-areas: "gallery" "info" "tabs";
-    grid-template-rows: auto;
-    gap: 36px;
-  }
+  .pdp-top-grid { grid-template-columns: minmax(0, 1fr); gap: 36px; }
+  .pdp-form-col { padding: 32px 0 0; border-left: 0; border-top: 1px solid var(--line); }
   .pdp-mid-grid { grid-template-columns: 1fr; gap: 32px; }
   .pdp-related-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .pdp-lede, .pdp-panel p { max-width: none; }
 }
 
 @media (max-width: 640px) {
-  .pdp-gallery {
-    grid-template-columns: 1fr;
-    grid-template-areas: "stage" "thumbs" "credit";
-  }
+  .pdp-main { grid-template-columns: minmax(0, 1fr); grid-template-areas: "gallery" "info" "body" "tabs"; }
+  .pdp-main > .pdp-info { align-self: start; }
+  .pdp-main > .pdp-tabs-col { padding: 4px 16px 18px; }
+  .pdp-gallery { max-width: 240px; margin: 0 auto; }
   .pdp-thumbs { flex-direction: row; overflow-x: auto; }
   .pdp-thumb { flex: 0 0 66px; width: 66px; height: 80px; }
   .pdp-thumb-next { display: none; }
@@ -2183,7 +2237,11 @@ a.catalog-cat { text-decoration: none; }
   box-shadow: 0 2px 8px rgba(15, 14, 12, 0.06), 0 10px 24px rgba(15, 14, 12, 0.07);
 }
 .product-card-media { display: block; border-radius: 8px; overflow: hidden; }
-.product-card-media.is-empty { background: #f1f1f1; }
+.product-card-media.is-empty {
+  background:
+    radial-gradient(ellipse 70% 120% at 18% 0%, rgba(255, 196, 0, 0.85) 0%, rgba(255, 150, 0, 0) 60%),
+    linear-gradient(135deg, #ff9a0a 0%, #f36b21 45%, #e8401c 80%, #c7331a 100%);
+}
 .product-card-media.has-photo { background: #fff; }
 .product-card-media.has-photo img { object-fit: contain; padding: 12px; }
 .product-card-empty {
@@ -2195,24 +2253,67 @@ a.catalog-cat { text-decoration: none; }
   width: 100%;
   height: 100%;
 }
-.product-card-empty svg { width: 36px; height: 36px; color: #a8a8a8; }
-.product-card-empty span { font-size: 12px; font-weight: 500; color: #8c8c8c; }
 .product-card .product-card-body { padding: 12px 4px 4px; }
 /* Sterility as plain orange text under the name; Send Inquiry spans the card's full width. */
 .product-card-sterility { display: block; margin-top: 6px; font-size: 12.5px; font-weight: 500; color: var(--accent); }
 .product-card .product-card-foot { display: block; }
-.product-card-body .inquiry-btn { width: 100%; justify-content: center; padding: 8px 14px; text-decoration: none; }
+.product-card-body .inquiry-btn { width: 100%; justify-content: center; padding: 7px 14px; text-decoration: none; }
 
 /* The catalog grid runs its cards shorter than the product page's "You May Also Like" row: a
    landscape image tile instead of a square one, and less air between the name and the button,
    so more of the listing is on screen at once. */
 .product-grid .product-card { padding: 8px; }
-.product-grid .product-card-media { aspect-ratio: 4 / 3; }
+.product-grid .product-card-media { aspect-ratio: 16 / 9; }
 .product-grid .product-card-media.has-photo img { padding: 8px; }
 .product-grid .product-card-empty { gap: 6px; }
-.product-grid .product-card-empty svg { width: 30px; height: 30px; }
-.product-grid .product-card .product-card-body { gap: 10px; padding: 10px 4px 4px; }
+.product-grid .product-card .product-card-body { gap: 10px; padding: 8px 4px 2px; }
 .product-grid .product-card-sterility { margin-top: 4px; }
+
+/* Grid card names stop at two lines, ending in an ellipsis; the full name is on the product page
+   and in the link's tooltip. */
+.product-grid .product-card-body h3 {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+}
+
+/* Grid card details: subcategory, then each fact as a small label pill, Class (blue) or Setting
+   (tangerine peel), with its value beside it on one line; the full value is in the row's tooltip
+   and on the product page. */
+.product-card-info { display: flex; flex-direction: column; min-width: 0; }
+.product-card-sub { margin-top: 2px; font-size: 12.5px; line-height: 1.4; color: var(--muted); }
+.product-card-facts { display: flex; flex-direction: column; gap: 5px; margin: 8px 0 0; }
+.product-card-facts > div { display: flex; align-items: center; gap: 7px; min-width: 0; }
+.product-card-facts dt {
+  flex: none;
+  padding: 2px 8px;
+  border-radius: 999px;
+  color: #fff;
+  font-size: 10.5px;
+  font-weight: 600;
+  line-height: 1.4;
+}
+.product-card-facts > .is-class dt { background: var(--blue); }
+.product-card-facts > .is-setting dt { background: var(--peel); }
+.product-card-facts dd {
+  min-width: 0;
+  margin: 0;
+  overflow: hidden;
+  color: var(--ink);
+  font-size: 12px;
+  line-height: 1.4;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Grid placeholders without a photo: an off-white tile with the category's icon in black. */
+.product-grid .product-card-media.is-empty { background: #f3f2ef; }
+.product-grid .product-card-empty .category-art.is-badge svg { color: var(--ink); }
+.product-grid .product-card-empty .category-art.is-cross path:first-of-type { fill: var(--ink); }
+.product-grid .product-card-empty .category-art-lifeline { stroke: #fff; }
+.product-grid .product-card-empty .category-art { width: 56px; height: 56px; }
 
 /* Homepage "What We Supply" cards: a portrait (4:5), full-bleed photo (grey placeholder until one is
    added) that fades to white at the foot, with the whole card linking through. */
@@ -2648,12 +2749,51 @@ html.nav-search-open body { overflow: hidden; overscroll-behavior: none; }
   color: var(--ink);
   font-size: 13px;
   font-weight: 500;
+  text-align: left;
+  white-space: nowrap;
   cursor: pointer;
   transition: border-color 0.2s var(--ease), box-shadow 0.2s var(--ease);
 }
-.catalog-sort-select:hover { border-color: var(--accent); }
+.catalog-sort-select:hover, .catalog-sort-select.is-open { border-color: var(--accent); }
 .catalog-sort-select:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-tint); }
-.catalog-sort-select option { font-weight: 400; }
+/* The option list: compact, centred under the button, a touch wider than it when needed. */
+.catalog-sort-menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 50%;
+  z-index: 40;
+  min-width: 100%;
+  margin: 0;
+  padding: 4px;
+  list-style: none;
+  transform: translateX(-50%);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: 0 10px 28px rgba(15, 14, 12, 0.12);
+  outline: none;
+  animation: catalog-sort-in 0.16s var(--ease);
+}
+@keyframes catalog-sort-in {
+  from { opacity: 0; transform: translate(-50%, -4px); }
+  to { opacity: 1; transform: translate(-50%, 0); }
+}
+.catalog-sort-option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 7px 10px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ink);
+  white-space: nowrap;
+  cursor: pointer;
+}
+.catalog-sort-option.is-focused { background: var(--paper-2); }
+.catalog-sort-option.is-selected { color: var(--accent-dark); font-weight: 600; }
+.catalog-sort-option svg { width: 14px; height: 14px; flex: none; }
 .catalog-sort-caret {
   position: absolute;
   top: 50%;
@@ -2702,7 +2842,7 @@ html.nav-search-open body { overflow: hidden; overscroll-behavior: none; }
 }
 .product-table {
   width: 100%;
-  min-width: 900px;
+  min-width: 760px;
   border-collapse: collapse;
   font-size: 13.5px;
   color: var(--ink);
@@ -2726,7 +2866,56 @@ html.nav-search-open body { overflow: hidden; overscroll-behavior: none; }
 .product-table-name { min-width: 170px; }
 .product-table-name a { color: var(--ink); font-weight: 600; text-decoration: none; }
 .product-table-name a:hover { color: var(--accent-dark); }
-.product-table-tag { color: var(--accent); }
+/* Quote / Inquiry: Add to Quote beside Send Inquiry, centred under a centred heading, as
+   rounded rectangles rather than pills. */
+.product-table thead th.product-table-actions-head { text-align: center; }
+.product-table td.product-table-actions { width: 1%; }
+.product-table .product-actions { flex-direction: row; flex-wrap: nowrap; justify-content: center; }
+.product-table .product-actions .inquiry-btn { justify-content: center; padding: 8px 14px; border-radius: 8px; }
+/* Both in the site's orange, in the table and on the grid cards; Add to Quote's wording
+   ("Added ×") marks it added. */
+.product-table .product-actions .inquiry-btn,
+.product-table .product-actions .quote-add-pill,
+.product-table .product-actions .quote-add-pill.is-added,
+.product-card .product-actions .inquiry-btn,
+.product-card .product-actions .quote-add-pill,
+.product-card .product-actions .quote-add-pill.is-added,
+.product-row .product-actions .inquiry-btn {
+  background: var(--accent);
+  color: #fff;
+  box-shadow: none;
+  transition: background 0.2s var(--ease);
+}
+.product-table .product-actions .inquiry-btn:hover,
+.product-card .product-actions .inquiry-btn:hover,
+.product-row .product-actions .inquiry-btn:hover { filter: none; background: var(--accent-dark); }
+
+/* Table view on phones: the rows become compact cards (name, facts in two columns, inquiry). */
+.product-rows { display: none; margin: 0; padding: 0; list-style: none; }
+@media (max-width: 640px) {
+  .product-table-wrap { display: none; }
+  .product-rows { display: flex; flex-direction: column; gap: 12px; }
+}
+.product-row {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: #fff;
+}
+.product-row-head { display: flex; flex-direction: column; gap: 3px; }
+.product-row-name {
+  color: var(--ink);
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.3;
+  text-decoration: none;
+}
+.product-row-name:hover { color: var(--accent-dark); }
+.product-row-sub { font-size: 12.5px; line-height: 1.4; color: var(--muted); }
+/* Details in two columns: label on top in semibold black, value beneath. */
 .inquiry-btn {
   display: inline-flex;
   align-items: center;
@@ -2742,37 +2931,50 @@ html.nav-search-open body { overflow: hidden; overscroll-behavior: none; }
   cursor: pointer;
   transition: background 0.2s var(--ease);
 }
-.inquiry-btn:hover,
-.inquiry-btn[aria-expanded='true'] { background: var(--accent-dark); }
-.inquiry-btn-send { width: 13px; height: 13px; }
-.inquiry-btn-caret { width: 12px; height: 12px; }
+.inquiry-btn:hover { background: var(--accent-dark); }
 
+/* Send Inquiry's "who is asking" menu (components/catalog/InquiryMenu.tsx). Portalled to <body>
+   and fixed to the screen, so a card's or the table's overflow cannot clip it. */
+.inquiry-menu-chevron { width: 14px; height: 14px; flex-shrink: 0; transition: transform 0.2s var(--ease); }
+.inquiry-menu-trigger.is-open .inquiry-menu-chevron { transform: rotate(180deg); }
 .inquiry-menu {
   position: fixed;
-  z-index: 60;
-  width: 220px;
-  padding: 6px;
+  z-index: 90;
+  margin: 0;
+  padding: 5px;
+  list-style: none;
   background: var(--surface);
   border: 1px solid var(--line);
   border-radius: 12px;
-  box-shadow: 0 10px 30px rgba(15, 14, 12, 0.14);
+  box-shadow: 0 16px 40px rgba(15, 14, 12, 0.14), 0 2px 6px rgba(15, 14, 12, 0.06);
+  animation: inquiry-menu-in 0.16s var(--ease);
 }
-.inquiry-menu button {
+.inquiry-menu.is-above { animation-name: inquiry-menu-in-above; }
+@keyframes inquiry-menu-in { from { opacity: 0; transform: translateY(-6px); } }
+@keyframes inquiry-menu-in-above { from { opacity: 0; transform: translateY(6px); } }
+.inquiry-menu-item {
   display: flex;
   align-items: center;
   gap: 10px;
   width: 100%;
-  padding: 9px 10px;
+  padding: 8px 11px;
   border: 0;
   border-radius: 8px;
   background: none;
-  color: var(--ink);
-  font-size: 13.5px;
+  color: var(--ink-2);
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.35;
   text-align: left;
   cursor: pointer;
+  transition: background 0.15s var(--ease), color 0.15s var(--ease);
 }
-.inquiry-menu button:hover { background: var(--accent-tint); color: var(--accent-dark); }
-.inquiry-menu svg { width: 15px; height: 15px; flex-shrink: 0; }
+.inquiry-menu-item svg { width: 16px; height: 16px; flex-shrink: 0; color: var(--accent); }
+.inquiry-menu-item:hover,
+.inquiry-menu-item:focus-visible { background: var(--accent-tint); color: var(--accent-dark); outline: none; }
+@media (prefers-reduced-motion: reduce) {
+  .inquiry-menu { animation: none; }
+}
 
 /* Requisition modal form — plainer black labels and more compact fields than the site default. */
 .rfq-form .field-label {
@@ -3076,11 +3278,69 @@ html.nav-search-open body { overflow: hidden; overscroll-behavior: none; }
  * ------------------------------------------------------------------ */
 
 /* Icon stage, used wherever a product has no licensed photo. */
-/* "No image" fallback: a neutral grey stage with an image glyph, until a photo is added. */
-.pdp-stage.is-icon { background: #f1f1f1; display: flex; align-items: center; justify-content: center; }
+/* Fallback: a neutral grey stage with the gradient medical cross, until a photo is added. */
+/* Products without a photo: the whole image area in the hero's orange sweep, category icon on top. */
+.pdp-stage.is-icon {
+  background:
+    radial-gradient(ellipse 70% 120% at 18% 0%, rgba(255, 196, 0, 0.85) 0%, rgba(255, 150, 0, 0) 60%),
+    linear-gradient(135deg, #ff9a0a 0%, #f36b21 45%, #e8401c 80%, #c7331a 100%);
+  display: flex; align-items: center; justify-content: center; }
 .pdp-stage-icon { display: flex; flex-direction: column; align-items: center; gap: 12px; padding: 24px; text-align: center; }
-.pdp-stage-icon svg { width: 72px; height: 72px; color: #a8a8a8; }
-.pdp-stage-icon span { font-size: 13px; font-weight: 500; color: #8c8c8c; }
+/* Category artwork: the category's icon in white on a badge in the hero's orange sweep, or the
+   lifeline cross when a category has no icon yet. Sized by the container it sits in. */
+.category-art { display: block; flex: none; }
+.category-art.is-badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 22%;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.3) 0%, rgba(255, 255, 255, 0) 50%),
+    linear-gradient(135deg, #ffc400 0%, #ff9a0a 25%, #f36b21 55%, #e8401c 80%, #c7331a 100%);
+  color: #fff;
+}
+.category-art.is-badge svg { width: 56%; height: 56%; color: #fff; }
+.category-art-lifeline {
+  fill: none;
+  stroke: #fff;
+  stroke-width: 4.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 100;
+  stroke-dashoffset: 0;
+}
+
+.pdp-stage-icon .category-art { width: 200px; height: 200px; transition: transform 0.35s var(--ease); }
+/* Hover: the artwork lifts, and the cross's lifeline redraws like a monitor trace. */
+.pdp-stage.is-icon:hover .category-art { transform: scale(1.08); }
+.pdp-stage.is-icon:hover .category-art-lifeline { animation: pdp-lifeline-trace 1.2s var(--ease) both; }
+@keyframes pdp-lifeline-trace {
+  from { stroke-dashoffset: 100; }
+  to { stroke-dashoffset: 0; }
+}
+
+.product-card-empty .category-art { width: 96px; height: 96px; transition: transform 0.3s var(--ease); }
+.product-card-media:hover .category-art { transform: scale(1.08); }
+
+/* On the full gradient placeholders the artwork drops its own badge: a white glyph straight on
+   the gradient, and the fallback cross in white with an orange lifeline. */
+.pdp-stage.is-icon .category-art.is-badge,
+.product-card-empty .category-art.is-badge { background: none; }
+.pdp-stage.is-icon .category-art.is-badge svg,
+.product-card-empty .category-art.is-badge svg { width: 70%; height: 70%; stroke-width: 1.5; }
+.pdp-stage.is-icon .category-art.is-cross path:first-of-type,
+.product-card-empty .category-art.is-cross path:first-of-type { fill: #fff; }
+.pdp-stage.is-icon .category-art.is-cross path:nth-of-type(2),
+.product-card-empty .category-art.is-cross path:nth-of-type(2) { display: none; }
+.pdp-stage.is-icon .category-art-lifeline,
+.product-card-empty .category-art-lifeline { stroke: #e8401c; }
+
+@media (prefers-reduced-motion: reduce) {
+  .pdp-stage-icon .category-art, .product-card-empty .category-art { transition: none; }
+  .pdp-stage.is-icon:hover .category-art, .product-card-media:hover .category-art { transform: none; }
+  .pdp-stage.is-icon:hover .category-art-lifeline { animation: none; }
+}
+
 
 /* Product packshots sit whole on white (no cropping) in both the stage and the thumbnail. */
 .pdp-stage.has-photo { background: #fff; border: 1px solid var(--line); }
@@ -3105,18 +3365,19 @@ html.nav-search-open body { overflow: hidden; overscroll-behavior: none; }
 
 .pdp-pills { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
 .pdp-pills .pdp-pill { margin-bottom: 0; }
-.pdp-pill.is-sub { background: var(--accent-tint); color: var(--accent-dark); }
+.pdp-pill + .pdp-pill::before { content: '·'; margin-right: 8px; }
 
 /* Static attribute chips, in the slot the reference gives to colour swatches. */
 .pdp-attrs { display: flex; flex-wrap: wrap; gap: 10px; }
-/* Product-form facts as solid brand-orange pills, text only. */
+/* Product-form facts as solid brand-orange rounded rectangles, text only. */
 .pdp-attr {
   display: inline-flex;
   align-items: center;
-  padding: 7px 16px;
-  border-radius: 999px;
+  padding: 8px 14px;
+  border-radius: 8px;
   background: var(--accent);
   font-size: 13px;
+  line-height: 1.45;
   font-weight: 500;
   color: #fff;
 }
@@ -3185,6 +3446,8 @@ html.nav-search-open body { overflow: hidden; overscroll-behavior: none; }
   text-decoration: none;
 }
 .pdp-summary-cta:hover { color: var(--accent-dark); }
+button.pdp-summary-cta { padding: 0; border: 0; background: none; font-family: inherit; cursor: pointer; }
+
 
 .pdp-related-icon {
   display: flex;
@@ -4319,7 +4582,9 @@ html.nav-search-open body { overflow: hidden; overscroll-behavior: none; }
   .ap-callout-btn:hover span { background: none; color: #fff; -webkit-text-fill-color: #fff; }
 
   /* P9 CTA band */
-  .ap-cta { position: relative; overflow: hidden; border-radius: 24px; padding: 80px 32px; text-align: center; }
+  /* Closing band: runs the full width with no outer spacing, so it meets the footer directly. */
+  .ap-cta-band { padding: 0; background: #fff; }
+  .ap-cta { position: relative; overflow: hidden; border-radius: 0; padding: 80px 32px; text-align: center; }
   .ap-cta.is-dark { background: var(--ink); color: #e9e5db; }
   .ap-cta.is-light { background: var(--accent-tint); color: var(--ink); }
   .ap-cta-media { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
@@ -4331,7 +4596,8 @@ html.nav-search-open body { overflow: hidden; overscroll-behavior: none; }
   .ap-cta.is-dark p { color: #b9b2a2; }
   .ap-cta.is-light p { color: var(--ink-soft); }
   .ap-cta-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 16px; }
-  .ap-cta.has-aside { display: grid; grid-template-columns: minmax(0, 280px) minmax(0, 1fr); gap: 48px; align-items: center; text-align: left; padding: 56px; }
+  /* Edge to edge, but the portrait and copy still line up with the page's content column. */
+  .ap-cta.has-aside { display: grid; grid-template-columns: minmax(0, 280px) minmax(0, 1fr); gap: 48px; align-items: center; text-align: left; padding: 56px max(32px, calc((100% - var(--maxw)) / 2 + 32px)); }
   .ap-cta.has-aside .ap-cta-copy { margin: 0; }
   .ap-cta.has-aside .ap-cta-actions { justify-content: flex-start; }
   .ap-cta.has-aside .ap-cta-icon { margin-left: 0; }
@@ -5101,6 +5367,17 @@ html.nav-search-open body { overflow: hidden; overscroll-behavior: none; }
   @media (max-width: 420px) {
     .ct-channels { grid-template-columns: 1fr; gap: 24px; }
   }
+
+  /* Phones: form first, then the ways to reach us, then the offices. The form sits flat on the
+     page, with no card shadow or border and no side padding, so the fields run the full width. */
+  @media (max-width: 640px) {
+    .ct-reach-wrap { display: flex; flex-direction: column; }
+    .ct-reach { order: 1; }
+    .ct-ways { order: 2; margin-top: 48px; }
+    .ct-offices { order: 3; }
+    .ct-form-card { padding: 0; border: 0; border-radius: 0; box-shadow: none; }
+    .ct-channels { margin-bottom: 0; }
+  }
 }
 
 /* Skip link: off-screen until a keyboard focuses it, then pinned top-left above the header. */
@@ -5219,4 +5496,319 @@ html.nav-search-open body { overflow: hidden; overscroll-behavior: none; }
 @media (prefers-reduced-motion: reduce) {
   .success-overlay, .success-dialog, .success-badge { animation: none; }
   .success-tick { animation: none; stroke-dashoffset: 0; }
+}
+
+/* Page hero buttons stay side by side on phones: each sized to its label, padding tightened. */
+@media (max-width: 640px) {
+  .about-hero-actions { flex-wrap: nowrap; gap: 8px; }
+  .about-hero-actions .btn {
+    flex: 1 1 auto;
+    justify-content: center;
+    gap: 6px;
+    padding: 11px 14px;
+    font-size: 12.5px;
+    white-space: nowrap;
+  }
+}
+
+/* ------------------------------------------------------------------ *
+ * Quote list: Add to Quote, View Quote in the header, the Quote page
+ * ------------------------------------------------------------------ */
+
+/* Add to Quote beside Send Inquiry: outlined in black, so the two read as different actions. Once
+   added it is tinted and links to the Quote page. */
+.product-actions { display: flex; gap: 8px; }
+/* The card foot is display: block by default (.product-card .product-card-foot), which ignored the
+   gap; stack the two buttons as a flex column with room between them. */
+.product-card .product-card-foot.product-actions,
+.product-row .product-actions { display: flex; flex-direction: row; align-items: center; gap: 8px; }
+.product-card .product-card-foot.product-actions .inquiry-btn,
+.product-row .product-actions .inquiry-btn { flex: 1; min-width: 0; width: auto; justify-content: center; padding: 8px 14px; }
+.quote-add-pill {
+  justify-content: center;
+  background: #fff;
+  color: var(--ink);
+  box-shadow: inset 0 0 0 1.5px var(--ink);
+  text-decoration: none;
+}
+.quote-add-pill:hover { background: var(--paper-2); }
+.quote-add-pill.is-added { background: var(--paper-2); }
+.quote-add-remove { width: 14px; height: 14px; flex-shrink: 0; }
+
+/* Grid cards: Add to Quote as a round + to the right of Send Inquiry, in the site's orange. Once
+   added it turns white with an orange ring and a tick, which becomes × on hover to take it off. */
+.quote-add-icon {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background: var(--accent);
+  color: #fff;
+  cursor: pointer;
+  transition: filter 0.2s var(--ease), background 0.2s var(--ease);
+}
+.quote-add-icon:hover { background: var(--accent-dark); }
+.quote-add-icon:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+.quote-add-icon svg { width: 18px; height: 18px; stroke-width: 2.5; }
+.quote-add-icon.is-added { background: #fff; color: var(--accent-dark); box-shadow: inset 0 0 0 1.5px var(--accent); }
+.quote-add-icon.is-added:hover { background: var(--accent-tint); }
+.quote-add-icon-x { display: none; }
+.quote-add-icon.is-added:hover .quote-add-icon-check,
+.quote-add-icon.is-added:focus-visible .quote-add-icon-check { display: none; }
+.quote-add-icon.is-added:hover .quote-add-icon-x,
+.quote-add-icon.is-added:focus-visible .quote-add-icon-x { display: block; }
+.product-card-body .quote-add-pill { width: 100%; }
+.product-card-body .quote-add-pill { padding: 7px 14px; }
+
+/* The product page's Add to Quote: a full-width button over the trust notes. */
+.pdp-quote-row { margin: 22px 0; }
+.quote-add-block {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  height: 52px;
+  border: 1.5px solid var(--ink);
+  border-radius: 10px;
+  background: var(--surface);
+  color: var(--ink);
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  transition: border-color 0.2s var(--ease), background 0.2s var(--ease), color 0.2s var(--ease);
+}
+.quote-add-block svg { width: 18px; height: 18px; flex-shrink: 0; }
+.quote-add-block:hover { border-color: var(--accent); color: var(--accent-dark); }
+.quote-add-block.is-added { border-color: var(--accent); background: var(--accent-tint); color: var(--accent-dark); }
+.quote-add-sep { margin: 0 2px; opacity: 0.6; }
+
+/* View Quote: a slim bar floating at the top right, just under the sticky navbar, while the list
+   has items, in blue. The count sits on the icon (white on orange); the label and the number of
+   products follow it, then an arrow. Under the header (100) so its menus open over it. */
+.quote-fab {
+  position: fixed;
+  top: calc(var(--header-h, 72px) + 12px);
+  right: 16px;
+  z-index: 90;
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  min-width: 230px;
+  padding: 8px 12px 8px 14px;
+  border-radius: 10px;
+  background: var(--blue);
+  color: #fff;
+  text-decoration: none;
+  white-space: nowrap;
+  box-shadow: 0 10px 26px rgba(0, 27, 154, 0.28), 0 2px 6px rgba(15, 14, 12, 0.12);
+  animation: quote-fab-in 0.35s var(--ease);
+  transition: background 0.2s var(--ease);
+}
+@media (min-width: 1024px) { .quote-fab { right: 24px; } }
+.quote-fab:hover { background: #00137a; }
+.quote-fab:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+@keyframes quote-fab-in { from { opacity: 0; transform: translateY(-10px); } }
+.quote-fab-text { display: flex; flex: 1; flex-direction: column; gap: 1px; min-width: 0; }
+.quote-fab-label { font-size: 13.5px; font-weight: 600; line-height: 1.25; }
+.quote-fab-sub { font-size: 11.5px; font-weight: 500; line-height: 1.25; opacity: 0.88; }
+.quote-fab-arrow { width: 16px; height: 16px; flex-shrink: 0; }
+.quote-fab-icon { position: relative; display: inline-flex; }
+.quote-fab-icon svg { width: 19px; height: 19px; }
+.quote-fab-count {
+  position: absolute;
+  top: -7px;
+  right: -9px;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 4px;
+  border-radius: 999px;
+  background: var(--accent);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 16px;
+  text-align: center;
+  box-shadow: 0 0 0 2px var(--blue);
+  animation: quote-count-pop 0.3s var(--ease);
+}
+@keyframes quote-count-pop { 0% { transform: scale(0.4); } 60% { transform: scale(1.2); } 100% { transform: scale(1); } }
+
+/* The Quote page: the list on the left, the Send Inquiry panel on the right (the product page's
+   two columns). */
+.quote-head { margin-bottom: 26px; }
+.quote-head .pdp-title { margin-top: 4px; }
+.quote-head .pdp-lede { max-width: 640px; }
+.quote-lines { display: flex; flex-direction: column; gap: 12px; margin: 0; padding: 0; list-style: none; }
+.quote-line {
+  display: grid;
+  grid-template-columns: 76px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 16px;
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: #fff;
+}
+.quote-line-thumb {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 76px;
+  height: 76px;
+  overflow: hidden;
+  border-radius: 10px;
+  background: var(--paper-2);
+}
+.quote-line-thumb.has-photo { background: #fff; border: 1px solid var(--line); }
+.quote-line-thumb img { width: 100%; height: 100%; object-fit: contain; padding: 6px; }
+.quote-line-thumb .category-art { width: 100%; height: 100%; }
+.quote-line-info { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.quote-line-name { color: var(--ink); font-size: 15px; font-weight: 600; line-height: 1.35; text-decoration: none; }
+.quote-line-name:hover { color: var(--accent-dark); }
+.quote-line-meta { font-size: 12.5px; color: var(--muted); }
+.quote-line-controls { display: flex; align-items: flex-end; gap: 12px; }
+.quote-line-field { display: flex; flex-direction: column; gap: 5px; }
+.quote-line-field > span { font-size: 12px; font-weight: 500; color: var(--muted); }
+.quote-line-field select {
+  height: 40px;
+  max-width: 180px;
+  padding: 0 12px;
+  border: 1px solid #d9d5cb;
+  border-radius: 9px;
+  background: #fff;
+  font: inherit;
+  font-size: 13.5px;
+  color: var(--ink);
+}
+.quote-qty {
+  display: inline-flex;
+  align-items: stretch;
+  height: 40px;
+  overflow: hidden;
+  border: 1px solid #d9d5cb;
+  border-radius: 9px;
+  background: #fff;
+}
+.quote-qty button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  border: 0;
+  background: none;
+  color: var(--ink);
+  cursor: pointer;
+}
+.quote-qty button:hover:not(:disabled) { background: var(--accent-tint); color: var(--accent-dark); }
+.quote-qty button:disabled { color: #c8c2b6; cursor: not-allowed; }
+.quote-qty button svg { width: 15px; height: 15px; }
+.quote-qty input {
+  width: 64px;
+  border: 0;
+  border-left: 1px solid #ece8df;
+  border-right: 1px solid #ece8df;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  text-align: center;
+  color: var(--ink);
+  -moz-appearance: textfield;
+}
+.quote-qty input::-webkit-outer-spin-button,
+.quote-qty input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+.quote-qty input:focus { outline: 2px solid var(--accent); outline-offset: -2px; }
+.quote-line-remove {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: #fff;
+  color: var(--muted);
+  cursor: pointer;
+  transition: color 0.2s var(--ease), border-color 0.2s var(--ease);
+}
+.quote-line-remove:hover { color: #c0392b; border-color: #e6b0aa; }
+.quote-line-remove svg { width: 16px; height: 16px; }
+.quote-page .catalog-pagination { margin-top: 20px; }
+.quote-foot { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-top: 18px; }
+.quote-foot-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--ink);
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+}
+.quote-foot-link:hover { color: var(--accent-dark); }
+.quote-foot-link svg { width: 16px; height: 16px; }
+.quote-foot-clear {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--muted);
+  font: inherit;
+  font-size: 13.5px;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+.quote-foot-clear:hover { color: #c0392b; }
+.quote-placeholder { min-height: 330px; }
+.quote-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 48px 24px;
+  border: 1.5px dashed var(--line);
+  border-radius: 16px;
+  text-align: center;
+}
+.quote-empty-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 999px;
+  background: var(--accent-tint);
+  color: var(--accent);
+}
+.quote-empty-icon svg { width: 26px; height: 26px; }
+.quote-empty h2 { margin: 6px 0 0; font-size: 19px; font-weight: 600; color: var(--ink); }
+.quote-empty p { max-width: 420px; margin: 0 0 8px; font-size: 14px; line-height: 1.6; color: var(--ink-soft); }
+.quote-panel-note {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 20px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  background: var(--accent-tint);
+  color: var(--accent-dark);
+  font-size: 13.5px;
+  font-weight: 500;
+  line-height: 1.45;
+}
+.quote-panel-note svg { width: 18px; height: 18px; flex-shrink: 0; }
+@media (max-width: 760px) {
+  .quote-line { grid-template-columns: 60px minmax(0, 1fr); }
+  .quote-line-thumb { width: 60px; height: 60px; }
+  .quote-line-controls { grid-column: 1 / -1; flex-wrap: wrap; }
+  .quote-line-remove { margin-left: auto; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .quote-fab, .quote-fab-count { animation: none; }
 }

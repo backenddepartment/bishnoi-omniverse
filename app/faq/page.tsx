@@ -68,29 +68,6 @@ export default function FaqPage() {
           <FaqAccordion questions={partnerFaqData.questions} />
         </div>
       </section>
-
-      <section className="section section-white pt-0 pb-24">
-        <div className="wrap">
-          <div className="section-dark rounded-3xl px-8 py-16">
-            <div className="heading-lg text-center max-w-2xl mx-auto">
-              <span className="eyebrow on-dark text-[#f8ae85]">Still Have a Question?</span>
-              <h2>Send us the requirement and we&apos;ll answer it directly.</h2>
-              <p className="mt-2 mb-8">
-                A case manager responds within 24 hours — whether that is a quote, a document
-                request, or a question we have not answered here.
-              </p>
-              <div className="flex flex-wrap justify-center gap-4">
-                <Link href="/contact?type=quote" className="btn btn-primary">
-                  Request a Quote
-                </Link>
-                <Link href="/contact" className="btn btn-outline">
-                  Contact Us
-                </Link>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
     </div>
   );
 }
