@@ -1,7 +1,8 @@
 'use client';
 
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { ANALYTICS_ENDPOINT } from '@/lib/analytics';
+import { FirstPasswordScreen, type AdminUser, type Api } from './accounts';
 import { Dashboard } from './Dashboard';
 import { AdminBackdrop, LoginScreen, useAdminTheme } from './LoginScreen';
 
@@ -9,14 +10,15 @@ const TOKEN_KEY = 'bo-admin-session';
 
 export interface AdminSession {
   token: string;
-  username: string;
   expiresAt: number;
+  user: AdminUser;
 }
 
 function loadSession(): AdminSession | null {
   try {
     const saved = JSON.parse(window.sessionStorage.getItem(TOKEN_KEY) ?? 'null') as AdminSession | null;
-    return saved && saved.expiresAt > Date.now() ? saved : null;
+    // A session saved before accounts existed has no user: sign in again.
+    return saved && saved.expiresAt > Date.now() && saved.user?.id ? saved : null;
   } catch {
     return null;
   }
@@ -31,9 +33,35 @@ function saveSession(session: AdminSession | null) {
   }
 }
 
+/** Thrown by the api helper when the Worker answers 401: the sign-in has ended. */
+export class SessionEnded extends Error {}
+
+/**
+ * Calls the analytics Worker as the signed-in account, with JSON in and out. Errors carry the
+ * Worker's own message, ready to show.
+ */
+export function makeApi(token: string): Api {
+  return async (path, init = {}) => {
+    const res = await fetch(`${ANALYTICS_ENDPOINT}${path}`, {
+      method: init.method ?? 'GET',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        ...(init.body !== undefined ? { 'Content-Type': 'application/json' } : {}),
+      },
+      body: init.body !== undefined ? JSON.stringify(init.body) : undefined,
+      cache: 'no-store',
+    });
+    const body = await res.json().catch(() => ({}));
+    if (res.status === 401) throw new SessionEnded('Your session has ended. Please sign in again.');
+    if (!res.ok) throw new Error(body.message || `The analytics service answered ${res.status}.`);
+    return body;
+  };
+}
+
 /**
  * Sign-in gate for the dashboard. The token lives in sessionStorage, so closing the tab signs out;
- * the Worker also expires it after 12 hours.
+ * the Worker also expires it after 12 hours. An account still on a temporary password chooses
+ * its own before it sees the dashboard.
  */
 export function AdminApp({ productNames }: { productNames: Record<string, string> }) {
   const [session, setSession] = useState<AdminSession | null>(null);
@@ -49,6 +77,18 @@ export function AdminApp({ productNames }: { productNames: Record<string, string
     saveSession(null);
     setSession(null);
   }, []);
+
+  /** A new token (after a password change) or updated account details (a new name). */
+  const updateSession = useCallback((next: Partial<AdminSession>) => {
+    setSession((current) => {
+      if (!current) return current;
+      const merged = { ...current, ...next, user: { ...current.user, ...next.user } };
+      saveSession(merged);
+      return merged;
+    });
+  }, []);
+
+  const api = useMemo(() => (session ? makeApi(session.token) : null), [session]);
 
   if (!ready) return <div className="min-h-screen bg-[#121216]" />;
 
@@ -67,7 +107,7 @@ export function AdminApp({ productNames }: { productNames: Record<string, string
     );
   }
 
-  if (!session) {
+  if (!session || !api) {
     return (
       <LoginScreen
         theme={theme}
@@ -80,5 +120,17 @@ export function AdminApp({ productNames }: { productNames: Record<string, string
     );
   }
 
-  return <Dashboard session={session} onSignOut={signOut} productNames={productNames} />;
+  if (session.user.mustChange) {
+    return <FirstPasswordScreen api={api} me={session.user} onSession={updateSession} onSignOut={signOut} />;
+  }
+
+  return (
+    <Dashboard
+      session={session}
+      api={api}
+      onSignOut={signOut}
+      onSessionChange={updateSession}
+      productNames={productNames}
+    />
+  );
 }

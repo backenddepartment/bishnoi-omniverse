@@ -9,6 +9,8 @@ import {
   ExternalLink,
   FileText,
   Globe2,
+  Settings,
+  UserCog,
   Link2,
   LayoutDashboard,
   Loader2,
@@ -26,6 +28,8 @@ import brandMark from '@/app/icon.png';
 import type { AdminSession } from './AdminApp';
 import type { TrendPoint } from './charts';
 import { ConfirmDialog } from './ConfirmDialog';
+import { ROLE_INFO, SettingsView, UsersView, initials, type Api } from './accounts';
+import { SessionEnded } from './AdminApp';
 import { Seg, fmt } from './ui';
 import {
   AudienceView,
@@ -98,7 +102,7 @@ function fillSeries(stats: Stats): TrendPoint[] {
  * Sections
  * ------------------------------------------------------------------ */
 
-type SectionId = 'overview' | 'live' | 'pages' | 'sources' | 'countries' | 'audience' | 'clicks' | 'conversions';
+type SectionId = 'overview' | 'live' | 'pages' | 'sources' | 'countries' | 'audience' | 'clicks' | 'conversions' | 'users' | 'settings';
 
 const SECTIONS: {
   id: SectionId;
@@ -107,21 +111,31 @@ const SECTIONS: {
   Icon: typeof Activity;
   title: string;
   description: string;
-  View: (props: ViewProps) => JSX.Element;
+  /** The analytics view; none for the account pages (Users, Settings), which load their own data. */
+  View?: (props: ViewProps) => JSX.Element;
+  /** The icon's hover motion. */
+  anim: 'pop' | 'beat' | 'flip' | 'wiggle' | 'spin' | 'hop' | 'tap' | 'pulse' | 'gear' | 'nod';
+  /** Shown only to admins. */
+  adminOnly?: boolean;
 }[] = [
-  { id: 'overview', label: 'Overview', group: 'Analytics', Icon: LayoutDashboard, title: 'Overview', description: 'How the website is doing at a glance.', View: OverviewView },
-  { id: 'live', label: 'Live', group: 'Analytics', Icon: Activity, title: 'Live activity', description: 'Who is on the site right now, and what they just did.', View: LiveView },
-  { id: 'pages', label: 'Pages', group: 'Content', Icon: FileText, title: 'Pages', description: 'Which pages people view, how long they stay and how far they read.', View: PagesView },
-  { id: 'sources', label: 'Traffic sources', group: 'Content', Icon: Link2, title: 'Traffic sources', description: 'How visitors find the website.', View: SourcesView },
-  { id: 'countries', label: 'Countries', group: 'Content', Icon: Globe2, title: 'Countries', description: 'Where in the world visitors, clicks and inquiries come from.', View: CountriesView },
-  { id: 'audience', label: 'Audience', group: 'Content', Icon: Users, title: 'Audience', description: 'Who visits: where from, on what device, and when.', View: AudienceView },
-  { id: 'clicks', label: 'Clicks', group: 'Engagement', Icon: MousePointerClick, title: 'Clicks', description: 'Every link and button people use.', View: ClicksView },
-  { id: 'conversions', label: 'Conversions', group: 'Engagement', Icon: Target, title: 'Conversions', description: 'Inquiries sent and products added to a quote.', View: ConversionsView },
+  { id: 'overview', label: 'Overview', group: 'Analytics', Icon: LayoutDashboard, title: 'Overview', description: 'How the website is doing at a glance.', View: OverviewView, anim: 'pop' },
+  { id: 'live', label: 'Live', group: 'Analytics', Icon: Activity, title: 'Live activity', description: 'Who is on the site right now, and what they just did.', View: LiveView, anim: 'beat' },
+  { id: 'pages', label: 'Pages', group: 'Content', Icon: FileText, title: 'Pages', description: 'Which pages people view, how long they stay and how far they read.', View: PagesView, anim: 'flip' },
+  { id: 'sources', label: 'Traffic sources', group: 'Content', Icon: Link2, title: 'Traffic sources', description: 'How visitors find the website.', View: SourcesView, anim: 'wiggle' },
+  { id: 'countries', label: 'Countries', group: 'Content', Icon: Globe2, title: 'Countries', description: 'Where in the world visitors, clicks and inquiries come from.', View: CountriesView, anim: 'spin' },
+  { id: 'audience', label: 'Audience', group: 'Content', Icon: Users, title: 'Audience', description: 'Who visits: where from, on what device, and when.', View: AudienceView, anim: 'hop' },
+  { id: 'clicks', label: 'Clicks', group: 'Engagement', Icon: MousePointerClick, title: 'Clicks', description: 'Every link and button people use.', View: ClicksView, anim: 'tap' },
+  { id: 'conversions', label: 'Conversions', group: 'Engagement', Icon: Target, title: 'Conversions', description: 'Inquiries sent and products added to a quote.', View: ConversionsView, anim: 'pulse' },
+  { id: 'users', label: 'Users', group: 'Administration', Icon: UserCog, title: 'Users', description: 'Who can sign in to the analytics, and what each account may do.', anim: 'nod', adminOnly: true },
+  { id: 'settings', label: 'Settings', group: 'Administration', Icon: Settings, title: 'Settings', description: 'Your profile, your password and this session.', anim: 'gear' },
 ];
 
-function sectionFromHash(): SectionId {
+const GROUPS = ['Analytics', 'Content', 'Engagement', 'Administration'];
+
+function sectionFromHash(isAdmin: boolean): SectionId {
   const id = window.location.hash.replace('#', '') as SectionId;
-  return SECTIONS.some((s) => s.id === id) ? id : 'overview';
+  const found = SECTIONS.find((s) => s.id === id);
+  return found && (!found.adminOnly || isAdmin) ? id : 'overview';
 }
 
 /* ------------------------------------------------------------------ *
@@ -130,13 +144,19 @@ function sectionFromHash(): SectionId {
 
 export function Dashboard({
   session,
+  api,
   onSignOut,
+  onSessionChange,
   productNames,
 }: {
   session: AdminSession;
+  api: Api;
   onSignOut: () => void;
+  onSessionChange: (next: Partial<AdminSession>) => void;
   productNames: Record<string, string>;
 }) {
+  const me = session.user;
+  const isAdmin = me.role === 'admin';
   const [section, setSection] = useState<SectionId>('overview');
   const [menuOpen, setMenuOpen] = useState(false);
   const [range, setRange] = useState<RangeId>('7d');
@@ -155,7 +175,7 @@ export function Dashboard({
   // The section lives in the URL hash, so a refresh or a shared link opens the same one.
   useEffect(() => {
     const sync = () => {
-      setSection(sectionFromHash());
+      setSection(sectionFromHash(isAdmin));
       setMenuOpen(false);
       window.scrollTo({ top: 0 });
     };
@@ -237,6 +257,22 @@ export function Dashboard({
     };
   }, [authed]);
 
+  const accountApi = useCallback<Api>(
+    async (path, init) => {
+      try {
+        return await api(path, init);
+      } catch (err) {
+        if (err instanceof SessionEnded) {
+          expiredRef.current = true;
+          setExpired(true);
+        }
+        throw err;
+      }
+    },
+    [api]
+  ) as Api;
+  const accountPage = section === 'users' || section === 'settings';
+
   const onlineNow = liveData ? liveData.online.length : stats?.liveVisitors ?? 0;
 
   const exportCsv = async () => {
@@ -312,10 +348,10 @@ export function Dashboard({
         </div>
 
         <nav className="admin-scroll -mr-2 flex-1 overflow-y-auto pr-2" aria-label="Sections">
-          {['Analytics', 'Content', 'Engagement'].map((group) => (
+          {GROUPS.map((group) => (
             <div key={group}>
               <p className="mx-2.5 mb-1.5 mt-3.5 text-[11.5px] font-semibold uppercase tracking-[0.07em] text-crm-ink-3">{group}</p>
-              {SECTIONS.filter((s) => s.group === group).map((s) => {
+              {SECTIONS.filter((s) => s.group === group && (!s.adminOnly || isAdmin)).map((s) => {
                 const active = s.id === section;
                 const count = counts[s.id];
                 return (
@@ -323,11 +359,11 @@ export function Dashboard({
                     key={s.id}
                     href={`#${s.id}`}
                     aria-current={active ? 'page' : undefined}
-                    className={`flex items-center gap-3 rounded-full px-3 py-[9px] text-[14px] transition ${
+                    className={`admin-nav-link flex items-center gap-3 rounded-full px-3 py-[9px] text-[14px] transition ${
                       active ? 'bg-crm-p-50 font-medium text-crm-p-700' : 'text-crm-ink-2 hover:bg-crm-hover hover:text-crm-ink'
                     }`}
                   >
-                    <s.Icon className={`h-[18px] w-[18px] ${active ? 'text-crm-p' : ''}`} aria-hidden="true" />
+                    <s.Icon data-anim={s.anim} className={`admin-nav-icon h-[18px] w-[18px] ${active ? 'text-crm-p' : ''}`} aria-hidden="true" />
                     {s.label}
                     {count != null && count > 0 && (
                       <span className="ml-auto grid h-[22px] min-w-[22px] place-items-center rounded-full bg-crm-p px-[7px] text-[11.5px] tabular-nums text-white">
@@ -346,27 +382,33 @@ export function Dashboard({
             href="/"
             target="_blank"
             rel="noopener"
-            className="flex items-center gap-3 rounded-full px-3 py-[9px] text-[14px] text-crm-ink-2 hover:bg-crm-hover hover:text-crm-ink"
+            className="admin-nav-link flex items-center gap-3 rounded-full px-3 py-[9px] text-[14px] text-crm-ink-2 transition hover:bg-crm-hover hover:text-crm-ink"
           >
-            <ExternalLink className="h-[18px] w-[18px]" aria-hidden="true" />
+            <ExternalLink data-anim="out" className="admin-nav-icon h-[18px] w-[18px]" aria-hidden="true" />
             View website
           </a>
-          <div className="mt-1.5 flex items-center gap-2.5 px-1.5 py-1">
-            <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-crm-p text-[12.5px] font-semibold uppercase text-white">
-              {session.username.slice(0, 1) || 'A'}
-            </span>
-            <div className="min-w-0 flex-1 leading-tight">
-              <b className="block truncate text-[14px] font-semibold">{session.username}</b>
-              <span className="text-[12px] text-crm-ink-3">Administrator</span>
-            </div>
+          <div className="mt-1.5 flex items-center gap-1 px-1.5 py-1">
+            <a
+              href="#settings"
+              title="Your settings"
+              className="-ml-1 flex min-w-0 flex-1 items-center gap-2.5 rounded-full py-1 pl-1 pr-2 transition hover:bg-crm-hover"
+            >
+              <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-crm-p text-[12.5px] font-semibold text-white">
+                {initials(me.name)}
+              </span>
+              <span className="min-w-0 flex-1 leading-tight">
+                <b className="block truncate text-[14px] font-semibold">{me.name}</b>
+                <span className="text-[12px] text-crm-ink-3">{ROLE_INFO[me.role].label}</span>
+              </span>
+            </a>
             <button
               type="button"
               onClick={() => setConfirm('signout')}
               aria-label="Sign out"
               title="Sign out"
-              className="grid h-10 w-10 place-items-center rounded-full text-crm-ink-3 transition hover:bg-crm-bad-bg hover:text-crm-bad"
+              className="admin-nav-link grid h-10 w-10 place-items-center rounded-full text-crm-ink-3 transition hover:bg-crm-bad-bg hover:text-crm-bad"
             >
-              <LogOut className="h-4 w-4" aria-hidden="true" />
+              <LogOut data-anim="exit" className="admin-nav-icon h-4 w-4" aria-hidden="true" />
             </button>
           </div>
         </div>
@@ -385,7 +427,9 @@ export function Dashboard({
               <Menu className="h-5 w-5" aria-hidden="true" />
             </button>
             <nav className="flex min-w-0 items-center gap-2 text-[13px] text-crm-ink-3" aria-label="Breadcrumb">
-              <a href="#overview" className="hover:text-crm-ink hover:underline">Analytics</a>
+              <a href={accountPage ? '#settings' : '#overview'} className="hover:text-crm-ink hover:underline">
+                {accountPage ? 'Administration' : 'Analytics'}
+              </a>
               <ChevronRight className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
               <span className="truncate text-crm-ink">{current.label}</span>
             </nav>
@@ -411,6 +455,7 @@ export function Dashboard({
                 <RefreshCw className={`h-4 w-4 text-crm-p ${loading ? 'animate-spin' : ''}`} aria-hidden="true" />
                 <span className="hidden sm:inline">Refresh</span>
               </button>
+              {isAdmin && (
               <button
                 type="button"
                 onClick={() => setConfirm('export')}
@@ -420,6 +465,7 @@ export function Dashboard({
                 {exporting ? <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" /> : <Download className="h-4 w-4" aria-hidden="true" />}
                 <span className="hidden sm:inline">Export CSV</span>
               </button>
+              )}
             </div>
           </div>
         </header>
@@ -431,20 +477,33 @@ export function Dashboard({
               <h1 className="text-[30px] font-semibold leading-[1.15] tracking-[-0.02em]">{current.title}</h1>
               <p className="mt-0.5 text-crm-ink-3">{current.description}</p>
             </div>
-            <div className="flex min-w-0 max-w-full flex-col items-start gap-1.5 sm:items-end">
-              <Seg label="Date range" value={range} onChange={setRange} options={RANGES.map((r) => ({ id: r.id, label: r.label }))} />
-              {stats && <span className="text-[12.5px] text-crm-ink-3">Compared with the previous {rangeInfo.long}</span>}
-            </div>
+            {!accountPage && (
+              <div className="flex min-w-0 max-w-full flex-col items-start gap-1.5 sm:items-end">
+                <Seg label="Date range" value={range} onChange={setRange} options={RANGES.map((r) => ({ id: r.id, label: r.label }))} />
+                {stats && <span className="text-[12.5px] text-crm-ink-3">Compared with the previous {rangeInfo.long}</span>}
+              </div>
+            )}
           </div>
 
-          {error && (
+          {error && !accountPage && (
             <p role="alert" className="mt-4 flex items-start gap-3 rounded-[18px] bg-crm-bad-bg px-[18px] py-3.5 text-[13.5px] text-[#7a1810]">
               {error}
             </p>
           )}
 
           <div className="mt-5">
-            {!stats && loading ? (
+            {section === 'users' && isAdmin ? (
+              <UsersView api={accountApi} me={me} />
+            ) : section === 'settings' ? (
+              <SettingsView
+                api={accountApi}
+                me={me}
+                expiresAt={session.expiresAt}
+                onUser={(user) => onSessionChange({ user })}
+                onSession={(next) => onSessionChange(next)}
+                onSignOut={() => setConfirm('signout')}
+              />
+            ) : !stats && loading ? (
               <div className="grid gap-4" aria-label="Loading">
                 <div className="grid grid-cols-2 gap-4 lg:grid-cols-3 2xl:grid-cols-6">
                   {Array.from({ length: 6 }, (_, i) => (
@@ -456,7 +515,9 @@ export function Dashboard({
             ) : stats ? (
               // Refetch keeps the previous numbers on screen, dimmed, instead of flashing empty.
               <div className={`transition-opacity ${loading ? 'opacity-60' : ''}`}>
-                <current.View stats={stats} points={points} productNames={productNames} rangeLabel={rangeInfo.long} live={liveData} />
+                {current.View && (
+                  <current.View stats={stats} points={points} productNames={productNames} rangeLabel={rangeInfo.long} live={liveData} />
+                )}
               </div>
             ) : null}
           </div>

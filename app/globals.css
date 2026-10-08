@@ -5919,3 +5919,121 @@ button.pdp-summary-cta { padding: 0; border: 0; background: none; font-family: i
     scrollbar-color: #dedede transparent;
   }
 }
+
+/* The empty "Who's online now" card: two rings that swell and fade like a radar, half a cycle
+   apart. Still for anyone who asks for reduced motion. */
+@keyframes admin-radar {
+  0% { transform: scale(0.72); opacity: 0.9; }
+  100% { transform: scale(1.12); opacity: 0; }
+}
+.admin-radar {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: admin-radar 2.8s ease-out infinite;
+}
+.admin-radar-late { animation-delay: -1.4s; }
+@media (prefers-reduced-motion: reduce) {
+  .admin-radar { animation: none; opacity: 0.6; }
+}
+
+/* Analytics sidebar: on hover (or keyboard focus) each menu icon makes one small motion that fits
+   it: the globe spins, the heartbeat beats, the cursor taps. Once per hover, about half a second.
+   Nothing moves for anyone who asks for reduced motion. */
+.admin-nav-icon {
+  transform-origin: center;
+}
+.admin-nav-link:hover .admin-nav-icon,
+.admin-nav-link:focus-visible .admin-nav-icon {
+  animation-duration: 0.6s;
+  animation-timing-function: cubic-bezier(0.34, 1.4, 0.64, 1);
+  animation-fill-mode: both;
+}
+.admin-nav-link:hover .admin-nav-icon[data-anim='pop'],
+.admin-nav-link:focus-visible .admin-nav-icon[data-anim='pop'] { animation-name: admin-icon-pop; }
+.admin-nav-link:hover .admin-nav-icon[data-anim='beat'],
+.admin-nav-link:focus-visible .admin-nav-icon[data-anim='beat'] { animation-name: admin-icon-beat; animation-timing-function: ease-in-out; }
+.admin-nav-link:hover .admin-nav-icon[data-anim='flip'],
+.admin-nav-link:focus-visible .admin-nav-icon[data-anim='flip'] { animation-name: admin-icon-flip; }
+.admin-nav-link:hover .admin-nav-icon[data-anim='wiggle'],
+.admin-nav-link:focus-visible .admin-nav-icon[data-anim='wiggle'] { animation-name: admin-icon-wiggle; animation-timing-function: ease-in-out; }
+.admin-nav-link:hover .admin-nav-icon[data-anim='spin'],
+.admin-nav-link:focus-visible .admin-nav-icon[data-anim='spin'] { animation-name: admin-icon-spin; animation-duration: 0.8s; animation-timing-function: cubic-bezier(0.45, 0, 0.2, 1); }
+.admin-nav-link:hover .admin-nav-icon[data-anim='hop'],
+.admin-nav-link:focus-visible .admin-nav-icon[data-anim='hop'] { animation-name: admin-icon-hop; }
+.admin-nav-link:hover .admin-nav-icon[data-anim='tap'],
+.admin-nav-link:focus-visible .admin-nav-icon[data-anim='tap'] { animation-name: admin-icon-tap; animation-timing-function: ease-in-out; }
+.admin-nav-link:hover .admin-nav-icon[data-anim='pulse'],
+.admin-nav-link:focus-visible .admin-nav-icon[data-anim='pulse'] { animation-name: admin-icon-pulse; animation-timing-function: ease-in-out; }
+.admin-nav-link:hover .admin-nav-icon[data-anim='gear'],
+.admin-nav-link:focus-visible .admin-nav-icon[data-anim='gear'] { animation-name: admin-icon-gear; animation-duration: 0.8s; animation-timing-function: cubic-bezier(0.45, 0, 0.2, 1); }
+.admin-nav-link:hover .admin-nav-icon[data-anim='nod'],
+.admin-nav-link:focus-visible .admin-nav-icon[data-anim='nod'] { animation-name: admin-icon-nod; animation-timing-function: ease-in-out; }
+.admin-nav-link:hover .admin-nav-icon[data-anim='out'],
+.admin-nav-link:focus-visible .admin-nav-icon[data-anim='out'] { animation-name: admin-icon-out; }
+.admin-nav-link:hover .admin-nav-icon[data-anim='exit'],
+.admin-nav-link:focus-visible .admin-nav-icon[data-anim='exit'] { animation-name: admin-icon-exit; }
+
+@keyframes admin-icon-pop {
+  0%, 100% { transform: none; }
+  40% { transform: scale(1.2) rotate(-6deg); }
+  70% { transform: scale(0.95); }
+}
+@keyframes admin-icon-beat {
+  0%, 100% { transform: none; }
+  20% { transform: scale(1.22); }
+  40% { transform: scale(0.96); }
+  60% { transform: scale(1.14); }
+}
+@keyframes admin-icon-flip {
+  0%, 100% { transform: none; }
+  45% { transform: translateY(-3px) rotate(-10deg); }
+}
+@keyframes admin-icon-wiggle {
+  0%, 100% { transform: none; }
+  20% { transform: rotate(-14deg); }
+  45% { transform: rotate(12deg); }
+  70% { transform: rotate(-6deg); }
+}
+@keyframes admin-icon-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+@keyframes admin-icon-hop {
+  0%, 100% { transform: none; }
+  35% { transform: translateY(-4px) scale(1.05, 0.95); }
+  60% { transform: translateY(0) scale(1.06, 0.92); }
+  80% { transform: translateY(-1px); }
+}
+@keyframes admin-icon-tap {
+  0%, 100% { transform: none; }
+  35% { transform: translate(1.5px, 1.5px) scale(0.82); }
+  65% { transform: scale(1.08); }
+}
+@keyframes admin-icon-pulse {
+  0%, 100% { transform: none; }
+  30% { transform: scale(1.2); }
+  55% { transform: scale(0.94); }
+  80% { transform: scale(1.06); }
+}
+@keyframes admin-icon-gear {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(180deg); }
+}
+@keyframes admin-icon-nod {
+  0%, 100% { transform: none; }
+  30% { transform: translateY(-2px) rotate(-8deg); }
+  60% { transform: translateY(1px) rotate(6deg); }
+}
+@keyframes admin-icon-out {
+  0%, 100% { transform: none; }
+  45% { transform: translate(2.5px, -2.5px); }
+}
+@keyframes admin-icon-exit {
+  0%, 100% { transform: none; }
+  45% { transform: translateX(3px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  /* [data-anim] matches the specificity of the per-icon rules above, so this one wins. */
+  .admin-nav-link:hover .admin-nav-icon[data-anim],
+  .admin-nav-link:focus-visible .admin-nav-icon[data-anim] { animation: none; }
+}

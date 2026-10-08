@@ -73,11 +73,11 @@ export function LoginScreen({
         body: JSON.stringify({ username, password }),
       });
       const body = await res.json().catch(() => ({}));
-      if (!res.ok || !body.token) {
+      if (!res.ok || !body.token || !body.user) {
         setError(body.message || 'Could not sign in. Please try again.');
         return;
       }
-      onSignedIn({ token: body.token, username: body.username, expiresAt: body.expiresAt });
+      onSignedIn({ token: body.token, expiresAt: body.expiresAt, user: body.user });
     } catch {
       setError('Could not reach the analytics service. Check your connection and try again.');
     } finally {
@@ -116,12 +116,12 @@ export function LoginScreen({
 
           <form onSubmit={submit} className="mt-9 flex flex-1 flex-col h-md:mt-6 h-sm:mt-4">
             <label className="block">
-              <span className="block pl-1 text-[11px] font-semibold uppercase tracking-[0.08em] text-[color:var(--a-label)]">Username</span>
+              <span className="block pl-1 text-[11px] font-semibold uppercase tracking-[0.08em] text-[color:var(--a-label)]">Username or email</span>
               <input
                 type="text"
                 autoComplete="username"
                 required
-                placeholder="Enter username"
+                placeholder="Enter username or email"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 className="admin-input mt-2.5 block w-full rounded-full border border-[color:var(--a-line)] bg-transparent px-6 py-3.5 h-sm:mt-2 h-sm:py-3 text-[14px] text-[color:var(--a-text)] outline-none transition placeholder:text-[color:var(--a-faint)] focus:border-accent focus:shadow-[0_0_0_4px_rgba(243,107,33,0.15)]"

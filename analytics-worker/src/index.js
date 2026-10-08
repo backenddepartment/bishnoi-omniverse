@@ -8,6 +8,7 @@
  *                        page and conversions here, plus a heartbeat every 30 seconds while a tab
  *                        is open (who is online now). Public, but only from ALLOWED_ORIGINS.
  *   POST /admin/login    username + password -> a signed session token (12 hours).
+ *   /admin/me, /admin/users  your own account, and managing everyone's (see src/users.js).
  *   GET  /admin/stats    everything the dashboard at /admin/ shows, for one date range. Needs the
  *                        token as `Authorization: Bearer <token>`.
  *   GET  /admin/live     who is on the site right now, and the latest events. Small and fast, so
@@ -18,8 +19,8 @@
  *
  * Configuration — [vars] in wrangler.toml for the non-secret values, `npx wrangler secret put <NAME>`
  * for the rest (see docs/analytics.md):
- *   ADMIN_USERNAME    the dashboard login
- *   ADMIN_PASSWORD    secret; the dashboard password (12+ characters)
+ *   ADMIN_USERNAME    the first admin's username; used only while there are no accounts yet
+ *   ADMIN_PASSWORD    secret; that first admin's password (12+ characters)
  *   SESSION_SECRET    secret; a long random string that signs login tokens. Changing it signs
  *                     everyone out
  *   ALLOWED_ORIGINS   comma-separated origins allowed to send events and use the dashboard
@@ -31,9 +32,8 @@
  * reduced to a family name ("Chrome", "Android") from the user agent.
  */
 
-const TOKEN_TTL_MS = 12 * 60 * 60 * 1000;
-const MAX_LOGIN_FAILURES = 5;
-const LOGIN_WINDOW_MS = 15 * 60 * 1000;
+import { currentUser, handleLogin, handleMe, handleUsers } from './users.js';
+
 const MAX_EVENTS_PER_REQUEST = 25;
 const MAX_RANGE_DAYS = 400;
 /** A visitor counts as online while their tab has checked in within this long (heartbeat: 30s). */
@@ -86,7 +86,7 @@ function originAllowed(origin, env) {
 function corsHeaders(request, env) {
   const origin = request.headers.get('Origin') ?? '';
   const headers = {
-    'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+    'Access-Control-Allow-Methods': 'GET, POST, DELETE, OPTIONS',
     'Access-Control-Allow-Headers': 'Content-Type, Authorization',
     'Access-Control-Max-Age': '86400',
     Vary: 'Origin',
@@ -100,31 +100,6 @@ function json(request, env, status, body) {
     status,
     headers: { ...corsHeaders(request, env), 'Content-Type': 'application/json', 'Cache-Control': 'no-store' },
   });
-}
-
-const encoder = new TextEncoder();
-
-function base64url(bytes) {
-  let binary = '';
-  for (const b of new Uint8Array(bytes)) binary += String.fromCharCode(b);
-  return btoa(binary).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
-}
-
-function fromBase64url(value) {
-  const padded = value.replace(/-/g, '+').replace(/_/g, '/') + '==='.slice((value.length + 3) % 4);
-  return Uint8Array.from(atob(padded), (c) => c.charCodeAt(0));
-}
-
-async function sha256(value) {
-  return new Uint8Array(await crypto.subtle.digest('SHA-256', encoder.encode(value)));
-}
-
-/** Compares two strings without leaking, through timing, how much of them matched. */
-async function safeEqual(a, b) {
-  const [x, y] = await Promise.all([sha256(String(a)), sha256(String(b))]);
-  let diff = 0;
-  for (let i = 0; i < x.length; i++) diff |= x[i] ^ y[i];
-  return diff === 0;
 }
 
 /* ------------------------------------------------------------------ *
@@ -295,98 +270,8 @@ async function handleCollect(request, env) {
 }
 
 /* ------------------------------------------------------------------ *
- * Admin login and tokens
+ * Accounts: sign-in, sessions, users (src/users.js)
  * ------------------------------------------------------------------ */
-
-async function signingKey(env) {
-  return crypto.subtle.importKey(
-    'raw',
-    encoder.encode(String(env.SESSION_SECRET)),
-    { name: 'HMAC', hash: 'SHA-256' },
-    false,
-    ['sign', 'verify']
-  );
-}
-
-async function issueToken(env, username) {
-  const payload = base64url(encoder.encode(JSON.stringify({ u: username, exp: Date.now() + TOKEN_TTL_MS })));
-  const signature = await crypto.subtle.sign('HMAC', await signingKey(env), encoder.encode(payload));
-  return `${payload}.${base64url(signature)}`;
-}
-
-/** The signed-in username, or '' when the request carries no valid, unexpired token. */
-async function verifyToken(request, env) {
-  const header = request.headers.get('Authorization') ?? '';
-  const token = header.startsWith('Bearer ') ? header.slice(7).trim() : '';
-  const [payload, signature] = token.split('.');
-  if (!payload || !signature) return '';
-  try {
-    const ok = await crypto.subtle.verify(
-      'HMAC',
-      await signingKey(env),
-      fromBase64url(signature),
-      encoder.encode(payload)
-    );
-    if (!ok) return '';
-    const data = JSON.parse(new TextDecoder().decode(fromBase64url(payload)));
-    return typeof data.exp === 'number' && data.exp > Date.now() ? String(data.u ?? '') : '';
-  } catch {
-    return '';
-  }
-}
-
-function adminConfigured(env) {
-  return (
-    String(env.ADMIN_USERNAME ?? '').trim() !== '' &&
-    String(env.ADMIN_PASSWORD ?? '') !== '' &&
-    String(env.SESSION_SECRET ?? '').length >= 32
-  );
-}
-
-async function handleLogin(request, env) {
-  if (!adminConfigured(env)) {
-    log('login refused: ADMIN_USERNAME, ADMIN_PASSWORD or SESSION_SECRET (32+ chars) is not set');
-    return json(request, env, 503, { message: 'The dashboard login has not been set up yet.' });
-  }
-
-  // Failed attempts are counted per IP, stored only as a hash.
-  const ipHash = base64url(await sha256(`${env.SESSION_SECRET}|${request.headers.get('CF-Connecting-IP') ?? ''}`));
-  const since = Date.now() - LOGIN_WINDOW_MS;
-  const row = await env.DB.prepare('SELECT COUNT(*) AS n FROM login_attempts WHERE ip = ?1 AND ts > ?2')
-    .bind(ipHash, since)
-    .first();
-  if ((row?.n ?? 0) >= MAX_LOGIN_FAILURES) {
-    return json(request, env, 429, { message: 'Too many failed attempts. Please wait 15 minutes and try again.' });
-  }
-
-  let body;
-  try {
-    body = await request.json();
-  } catch {
-    return json(request, env, 400, { message: 'Invalid request.' });
-  }
-
-  const username = text(body?.username, 100);
-  const password = String(body?.password ?? '').slice(0, 200);
-  // Both compared every time, so a wrong username takes as long as a wrong password.
-  const [userOk, passOk] = await Promise.all([
-    safeEqual(username.toLowerCase(), String(env.ADMIN_USERNAME).trim().toLowerCase()),
-    safeEqual(password, env.ADMIN_PASSWORD),
-  ]);
-
-  if (!userOk || !passOk) {
-    await env.DB.prepare('INSERT INTO login_attempts (ip, ts) VALUES (?1, ?2)').bind(ipHash, Date.now()).run();
-    log('failed admin login');
-    return json(request, env, 401, { message: 'Incorrect username or password.' });
-  }
-
-  await env.DB.prepare('DELETE FROM login_attempts WHERE ip = ?1').bind(ipHash).run();
-  return json(request, env, 200, {
-    token: await issueToken(env, username),
-    expiresAt: Date.now() + TOKEN_TTL_MS,
-    username,
-  });
-}
 
 /* ------------------------------------------------------------------ *
  * Date ranges
@@ -744,15 +629,24 @@ export default {
 
     try {
       if (route === '/collect' && request.method === 'POST') return await handleCollect(request, env);
-      if (route === '/admin/login' && request.method === 'POST') return await handleLogin(request, env);
+      const reply = (status, body) => json(request, env, status, body);
+      if (route === '/admin/login' && request.method === 'POST') return await handleLogin(request, env, reply);
 
-      if (route === '/admin/stats' || route === '/admin/export' || route === '/admin/live') {
-        if (request.method !== 'GET') return json(request, env, 405, { message: 'Method not allowed.' });
-        if (!adminConfigured(env) || !(await verifyToken(request, env))) {
-          return json(request, env, 401, { message: 'Please sign in again.' });
+      if (route.startsWith('/admin/')) {
+        const me = await currentUser(request, env);
+        if (!me) return reply(401, { message: 'Please sign in again.' });
+        if (route === '/admin/me' || route === '/admin/me/password') return await handleMe(request, env, reply, me, route);
+        if (route === '/admin/users' || route.startsWith('/admin/users/')) return await handleUsers(request, env, reply, me, route);
+
+        if (route === '/admin/stats' || route === '/admin/export' || route === '/admin/live') {
+          if (request.method !== 'GET') return reply(405, { message: 'Method not allowed.' });
+          if (route === '/admin/live') return await handleLive(request, env);
+          if (route === '/admin/export') {
+            if (me.role !== 'admin') return reply(403, { message: 'Only administrators can export the raw events.' });
+            return await handleExport(request, env, url);
+          }
+          return await handleStats(request, env, url);
         }
-        if (route === '/admin/live') return await handleLive(request, env);
-        return route === '/admin/stats' ? await handleStats(request, env, url) : await handleExport(request, env, url);
       }
 
       if (route === '/') return json(request, env, 200, { service: 'bishnoi-analytics', ok: true });

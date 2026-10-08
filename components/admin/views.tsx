@@ -369,6 +369,57 @@ function ConversionList({ items, productNames }: { items: Stats['recentConversio
  * Live
  * ------------------------------------------------------------------ */
 
+/**
+ * The empty "Who's online now" card: the component sheet's empty-state drawing (ink lines on a
+ * soft shadow), redrawn in the dashboard blue: a browser window with a globe on its screen and a
+ * radar pulse around it, waiting for the next visitor. The pulse is still for reduced motion.
+ */
+function NoOneOnline() {
+  return (
+    <div className="flex flex-col items-center px-4 pb-6 pt-4 text-center">
+      <svg width="200" height="150" viewBox="0 0 200 150" aria-hidden="true" className="overflow-visible">
+        {/* Shadow on the floor */}
+        <ellipse cx="100" cy="138" rx="66" ry="6" fill="#ecf4fd" />
+        {/* Radar pulse behind the window */}
+        <circle cx="100" cy="74" r="62" fill="none" stroke="#d8eafb" strokeWidth="2" className="admin-radar" />
+        <circle cx="100" cy="74" r="62" fill="none" stroke="#d8eafb" strokeWidth="2" className="admin-radar admin-radar-late" />
+        <circle cx="100" cy="74" r="46" fill="#ecf4fd" />
+        {/* Browser window */}
+        <rect x="46" y="34" width="108" height="82" rx="10" fill="#ffffff" stroke="#141414" strokeWidth="2" />
+        <path d="M46 52h108" stroke="#141414" strokeWidth="2" />
+        <circle cx="57" cy="43" r="2.6" fill="#141414" />
+        <circle cx="66" cy="43" r="2.6" fill="#141414" />
+        <circle cx="75" cy="43" r="2.6" fill="#b1d4f6" />
+        <rect x="88" y="39.5" width="56" height="7" rx="3.5" fill="#ecf4fd" stroke="#141414" strokeWidth="1.5" />
+        {/* Globe on the screen */}
+        <circle cx="100" cy="84" r="20" fill="#d8eafb" stroke="#141414" strokeWidth="2" />
+        <ellipse cx="100" cy="84" rx="8.5" ry="20" fill="none" stroke="#141414" strokeWidth="1.5" />
+        <path d="M80.5 78h39M80.5 90h39" stroke="#141414" strokeWidth="1.5" strokeLinecap="round" />
+        {/* A visitor dot in orbit, still on its way */}
+        <path d="M150 30c14 8 18 24 10 38" fill="none" stroke="#86bcf1" strokeWidth="2" strokeLinecap="round" strokeDasharray="3 6" />
+        <circle cx="150" cy="30" r="7" fill="#0c79e3" stroke="#ffffff" strokeWidth="2.5" />
+        {/* Sparkles */}
+        <path d="M34 40v8M30 44h8" stroke="#86bcf1" strokeWidth="2" strokeLinecap="round" />
+        <path d="M168 104v6M165 107h6" stroke="#86bcf1" strokeWidth="2" strokeLinecap="round" />
+      </svg>
+      <h4 className="mt-3 text-[17px] font-semibold text-crm-ink">No one&apos;s online right now</h4>
+      <p className="mx-auto mt-1 max-w-[340px] text-[13.5px] leading-relaxed text-crm-ink-3">
+        Visitors appear here within seconds of opening the website, with their city, device and the page they&apos;re
+        reading.
+      </p>
+      <a
+        href="/"
+        target="_blank"
+        rel="noopener"
+        className="mt-4 inline-flex h-[34px] items-center gap-2 rounded-full border-[1.5px] border-crm-p bg-white px-4 text-[13px] font-medium text-crm-ink transition hover:bg-crm-p-50"
+      >
+        <ExternalLink className="h-4 w-4 text-crm-p" aria-hidden="true" />
+        Open the website
+      </a>
+    </div>
+  );
+}
+
 export function LiveView({ stats, productNames, live }: ViewProps) {
   const online = live?.online ?? [];
   const recent = live?.recent ?? stats.recent;
@@ -415,7 +466,7 @@ export function LiveView({ stats, productNames, live }: ViewProps) {
         bodyClassName="px-5 pb-3"
       >
         {online.length === 0 ? (
-          <Empty text="No one is on the website right now. Open bishnoiomniverse.com on another device and you'll appear here within seconds." />
+          <NoOneOnline />
         ) : (
           <ul className="m-0 list-none divide-y divide-crm-rule p-0">
             {online.map((o) => (
