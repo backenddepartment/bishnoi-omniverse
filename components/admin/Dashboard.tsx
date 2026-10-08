@@ -347,7 +347,7 @@ export function Dashboard({
           </button>
         </div>
 
-        <nav className="admin-scroll -mr-2 flex-1 overflow-y-auto pr-2" aria-label="Sections">
+        <nav className="admin-scroll -mr-2 flex-1 overflow-y-auto pb-3 pr-2" aria-label="Sections">
           {GROUPS.map((group) => (
             <div key={group}>
               <p className="mx-2.5 mb-1.5 mt-3.5 text-[11.5px] font-semibold uppercase tracking-[0.07em] text-crm-ink-3">{group}</p>
@@ -377,7 +377,7 @@ export function Dashboard({
           ))}
         </nav>
 
-        <div className="border-t border-crm-rule pt-2.5">
+        <div className="mt-1 border-t border-crm-rule pt-3">
           <a
             href="/"
             target="_blank"
