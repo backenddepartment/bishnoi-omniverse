@@ -1,4 +1,5 @@
 import contactData from '@/lib/data/contactData.json';
+import { trackConversion } from '@/lib/analytics';
 
 /**
  * Browser side of the inquiry pipeline — the React port of Getmeds' assets/inquiry.js.
@@ -202,6 +203,8 @@ export async function sendInquiry(
     } catch {
       body = {};
     }
+    // Only the kind of inquiry is recorded for the analytics dashboard, never what was typed.
+    if (response.ok) trackConversion('Inquiry sent', payload.inquiryType);
     return {
       ok: response.ok,
       message: body.message || (response.ok ? 'Sent.' : 'Something went wrong. Please try again.'),

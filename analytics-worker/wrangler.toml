@@ -1,0 +1,25 @@
+# Cloudflare Worker that collects the website's analytics and serves the /admin/ dashboard's data.
+# See docs/analytics.md for the full setup.
+name = "bishnoi-analytics"
+main = "src/index.js"
+compatibility_date = "2025-01-01"
+
+# Create the database once with `npx wrangler d1 create bishnoi-analytics` and paste the id it
+# prints below. Then `npm run db:migrate` creates the tables.
+[[d1_databases]]
+binding = "DB"
+database_name = "bishnoi-analytics"
+database_id = "d4ef832e-6a44-4c5f-9647-f88878a117dd"
+migrations_dir = "migrations"
+
+# Non-secret settings only. ADMIN_PASSWORD and SESSION_SECRET are set with
+# `npx wrangler secret put <NAME>` so they never land in git.
+[vars]
+ADMIN_USERNAME = "admin"
+# Pages allowed to send events and use the dashboard.
+ALLOWED_ORIGINS = "https://bishnoiomniverse.com,https://www.bishnoiomniverse.com,https://backenddepartment.github.io,http://localhost:3000,http://localhost:3001"
+RETENTION_DAYS = "400"
+
+# Daily clean-up of events older than RETENTION_DAYS (03:00 UTC).
+[triggers]
+crons = ["0 3 * * *"]

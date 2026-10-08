@@ -11,9 +11,10 @@ import { QuoteFab } from '@/components/quote/QuoteFab';
 /**
  * Routes that render standalone, with no navbar and no footer. Matched by prefix.
  * The coming-soon pages are dead ends by design: the only way onward is their own button,
- * so site chrome would just offer the visitor a menu they already came from.
+ * so site chrome would just offer the visitor a menu they already came from. The analytics
+ * dashboard (/admin) is a back-office tool with its own header.
  */
-const BARE_ROUTES = ['/coming-soon'];
+const BARE_ROUTES = ['/coming-soon', '/admin'];
 
 // The animation features behind every `m.*` component (header menus, FAQ answers), fetched as a
 // separate chunk once the page is up instead of in the first-load bundle.

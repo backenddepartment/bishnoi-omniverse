@@ -1,0 +1,16 @@
+{
+  "name": "bishnoi-analytics-worker",
+  "private": true,
+  "description": "Cloudflare Worker + D1 database behind the website's analytics and /admin/ dashboard.",
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "tail": "wrangler tail",
+    "db:migrate": "wrangler d1 migrations apply bishnoi-analytics --remote",
+    "db:migrate:local": "wrangler d1 migrations apply bishnoi-analytics --local"
+  },
+  "devDependencies": {
+    "wrangler": "^4.131.1"
+  }
+}

@@ -3,6 +3,7 @@ import { Fraunces, Inter, Poppins } from 'next/font/google';
 import './globals.css';
 import { SiteChrome } from '@/components/layout/SiteChrome';
 import { RouteProgress } from '@/components/layout/RouteProgress';
+import { Analytics } from '@/components/layout/Analytics';
 
 // `display: 'swap'` is next/font's default, stated here on purpose: changing these options makes
 // the dev server download the fonts afresh instead of reusing a fallback it cached after a failed
@@ -38,6 +39,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en" className={`${fraunces.variable} ${inter.variable} ${poppins.variable}`}>
       <body className="flex flex-col min-h-screen">
         <RouteProgress />
+        <Analytics />
         <SiteChrome>{children}</SiteChrome>
       </body>
     </html>

@@ -1,6 +1,7 @@
 'use client';
 
 import { useSyncExternalStore } from 'react';
+import { trackConversion } from '@/lib/analytics';
 
 /**
  * The visitor's quote list: products picked with Add to Quote across the catalog, reviewed and sent
@@ -86,6 +87,8 @@ export function addToQuote(id: string, size?: string) {
   const current = load();
   if (current.some((line) => line.id === id)) return;
   save([...current, { id, qty: 1, ...(size ? { size } : {}) }]);
+  // The worker's quotedProducts query matches this label; keep the two in step.
+  trackConversion('Added to quote', id);
 }
 
 export function updateQuoteLine(id: string, patch: Partial<Omit<QuoteLine, 'id'>>) {
