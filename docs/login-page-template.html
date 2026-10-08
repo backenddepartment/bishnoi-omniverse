@@ -1,0 +1,492 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sign in</title>
+<!--
+  Sign-in page template: a standalone copy of the Bishnoi Omniverse analytics sign-in screen
+  (components/admin/LoginScreen.tsx + the .admin-theme rules in app/globals.css), in plain
+  HTML, CSS and JavaScript, so the same look can go on any site (PHP, static HTML, another
+  framework). No build step, no libraries.
+
+  To reuse it, change the four things marked "CHANGE ME":
+    1. The logo image (img.brand-logo) and the brand name under it.
+    2. LOGIN_URL / AFTER_LOGIN in the script at the bottom (or switch to a plain form post).
+    3. The three slide captions (SLIDES in the script).
+    4. The "Back to website" link.
+
+  Colours live in CSS variables on .auth (dark) and .auth[data-theme="light"]; the orange accent
+  is --accent. Everything else follows from those.
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  /* ---------------------------------------------------------------- *
+   * Colours: dark by default, light with data-theme="light"
+   * ---------------------------------------------------------------- */
+  .auth {
+    color-scheme: dark;
+    --accent: #f36b21;
+    --accent-from: #ff8a3d;
+    --bg: #121216;
+    --card: #1b1b20;
+    --panel: #25252c;
+    --text: #ffffff;
+    --soft: rgba(255, 255, 255, 0.8);
+    --label: rgba(255, 255, 255, 0.7);
+    --muted: rgba(255, 255, 255, 0.45);
+    --faint: rgba(255, 255, 255, 0.4);
+    --line: rgba(255, 255, 255, 0.12);
+    --edge: rgba(255, 255, 255, 0.06);
+    --hover: rgba(255, 255, 255, 0.06);
+    --dot: rgba(255, 255, 255, 0.25);
+    --error: #fecaca;
+    --glow: 1;
+    --panel-glow: 1;
+    --card-shadow: 0 40px 120px -40px rgba(0, 0, 0, 0.8);
+  }
+  .auth[data-theme="light"] {
+    color-scheme: light;
+    --bg: #ffffff;
+    --card: #ffffff;
+    --panel: #f6f6f8;
+    --text: #17171c;
+    --soft: rgba(23, 23, 28, 0.78);
+    --label: rgba(23, 23, 28, 0.7);
+    --muted: rgba(23, 23, 28, 0.6);
+    --faint: rgba(23, 23, 28, 0.45);
+    --line: rgba(23, 23, 28, 0.14);
+    --edge: rgba(23, 23, 28, 0.06);
+    --hover: rgba(23, 23, 28, 0.05);
+    --dot: rgba(23, 23, 28, 0.2);
+    --error: #b42318;
+    --glow: 0.25;
+    --panel-glow: 0.3;
+    --card-shadow: 0 30px 90px -30px rgba(23, 23, 28, 0.18);
+  }
+
+  /* ---------------------------------------------------------------- *
+   * Base
+   * ---------------------------------------------------------------- */
+  *, *::before, *::after { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body { font-family: Poppins, -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif; line-height: 1.5; -webkit-font-smoothing: antialiased; }
+  button, input { font: inherit; color: inherit; }
+  svg.i { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; flex: none; }
+
+  /* ---------------------------------------------------------------- *
+   * Page and card
+   * ---------------------------------------------------------------- */
+  .auth {
+    position: relative; display: flex; align-items: center; justify-content: center;
+    min-height: 100vh; min-height: 100dvh; overflow: hidden;
+    padding: 24px 16px; background: var(--bg); transition: background-color .3s;
+  }
+  .glow { position: absolute; border-radius: 50%; pointer-events: none; opacity: var(--glow); }
+  .glow.g1 { left: 12%; top: 10%; width: 96px; height: 96px; background: rgba(243, 107, 33, .7); filter: blur(38px); }
+  .glow.g2 { right: 10%; bottom: 8%; width: 80px; height: 80px; background: rgba(255, 61, 127, .6); filter: blur(34px); }
+  .glow.g3 { left: 6%; bottom: 30%; width: 56px; height: 56px; background: rgba(11, 132, 87, .7); filter: blur(26px); }
+
+  .card {
+    position: relative; display: grid; width: 100%; max-width: 960px; overflow: hidden;
+    border: 1px solid var(--edge); border-radius: 28px; background: var(--card);
+    box-shadow: var(--card-shadow); transition: background-color .3s;
+  }
+  @media (min-width: 768px) { .card { grid-template-columns: 1fr 1fr; } }
+
+  /* ---------------------------------------------------------------- *
+   * Left: illustration and captions (hidden on phones)
+   * ---------------------------------------------------------------- */
+  .showcase {
+    position: relative; display: none; flex-direction: column; overflow: hidden;
+    border-radius: 28px; background: var(--panel); padding: 32px 32px 40px; transition: background-color .3s;
+  }
+  @media (min-width: 768px) { .showcase { display: flex; } }
+  .showcase .pg { position: absolute; border-radius: 50%; opacity: var(--panel-glow); }
+  .showcase .pg1 { left: 18%; top: 30%; width: 224px; height: 224px; background: rgba(243, 107, 33, .35); filter: blur(70px); }
+  .showcase .pg2 { right: 6%; top: 12%; width: 112px; height: 112px; background: rgba(255, 61, 127, .3); filter: blur(50px); }
+
+  /* The art is drawn at 380x360 and scaled as a whole on short screens. */
+  .art-box { position: relative; margin: 0 auto; height: 360px; width: 100%; max-width: 380px; flex: none; }
+  .art { position: absolute; left: 50%; top: 0; height: 360px; width: 100%; transform: translateX(-50%); transform-origin: top; }
+
+  .tile-pos { position: absolute; left: 50%; top: 54%; transform: translate(-50%, -50%); }
+  .tile-rot { transform: rotate(-14deg); }
+  .tile {
+    position: relative; width: 230px; height: 230px; border-radius: 56px;
+    background: linear-gradient(135deg, #ffc36b, #f36b21 50%, #d63c5e);
+    box-shadow: 10px 12px 0 #b4471a, 18px 22px 0 #8f3514, 30px 44px 60px rgba(0,0,0,.55), inset 0 2px 0 rgba(255,255,255,.45);
+  }
+  .tile-face {
+    position: absolute; inset: 30px; border-radius: 38px; background: linear-gradient(135deg, #fff, #ffe6da);
+    box-shadow: inset 0 -6px 14px rgba(194,86,26,.25), 0 6px 0 rgba(143,53,20,.35);
+  }
+  .bars { position: absolute; left: 26px; right: 26px; top: 34px; bottom: 28px; display: flex; align-items: flex-end; gap: 12px; }
+  .bars span { flex: 1; border-radius: 8px 8px 3px 3px; background: linear-gradient(to top, #d63c5e, #ff8a3d); box-shadow: 0 3px 0 rgba(143,53,20,.35); }
+  .trend { position: absolute; left: 22px; right: 22px; top: 22px; height: 60px; width: calc(100% - 44px); }
+
+  .bubble-pos { position: absolute; left: 0; top: 6%; }
+  .bubble {
+    position: relative; transform: rotate(-10deg); border-radius: 20px; padding: 12px 16px;
+    background: linear-gradient(135deg, #ff7a45, #e5484d); box-shadow: 6px 8px 0 #a8322f, 14px 22px 40px rgba(0,0,0,.45);
+    display: flex; align-items: center; gap: 8px; color: #fff; font-size: 26px; font-weight: 600; line-height: 1;
+  }
+  .bubble svg.i { width: 24px; height: 24px; stroke-width: 2.6; }
+  .bubble::after { content: ""; position: absolute; bottom: -8px; left: 24px; width: 16px; height: 16px; transform: rotate(45deg); border-radius: 3px; background: #e85a49; }
+
+  .click-pos { position: absolute; right: 2%; top: 0; }
+  .click-tile {
+    display: flex; align-items: center; justify-content: center; width: 92px; height: 92px; transform: rotate(12deg);
+    border-radius: 26px; background: linear-gradient(135deg, #fff, #ffd9c6); color: var(--accent);
+    box-shadow: 8px 10px 0 #d9a58c, 18px 26px 44px rgba(0,0,0,.45);
+  }
+  .click-tile svg.i { width: 44px; height: 44px; stroke-width: 2.4; }
+
+  .live-pos { position: absolute; right: 4%; bottom: 4%; }
+  .live-chip {
+    display: flex; align-items: center; gap: 8px; transform: rotate(6deg); border-radius: 999px; padding: 8px 16px;
+    background: #0b8457; color: #fff; font-size: 13px; font-weight: 600; box-shadow: 4px 6px 0 #075c3c, 10px 18px 30px rgba(0,0,0,.45);
+  }
+  .live-dot { position: relative; display: flex; width: 8px; height: 8px; }
+  .live-dot::before { content: ""; position: absolute; inset: 0; border-radius: 50%; background: #fff; opacity: .7; animation: ping 1s cubic-bezier(0,0,.2,1) infinite; }
+  .live-dot::after { content: ""; position: relative; width: 8px; height: 8px; border-radius: 50%; background: #fff; }
+
+  .badge-pos { position: absolute; left: 2%; bottom: 14%; }
+  .badge {
+    display: flex; align-items: center; justify-content: center; width: 48px; height: 48px; transform: rotate(-8deg);
+    border-radius: 16px; background: #3a3a44; color: rgba(255,255,255,.9); box-shadow: 4px 6px 0 #26262e, 10px 16px 26px rgba(0,0,0,.4);
+  }
+  .badge svg.i { width: 24px; height: 24px; }
+
+  .captions { position: relative; margin-top: auto; text-align: center; }
+  .caption { margin: 0 auto; min-height: 76px; max-width: 300px; font-size: 26px; font-weight: 500; line-height: 1.25; letter-spacing: -.01em; color: var(--text); }
+  .dots { display: flex; justify-content: center; gap: 4px; margin-top: 24px; }
+  .dots button { display: flex; align-items: center; justify-content: center; width: 24px; height: 24px; padding: 0; border: 0; background: none; cursor: pointer; }
+  .dots button span { display: block; width: 6px; height: 6px; border-radius: 999px; background: var(--dot); transition: width .2s, background-color .2s; }
+  .dots button[aria-current="true"] span { width: 20px; background: var(--text); }
+
+  /* ---------------------------------------------------------------- *
+   * Right: the form
+   * ---------------------------------------------------------------- */
+  .form-side { position: relative; display: flex; flex-direction: column; padding: 40px 28px; }
+  @media (min-width: 640px) { .form-side { padding: 48px; } }
+
+  .round-btn {
+    display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; padding: 0;
+    border-radius: 50%; background: transparent; cursor: pointer; transition: background-color .15s, color .15s;
+  }
+  .theme-toggle { position: absolute; right: 16px; top: 16px; border: 1px solid var(--line); color: var(--soft); }
+  @media (min-width: 640px) { .theme-toggle { right: 20px; top: 20px; } }
+  .theme-toggle:hover { background: var(--hover); color: var(--text); }
+
+  .brand { display: flex; flex-direction: column; align-items: center; text-align: center; }
+  .brand-logo { width: 56px; height: 56px; object-fit: contain; filter: drop-shadow(0 6px 18px rgba(243,107,33,.45)); }
+  .brand-name { margin-top: 10px; font-size: 15px; font-weight: 600; letter-spacing: -.01em; color: var(--text); }
+
+  .welcome { margin: 36px 0 0; text-align: center; font-size: 13px; color: var(--muted); }
+  h1 { margin: 4px 0 0; text-align: center; font-size: 30px; font-weight: 600; letter-spacing: -.02em; color: var(--text); }
+
+  form { display: flex; flex: 1; flex-direction: column; margin-top: 36px; }
+  .field { display: block; }
+  .field + .field { margin-top: 24px; }
+  .field-label { display: block; padding-left: 4px; font-size: 11px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--label); }
+  .input-wrap { position: relative; display: block; margin-top: 10px; }
+  .input {
+    display: block; width: 100%; padding: 14px 24px; border: 1px solid var(--line); border-radius: 999px;
+    background: transparent; font-size: 14px; color: var(--text); outline: none; transition: border-color .15s, box-shadow .15s;
+  }
+  .input::placeholder { color: var(--faint); }
+  .input:focus { border-color: var(--accent); box-shadow: 0 0 0 4px rgba(243,107,33,.15); }
+  .input.has-btn { padding-right: 56px; }
+  /* Chrome's autofill paints inputs pale blue; keep the card's colours instead. */
+  .input:-webkit-autofill, .input:-webkit-autofill:hover, .input:-webkit-autofill:focus {
+    -webkit-text-fill-color: var(--text); caret-color: var(--text);
+    -webkit-box-shadow: 0 0 0 1000px var(--card) inset; transition: background-color 9999s ease-out 0s;
+  }
+  .eye { position: absolute; right: 8px; top: 50%; transform: translateY(-50%); border: 0; color: var(--faint); }
+  .eye:hover { background: var(--hover); color: var(--text); }
+
+  .error {
+    margin: 20px 0 0; padding: 12px 16px; border: 1px solid rgba(248,113,113,.25); border-radius: 16px;
+    background: rgba(239,68,68,.1); font-size: 13px; color: var(--error);
+  }
+  .error[hidden] { display: none; }
+  .hint { margin: 24px 0 0; text-align: center; font-size: 13px; color: var(--muted); }
+  .hint span { color: var(--soft); }
+
+  .actions { display: flex; align-items: center; margin-top: 32px; padding: 6px; border: 1px solid var(--line); border-radius: 999px; }
+  @media (min-width: 768px) { .actions { margin-top: auto; } .hint { margin-bottom: 20px; } }
+  @media (min-width: 768px) and (max-height: 820px) { .hint { margin-bottom: 0; } }
+  .actions > * {
+    display: flex; flex: 1; align-items: center; justify-content: center; gap: 8px; padding: 14px 16px;
+    border-radius: 999px; font-size: 14px; white-space: nowrap; text-decoration: none;
+  }
+  @media (min-width: 640px) { .actions > * { padding-left: 24px; padding-right: 24px; } }
+  .submit {
+    border: 0; cursor: pointer; font-weight: 600; color: #fff;
+    background: linear-gradient(to right, var(--accent-from), var(--accent));
+    box-shadow: 0 10px 30px -10px rgba(243,107,33,.9); transition: filter .15s, opacity .15s;
+  }
+  .submit:hover { filter: brightness(1.1); }
+  .submit:disabled { opacity: .6; cursor: default; }
+  .submit .spin { animation: spin 1s linear infinite; }
+  .back { font-weight: 500; color: var(--soft); transition: color .15s; }
+  .back:hover { color: var(--text); }
+
+  /* ---------------------------------------------------------------- *
+   * Short screens (by height): tighter, so the card never scrolls
+   * ---------------------------------------------------------------- */
+  @media (max-height: 820px) {
+    .auth { padding-top: 16px; padding-bottom: 16px; }
+    .form-side { padding-top: 32px; padding-bottom: 32px; }
+    .brand-logo { width: 44px; height: 44px; }
+    .welcome { margin-top: 24px; }
+    form { margin-top: 24px; }
+    .field + .field { margin-top: 16px; }
+    .hint { margin-top: 16px; }
+    .actions { margin-top: 20px; }
+    .showcase { padding-top: 24px; padding-bottom: 28px; }
+    .caption { min-height: 56px; font-size: 22px; }
+  }
+  @media (max-height: 660px) {
+    .form-side { padding-top: 24px; padding-bottom: 24px; }
+    .brand-logo { width: 36px; height: 36px; }
+    .brand-name { margin-top: 6px; }
+    .welcome { margin-top: 16px; }
+    h1 { font-size: 26px; }
+    form { margin-top: 16px; }
+    .input-wrap { margin-top: 8px; }
+    .input { padding-top: 12px; padding-bottom: 12px; }
+    .field + .field { margin-top: 12px; }
+    .hint { margin-top: 12px; }
+    .actions { margin-top: 16px; }
+    .actions > * { padding-top: 12px; padding-bottom: 12px; }
+    .showcase { padding-top: 16px; padding-bottom: 20px; }
+    .art-box { height: 288px; }
+    .art { transform: translateX(-50%) scale(.8); }
+    .caption { min-height: 48px; font-size: 19px; }
+    .dots { margin-top: 12px; }
+  }
+
+  /* ---------------------------------------------------------------- *
+   * Motion: a gentle bob, still for anyone who asks for reduced motion
+   * ---------------------------------------------------------------- */
+  @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+  @keyframes ping { 75%, 100% { transform: scale(2); opacity: 0; } }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .float { animation: float 6s ease-in-out infinite; }
+  .float-slow { animation: float 8s ease-in-out -2s infinite; }
+  @media (prefers-reduced-motion: reduce) {
+    .float, .float-slow, .live-dot::before { animation: none; }
+    .dots button span { transition: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Line icons (Lucide, ISC licence), drawn once and reused. -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="i-eye" viewBox="0 0 24 24"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"/><circle cx="12" cy="12" r="3"/></symbol>
+    <symbol id="i-eye-off" viewBox="0 0 24 24"><path d="M10.733 5.076a10.744 10.744 0 0 1 11.205 6.575 1 1 0 0 1 0 .696 10.747 10.747 0 0 1-1.444 2.49"/><path d="M14.084 14.158a3 3 0 0 1-4.242-4.242"/><path d="M17.479 17.499a10.75 10.75 0 0 1-15.417-5.151 1 1 0 0 1 0-.696 10.75 10.75 0 0 1 4.446-5.143"/><path d="m2 2 20 20"/></symbol>
+    <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2m-7.07-17.07 1.41 1.41m11.32 11.32 1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></symbol>
+    <symbol id="i-moon" viewBox="0 0 24 24"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></symbol>
+    <symbol id="i-click" viewBox="0 0 24 24"><path d="M14 4.1 12 6M5.1 8l-2.9-.8M6 12l-1.9 2M7.2 2.2 8 5.1"/><path d="M9.037 9.69a.498.498 0 0 1 .653-.653l11 4.5a.5.5 0 0 1-.074.949l-4.349 1.041a1 1 0 0 0-.74.739l-1.04 4.35a.5.5 0 0 1-.95.074z"/></symbol>
+    <symbol id="i-chart" viewBox="0 0 24 24"><path d="M3 3v16a2 2 0 0 0 2 2h16M18 17V9M13 17V5M8 17v-3"/></symbol>
+    <symbol id="i-loader" viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></symbol>
+  </defs>
+</svg>
+
+<div class="auth" id="auth" data-theme="dark">
+  <span class="glow g1 float" aria-hidden="true"></span>
+  <span class="glow g2 float-slow" aria-hidden="true"></span>
+  <span class="glow g3 float" aria-hidden="true"></span>
+
+  <div class="card">
+    <!-- Left: illustration and captions -->
+    <div class="showcase">
+      <span class="pg pg1" aria-hidden="true"></span>
+      <span class="pg pg2" aria-hidden="true"></span>
+
+      <div class="art-box" aria-hidden="true">
+        <div class="art">
+          <!-- Main 3D tile: a bar chart on a glossy orange block. The bob sits on its own
+               wrapper, because its transform would otherwise replace the centring one. -->
+          <div class="tile-pos"><div class="float"><div class="tile-rot">
+            <div class="tile">
+              <div class="tile-face">
+                <div class="bars"><span style="height:38%"></span><span style="height:62%"></span><span style="height:48%"></span><span style="height:86%"></span></div>
+                <svg class="trend" viewBox="0 0 100 60"><path d="M2 50 L30 30 L55 38 L96 6" fill="none" stroke="#25252c" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="96" cy="6" r="6" fill="#25252c"/></svg>
+              </div>
+            </div>
+          </div></div></div>
+
+          <div class="bubble-pos float-slow"><div class="bubble"><svg class="i"><use href="#i-eye"/></svg>1.2k</div></div>
+          <div class="click-pos float"><div class="click-tile"><svg class="i"><use href="#i-click"/></svg></div></div>
+          <div class="live-pos float-slow"><div class="live-chip"><span class="live-dot"></span>24 online</div></div>
+          <div class="badge-pos float"><div class="badge"><svg class="i"><use href="#i-chart"/></svg></div></div>
+        </div>
+      </div>
+
+      <div class="captions">
+        <p class="caption" id="caption" aria-live="polite"></p>
+        <div class="dots" id="dots"></div>
+      </div>
+    </div>
+
+    <!-- Right: the form -->
+    <div class="form-side">
+      <button type="button" class="round-btn theme-toggle" id="theme-toggle" aria-label="Switch to light mode" title="Light mode">
+        <svg class="i"><use href="#i-sun"/></svg>
+      </button>
+
+      <div class="brand">
+        <!-- CHANGE ME: your logo (a transparent PNG or SVG works best) and name. -->
+        <img class="brand-logo" src="logo.png" alt="">
+        <span class="brand-name">Bishnoi Omniverse</span>
+      </div>
+
+      <p class="welcome">Welcome</p>
+      <h1>Sign in now</h1>
+
+      <form id="login-form" novalidate>
+        <label class="field">
+          <span class="field-label">Username</span>
+          <span class="input-wrap">
+            <input class="input" name="username" type="text" autocomplete="username" required placeholder="Enter username">
+          </span>
+        </label>
+
+        <label class="field">
+          <span class="field-label">Password</span>
+          <span class="input-wrap">
+            <input class="input has-btn" id="password" name="password" type="password" autocomplete="current-password" required placeholder="Enter password">
+            <button type="button" class="round-btn eye" id="eye" aria-label="Show password">
+              <svg class="i"><use href="#i-eye"/></svg>
+            </button>
+          </span>
+        </label>
+
+        <p class="error" id="error" role="alert" hidden></p>
+
+        <p class="hint">Forgot the password? <span>Ask the site administrator.</span></p>
+
+        <div class="actions">
+          <button type="submit" class="submit" id="submit">Sign in</button>
+          <!-- CHANGE ME: where "Back to website" goes. -->
+          <a class="back" href="/">Back to website</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+  // ------------------------------------------------------------------
+  // CHANGE ME: where the form signs in, and where to go afterwards.
+  // The form POSTs JSON { username, password } to LOGIN_URL. Any 2xx answer counts as signed in;
+  // otherwise the page shows the answer's { "message": "..." } (or a general message).
+  // For a classic server-rendered form instead (e.g. PHP): give <form> method="post" and
+  // action="login.php", and delete the "submit" listener below.
+  // ------------------------------------------------------------------
+  const LOGIN_URL = '/api/login';
+  const AFTER_LOGIN = '/dashboard/';
+
+  // CHANGE ME: the captions under the illustration.
+  const SLIDES = [
+    'Every visit, live as it happens',
+    'See which links and buttons get clicked',
+    'Know where your inquiries come from',
+  ];
+
+  const THEME_KEY = 'auth-theme';
+  const root = document.getElementById('auth');
+
+  // --- Theme: dark unless this browser picked light before ------------
+  const toggle = document.getElementById('theme-toggle');
+  function setTheme(theme) {
+    root.dataset.theme = theme;
+    const dark = theme === 'dark';
+    toggle.setAttribute('aria-label', dark ? 'Switch to light mode' : 'Switch to dark mode');
+    toggle.title = dark ? 'Light mode' : 'Dark mode';
+    toggle.querySelector('use').setAttribute('href', dark ? '#i-sun' : '#i-moon');
+  }
+  try { if (localStorage.getItem(THEME_KEY) === 'light') setTheme('light'); } catch (e) { /* storage blocked */ }
+  toggle.addEventListener('click', () => {
+    const next = root.dataset.theme === 'dark' ? 'light' : 'dark';
+    setTheme(next);
+    try { localStorage.setItem(THEME_KEY, next); } catch (e) { /* ignore */ }
+  });
+
+  // --- Captions: rotate every 4.5s, dots jump to one ------------------
+  const caption = document.getElementById('caption');
+  const dots = document.getElementById('dots');
+  let slide = 0;
+  let timer;
+  SLIDES.forEach((text, i) => {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.setAttribute('aria-label', 'Show slide ' + (i + 1));
+    b.appendChild(document.createElement('span'));
+    b.addEventListener('click', () => show(i));
+    dots.appendChild(b);
+  });
+  function show(i) {
+    slide = i;
+    caption.textContent = SLIDES[i];
+    [...dots.children].forEach((b, j) => b.setAttribute('aria-current', String(j === i)));
+    clearInterval(timer);
+    timer = setInterval(() => show((slide + 1) % SLIDES.length), 4500);
+  }
+  show(0);
+
+  // --- Show / hide password -------------------------------------------
+  const password = document.getElementById('password');
+  const eye = document.getElementById('eye');
+  eye.addEventListener('click', () => {
+    const hidden = password.type === 'password';
+    password.type = hidden ? 'text' : 'password';
+    eye.setAttribute('aria-label', hidden ? 'Hide password' : 'Show password');
+    eye.querySelector('use').setAttribute('href', hidden ? '#i-eye-off' : '#i-eye');
+  });
+
+  // --- Submit -----------------------------------------------------------
+  const form = document.getElementById('login-form');
+  const error = document.getElementById('error');
+  const submit = document.getElementById('submit');
+  function showError(message) {
+    error.textContent = message;
+    error.hidden = !message;
+  }
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (!form.reportValidity()) return;
+    const data = { username: form.username.value.trim(), password: form.password.value };
+    showError('');
+    submit.disabled = true;
+    submit.innerHTML = '<svg class="i spin"><use href="#i-loader"/></svg>Signing in…';
+    try {
+      const res = await fetch(LOGIN_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+        credentials: 'same-origin',
+      });
+      const body = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        showError(body.message || 'Could not sign in. Please try again.');
+        return;
+      }
+      window.location.href = AFTER_LOGIN;
+    } catch (err) {
+      showError('Could not reach the server. Check your connection and try again.');
+    } finally {
+      submit.disabled = false;
+      submit.textContent = 'Sign in';
+    }
+  });
+</script>
+</body>
+</html>

@@ -15,6 +15,10 @@ export function RouteProgress() {
   const active = useRef(false);
   const trickle = useRef<ReturnType<typeof setInterval>>();
   const hide = useRef<ReturnType<typeof setTimeout>>();
+  // The path last shown, so back/forward between #hash links on one page (the /admin/ sections)
+  // does not start a bar that no page load will ever finish.
+  const shownPath = useRef(pathname);
+  shownPath.current = pathname;
 
   useEffect(() => {
     const start = () => {
@@ -41,11 +45,17 @@ export function RouteProgress() {
       start();
     };
 
+    const onPopState = () => {
+      // usePathname drops the trailing slash that the exported URLs keep, so compare without it.
+      const strip = (path: string) => path.replace(/\/+$/, '') || '/';
+      if (strip(window.location.pathname) !== strip(shownPath.current ?? '')) start();
+    };
+
     document.addEventListener('click', onClick, true);
-    window.addEventListener('popstate', start);
+    window.addEventListener('popstate', onPopState);
     return () => {
       document.removeEventListener('click', onClick, true);
-      window.removeEventListener('popstate', start);
+      window.removeEventListener('popstate', onPopState);
     };
   }, []);
 

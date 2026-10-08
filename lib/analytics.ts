@@ -9,8 +9,12 @@
  *   engagement  when a page is left: seconds spent on it and how far down it was scrolled
  *   conversion  sent inquiries and products added to the quote list (see trackConversion callers)
  *
+ * While a tab is open and visible it also sends a heartbeat every 30 seconds, so the dashboard
+ * knows who is on the site right now; closing the tab says goodbye at once (see heartbeat/leave).
+ *
  * A visitor is a random id kept in localStorage; a session is a random id kept in sessionStorage
  * and renewed after 30 minutes of inactivity. No names, emails or form contents are ever sent.
+ * Visits to localhost (development) are not tracked unless NEXT_PUBLIC_ANALYTICS_TRACK_LOCAL=1.
  *
  * The endpoint is public and baked in at build time (the GitHub repository variable
  * ANALYTICS_ENDPOINT in CI, .env.local when developing). With none set, nothing is tracked.
@@ -21,6 +25,8 @@ const VISITOR_KEY = 'bo-analytics-visitor';
 const SESSION_KEY = 'bo-analytics-session';
 const SESSION_IDLE_MS = 30 * 60 * 1000;
 const FLUSH_DELAY_MS = 2000;
+export const HEARTBEAT_MS = 30_000;
+const TRACK_LOCAL = process.env.NEXT_PUBLIC_ANALYTICS_TRACK_LOCAL === '1';
 
 export type ClickCategory = 'internal' | 'outbound' | 'email' | 'phone' | 'whatsapp' | 'download' | 'button';
 
@@ -56,9 +62,13 @@ function randomId(): string {
     : `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 12)}`;
 }
 
-/** Every browser is counted, the team's own included; only a missing endpoint turns tracking off. */
+/**
+ * Every browser on the real site is counted, the team's own included. Off without an endpoint, and
+ * on localhost, where the only visitor is whoever is working on the site.
+ */
 export function trackingEnabled(): boolean {
-  return ANALYTICS_ENDPOINT !== '' && typeof window !== 'undefined';
+  if (!ANALYTICS_ENDPOINT || typeof window === 'undefined') return false;
+  return TRACK_LOCAL || !/^(localhost|127\.0\.0\.1|\[::1\])$/.test(window.location.hostname);
 }
 
 function visitorId(): string {
@@ -81,8 +91,8 @@ function sessionId(): string {
   return current;
 }
 
-function send(events: AnalyticsEvent[]) {
-  const body = JSON.stringify({ visitor: visitorId(), session: sessionId(), events });
+function send(events: AnalyticsEvent[], extra: Record<string, unknown> = {}) {
+  const body = JSON.stringify({ visitor: visitorId(), session: sessionId(), events, ...extra });
   const url = `${ANALYTICS_ENDPOINT}/collect`;
   // text/plain keeps it a CORS "simple" request: no preflight round trip per batch. sendBeacon
   // survives the page being closed; fetch with keepalive is the fallback.
@@ -108,6 +118,26 @@ export function track(event: AnalyticsEvent) {
   if (!trackingEnabled()) return;
   queue.push(event);
   if (!flushTimer) flushTimer = setTimeout(flush, FLUSH_DELAY_MS);
+}
+
+/**
+ * "Still here": keeps this visitor on the dashboard's online list, on the page they are reading.
+ * Sent every 30 seconds while the tab is visible.
+ */
+export function heartbeat(path: string, title: string) {
+  if (!trackingEnabled()) return;
+  send([], { presence: { path, title } });
+}
+
+/**
+ * "Gone": takes this visitor off the online list at once, when the tab is closed. Anything still
+ * queued goes in the same request, so nothing sent after the goodbye can put them back.
+ */
+export function leave() {
+  if (!trackingEnabled()) return;
+  clearTimeout(flushTimer);
+  flushTimer = undefined;
+  send(queue.splice(0, 25), { leave: true });
 }
 
 /** Records a goal reached on the current page, e.g. trackConversion('Inquiry sent', 'contact'). */

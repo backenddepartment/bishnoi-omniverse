@@ -5,10 +5,13 @@
  * analytics need somewhere else to live. This Worker does three jobs:
  *
  *   POST /collect        the site's tracker (lib/analytics.ts) sends page views, clicks, time on
- *                        page and conversions here. Public, but only from ALLOWED_ORIGINS.
+ *                        page and conversions here, plus a heartbeat every 30 seconds while a tab
+ *                        is open (who is online now). Public, but only from ALLOWED_ORIGINS.
  *   POST /admin/login    username + password -> a signed session token (12 hours).
  *   GET  /admin/stats    everything the dashboard at /admin/ shows, for one date range. Needs the
  *                        token as `Authorization: Bearer <token>`.
+ *   GET  /admin/live     who is on the site right now, and the latest events. Small and fast, so
+ *                        the dashboard can ask every few seconds. Same token.
  *   GET  /admin/export   the raw events for a date range as CSV. Same token.
  *
  * A daily cron deletes events older than RETENTION_DAYS.
@@ -23,7 +26,8 @@
  *   RETENTION_DAYS    optional; how long raw events are kept. Default 400
  *
  * Privacy: no IP address is stored with events. A visitor is a random id the browser keeps in
- * localStorage, the country comes from Cloudflare's own lookup, and the device, browser and OS are
+ * localStorage, the country, region and city come from Cloudflare's own approximate lookup (no
+ * street-level location, nothing from the browser), and the device, browser and OS are
  * reduced to a family name ("Chrome", "Android") from the user agent.
  */
 
@@ -32,6 +36,8 @@ const MAX_LOGIN_FAILURES = 5;
 const LOGIN_WINDOW_MS = 15 * 60 * 1000;
 const MAX_EVENTS_PER_REQUEST = 25;
 const MAX_RANGE_DAYS = 400;
+/** A visitor counts as online while their tab has checked in within this long (heartbeat: 30s). */
+const ONLINE_WINDOW_MS = 75_000;
 
 const EVENT_TYPES = ['pageview', 'click', 'engagement', 'conversion'];
 const CLICK_CATEGORIES = ['internal', 'outbound', 'email', 'phone', 'whatsapp', 'download', 'button'];
@@ -197,12 +203,15 @@ async function handleCollect(request, env) {
   const events = Array.isArray(body?.events) ? body.events.slice(0, MAX_EVENTS_PER_REQUEST) : [];
   const { device, browser, os } = parseAgent(ua);
   const country = text(request.cf?.country, 2) || null;
+  // Cloudflare's approximate place for the connection, from its IP. Never more exact than a city.
+  const region = text(request.cf?.region, 80) || null;
+  const city = text(request.cf?.city, 80) || null;
   const now = Date.now();
 
   const insert = env.DB.prepare(
     `INSERT INTO events (ts, type, path, title, referrer, visitor, session, country, device, browser, os,
-       label, target, category, value, scroll, utm_source, utm_medium, utm_campaign)
-     VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12, ?13, ?14, ?15, ?16, ?17, ?18, ?19)`
+       label, target, category, value, scroll, utm_source, utm_medium, utm_campaign, region, city)
+     VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12, ?13, ?14, ?15, ?16, ?17, ?18, ?19, ?20, ?21)`
   );
 
   const statements = [];
@@ -230,7 +239,46 @@ async function handleCollect(request, env) {
         type === 'engagement' ? int(event.scroll, 0, 100) : null,
         text(event.utm_source, 80) || null,
         text(event.utm_medium, 80) || null,
-        text(event.utm_campaign, 120) || null
+        text(event.utm_campaign, 120) || null,
+        region,
+        city
+      )
+    );
+  }
+
+  // Presence: a closed tab says goodbye and leaves the online list at once. The heartbeat, a page
+  // view, a click or a conversion marks the visitor as here. A batch holding only the time-on-page
+  // figure does not: it is sent as a tab is hidden or closed, and may arrive after the goodbye.
+  const active = body?.presence || events.some((e) => e?.type && e.type !== 'engagement');
+  if (body?.leave === true) {
+    statements.push(env.DB.prepare('DELETE FROM presence WHERE visitor = ?1').bind(visitor));
+  } else if (active) {
+    const lastView = [...events].reverse().find((e) => e?.type === 'pageview');
+    const here = body?.presence && typeof body.presence === 'object' ? body.presence : lastView;
+    statements.push(
+      env.DB.prepare(
+        `INSERT INTO presence (visitor, session, first_seen, ts, path, title, country, region, city, device, browser, os)
+         VALUES (?1, ?2, ?3, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11)
+         ON CONFLICT(visitor) DO UPDATE SET
+           first_seen = CASE WHEN presence.session = excluded.session THEN presence.first_seen ELSE excluded.first_seen END,
+           session = excluded.session,
+           ts = excluded.ts,
+           path = COALESCE(excluded.path, presence.path),
+           title = COALESCE(excluded.title, presence.title),
+           country = excluded.country, region = excluded.region, city = excluded.city,
+           device = excluded.device, browser = excluded.browser, os = excluded.os`
+      ).bind(
+        visitor,
+        session,
+        now,
+        here ? sitePath(here.path) : null,
+        here ? text(here.title, 200) || null : null,
+        country,
+        region,
+        city,
+        device,
+        browser,
+        os
       )
     );
   }
@@ -481,13 +529,11 @@ async function handleStats(request, env, url) {
          GROUP BY target ORDER BY count DESC LIMIT 12`
       )
       .bind(from, to),
-    db
-      .prepare(`SELECT COUNT(DISTINCT visitor) AS n FROM events WHERE ts > ?1`)
-      .bind(Date.now() - 5 * 60_000),
+    db.prepare(`SELECT COUNT(*) AS n FROM presence WHERE ts > ?1`).bind(Date.now() - ONLINE_WINDOW_MS),
     db
       .prepare(
-        `SELECT ts, type, path, label, target, country, device, browser FROM events
-         WHERE type != 'engagement' ORDER BY id DESC LIMIT 40`
+        `SELECT ts, type, path, label, target, country, region, city, device, browser FROM events
+         WHERE type != 'engagement' ORDER BY ts DESC, id DESC LIMIT 40`
       ),
     // Returning visitors: seen in this range and also at some point before it.
     db
@@ -495,6 +541,74 @@ async function handleStats(request, env, url) {
         `SELECT COUNT(DISTINCT visitor) AS n FROM events
          WHERE ${R} AND type = 'pageview'
            AND visitor IN (SELECT visitor FROM events WHERE ts < ?1 AND type = 'pageview')`
+      )
+      .bind(from, to),
+    // Exit pages: the last page view of each session.
+    db
+      .prepare(
+        `SELECT e.path AS name, COUNT(*) AS sessions FROM events e
+         JOIN (SELECT session, MAX(id) AS last FROM events WHERE ${R} AND type = 'pageview' GROUP BY session) l
+           ON e.id = l.last
+         GROUP BY e.path ORDER BY sessions DESC LIMIT 12`
+      )
+      .bind(from, to),
+    // When people visit, in the viewer's local time: hour of day (0-23) and weekday (0 = Sunday).
+    db
+      .prepare(
+        `SELECT CAST(strftime('%H', ts / 1000 + ?3 * 60, 'unixepoch') AS INTEGER) AS hour,
+           COUNT(*) AS views, COUNT(DISTINCT visitor) AS visitors
+         FROM events WHERE ${R} AND type = 'pageview' GROUP BY hour ORDER BY hour`
+      )
+      .bind(from, to, tz),
+    db
+      .prepare(
+        `SELECT CAST(strftime('%w', ts / 1000 + ?3 * 60, 'unixepoch') AS INTEGER) AS weekday,
+           COUNT(*) AS views, COUNT(DISTINCT visitor) AS visitors
+         FROM events WHERE ${R} AND type = 'pageview' GROUP BY weekday ORDER BY weekday`
+      )
+      .bind(from, to, tz),
+    // How far down pages people read, in quarters.
+    db
+      .prepare(
+        `SELECT CASE WHEN scroll >= 75 THEN 3 WHEN scroll >= 50 THEN 2 WHEN scroll >= 25 THEN 1 ELSE 0 END AS band,
+           COUNT(*) AS views
+         FROM events WHERE ${R} AND type = 'engagement' AND scroll IS NOT NULL GROUP BY band ORDER BY band`
+      )
+      .bind(from, to),
+    // Visits that arrived from another site, and visits from a tagged campaign link.
+    db
+      .prepare(
+        `SELECT
+           COUNT(DISTINCT CASE WHEN referrer IS NOT NULL AND referrer != '' THEN session END) AS referred,
+           COUNT(DISTINCT CASE WHEN utm_source IS NOT NULL OR utm_medium IS NOT NULL OR utm_campaign IS NOT NULL THEN session END) AS campaign
+         FROM events WHERE ${R} AND type = 'pageview'`
+      )
+      .bind(from, to),
+    // Which kinds of inquiry were sent.
+    db
+      .prepare(
+        `SELECT COALESCE(target, 'Other') AS name, COUNT(*) AS count FROM events
+         WHERE ${R} AND type = 'conversion' AND label = 'Inquiry sent'
+         GROUP BY name ORDER BY count DESC LIMIT 12`
+      )
+      .bind(from, to),
+    db
+      .prepare(
+        `SELECT ts, path, label, target, country, device, browser FROM events
+         WHERE ${R} AND type = 'conversion' ORDER BY ts DESC, id DESC LIMIT 25`
+      )
+      .bind(from, to),
+    // Everything per country, for the globe: visitors, page views, clicks, conversions, time.
+    db
+      .prepare(
+        `SELECT COALESCE(country, 'XX') AS name,
+           COUNT(DISTINCT CASE WHEN type = 'pageview' THEN visitor END) AS visitors,
+           SUM(type = 'pageview') AS views,
+           SUM(type = 'click') AS clicks,
+           SUM(type = 'conversion') AS conversions,
+           AVG(CASE WHEN type = 'engagement' THEN value END) AS avgSeconds
+         FROM events WHERE ${R}
+         GROUP BY name ORDER BY visitors DESC, views DESC LIMIT 250`
       )
       .bind(from, to),
   ];
@@ -510,7 +624,8 @@ async function handleStats(request, env, url) {
   const [
     totals, prevTotals, bounce, prevBounce, series, pages, entryPages, referrers, campaigns,
     countries, devices, browsers, systems, clicks, clickCategories, conversions, quotedProducts,
-    live, recent, returning,
+    live, recent, returning, exitPages, hours, weekdays, scrollBands, arrivals, inquiryTypes,
+    recentConversions, countryStats,
   ] = results;
 
   const withBounce = (t, b) => ({
@@ -537,7 +652,40 @@ async function handleStats(request, env, url) {
     conversions,
     quotedProducts,
     recent,
+    exitPages,
+    hours,
+    weekdays,
+    scrollBands,
+    arrivals: arrivals[0] ?? { referred: 0, campaign: 0 },
+    inquiryTypes,
+    recentConversions,
+    countryStats,
   });
+}
+
+/* ------------------------------------------------------------------ *
+ * GET /admin/live
+ * ------------------------------------------------------------------ */
+
+/** Who is online right now and the latest events: two small queries, cheap to ask every 5s. */
+async function handleLive(request, env) {
+  const since = Date.now() - ONLINE_WINDOW_MS;
+  try {
+    const [online, recent] = await env.DB.batch([
+      env.DB.prepare(
+        `SELECT visitor, first_seen AS firstSeen, ts, path, title, country, region, city, device, browser, os
+         FROM presence WHERE ts > ?1 ORDER BY first_seen DESC LIMIT 200`
+      ).bind(since),
+      env.DB.prepare(
+        `SELECT ts, type, path, label, target, country, region, city, device, browser FROM events
+         WHERE type != 'engagement' ORDER BY ts DESC, id DESC LIMIT 40`
+      ),
+    ]);
+    return json(request, env, 200, { now: Date.now(), online: online.results ?? [], recent: recent.results ?? [] });
+  } catch (err) {
+    log(`live query failed: ${err}`);
+    return json(request, env, 500, { message: 'Could not load live activity.' });
+  }
 }
 
 /* ------------------------------------------------------------------ *
@@ -546,7 +694,7 @@ async function handleStats(request, env, url) {
 
 const EXPORT_COLUMNS = [
   'ts', 'type', 'path', 'title', 'referrer', 'visitor', 'session', 'country', 'device', 'browser', 'os',
-  'label', 'target', 'category', 'value', 'scroll', 'utm_source', 'utm_medium', 'utm_campaign',
+  'label', 'target', 'category', 'value', 'scroll', 'utm_source', 'utm_medium', 'utm_campaign', 'region', 'city',
 ];
 
 function csvCell(value) {
@@ -598,11 +746,12 @@ export default {
       if (route === '/collect' && request.method === 'POST') return await handleCollect(request, env);
       if (route === '/admin/login' && request.method === 'POST') return await handleLogin(request, env);
 
-      if (route === '/admin/stats' || route === '/admin/export') {
+      if (route === '/admin/stats' || route === '/admin/export' || route === '/admin/live') {
         if (request.method !== 'GET') return json(request, env, 405, { message: 'Method not allowed.' });
         if (!adminConfigured(env) || !(await verifyToken(request, env))) {
           return json(request, env, 401, { message: 'Please sign in again.' });
         }
+        if (route === '/admin/live') return await handleLive(request, env);
         return route === '/admin/stats' ? await handleStats(request, env, url) : await handleExport(request, env, url);
       }
 
@@ -620,6 +769,7 @@ export default {
     const cutoff = Date.now() - days * 86_400_000;
     const events = await env.DB.prepare('DELETE FROM events WHERE ts < ?1').bind(cutoff).run();
     await env.DB.prepare('DELETE FROM login_attempts WHERE ts < ?1').bind(Date.now() - 86_400_000).run();
+    await env.DB.prepare('DELETE FROM presence WHERE ts < ?1').bind(Date.now() - 86_400_000).run();
     log(`retention: removed ${events.meta?.changes ?? 0} events older than ${days} days`);
   },
 };

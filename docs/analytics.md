@@ -22,8 +22,11 @@ visitor's browser ── lib/analytics.ts ──POST /collect──▶ analytics
 | Click | every link and button | its text, where it leads, and its type: internal, external, email, phone, WhatsApp, download, button |
 | Engagement | when the visitor leaves a page | seconds on the page (visible time only) and how far it was scrolled |
 | Conversion | an inquiry is sent; a product is added to the quote list | "Inquiry sent" + inquiry type; "Added to quote" + product id |
+| Presence | every 30 s while a tab is open and visible; a goodbye when it closes | who is on the site right now and the page they are reading |
 
-Each event also stores the country (from Cloudflare), device type, browser family and OS.
+Each event also stores the country, region and city (Cloudflare's approximate lookup from the connection, never more exact than a city), device type, browser family and OS.
+
+**Live:** the dashboard asks who is online every 4 seconds. A visitor appears within a few seconds of opening the site, follows them from page to page, and disappears a few seconds after they close the tab (or within about a minute of switching to another tab). Visits to `localhost` are not counted.
 
 **What is not stored:** IP addresses, names, emails, phone numbers or anything typed into a form. A
 visitor is a random id kept in the browser's localStorage, and a visit (session) ends after 30
@@ -43,7 +46,12 @@ the `/admin/` dashboard itself is not tracked. The dashboard refreshes itself ev
   `utm_campaign`, e.g. `https://bishnoiomniverse.com/?utm_source=linkedin&utm_campaign=cphi`).
 - **Most clicked:** every link and button, and clicks grouped by type.
 - **Conversions:** inquiries sent and products added to a quote, plus the most-quoted products.
-- **Countries, devices, browsers and operating systems.**
+- **Countries:** an interactive D3 globe (drag to turn it, hover or click a country) shaded by
+  visitors, page views, clicks or conversions, with a live dot where someone is on the site now,
+  and a table of every country's visitors, views, clicks, conversions and time on page. Countries
+  too small for the map (Singapore, Hong Kong…) show as dots.
+- **Audience:** new and returning visitors, visits by hour and weekday, devices, browsers and
+  operating systems.
 - **Recent activity:** a live feed of the latest events, plus an "online now" count (last 5 minutes).
 - **Export CSV:** every raw event in the selected date range.
 

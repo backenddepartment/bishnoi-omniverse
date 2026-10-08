@@ -5812,3 +5812,110 @@ button.pdp-summary-cta { padding: 0; border: 0; background: none; font-family: i
 @media (prefers-reduced-motion: reduce) {
   .quote-fab, .quote-fab-count { animation: none; }
 }
+
+/* Analytics sign-in (/admin/) colours: dark by default, light with data-theme="light" (the toggle
+   on the card). Components use them as e.g. text-[color:var(--a-text)]. */
+.admin-theme {
+  color-scheme: dark;
+  --a-bg: #121216;
+  --a-card: #1b1b20;
+  --a-panel: #25252c;
+  --a-text: #ffffff;
+  --a-soft: rgba(255, 255, 255, 0.8);
+  --a-label: rgba(255, 255, 255, 0.7);
+  --a-muted: rgba(255, 255, 255, 0.45);
+  --a-faint: rgba(255, 255, 255, 0.4);
+  --a-line: rgba(255, 255, 255, 0.12);
+  --a-edge: rgba(255, 255, 255, 0.06);
+  --a-hover: rgba(255, 255, 255, 0.06);
+  --a-dot: rgba(255, 255, 255, 0.25);
+  --a-error: #fecaca;
+  --a-glow: 1;
+  --a-panel-glow: 1;
+  --a-card-shadow: 0 40px 120px -40px rgba(0, 0, 0, 0.8);
+}
+.admin-theme[data-theme='light'] {
+  color-scheme: light;
+  --a-bg: #ffffff;
+  --a-card: #ffffff;
+  --a-panel: #f6f6f8;
+  --a-text: #17171c;
+  --a-soft: rgba(23, 23, 28, 0.78);
+  --a-label: rgba(23, 23, 28, 0.7);
+  --a-muted: rgba(23, 23, 28, 0.6);
+  --a-faint: rgba(23, 23, 28, 0.45);
+  --a-line: rgba(23, 23, 28, 0.14);
+  --a-edge: rgba(23, 23, 28, 0.06);
+  --a-hover: rgba(23, 23, 28, 0.05);
+  --a-dot: rgba(23, 23, 28, 0.2);
+  --a-error: #b42318;
+  --a-glow: 0.25;
+  --a-panel-glow: 0.3;
+  --a-card-shadow: 0 30px 90px -30px rgba(23, 23, 28, 0.18);
+}
+
+/* Chrome's autofill paints inputs pale blue, which would glare on the card, so autofilled fields
+   keep the card's colours. */
+.admin-input:-webkit-autofill,
+.admin-input:-webkit-autofill:hover,
+.admin-input:-webkit-autofill:focus {
+  -webkit-text-fill-color: var(--a-text);
+  caret-color: var(--a-text);
+  -webkit-box-shadow: 0 0 0 1000px var(--a-card) inset;
+  transition: background-color 9999s ease-out 0s;
+}
+
+/* The sign-in illustration's gentle bob. Still for anyone who asks for reduced motion. */
+@keyframes admin-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+.admin-float { animation: admin-float 6s ease-in-out infinite; }
+.admin-float-slow { animation: admin-float 8s ease-in-out -2s infinite; }
+@media (prefers-reduced-motion: reduce) {
+  .admin-float,
+  .admin-float-slow { animation: none; }
+}
+
+/* Analytics dashboard confirmations (components/admin/ConfirmDialog.tsx): the page dims behind
+   the card, and the card eases in. Still for anyone who asks for reduced motion. */
+.admin-dialog::backdrop {
+  background: rgba(20, 20, 20, 0.32);
+}
+.admin-dialog[open] {
+  animation: admin-dialog-in 0.18s ease-out;
+}
+@keyframes admin-dialog-in {
+  from { opacity: 0; transform: translateY(8px) scale(0.98); }
+  to { opacity: 1; transform: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .admin-dialog[open] { animation: none; }
+}
+
+/* The analytics sidebar's scrollbar (when the menu is taller than the window): thin, light grey,
+   no arrow buttons. The ::-webkit-scrollbar rules cover Chrome, Edge and Safari; Firefox, which
+   has no such rules, gets the standard properties instead. */
+.admin-scroll::-webkit-scrollbar {
+  width: 6px;
+}
+.admin-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+.admin-scroll::-webkit-scrollbar-thumb {
+  background: #dedede;
+  border-radius: 999px;
+}
+.admin-scroll::-webkit-scrollbar-thumb:hover {
+  background: #c4c4c4;
+}
+.admin-scroll::-webkit-scrollbar-button {
+  display: none;
+  height: 0;
+}
+@supports not selector(::-webkit-scrollbar) {
+  .admin-scroll {
+    scrollbar-width: thin;
+    scrollbar-color: #dedede transparent;
+  }
+}

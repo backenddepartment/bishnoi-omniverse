@@ -7,6 +7,9 @@ import {
   clickLabel,
   externalReferrer,
   flush,
+  heartbeat,
+  HEARTBEAT_MS,
+  leave,
   track,
   trackingEnabled,
   utmParams,
@@ -63,6 +66,8 @@ export function Analytics() {
     // cleanup: the guard above already skips the re-run, so cancelling would lose the view.
     requestAnimationFrame(() => {
       track({ type: 'pageview', path: pathname, title: document.title, ...arrival });
+      // Sent at once rather than batched, so the dashboard shows the visitor straight away.
+      flush();
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pathname, untracked]);
@@ -88,10 +93,20 @@ export function Analytics() {
         }
         sendEngagement();
         flush();
-      } else if (current && current.since == null) {
-        current.since = Date.now();
+      } else {
+        if (current && current.since == null) current.since = Date.now();
+        // Back on the tab: on the online list again straight away.
+        heartbeat(window.location.pathname, document.title);
       }
     };
+
+    // "Still here" every 30 seconds while the tab is visible; a hidden tab goes quiet and drops off
+    // the online list within about a minute.
+    const beat = setInterval(() => {
+      if (document.visibilityState === 'visible') heartbeat(window.location.pathname, document.title);
+    }, HEARTBEAT_MS);
+    // Closing the tab or leaving the site: off the online list at once.
+    const onPageHide = () => leave();
 
     const onClick = (e: MouseEvent) => {
       const el = (e.target as Element | null)?.closest?.(CLICKABLE);
@@ -104,12 +119,13 @@ export function Analytics() {
 
     window.addEventListener('scroll', onScroll, { passive: true });
     document.addEventListener('visibilitychange', onVisibility);
-    window.addEventListener('pagehide', flush);
+    window.addEventListener('pagehide', onPageHide);
     document.addEventListener('click', onClick, true);
     return () => {
       window.removeEventListener('scroll', onScroll);
       document.removeEventListener('visibilitychange', onVisibility);
-      window.removeEventListener('pagehide', flush);
+      window.removeEventListener('pagehide', onPageHide);
+      clearInterval(beat);
       document.removeEventListener('click', onClick, true);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
