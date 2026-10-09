@@ -39,15 +39,15 @@ const LEADERS: Leader[] = [
   },
   {
     name: 'Esther Roselle Chong',
-    title: 'Inlicensing Coach',
+    title: 'In-licensing Mentor',
     photo: chiImg.src,
-    photoAlt: 'Esther Roselle Chong, Inlicensing Coach, in a black Bishnoi Omniverse blazer',
+    photoAlt: 'Esther Roselle Chong, In-licensing Mentor, in a black Bishnoi Omniverse blazer',
   },
   {
     name: 'Dhebbie Valerie B. Rillera',
-    title: 'Inlicensing Mentor',
+    title: 'In-licensing Executive',
     photo: debbieImg.src,
-    photoAlt: 'Dhebbie Valerie B. Rillera, Inlicensing Mentor',
+    photoAlt: 'Dhebbie Valerie B. Rillera, In-licensing Executive',
   },
 ];
 
