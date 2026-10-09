@@ -91,8 +91,21 @@ function sessionId(): string {
   return current;
 }
 
+/**
+ * The device's IANA time zone, e.g. "Europe/Rome". The Worker uses it to cross-check the country
+ * it gets from the connection's IP: mobile carriers and VPNs often exit in another country, and
+ * the phone's own clock zone is the better signal of where the visitor really is.
+ */
+function deviceTimeZone(): string {
+  try {
+    return Intl.DateTimeFormat().resolvedOptions().timeZone ?? '';
+  } catch {
+    return '';
+  }
+}
+
 function send(events: AnalyticsEvent[], extra: Record<string, unknown> = {}) {
-  const body = JSON.stringify({ visitor: visitorId(), session: sessionId(), events, ...extra });
+  const body = JSON.stringify({ visitor: visitorId(), session: sessionId(), tz: deviceTimeZone(), events, ...extra });
   const url = `${ANALYTICS_ENDPOINT}/collect`;
   // text/plain keeps it a CORS "simple" request: no preflight round trip per batch. sendBeacon
   // survives the page being closed; fetch with keepalive is the fallback.

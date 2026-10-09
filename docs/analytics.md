@@ -24,7 +24,7 @@ visitor's browser ── lib/analytics.ts ──POST /collect──▶ analytics
 | Conversion | an inquiry is sent; a product is added to the quote list | "Inquiry sent" + inquiry type; "Added to quote" + product id |
 | Presence | every 30 s while a tab is open and visible; a goodbye when it closes | who is on the site right now and the page they are reading |
 
-Each event also stores the country, region and city (Cloudflare's approximate lookup from the connection, never more exact than a city), device type, browser family and OS.
+Each event also stores the country, region and city (Cloudflare's approximate lookup from the connection, never more exact than a city), device type, browser family and OS. Because the IP lookup places the connection's exit point — mobile carriers and VPNs often surface in another country — the tracker also sends the device's time zone, and when the zone's country disagrees with the IP's, the zone's country is stored instead (with no region/city, since the IP-derived ones would describe the wrong place).
 
 **Live:** the dashboard asks who is online every 4 seconds. A visitor appears within a few seconds of opening the site, follows them from page to page, and disappears a few seconds after they close the tab (or within about a minute of switching to another tab). Visits to `localhost` are not counted.
 

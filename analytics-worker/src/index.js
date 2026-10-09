@@ -28,10 +28,17 @@
  *
  * Privacy: no IP address is stored with events. A visitor is a random id the browser keeps in
  * localStorage, the country, region and city come from Cloudflare's own approximate lookup (no
- * street-level location, nothing from the browser), and the device, browser and OS are
+ * street-level location, no browser geolocation), and the device, browser and OS are
  * reduced to a family name ("Chrome", "Android") from the user agent.
+ *
+ * Country accuracy: the IP lookup places the *connection*, and mobile carriers and VPNs often
+ * exit in a different country than the visitor (an Italian phone can surface in Brussels). The
+ * tracker therefore also sends the device's IANA time zone, and when the zone's country
+ * disagrees with the IP's, the zone wins and the IP-derived region/city are dropped — they
+ * would describe the wrong place.
  */
 
+import ct from 'countries-and-timezones';
 import { currentUser, handleLogin, handleMe, handleUsers } from './users.js';
 
 const MAX_EVENTS_PER_REQUEST = 25;
@@ -177,10 +184,18 @@ async function handleCollect(request, env) {
 
   const events = Array.isArray(body?.events) ? body.events.slice(0, MAX_EVENTS_PER_REQUEST) : [];
   const { device, browser, os } = parseAgent(ua);
-  const country = text(request.cf?.country, 2) || null;
   // Cloudflare's approximate place for the connection, from its IP. Never more exact than a city.
-  const region = text(request.cf?.region, 80) || null;
-  const city = text(request.cf?.city, 80) || null;
+  let country = text(request.cf?.country, 2) || null;
+  let region = text(request.cf?.region, 80) || null;
+  let city = text(request.cf?.city, 80) || null;
+  // The IP places the connection's exit, not the person: carrier gateways and VPNs cross borders.
+  // When the device's own time zone names a different country, believe the device.
+  const tzCountry = ct.getCountryForTimezone(text(body?.tz, 64))?.id ?? null;
+  if (tzCountry && tzCountry !== country) {
+    country = tzCountry;
+    region = null;
+    city = null;
+  }
   const now = Date.now();
 
   const insert = env.DB.prepare(
