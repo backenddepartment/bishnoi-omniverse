@@ -4,12 +4,14 @@ import Link from 'next/link';
 import homepageData from '@/lib/data/homepageData.json';
 import partnerFaqData from '@/lib/data/partnerFaqData.json';
 import { FaqAccordion } from '@/components/FaqAccordion';
+import { JsonLd, pageMetadata } from '@/lib/seo';
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: 'Frequently Asked Questions | Bishnoi Omniverse',
   description:
-    'Answers on named-patient supply, quote documentation, cold-chain handling, sourcing and delivery markets, minimum order quantities, tenders, and how distribution and manufacturer partnerships work.',
-};
+    'Answers on named-patient supply, quote documents, cold-chain handling, sourcing and delivery markets, minimum orders, tenders and partnerships.',
+  path: '/faq/',
+});
 
 const IMG = {
   hero: 'https://upload.wikimedia.org/wikipedia/commons/2/2e/Hospital_corridor_2.jpg',
@@ -18,8 +20,21 @@ const IMG = {
 export default function FaqPage() {
   const { faq } = homepageData;
 
+  // schema.org FAQPage data, from the same lists the accordions below render, so the marked-up
+  // questions and answers always match what is on the page.
+  const structuredData = {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: [...faq.questions, ...partnerFaqData.questions].map(({ q, a }) => ({
+      '@type': 'Question',
+      name: q,
+      acceptedAnswer: { '@type': 'Answer', text: a },
+    })),
+  };
+
   return (
     <div className="w-full">
+      <JsonLd data={structuredData} />
       <section className="page-hero">
         <div className="hero-media">
           <img src={IMG.hero} alt="Hospital corridor" loading="eager" />

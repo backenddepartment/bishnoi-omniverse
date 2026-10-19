@@ -23,6 +23,7 @@ import articlesHeroImg from '@/app/assets/article.png';
 import qualityHeroImg from '@/app/assets/quality.png';
 import suppliesImg from '@/app/assets/supplies.jpg';
 import medicinesImg from '@/app/assets/medicines.jpg';
+import specialtyHeroImg from '@/app/assets/medicines.webp';
 import doctorsImg from '@/app/assets/doctors.jpg';
 import hospitalsImg from '@/app/assets/hospitals.png';
 import groupHeroImg from '@/app/assets/groupstructure.png';
@@ -55,7 +56,8 @@ import contactHeroImg from '@/app/assets/contact.webp';
  * all three pick it up.
  *
  * Priority tiers:
- *   1.0  main pages — the top-level navigation (Home, Medical Equipment, Articles, LLP)
+ *   1.0  main pages — the top-level navigation (Home, Medical Equipment, Specialty Medicines,
+ *        Articles, LLP)
  *   0.8  secondary pages — supporting sections, and every category and product page
  *   0.5  static pages — About Us and its sub-pages, Contact Us and FAQ
  *
@@ -71,7 +73,7 @@ const BASE_PATH = (process.env.NEXT_PUBLIC_BASE_PATH || '').replace(/\/+$/, '');
  * Absolute URL for a static image import's `.src`. On a sub-path build (GitHub Pages) `.src`
  * already carries the base path, which SITE_URL is expected to include, so strip it once.
  */
-function imageUrl(src: string) {
+export function imageUrl(src: string) {
   if (/^https?:\/\//.test(src)) return src;
   const path = BASE_PATH && src.startsWith(`${BASE_PATH}/`) ? src.slice(BASE_PATH.length) : src;
   return absoluteUrl(path);
@@ -112,6 +114,7 @@ const STATIC_PAGES: SitemapPage[] = [
   },
   { path: `${EQUIPMENT_PATH}/`, title: 'Medical Equipment', group: 'Main', ...MAIN, changeFrequency: 'daily', images: imgs(catalogHeroImg) },
   { path: `${CATALOG_PATH}/`, title: 'Catalog: All Categories', group: 'Main', ...MAIN, changeFrequency: 'daily', images: imgs(categoryBannerImg) },
+  { path: '/specialty-medicines/', title: 'Specialty Medicines', group: 'Main', ...MAIN, images: imgs(specialtyHeroImg) },
   { path: '/articles/', title: 'Articles', group: 'Main', ...MAIN, images: imgs(articlesHeroImg) },
   { path: '/llp/', title: 'Bishnoi Omniverse LLP', group: 'Main', ...MAIN, images: [] },
 

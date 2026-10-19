@@ -4,16 +4,18 @@ import Link from 'next/link';
 import { MapPin, Mail } from 'lucide-react';
 import contactData from '@/lib/data/contactData.json';
 import sectionDetail from '@/lib/data/sectionDetailData.json';
+import { pageMetadata } from '@/lib/seo';
 
 const IMG = {
   hero: 'https://upload.wikimedia.org/wikipedia/commons/d/da/Skyline_of_Cannaught_Place%2C_New_Delhi.jpg',
 };
 
-export const metadata: Metadata = {
-  title: 'Bishnoi Omniverse LLP | India Sourcing Hub',
+export const metadata: Metadata = pageMetadata({
+  title: 'Medical Supplies Exporter India | Bishnoi Omniverse LLP',
   description:
-    'Bishnoi Omniverse LLP, the group’s sourcing hub in India, for fast, affordable access to high-quality medicines.',
-};
+    'Bishnoi Omniverse LLP, our sourcing hub in New Delhi, India, supplying medical supplies and medicines to hospitals and partners abroad. Request a quote.',
+  path: '/llp/',
+});
 
 export default function LlpPage() {
   const office = contactData.globalOffices.locations.find((l) => l.region.startsWith('India'))!;

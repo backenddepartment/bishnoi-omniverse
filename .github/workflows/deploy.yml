@@ -24,6 +24,9 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          # Full history: scripts/page-dates.mjs reads it for the sitemap's <lastmod> dates.
+          fetch-depth: 0
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -56,6 +59,11 @@ jobs:
           NEWS_API_PROVIDER: ${{ vars.NEWS_API_PROVIDER }}
         run: npm run news:sync
 
+      # Rewrites lib/data/pageDates.json: when each page's content last changed, for the
+      # sitemap's <lastmod>. Runs after the catalog sync so freshly synced rows are compared too.
+      - name: Work out page edit dates for the sitemap
+        run: npm run sitemap:dates
+
       - name: Build static Next.js export
         env:
           # Served from the custom domain root, so no base path (see public/CNAME).
@@ -67,6 +75,11 @@ jobs:
           # The analytics Worker behind /admin/ (see docs/analytics.md). Public, like the inquiry
           # endpoint. The ANALYTICS_ENDPOINT repository variable overrides the deployed default.
           NEXT_PUBLIC_ANALYTICS_ENDPOINT: ${{ vars.ANALYTICS_ENDPOINT || 'https://bishnoi-analytics.getmedsitdepartment.workers.dev' }}
+          # Google Analytics 4 Measurement ID (G-XXXXXXXXXX), a repository Variable. Unset = no GA4.
+          NEXT_PUBLIC_GA_MEASUREMENT_ID: ${{ vars.GA_MEASUREMENT_ID }}
+          # Search Console HTML-tag verification code, a repository Variable. Unset = no tag
+          # (not needed when the domain is verified by DNS TXT record).
+          NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION: ${{ vars.GOOGLE_SITE_VERIFICATION }}
           NODE_OPTIONS: "--max-old-space-size=4096"
         run: npx next build
 

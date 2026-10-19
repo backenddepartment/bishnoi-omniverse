@@ -2,7 +2,9 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import catalogData from '@/lib/data/catalogData.json';
 import { CatalogBrowser } from '@/components/catalog/CatalogBrowser';
-import { getCategoryOverview } from '@/lib/categoryOverviews';
+import { categoryPath } from '@/lib/catalogRoutes';
+import { categorySeo } from '@/lib/categorySeo';
+import { pageMetadata } from '@/lib/seo';
 
 interface Params {
   category: string;
@@ -15,10 +17,8 @@ export function generateStaticParams(): Params[] {
 export function generateMetadata({ params }: { params: Params }): Metadata {
   const category = catalogData.categories.find((c) => c.id === params.category);
   if (!category) return {};
-  return {
-    title: `${category.name} | Medical Equipment | Bishnoi Omniverse`,
-    description: getCategoryOverview(category),
-  };
+  const { title, description } = categorySeo(category);
+  return pageMetadata({ title, description, path: categoryPath(category.id) });
 }
 
 export default function CategoryPage({ params }: { params: Params }) {

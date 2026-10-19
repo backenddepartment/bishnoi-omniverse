@@ -16,6 +16,7 @@ import familiesImg from '@/app/assets/families.jpg';
 import teamImg from '@/app/assets/team.jpg';
 import howWeWorkImg from '@/app/assets/howwework.jpg';
 import askImg from '@/app/assets/documents.png';
+import { pageMetadata } from '@/lib/seo';
 
 // Local assets: the two Wikimedia URLs previously used here both 404'd, leaving a broken hero.
 const IMG = {
@@ -108,11 +109,12 @@ const PRINCIPLES = [
   },
 ];
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: 'About Us | Our Story | Bishnoi Omniverse',
   description:
     'How Bishnoi Omniverse supplies hospitals, clinics and trade partners with medical equipment and specialty medicines, and the standards behind every shipment.',
-};
+  path: '/about/',
+});
 
 export default function AboutPage() {
   const { vision } = businessesData;

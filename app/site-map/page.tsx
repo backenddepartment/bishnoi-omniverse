@@ -2,11 +2,14 @@ import React from 'react';
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { SITEMAP_PAGES, type SitemapPage } from '@/lib/sitemapPages';
+import { pageMetadata } from '@/lib/seo';
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: 'Sitemap | Bishnoi Omniverse',
-  description: 'Every page on the Bishnoi Omniverse website in one place: company pages, About Us and the full medical equipment catalog.',
-};
+  description:
+    'Every page on the Bishnoi Omniverse website in one place: company pages, About Us and the full medical equipment catalog.',
+  path: '/site-map/',
+});
 
 const GROUPS: { key: SitemapPage['group']; title: string }[] = [
   { key: 'Main', title: 'Main Pages' },

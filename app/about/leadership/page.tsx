@@ -16,12 +16,14 @@ import {
   SectionHead,
 } from '@/components/about/Patterns';
 import { LeaderGrid, type Leader } from '@/components/about/leadership/LeaderCard';
+import { pageMetadata } from '@/lib/seo';
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: 'Leadership | Bishnoi Omniverse',
   description:
     'The people behind Bishnoi Omniverse and what they are accountable for, from choosing suppliers to making sure every commitment to a customer is kept.',
-};
+  path: '/about/leadership/',
+});
 
 /** The leadership team, shown as small portrait cards in a slider under the founder profile. */
 const LEADERS: Leader[] = [

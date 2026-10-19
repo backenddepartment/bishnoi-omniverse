@@ -1,11 +1,13 @@
 import type { Metadata } from 'next';
 import { CatalogBrowser } from '@/components/catalog/CatalogBrowser';
+import { pageMetadata } from '@/lib/seo';
 
-export const metadata: Metadata = {
-  title: 'Medical Equipment | Bishnoi Omniverse',
+export const metadata: Metadata = pageMetadata({
+  title: 'Medical Equipment Supplier Philippines | Bishnoi Omniverse',
   description:
-    'Browse every product in the Bishnoi Omniverse medical equipment range, from gloves and PPE to dialysis, surgical and patient monitoring equipment, and request a quote.',
-};
+    'Hospital supplies and medical equipment in bulk: gloves, PPE, dialysis, surgical, respiratory and patient monitoring, delivered across the Philippines.',
+  path: '/medical-equipment/',
+});
 
 export default function MedicalEquipmentPage() {
   return <CatalogBrowser />;

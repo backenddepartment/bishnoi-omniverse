@@ -27,12 +27,14 @@ import {
 import { FadeIn } from '@/components/FadeIn';
 import { ImprovementLoop } from '@/components/about/governance/ImprovementLoop';
 import hospitals from '@/app/assets/hospitals.png';
+import { pageMetadata } from '@/lib/seo';
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: 'Governance & Standards | Bishnoi Omniverse',
   description:
-    'Responsible standards that make supply predictable: UN Global Compact participation since November 2024, clear accountability, and the same proven process for every order.',
-};
+    'Standards that make supply predictable: UN Global Compact participant since November 2024, clear accountability and the same process for every order.',
+  path: '/about/governance/',
+});
 
 /**
  * The written code of conduct does not exist yet. When the file is published, set this to its URL

@@ -13,12 +13,14 @@ import { FadeIn } from '@/components/FadeIn';
 import { GroupShowcase } from '@/components/about/group-structure/GroupShowcase';
 import heroImg from '@/app/assets/groupstructure.png';
 import roleImg from '@/app/assets/omniverseabout.png';
+import { pageMetadata } from '@/lib/seo';
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: 'Group Structure | Bishnoi Omniverse',
   description:
     'Who you are dealing with: the Bishnoi Group at a glance, where Bishnoi Omniverse fits, and how its India and Philippine entities divide responsibility.',
-};
+  path: '/global/',
+});
 
 export default function GroupStructurePage() {
   return (

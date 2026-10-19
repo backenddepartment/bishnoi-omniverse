@@ -13,12 +13,14 @@ import documentsImg from '@/app/assets/documents.png';
 import doctorsImg from '@/app/assets/doctors.jpg';
 import suppliesImg from '@/app/assets/supplies.jpg';
 import hospitalImg from '@/app/assets/hospital.jpg';
+import { pageMetadata } from '@/lib/seo';
 
-export const metadata: Metadata = {
-  title: 'Articles | Bishnoi Omniverse',
+export const metadata: Metadata = pageMetadata({
+  title: 'Medical Supply & Procurement Articles | Bishnoi Omniverse',
   description:
     'Practical writing on medical supply sourcing, product documentation, and cross-border access to specialty medicines.',
-};
+  path: '/articles/',
+});
 
 /**
  * The cards come from two files:

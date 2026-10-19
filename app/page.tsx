@@ -1,4 +1,5 @@
 import React from 'react';
+import type { Metadata } from 'next';
 import Link from 'next/link';
 import {
   ArrowUpRight, ClipboardList, FileCheck2, ImageIcon, MessageSquare,
@@ -30,6 +31,76 @@ import featuredSurgicalImg from '@/app/assets/surgical.webp';
 import aboutBgImg from '@/app/assets/overviewaboutusbg.webp';
 import aboutBgSmallImg from '@/app/assets/overviewaboutusbg-800.webp';
 import worldMapImg from '@/app/assets/countries.webp';
+import contactData from '@/lib/data/contactData.json';
+import { JsonLd, SITE_NAME, pageMetadata } from '@/lib/seo';
+import { absoluteUrl } from '@/lib/siteUrl';
+
+export const metadata: Metadata = pageMetadata({
+  title: 'Medical Supplies Supplier Philippines | Bishnoi Omniverse',
+  description:
+    'Medical supplies and specialty medicines for hospitals and clinics in the Philippines and worldwide, sourced through our India and Philippines hubs. Get a quote.',
+  path: '/',
+});
+
+/**
+ * schema.org Organization and WebSite data: who the company is, where its offices are and how to
+ * reach it, for brand searches and Google's knowledge panel. The addresses and numbers are the
+ * ones in lib/data/contactData.json; keep the two in step. Add the company LinkedIn page to
+ * `sameAs` once there is one (the LinkedIn link in contactData is a personal profile).
+ */
+const ORGANIZATION_DATA = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'Organization',
+      '@id': absoluteUrl('/#organization'),
+      name: SITE_NAME,
+      url: absoluteUrl('/'),
+      logo: absoluteUrl('/logo.png'),
+      image: absoluteUrl('/og-image.jpg'),
+      description: 'Medical supplies and specialty medicine sourcing for hospitals and clinics.',
+      email: contactData.directContact.emails[0],
+      telephone: contactData.directContact.phones[0],
+      address: [
+        {
+          '@type': 'PostalAddress',
+          streetAddress:
+            'Unit 301 and 305, 17 Vatican Building, Vatican City Drive, B.F. Resort Village, Talon II',
+          addressLocality: 'Las Piñas City',
+          addressRegion: 'Metro Manila',
+          addressCountry: 'PH',
+        },
+        {
+          '@type': 'PostalAddress',
+          streetAddress: 'Okhla Industrial Area, Phase III',
+          addressLocality: 'New Delhi',
+          addressRegion: 'Delhi',
+          postalCode: '110020',
+          addressCountry: 'IN',
+        },
+      ],
+      contactPoint: contactData.directContact.phones.map((telephone) => ({
+        '@type': 'ContactPoint',
+        telephone,
+        email: contactData.directContact.emails[0],
+        contactType: 'sales',
+        areaServed: ['PH', 'IN'],
+        availableLanguage: ['English', 'Filipino'],
+      })),
+      subOrganization: [
+        { '@type': 'Organization', name: 'Bishnoi Omniverse Corp', url: absoluteUrl('/corp/') },
+        { '@type': 'Organization', name: 'Bishnoi Omniverse LLP', url: absoluteUrl('/llp/') },
+      ],
+    },
+    {
+      '@type': 'WebSite',
+      '@id': absoluteUrl('/#website'),
+      name: SITE_NAME,
+      url: absoluteUrl('/'),
+      publisher: { '@id': absoluteUrl('/#organization') },
+    },
+  ],
+};
 
 // Images sourced from Wikimedia Commons (CC BY / CC BY-SA / public domain)
 const IMG = {
@@ -75,8 +146,8 @@ const FEATURED_LINE_IMAGES: Record<string, { src: string; alt: string } | undefi
 // Slide 1 (heroBg, "Clinicians supporting a patient in recovery") is out of the rotation for now;
 // add it back as the first entry to restore it.
 const HERO_SLIDES = [
-  { src: heroSlideTwo.src, alt: 'Bishnoi Omniverse medical supply operations' },
-  { src: heroSlideThree.src, alt: 'Bishnoi Omniverse sourcing and logistics network' },
+  { src: heroSlideTwo.src, alt: 'A smiling father carrying his laughing daughter on his shoulders' },
+  { src: heroSlideThree.src, alt: 'A stethoscope in front of a doctor talking with a patient: hospital medical supplies' },
 ];
 
 const tileImages: Record<string, string> = {
@@ -118,11 +189,14 @@ export default function HomePage() {
 
   return (
     <div className="w-full home-page">
-      {/* Hero */}
+      <JsonLd data={ORGANIZATION_DATA} />
+      {/* Hero. The h1 says what the site is about in the words people search with; the slogan
+          below it keeps the large display type but is a paragraph, so the page has one h1. */}
       <section className="hero" id="home">
         <HeroSlider slides={HERO_SLIDES} />
         <div className="hero-content">
-          <h1 className="reveal d2">{hero.headline}</h1>
+          <h1 className="hero-kicker reveal d1">{hero.h1}</h1>
+          <p className="hero-title reveal d2">{hero.headline}</p>
           <p className="lede reveal d3">{hero.subheadline}</p>
           <div className="hero-actions reveal d4">
             <Link className="btn btn-primary" href="/contact?type=quote">
@@ -407,7 +481,7 @@ export default function HomePage() {
 
       {/* Trade & Partners — dark band over the faded world map. Full detail on /trade-partners. */}
       <section className="section section-dark home-partners">
-        <img src={worldMapImg.src} alt="" className="home-partners-map" loading="lazy" />
+        <img src={worldMapImg.src} alt="Map of the countries Bishnoi Omniverse supplies" className="home-partners-map" loading="lazy" />
         {/* Grid areas put the button under the copy on desktop but after the cards on mobile. */}
         <div className="wrap home-partners-grid">
           <div className="heading-lg home-partners-copy">

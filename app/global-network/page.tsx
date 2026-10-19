@@ -17,12 +17,14 @@ import {
   Stepper,
   type Step,
 } from '@/components/about/Patterns';
+import { pageMetadata } from '@/lib/seo';
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: 'Global Network | Bishnoi Omniverse',
   description:
     'How our India and Philippines hubs turn a requirement into a delivery: more choice for Philippine healthcare, with one partner managing the journey.',
-};
+  path: '/global-network/',
+});
 
 const STEPS: Step[] = [
   { title: 'Requirement', icon: FileText },

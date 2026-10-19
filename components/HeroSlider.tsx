@@ -37,7 +37,9 @@ export function HeroSlider({ slides }: { slides: HeroSlide[] }) {
         <img
           key={slide.src}
           src={idx === 0 || mounted ? slide.src : undefined}
-          alt={idx === active ? slide.alt : ''}
+          // Every slide keeps its alt text for search engines; aria-hidden below already keeps the
+          // hidden slides away from screen readers.
+          alt={slide.alt}
           className={`hero-slide${idx === active ? ' is-active' : ''}`}
           loading={idx === 0 ? 'eager' : 'lazy'}
           // The first slide is the page's LCP element: fetchPriority="high" also makes React emit a

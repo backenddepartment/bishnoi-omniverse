@@ -12,12 +12,14 @@ import {
   Stepper,
   CtaBand,
 } from '@/components/about/Patterns';
+import { pageMetadata } from '@/lib/seo';
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: 'Quality & Compliance | Bishnoi Omniverse',
   description:
-    'How Bishnoi Omniverse checks products, suppliers and documents before you commit — CE marking and CMDR registration for devices, WHO-GMP and Certificates of Analysis for medicines, ISO 9809-1 and DOT/TPED for gas cylinders.',
-};
+    'How we check products, suppliers and documents before you commit: CE and CMDR for devices, WHO-GMP and CoAs for medicines, ISO 9809-1 for gas cylinders.',
+  path: '/quality/',
+});
 
 export default function QualityCompliancePage() {
   return (

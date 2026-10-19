@@ -9,12 +9,14 @@ import doctorsImg from '@/app/assets/doctors.jpg';
 import suppliesImg from '@/app/assets/supplies.jpg';
 import teamImg from '@/app/assets/team.jpg';
 import familiesImg from '@/app/assets/families.jpg';
+import { pageMetadata } from '@/lib/seo';
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: 'Vision & Values | Bishnoi Omniverse',
   description:
     'Making healthcare supply simpler, clearer and more dependable. Our vision, and the values that show up in how we quote, work with suppliers and handle problems.',
-};
+  path: '/about/vision-values/',
+});
 
 // Each value is one stacking row: the giant word, a bold lead-in, the copy and the photo behind it.
 const VALUES: StackValue[] = [

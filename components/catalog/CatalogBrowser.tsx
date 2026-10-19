@@ -32,6 +32,7 @@ import {
   subcategorySlug,
 } from '@/lib/catalogRoutes';
 import { getCategoryOverview } from '@/lib/categoryOverviews';
+import { categorySeo } from '@/lib/categorySeo';
 import heroImg from '@/app/assets/medicinebgpage.webp';
 import bannerImg from '@/app/assets/bannermedical.png';
 
@@ -257,7 +258,7 @@ export function CatalogBrowser({ categoryId }: { categoryId?: string }) {
         // A category page opens with its heading and a short overview, then the banner
         // photograph, inset from the screen edges.
         <header className="wrap catalog-browser-wrap catalog-page-head">
-          <h1>{category.name}</h1>
+          <h1>{categorySeo(category).h1}</h1>
           <p>{getCategoryOverview(category)}</p>
           <img
             className="catalog-page-banner"

@@ -1,0 +1,514 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Progress Report</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  /* ---- Tokens: same palette as bishnoi-one-crm-components.html ---- */
+  :root {
+    --ink: #141414;
+    --ink-2: #3b3b3b;
+    --ink-3: #6a6a6a;
+    --rule: #e2e2e2;
+    --canvas: #ffffff;
+    --bench: #fafaf8;
+    --mint: #f1f7ee;
+    --mint-2: #e3eedf;
+    --sage: #a8d69b;
+    --deep: #4f7f44;
+    --good: #3f6f35;   --good-bg: #e6f2e1;
+    --warn: #8a5a00;   --warn-bg: #fbf0d9;
+    --info: #1f4f8a;   --info-bg: #e7eef8;
+    --r-pill: 999px;
+    --r-card: 22px;
+    --r-panel: 28px;
+    --line: 1.5px solid var(--ink);
+    --focus: 0 0 0 3px #cfe8c6;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bench); color: var(--ink); font: 400 15px/1.6 Poppins, system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+  :focus-visible { outline: none; box-shadow: var(--focus); }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+
+  /* ---- Deck frame ---- */
+  .deck { min-height: 100vh; display: flex; flex-direction: column; }
+  .slide { display: none; flex: 1; width: 100%; max-width: 1120px; margin: 0 auto; padding: 48px 32px 24px; flex-direction: column; justify-content: center; }
+  .slide.on { display: flex; animation: rise .35s ease; }
+  @keyframes rise { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+
+  .eyebrow { font-size: 12.5px; font-weight: 600; letter-spacing: .09em; text-transform: uppercase; color: var(--deep); margin: 0 0 10px; }
+  h1 { font-size: 48px; line-height: 1.08; letter-spacing: -.02em; font-weight: 600; margin: 0 0 16px; }
+  h2 { font-size: 32px; line-height: 1.15; letter-spacing: -.015em; font-weight: 600; margin: 0 0 8px; }
+  .lead { color: var(--ink-2); max-width: 680px; margin: 0 0 22px; font-size: 15.5px; }
+
+  /* ---- Layout pieces ---- */
+  .grid { display: grid; gap: 16px; }
+  .g2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .g3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .split { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); gap: 30px; align-items: center; }
+  @media (max-width: 920px) { .g2, .g3, .split { grid-template-columns: 1fr; } h1 { font-size: 34px; } h2 { font-size: 26px; } .slide { padding: 36px 16px 16px; } }
+
+  .card { background: var(--canvas); border: 1px solid var(--rule); border-radius: var(--r-card); padding: 20px 22px; }
+  .card.strong { border: var(--line); }
+  .card h3 { margin: 0 0 6px; font-size: 16px; font-weight: 600; }
+  .card p { margin: 0; color: var(--ink-2); font-size: 13.5px; }
+  .card ul { margin: 8px 0 0; padding-left: 18px; color: var(--ink-2); font-size: 13.5px; }
+  .card li { margin: 4px 0; }
+  .panel { background: var(--mint); border-radius: var(--r-panel); padding: 24px 26px; }
+
+  .tag { display: inline-flex; align-items: center; gap: 6px; height: 26px; padding: 0 12px; border-radius: var(--r-pill); font-size: 12.5px; font-weight: 500; white-space: nowrap; }
+  .tag .dot { width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+  .tag-good { background: var(--good-bg); color: var(--good); }
+  .tag-info { background: var(--info-bg); color: var(--info); }
+  .tag-mute { background: #f0f0ee; color: var(--ink-2); }
+
+  .links { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 20px; }
+  a.go { display: inline-flex; align-items: center; gap: 8px; height: 40px; padding: 0 20px; border-radius: var(--r-pill); border: 1.5px solid var(--ink); background: var(--canvas); color: var(--ink); text-decoration: none; font-weight: 500; font-size: 13.5px; transition: background .15s; }
+  a.go:hover { background: var(--mint); }
+  a.go.primary { background: var(--ink); color: #fff; border-color: var(--ink); }
+  a.go.primary:hover { background: #2b2b2b; }
+  a.go svg { width: 15px; height: 15px; flex: none; }
+  .card .links, .panel .links { margin-top: 14px; }
+  .card a.go, .panel a.go { height: 32px; padding: 0 14px; font-size: 12.5px; }
+
+  .kpis { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; margin: 8px 0 4px; }
+  @media (max-width: 920px) { .kpis { grid-template-columns: repeat(2, 1fr); } }
+  .kpi { background: var(--canvas); border: 1px solid var(--rule); border-radius: var(--r-card); padding: 16px 18px; }
+  .kpi b { display: block; font-size: 28px; font-weight: 600; letter-spacing: -.02em; line-height: 1.1; }
+  .kpi span { font-size: 12.5px; color: var(--ink-3); }
+
+  .steps { list-style: none; margin: 10px 0 0; padding: 0; }
+  .steps li { display: flex; gap: 14px; padding: 10px 0; border-bottom: 1px solid var(--rule); align-items: baseline; }
+  .steps li:last-child { border: 0; }
+  .steps .when { flex: none; width: 92px; font-size: 12.5px; font-weight: 600; color: var(--deep); }
+  .steps .what b { font-weight: 600; }
+  .steps .what span { color: var(--ink-3); font-size: 13px; display: block; }
+
+  /* ---- Screenshot frame: a little browser window ---- */
+  .shot { background: var(--canvas); border: 1px solid var(--rule); border-radius: 18px; overflow: hidden; box-shadow: 0 18px 40px -24px rgba(20, 20, 20, .35); }
+  .shot .bar { display: flex; align-items: center; gap: 8px; padding: 9px 14px; border-bottom: 1px solid var(--rule); background: #fbfbfa; }
+  .shot .bar i { width: 9px; height: 9px; border-radius: 50%; background: var(--rule); flex: none; }
+  .shot .bar i:nth-child(1) { background: #e8a9a2; }
+  .shot .bar i:nth-child(2) { background: #ecd3a0; }
+  .shot .bar i:nth-child(3) { background: var(--sage); }
+  .shot .bar span { flex: 1; text-align: center; font-size: 11.5px; color: var(--ink-3); background: var(--canvas); border: 1px solid var(--rule); border-radius: var(--r-pill); padding: 3px 14px; margin: 0 20px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .shot img { display: block; width: 100%; height: auto; }
+  .shot.crop img { aspect-ratio: 16 / 10; object-fit: cover; object-position: top; }
+  .shot + .caption, .shot-note { font-size: 12px; color: var(--ink-3); margin: 8px 4px 0; }
+  .shot a.open { display: block; text-decoration: none; }
+  .shots2 { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; align-items: start; }
+  @media (max-width: 920px) { .shots2 { grid-template-columns: 1fr; } }
+
+  /* ---- Controls ---- */
+  .rail { position: sticky; bottom: 0; background: linear-gradient(to top, var(--bench) 70%, transparent); padding: 12px 24px 16px; }
+  .rail .inner { max-width: 1120px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+  .dots { display: flex; gap: 6px; flex-wrap: wrap; }
+  .dots button { width: 10px; height: 10px; border-radius: 50%; border: 1.5px solid var(--ink); background: var(--canvas); padding: 0; cursor: pointer; }
+  .dots button[aria-current=true] { background: var(--ink); }
+  .navbtns { display: flex; gap: 8px; align-items: center; }
+  .navbtns .count { font-size: 12.5px; color: var(--ink-3); margin-right: 6px; font-variant-numeric: tabular-nums; }
+  .navbtns button { height: 38px; padding: 0 18px; border-radius: var(--r-pill); border: 1.5px solid var(--ink); background: var(--canvas); font: 500 13px Poppins; cursor: pointer; transition: background .15s; }
+  .navbtns button:hover { background: var(--mint); }
+  .navbtns button.primary { background: var(--ink); color: #fff; }
+  .navbtns button.primary:hover { background: #2b2b2b; }
+  .navbtns button[disabled] { opacity: .4; cursor: not-allowed; }
+  .hint-keys { font-size: 12px; color: var(--ink-3); }
+  @media (max-width: 920px) { .hint-keys, .dots { display: none; } }
+
+  .brandline { display: flex; align-items: center; gap: 12px; margin-bottom: 22px; }
+  .mark { width: 40px; height: 40px; border-radius: 50%; background: var(--ink); color: #fff; display: grid; place-items: center; font-weight: 700; font-size: 13px; flex: none; }
+  .brandline b { font-size: 14px; display: block; line-height: 1.2; }
+  .brandline span { font-size: 12px; color: var(--ink-3); }
+
+  table.cmp { width: 100%; border-collapse: collapse; background: var(--canvas); border: 1px solid var(--rule); border-radius: var(--r-card); overflow: hidden; }
+  .cmp th { text-align: left; font-size: 12px; font-weight: 500; color: var(--ink-3); padding: 10px 14px; background: #fbfbfa; border-bottom: 1px solid var(--rule); }
+  .cmp td { padding: 10px 14px; border-bottom: 1px solid var(--rule); font-size: 12.5px; vertical-align: top; }
+  .cmp tr:last-child td { border-bottom: 0; }
+  .cmp td:first-child { font-weight: 600; white-space: nowrap; }
+  .cmp th.us, .cmp td.us { background: var(--mint); border-left: 1px solid var(--mint-2); border-right: 1px solid var(--mint-2); }
+  .cmp th.us { color: var(--deep); font-weight: 600; }
+  .cmp td.us b { color: var(--deep); }
+  .page-card h3 { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+  .page-card h3 a { font-size: 11.5px; font-weight: 500; color: var(--deep); text-decoration: none; border: 1px solid var(--mint-2); background: var(--mint); border-radius: var(--r-pill); padding: 3px 10px; white-space: nowrap; }
+  .page-card h3 a:hover { background: var(--mint-2); }
+  .page-card .fn { margin-top: 8px; font-size: 12px; color: var(--ink-3); }
+  .page-card .fn b { color: var(--ink-2); font-weight: 600; }
+</style>
+</head>
+<body>
+<div class="deck" id="deck">
+
+  <!-- 1 · Title -->
+  <section class="slide on">
+    <div class="split">
+      <div>
+        <div class="brandline">
+          <div class="mark">BO</div>
+          <div><b>Bishnoi Omniverse</b><span>Website &amp; Admin Progress Report</span></div>
+        </div>
+        <p class="eyebrow">September 30 — October 10, 2026</p>
+        <h1>From public website to a full admin side.</h1>
+        <p class="lead">Eleven days of shipping: SEO foundations, performance and security hardening, the quote-list experience, the custom domain, and a complete in-house analytics platform with a signed-in admin dashboard.</p>
+        <div class="links">
+          <a class="go primary" href="https://bishnoiomniverse.com" target="_blank" rel="noopener">Open the live website <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17 17 7M9 7h8v8"/></svg></a>
+          <a class="go" href="https://bishnoiomniverse.com/admin/" target="_blank" rel="noopener">Admin dashboard <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17 17 7M9 7h8v8"/></svg></a>
+        </div>
+      </div>
+      <div>
+        <div class="shot"><a class="open" href="https://bishnoiomniverse.com" target="_blank" rel="noopener">
+          <div class="bar"><i></i><i></i><i></i><span>bishnoiomniverse.com</span></div>
+          <img src="presentation-assets/home.png" alt="Bishnoi Omniverse homepage hero"></a></div>
+        <p class="caption">The live homepage — click any screenshot in this deck to open the real page.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2 · At a glance -->
+  <section class="slide">
+    <p class="eyebrow">At a glance</p>
+    <h2>What shipped in this period</h2>
+    <div class="kpis">
+      <div class="kpi"><b>6</b><span>major deliveries, website side</span></div>
+      <div class="kpi"><b>1</b><span>full analytics platform, built in-house</span></div>
+      <div class="kpi"><b>5</b><span>admin dashboard views live</span></div>
+      <div class="kpi"><b>0</b><span>third-party analytics subscriptions needed</span></div>
+    </div>
+    <ul class="steps">
+      <li><span class="when">Sep 30</span><div class="what"><b>SEO pages built out piece by piece</b><span>crawlable keyword structure across the site</span></div></li>
+      <li><span class="when">Oct 1–2</span><div class="what"><b>Performance audit &amp; security</b><span>optimizations plus Cloudflare Turnstile on all inquiry forms</span></div></li>
+      <li><span class="when">Oct 5</span><div class="what"><b>Add-to-Quote feature</b><span>quote list and send-inquiry experience, desktop and mobile</span></div></li>
+      <li><span class="when">Oct 6</span><div class="what"><b>Custom domain live</b><span>bishnoiomniverse.com on GitHub Pages</span></div></li>
+      <li><span class="when">Oct 8</span><div class="what"><b>Analytics platform &amp; admin dashboard</b><span>Cloudflare Worker + D1, sign-in, live view, globe, user accounts</span></div></li>
+      <li><span class="when">Oct 9–10</span><div class="what"><b>Location accuracy upgrade &amp; content updates</b><span>device time-zone cross-check; leadership titles refreshed</span></div></li>
+    </ul>
+  </section>
+
+  <!-- 3 · SEO -->
+  <section class="slide">
+    <p class="eyebrow">Website · Sep 30</p>
+    <h2>SEO foundation, page by page</h2>
+    <div class="split">
+      <div>
+        <p class="lead">Every key page was rebuilt with crawlable keyword structure so search engines read the catalog, company pages and support content the way buyers search for them.</p>
+        <div class="card"><h3>What was built</h3>
+          <ul>
+            <li>Human-readable site map plus XML sitemaps for pages and images</li>
+            <li>FAQ, quality and governance pages that answer procurement questions</li>
+            <li>Global network and trade partner pages, each with its own keyword focus</li>
+          </ul>
+          <div class="links">
+            <a class="go" href="https://bishnoiomniverse.com/site-map/" target="_blank" rel="noopener">Site map ↗</a>
+            <a class="go" href="https://bishnoiomniverse.com/faq/" target="_blank" rel="noopener">FAQ ↗</a>
+            <a class="go" href="https://bishnoiomniverse.com/quality/" target="_blank" rel="noopener">Quality ↗</a>
+            <a class="go" href="https://bishnoiomniverse.com/trade-partners/" target="_blank" rel="noopener">Trade partners ↗</a>
+          </div></div>
+      </div>
+      <div>
+        <div class="shot crop"><a class="open" href="https://bishnoiomniverse.com/global-network/" target="_blank" rel="noopener">
+          <div class="bar"><i></i><i></i><i></i><span>bishnoiomniverse.com/global-network/</span></div>
+          <img src="presentation-assets/global-network.png" alt="Global network page"></a></div>
+        <div class="shot crop" style="margin-top:16px"><a class="open" href="https://bishnoiomniverse.com/faq/" target="_blank" rel="noopener">
+          <div class="bar"><i></i><i></i><i></i><span>bishnoiomniverse.com/faq/</span></div>
+          <img src="presentation-assets/faq.png" alt="FAQ page"></a></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4 · Performance & security -->
+  <section class="slide">
+    <p class="eyebrow">Website · Oct 1–2</p>
+    <h2>Faster pages, protected forms</h2>
+    <div class="split">
+      <div>
+        <p class="lead">A performance audit drove targeted optimizations, and every inquiry form gained Cloudflare Turnstile — bot protection with no puzzles for real visitors.</p>
+        <div class="grid">
+          <div class="card"><h3>Performance pass</h3><p>Unused JavaScript reduced and the static export tuned so first paint does not wait on heavy scripts.</p><span class="tag tag-good" style="margin-top:10px"><i class="dot"></i>PageSpeed verified</span></div>
+          <div class="card"><h3>Turnstile on every form</h3><p>Contact and quote inquiries are screened by Cloudflare at the edge — spam stops before it reaches the inbox.</p></div>
+        </div>
+      </div>
+      <div>
+        <div class="shot crop"><a class="open" href="https://bishnoiomniverse.com/contact/" target="_blank" rel="noopener">
+          <div class="bar"><i></i><i></i><i></i><span>bishnoiomniverse.com/contact/</span></div>
+          <img src="presentation-assets/contact.png" alt="Contact page with protected inquiry form"></a></div>
+        <p class="caption">The contact page — its form is screened by Cloudflare Turnstile.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5 · Quote feature -->
+  <section class="slide">
+    <p class="eyebrow">Website · Oct 5</p>
+    <h2>Add to Quote: the buying journey</h2>
+    <div class="split">
+      <div>
+        <p class="lead">Buyers collect products into a quote list while browsing — the same request-for-quotation flow hospital procurement teams use with the industry's biggest distributors — then send one inquiry for everything.</p>
+        <div class="card strong"><h3>Browse → collect → send</h3>
+          <ul>
+            <li>Every product card and detail page has an add-to-quote action</li>
+            <li>The quote list keeps items while the buyer keeps browsing</li>
+            <li>One inquiry sends the whole list, with four inquiry types</li>
+            <li>Designed for both desktop and mobile layouts</li>
+          </ul>
+          <div class="links">
+            <a class="go primary" href="https://bishnoiomniverse.com/medical-equipment/" target="_blank" rel="noopener">Browse catalog ↗</a>
+            <a class="go" href="https://bishnoiomniverse.com/quote/" target="_blank" rel="noopener">Quote list ↗</a>
+          </div></div>
+      </div>
+      <div>
+        <div class="shot"><a class="open" href="https://bishnoiomniverse.com/quote/" target="_blank" rel="noopener">
+          <div class="bar"><i></i><i></i><i></i><span>bishnoiomniverse.com/quote/</span></div>
+          <img src="presentation-assets/quote.png" alt="Quote list and send inquiry page"></a></div>
+        <p class="caption">The quote review page with the four inquiry types.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6 · Domain -->
+  <section class="slide">
+    <p class="eyebrow">Website · Oct 1–6</p>
+    <h2>One brand, one address</h2>
+    <div class="split">
+      <div>
+        <p class="lead">The site moved from a github.io address to its own domain with automated deploys: every push rebuilds and publishes the site, and the catalog refreshes itself hourly from the product sheet.</p>
+        <div class="grid">
+          <div class="card"><h3>bishnoiomniverse.com</h3><p>Custom domain with CNAME on GitHub Pages — the brand owns its address on every card and email.</p>
+            <div class="links"><a class="go" href="https://bishnoiomniverse.com" target="_blank" rel="noopener">Homepage ↗</a></div></div>
+          <div class="card"><h3>Self-updating catalog</h3><p>Push to main → build → live, and product data flows from the Google Sheet into the site every hour. The team edits a sheet; the website updates itself.</p>
+            <div class="links"><a class="go" href="https://bishnoiomniverse.com/medical-equipment/" target="_blank" rel="noopener">Catalog ↗</a></div></div>
+        </div>
+      </div>
+      <div>
+        <div class="shot crop"><a class="open" href="https://bishnoiomniverse.com/medical-equipment/" target="_blank" rel="noopener">
+          <div class="bar"><i></i><i></i><i></i><span>bishnoiomniverse.com/medical-equipment/</span></div>
+          <img src="presentation-assets/catalog.png" alt="Medical equipment catalog"></a></div>
+        <p class="caption">The equipment catalog on the custom domain.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7 · Analytics platform -->
+  <section class="slide">
+    <p class="eyebrow">Admin side · Oct 8</p>
+    <h2>Our own analytics platform</h2>
+    <div class="split">
+      <div>
+        <p class="lead">Built from scratch on Cloudflare Workers and a D1 database — no Google Analytics, no subscriptions, and no visitor IP addresses ever stored. The site now measures itself, privately.</p>
+        <div class="grid">
+          <div class="card"><h3>What it records</h3><ul><li>Page views and client-side navigation</li><li>Every link and button click, classified</li><li>Time on page and scroll depth</li><li>Conversions: inquiries sent, quote adds</li></ul></div>
+          <div class="card"><h3>How it respects visitors</h3><ul><li>No IPs stored, no tracking cookies, bots filtered</li><li>Location never finer than a city</li><li>Data retained 400 days, then auto-deleted</li></ul></div>
+        </div>
+      </div>
+      <div>
+        <div class="shot"><a class="open" href="https://bishnoiomniverse.com/admin/" target="_blank" rel="noopener">
+          <div class="bar"><i></i><i></i><i></i><span>bishnoiomniverse.com/admin/ — sign in</span></div>
+          <img src="presentation-assets/admin-signin.png" alt="Admin dashboard sign-in screen"></a></div>
+        <p class="caption">The dashboard sign-in — dark themed, with light mode toggle.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 8 · Admin dashboard -->
+  <section class="slide">
+    <p class="eyebrow">Admin side · Oct 8</p>
+    <h2>The /admin/ dashboard</h2>
+    <div class="split">
+      <div>
+        <p class="lead">A signed-in, role-based dashboard that turns raw events into answers: what is read, what converts, where visitors come from, and who is on the site this very minute.</p>
+        <div class="grid">
+          <div class="card"><h3>Five views</h3><ul><li><b>Overview</b> — visitors, views, bounce, change vs previous period</li><li><b>Live</b> — who is online now and what they are reading</li><li><b>Countries</b> — an interactive globe shaded by visitors</li><li><b>Users</b> — admin and viewer roles, instant sign-out on disable</li><li><b>Export</b> — raw CSV for any date range</li></ul>
+            <div class="links"><a class="go primary" href="https://bishnoiomniverse.com/admin/" target="_blank" rel="noopener">Open the dashboard ↗</a></div></div>
+        </div>
+      </div>
+      <div>
+        <div class="shot"><a class="open" href="https://bishnoiomniverse.com/admin/" target="_blank" rel="noopener">
+          <div class="bar"><i></i><i></i><i></i><span>bishnoiomniverse.com/admin/ — Live activity</span></div>
+          <img src="presentation-assets/admin-live.png" alt="Live activity view showing a visitor online now"></a></div>
+        <p class="caption">The Live view: a real visitor, the page they are reading, and the last hour's activity.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 9 · Location accuracy -->
+  <section class="slide">
+    <p class="eyebrow">Admin side · Oct 9</p>
+    <h2>Location accuracy upgrade</h2>
+    <p class="lead">IP lookups place the connection, not the person — mobile carriers and VPNs often exit in another country. The platform now cross-checks every visit against the device's own time zone and records the country the visitor is really in.</p>
+    <div class="grid g2">
+      <div class="card strong"><h3>How it works</h3>
+        <ul>
+          <li>The tracker sends the device's time zone (e.g. Europe/Rome) with every event</li>
+          <li>The Worker maps it to a country and compares with the IP's country</li>
+          <li>When they disagree, the device wins — misleading city data is dropped rather than shown</li>
+          <li>Verified against a real mobile session and the stored records aligned</li>
+        </ul></div>
+      <div class="card"><h3>Why it matters</h3><p>Country data feeds the globe, the per-country stats and future market decisions. Accurate inputs mean the team can trust where demand is actually coming from.</p>
+        <span class="tag tag-good" style="margin-top:12px"><i class="dot"></i>Deployed to the live Worker</span>
+        <div class="links"><a class="go" href="https://bishnoiomniverse.com/admin/" target="_blank" rel="noopener">See the Live view ↗</a></div></div>
+    </div>
+  </section>
+
+  <!-- 10 · Content updates -->
+  <section class="slide">
+    <p class="eyebrow">Website · Oct 9–10</p>
+    <h2>Content kept current</h2>
+    <div class="split">
+      <div>
+        <p class="lead">Small changes, shipped the same day they were requested — the site stays an accurate mirror of the organization.</p>
+        <div class="grid">
+          <div class="card"><h3>Leadership titles updated</h3><p>Esther Roselle Chong is now <b>In-licensing Mentor</b> and Dhebbie Valerie B. Rillera is <b>In-licensing Executive</b> — card titles and image alt text refreshed for accessibility and SEO.</p>
+            <div class="links"><a class="go" href="https://bishnoiomniverse.com/about/leadership/" target="_blank" rel="noopener">Leadership page ↗</a></div></div>
+          <div class="card"><h3>Admin account management</h3><p>Dashboard credentials rotated and account recovery documented — a clear, repeatable way back in.</p></div>
+        </div>
+      </div>
+      <div>
+        <div class="shot"><a class="open" href="https://bishnoiomniverse.com/about/leadership/" target="_blank" rel="noopener">
+          <div class="bar"><i></i><i></i><i></i><span>bishnoiomniverse.com/about/leadership/</span></div>
+          <img src="presentation-assets/leadership.png" alt="Leadership page with updated titles"></a></div>
+        <p class="caption">The leadership team with the refreshed titles.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 11 · Benchmarking: capability comparison -->
+  <section class="slide">
+    <p class="eyebrow">Strategy · Benchmarking</p>
+    <h2>bishnoiomniverse.com vs Cardinal Health vs Medline</h2>
+    <p class="lead">The website was shaped against the two distributors hospital buyers already know best — matching what they have standardized, and deliberately staying lighter where their scale forces friction.</p>
+    <table class="cmp">
+      <tr><th>Capability</th><th class="us">bishnoiomniverse.com</th><th>Cardinal Health</th><th>Medline</th></tr>
+      <tr><td>Catalog structure</td><td class="us"><b>Category → subcategory → product</b>, every page pre-rendered and fast</td><td>Deep category hierarchy across its distribution catalog</td><td>Deep category hierarchy over a very large product range</td></tr>
+      <tr><td>Product discovery</td><td class="us"><b>Instant site-wide search</b> that tolerates misspellings and strength-specific queries</td><td>Enterprise search with filters</td><td>Enterprise search with filters</td></tr>
+      <tr><td>Product pages</td><td class="us">Specs, imagery, <b>related subcategories</b>, Add to Quote on every product</td><td>Spec-led pages with documents</td><td>Spec-led pages with variants and literature</td></tr>
+      <tr><td>Buying flow</td><td class="us"><b>Add to Quote → one consolidated inquiry, no account needed</b>, replied with a personal quote</td><td>Account-based ordering portals</td><td>Registration and login for ordering and pricing</td></tr>
+      <tr><td>Barrier to first inquiry</td><td class="us"><b>None</b> — four inquiry types incl. patients &amp; named-patient access</td><td>Registration / sales rep contact first</td><td>Registration / sales rep contact first</td></tr>
+      <tr><td>Contact channels</td><td class="us"><b>WhatsApp, Viber, phone, email</b> one tap from every page</td><td>Forms and rep network</td><td>Forms and rep network</td></tr>
+      <tr><td>Trust content</td><td class="us">Quality, governance, global network, trade partners beside the catalog</td><td>Corporate, compliance and quality content</td><td>Corporate, compliance and quality content</td></tr>
+      <tr><td>Visitor privacy</td><td class="us"><b>In-house analytics, no third-party trackers, no IPs stored</b></td><td>Commercial tracking suites</td><td>Commercial tracking suites</td></tr>
+    </table>
+    <div class="links">
+      <a class="go" href="https://www.cardinalhealth.com" target="_blank" rel="noopener">cardinalhealth.com ↗</a>
+      <a class="go" href="https://www.medline.com" target="_blank" rel="noopener">medline.com ↗</a>
+      <a class="go primary" href="https://bishnoiomniverse.com" target="_blank" rel="noopener">bishnoiomniverse.com ↗</a>
+    </div>
+  </section>
+
+  <!-- 11b · Page-by-page detail -->
+  <section class="slide">
+    <p class="eyebrow">Strategy · Page by page</p>
+    <h2>Every page: what was added, and what it does</h2>
+    <div class="grid g3">
+      <div class="card page-card"><h3>Homepage <a href="https://bishnoiomniverse.com" target="_blank" rel="noopener">open ↗</a></h3>
+        <ul><li>Hero with three role-based calls to action: Request a Quote, Submit a Hospital Requirement, Find a Specialty Medicine</li><li>Instant search in the header on every page</li><li>Floating WhatsApp, Viber and LinkedIn actions</li></ul>
+        <p class="fn"><b>Functionality:</b> routes each visitor type — patient, clinician, hospital, trade partner — to the right journey in one click.</p></div>
+      <div class="card page-card"><h3>Equipment catalog <a href="https://bishnoiomniverse.com/medical-equipment/" target="_blank" rel="noopener">open ↗</a></h3>
+        <ul><li>Category → subcategory browsing with icons and image placeholders</li><li>Add to Quote on every product card</li><li>Hourly self-update from the product Google Sheet</li></ul>
+        <p class="fn"><b>Functionality:</b> the team edits a spreadsheet; the live catalog rebuilds itself — no developer needed.</p></div>
+      <div class="card page-card"><h3>Product detail pages <a href="https://bishnoiomniverse.com/medical-equipment/" target="_blank" rel="noopener">open ↗</a></h3>
+        <ul><li>Redesigned spec-led layout with imagery</li><li>Related subcategories section to keep buyers browsing</li><li>SEO-structured URLs per category and product</li></ul>
+        <p class="fn"><b>Functionality:</b> each product competes in search on its own terms and feeds the quote list directly.</p></div>
+      <div class="card page-card"><h3>Quote list <a href="https://bishnoiomniverse.com/quote/" target="_blank" rel="noopener">open ↗</a></h3>
+        <ul><li>Persistent quote list that survives browsing</li><li>Four inquiry types, incl. named-patient access and institutional supply</li><li>Cloudflare Turnstile screening on send</li></ul>
+        <p class="fn"><b>Functionality:</b> turns browsing into a single consolidated RFQ — the conversion heart of the site.</p></div>
+      <div class="card page-card"><h3>Contact <a href="https://bishnoiomniverse.com/contact/" target="_blank" rel="noopener">open ↗</a></h3>
+        <ul><li>All channels in one place: form, email, phone, WhatsApp, Viber</li><li>Turnstile-protected form with reliable email delivery</li><li>Every inquiry auto-logged for follow-up</li></ul>
+        <p class="fn"><b>Functionality:</b> no inquiry gets lost, and spam never reaches the inbox.</p></div>
+      <div class="card page-card"><h3>Company &amp; trust pages <a href="https://bishnoiomniverse.com/about/leadership/" target="_blank" rel="noopener">open ↗</a></h3>
+        <ul><li>Leadership, governance, vision &amp; values</li><li>Quality, global network, trade partners, FAQ, site map</li><li>Each with its own keyword focus for SEO</li></ul>
+        <p class="fn"><b>Functionality:</b> answers a procurement team's diligence questions before the first call.</p></div>
+    </div>
+    <p class="shot-note" style="margin-top:14px">Plus the admin side: the signed-in analytics dashboard (overview, live, countries globe, users, CSV export) covered on slides 7–9.</p>
+  </section>
+
+  <!-- 12 · Benchmarking benefits -->
+  <section class="slide">
+    <p class="eyebrow">Strategy</p>
+    <h2>What benchmarking earned us</h2>
+    <div class="grid g3">
+      <div class="card"><h3>Familiar to buyers</h3><p>Procurement teams navigate our site the way they navigate the market leaders — no learning curve between "found it" and "requested a quote."</p></div>
+      <div class="card"><h3>Credibility by association</h3><p>Matching the structure and polish of billion-dollar distributors signals that Bishnoi Omniverse operates at their standard, whatever its size today.</p></div>
+      <div class="card"><h3>The right conversion model</h3><p>B2B medical buying is quote-driven, not cart-driven. Benchmarking confirmed the quote list was the correct bet before a line of it was built.</p></div>
+      <div class="card"><h3>SEO parity</h3><p>Category and product URL structures mirror how the industry's search traffic actually flows, so pages compete on the terms buyers use.</p></div>
+      <div class="card"><h3>A roadmap for free</h3><p>Their public sites preview what buyers will expect next — account portals, order history, availability — so our roadmap is grounded in proven demand.</p></div>
+      <div class="card"><h3>An edge they lack</h3><p>We move faster: content updates ship same-day and the analytics loop shows within hours how buyers respond — agility the giants cannot match.</p></div>
+    </div>
+  </section>
+
+  <!-- 13 · Close -->
+  <section class="slide">
+    <div class="split">
+      <div>
+        <p class="eyebrow">Summary</p>
+        <h1 style="font-size:38px">A website that sells, and an admin side that sees.</h1>
+        <p class="lead">In eleven days the site gained its SEO backbone, its security, its buying journey, its own address, and a private analytics platform that tells the team exactly how buyers behave — benchmarked against the industry's best, and improving measurably every week.</p>
+        <div class="links">
+          <a class="go primary" href="https://bishnoiomniverse.com" target="_blank" rel="noopener">bishnoiomniverse.com ↗</a>
+          <a class="go" href="https://bishnoiomniverse.com/admin/" target="_blank" rel="noopener">Admin dashboard ↗</a>
+          <a class="go" href="https://bishnoiomniverse.com/medical-equipment/" target="_blank" rel="noopener">Catalog ↗</a>
+        </div>
+      </div>
+      <div class="shots2">
+        <div class="shot crop"><a class="open" href="https://bishnoiomniverse.com" target="_blank" rel="noopener">
+          <div class="bar"><i></i><i></i><i></i><span>The website</span></div>
+          <img src="presentation-assets/home.png" alt="Homepage"></a></div>
+        <div class="shot crop"><a class="open" href="https://bishnoiomniverse.com/admin/" target="_blank" rel="noopener">
+          <div class="bar"><i></i><i></i><i></i><span>The admin side</span></div>
+          <img src="presentation-assets/admin-live.png" alt="Admin live view"></a></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Controls -->
+  <div class="rail">
+    <div class="inner">
+      <span class="hint-keys">Use ← → arrow keys, or click the buttons</span>
+      <div class="dots" id="dots" role="tablist" aria-label="Slides"></div>
+      <div class="navbtns">
+        <span class="count" id="count">1 / 14</span>
+        <button id="prev" type="button">← Back</button>
+        <button id="next" class="primary" type="button">Next →</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  const dots = document.getElementById('dots');
+  const count = document.getElementById('count');
+  const prev = document.getElementById('prev');
+  const next = document.getElementById('next');
+  let at = 0;
+
+  slides.forEach((_, i) => {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.setAttribute('aria-label', 'Slide ' + (i + 1));
+    b.addEventListener('click', () => go(i));
+    dots.appendChild(b);
+  });
+
+  function go(i) {
+    at = Math.max(0, Math.min(slides.length - 1, i));
+    slides.forEach((s, k) => s.classList.toggle('on', k === at));
+    Array.from(dots.children).forEach((d, k) => d.setAttribute('aria-current', k === at ? 'true' : 'false'));
+    count.textContent = (at + 1) + ' / ' + slides.length;
+    prev.disabled = at === 0;
+    next.disabled = at === slides.length - 1;
+    window.scrollTo({ top: 0 });
+  }
+
+  prev.addEventListener('click', () => go(at - 1));
+  next.addEventListener('click', () => go(at + 1));
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === 'PageDown' || e.key === ' ') { e.preventDefault(); go(at + 1); }
+    if (e.key === 'ArrowLeft' || e.key === 'PageUp') { e.preventDefault(); go(at - 1); }
+    if (e.key === 'Home') go(0);
+    if (e.key === 'End') go(slides.length - 1);
+  });
+  go(0);
+</script>
+</body>
+</html>

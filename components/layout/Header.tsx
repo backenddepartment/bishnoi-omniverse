@@ -140,6 +140,7 @@ export const Header: React.FC = () => {
 
   const navLinks = [
     { href: '/', label: 'Home' },
+    { href: '/specialty-medicines', label: 'Specialty Medicines' },
     { href: '/articles', label: 'Articles' },
   ];
 
@@ -148,6 +149,7 @@ export const Header: React.FC = () => {
     { href: '/', label: 'Home' },
     { href: EQUIPMENT_PATH, label: 'Medical Equipment' },
     { href: CATALOG_PATH, label: 'All Categories' },
+    { href: '/specialty-medicines', label: 'Specialty Medicines' },
     { href: '/trade-partners', label: 'Trade & Partners' },
     { href: '/quality', label: 'Quality & Compliance' },
     { href: '/global-network', label: 'Global Network' },

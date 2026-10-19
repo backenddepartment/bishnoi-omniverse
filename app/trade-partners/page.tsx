@@ -16,12 +16,14 @@ import { PartnerChain } from '@/components/about/trade-partners/PartnerChain';
 import heroImg from '@/app/assets/tradeandpartners.png';
 import relationshipImg from '@/app/assets/omniverserelationship-cutout.webp';
 import routeMapImg from '@/app/assets/mapconnection.png';
+import { pageMetadata } from '@/lib/seo';
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: 'Trade & Partners | Bishnoi Omniverse',
   description:
-    'For manufacturers, suppliers, distributors and logistics providers: reach Philippine healthcare with a partner that handles the coordination, documentation and communication of cross-border healthcare trade.',
-};
+    'For manufacturers, distributors and logistics providers: reach Philippine healthcare with a partner that handles cross-border coordination and documents.',
+  path: '/trade-partners/',
+});
 
 const PARTNER_CTA = { label: 'Become a Partner', href: '/contact?type=partner' };
 

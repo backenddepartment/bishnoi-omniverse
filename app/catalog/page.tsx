@@ -13,12 +13,14 @@ import {
   subcategorySlug,
 } from '@/lib/catalogRoutes';
 import bannerImg from '@/app/assets/bannermedical.png';
+import { pageMetadata } from '@/lib/seo';
 
-export const metadata: Metadata = {
-  title: 'Catalog | All Categories | Bishnoi Omniverse',
+export const metadata: Metadata = pageMetadata({
+  title: 'Hospital Consumables Wholesale Catalog | Bishnoi Omniverse',
   description:
-    'Every medical equipment category supplied by Bishnoi Omniverse in one place, from gloves and PPE to dialysis, surgical and imaging equipment.',
-};
+    'Every category of hospital consumables and medical equipment we supply wholesale, from gloves and PPE to dialysis, surgical and imaging. Request a quote.',
+  path: '/catalog/',
+});
 
 // A long subcategory list is cut here, with a "More" link through to the category's own page, so
 // one category cannot stretch its whole row of the grid.

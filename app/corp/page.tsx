@@ -4,16 +4,18 @@ import Link from 'next/link';
 import { MapPin, Mail } from 'lucide-react';
 import contactData from '@/lib/data/contactData.json';
 import sectionDetail from '@/lib/data/sectionDetailData.json';
+import { pageMetadata } from '@/lib/seo';
 
 const IMG = {
   hero: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/Manila_Skyline_March_2020.jpg/1920px-Manila_Skyline_March_2020.jpg',
 };
 
-export const metadata: Metadata = {
-  title: 'Bishnoi Omniverse Corp | Philippines Logistics Hub',
+export const metadata: Metadata = pageMetadata({
+  title: 'Medical Supplies Philippines | Bishnoi Omniverse Corp',
   description:
-    'Bishnoi Omniverse Corp, the group’s Asia-Pacific logistics hub in the Philippines, linking Southeast Asia with the global network.',
-};
+    'Bishnoi Omniverse Corp, our Philippines hub in Las Piñas, Metro Manila, supplying hospitals and clinics with medical supplies and medicines. Request a quote.',
+  path: '/corp/',
+});
 
 export default function CorpPage() {
   const office = contactData.globalOffices.locations.find((l) => l.region.startsWith('Philippines'))!;
