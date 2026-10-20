@@ -1,4 +1,5 @@
 import type { Config } from "tailwindcss";
+import plugin from "tailwindcss/plugin";
 
 const config: Config = {
   content: [
@@ -68,14 +69,17 @@ const config: Config = {
       maxWidth: {
         wrap: '1180px',
       },
-      // Short screens (by height, not width), so the /admin/ sign-in card fits without scrolling.
-      // h-sm comes second so it wins where both match.
-      screens: {
-        'h-md': { raw: '(max-height: 820px)' },
-        'h-sm': { raw: '(max-height: 660px)' },
-      },
     },
   },
-  plugins: [],
+  plugins: [
+    // Short screens (by height, not width), so the /admin/ sign-in card fits without scrolling.
+    // h-sm comes second so it wins where both match. These are variants, not `screens`: a raw
+    // (non-pixel) screen makes Tailwind drop every min-[...] / max-[...] class site-wide, which
+    // the Global Network, Group Structure and Trade & Partners layouts rely on.
+    plugin(({ addVariant }) => {
+      addVariant('h-md', '@media (max-height: 820px)');
+      addVariant('h-sm', '@media (max-height: 660px)');
+    }),
+  ],
 };
 export default config;

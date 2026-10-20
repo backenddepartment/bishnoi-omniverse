@@ -28,6 +28,7 @@ const ABOUT_LINKS: { label: string; href: string }[] = [
   { label: 'Group Structure', href: '/global' },
   { label: 'Global Network', href: '/global-network' },
   { label: 'Trade & Partners', href: '/trade-partners' },
+  { label: 'Specialty Medicines', href: '/specialty-medicines' },
 ];
 
 // `external: true` leaves the site — rendered as a plain anchor opening in a new tab.
@@ -140,7 +141,6 @@ export const Header: React.FC = () => {
 
   const navLinks = [
     { href: '/', label: 'Home' },
-    { href: '/specialty-medicines', label: 'Specialty Medicines' },
     { href: '/articles', label: 'Articles' },
   ];
 

@@ -1,12 +1,13 @@
 import React from 'react';
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { FileCheck2, HeartPulse, Hospital, Pill, Snowflake, Stethoscope, Users } from 'lucide-react';
+import { ArrowRight, FileCheck2, HeartPulse, Hospital, Pill, Stethoscope, Users } from 'lucide-react';
 import homepageData from '@/lib/data/homepageData.json';
 import { FaqAccordion, type FaqItem } from '@/components/FaqAccordion';
 import { WHATSAPP_HREF } from '@/lib/contactChannels';
+import { AboutHero } from '@/components/about/Patterns';
 import { pageMetadata } from '@/lib/seo';
-import medicinesImg from '@/app/assets/medicines.webp';
+import heroImg from '@/app/assets/specialtymedicineshero.png';
 
 export const metadata: Metadata = pageMetadata({
   title: 'Specialty & Hard-to-Find Medicine Sourcing | Bishnoi Omniverse',
@@ -107,72 +108,98 @@ const PAGE_FAQ: FaqItem[] = [
 export default function SpecialtyMedicinesPage() {
   return (
     <div className="w-full">
-      <section className="page-hero">
-        <div className="hero-media">
-          <img src={medicinesImg.src} alt="Specialty medicines prepared for cold-chain delivery" loading="eager" />
-        </div>
-        <div className="hero-content">
-          <span className="eyebrow on-dark">Specialty Medicines</span>
-          <h1>Specialty Medicine Sourcing for Hospitals and Patients</h1>
-          <p className="lede">
-            Named-patient and cross-border access to specialty and hard-to-find medicines that are not yet registered
-            or available in the Philippines or your market, with monitored cold-chain delivery to the treating
-            facility.
-          </p>
-          <div className="hero-actions">
-            <Link className="btn btn-primary" href="/contact?type=find-medicine">
-              Send Your Requirement
-            </Link>
-            <a className="btn btn-outline" href={WHATSAPP_HREF} target="_blank" rel="noopener noreferrer">
-              Ask on WhatsApp
-            </a>
-          </div>
-        </div>
-      </section>
+      {/* The About Us hero style: the same designed background, with the diamonds showing a
+          doctor, specialty medicines and a patient with family (app/assets/specialtymedicineshero.png).
+          The "\n" in the title is the line break; .specialty-hero shows it (globals.css). */}
+      <div className="specialty-hero">
+        <AboutHero
+          eyebrow="Specialty Medicines"
+          title={'Specialty Medicine Sourcing\nfor Hospitals and Patients'}
+          lede="Named-patient and cross-border access to specialty and hard-to-find medicines that are not yet registered or available in the Philippines or your market, with monitored cold-chain delivery to the treating facility."
+          image={heroImg.src}
+          imageAlt="A doctor with a stethoscope, a box of specialty medicines, and a grandfather lifting his laughing granddaughter, in diamond frames"
+          imagePosition="center"
+          overlay="none"
+          banner
+          actions={
+            <>
+              <Link className="btn btn-primary" href="/contact?type=find-medicine">
+                Send Your Requirement
+              </Link>
+              <a className="btn btn-outline on-light" href={WHATSAPP_HREF} target="_blank" rel="noopener noreferrer">
+                Ask on WhatsApp
+              </a>
+            </>
+          }
+        />
+      </div>
 
       <section className="section section-white">
         <div className="wrap">
-          <div className="heading-lg max-w-3xl">
-            <span className="eyebrow">What We Source</span>
-            <h2 className="mb-4">Medicines that are hard to find locally</h2>
-            <p className="text-ink-soft leading-relaxed">
-              Some medicines a doctor prescribes are not registered in the Philippines, or not available when a patient
-              needs them. Bishnoi Omniverse sources these hard-to-find medicines through our India hub in New Delhi and
-              delivers them through our Philippines hub in Metro Manila, for hospitals in the Philippines and in the
-              other markets we serve.
-            </p>
+          {/* Same layout and cards as About Us · Who We Serve: heading left, copy right, then the
+              cards in the site's grid-3 (three across, two at 900px, one at 560px). */}
+          <div className="grid-2 items-start">
+            <div className="heading-lg">
+              <span className="eyebrow">What We Source</span>
+              <h2 className="mb-0">Medicines that are hard to find locally</h2>
+            </div>
+            <div className="lead-block">
+              <p className="text-ink-soft leading-relaxed m-0">
+                Some medicines a doctor prescribes are not registered in the Philippines, or not available when a
+                patient needs them. Bishnoi Omniverse sources these hard-to-find medicines through our India hub in New
+                Delhi and delivers them through our Philippines hub in Metro Manila, for hospitals in the Philippines
+                and in the other markets we serve.
+              </p>
+            </div>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-10">
-            {WHAT_WE_SOURCE.map(({ icon: Icon, title, desc }) => (
-              <div key={title} className="info-card">
-                <Icon className="w-6 h-6 text-accent mb-4" aria-hidden="true" />
-                <h3 className="text-lg mb-2">{title}</h3>
-                <p className="text-ink-soft leading-relaxed m-0">{desc}</p>
+          <div className="grid-3 mt-12">
+            {WHAT_WE_SOURCE.map(({ icon: Icon, title, desc }, idx) => (
+              // The first card is shown in its orange state from the start, as on About Us.
+              <div
+                key={title}
+                className={`border border-line rounded-2xl p-6 card-hover${idx === 0 ? ' is-active' : ''}`}
+              >
+                <Icon className="w-10 h-10 text-accent mb-5" strokeWidth={1.5} aria-hidden="true" />
+                <h3 className="font-sans text-base font-bold text-ink mb-2">{title}</h3>
+                <p className="text-sm text-ink-soft leading-relaxed m-0">{desc}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      <section className="section section-line section-white">
+      {/* pt-0: follows straight on from What We Source, as Who We Serve does on About Us. */}
+      <section className="section section-line section-white pt-0">
         <div className="wrap">
-          <div className="heading-lg max-w-3xl">
-            <span className="eyebrow">Who We Help</span>
-            <h2 className="mb-4">For hospitals, clinics and patients through their doctors</h2>
+          <div className="grid-2 items-start">
+            <div className="heading-lg">
+              <span className="eyebrow">Who We Help</span>
+              <h2 className="mb-0">For hospitals, clinics and patients through their doctors</h2>
+            </div>
+            <div className="lead-block">
+              <p className="text-ink-soft leading-relaxed m-0">
+                Doctors and hospital pharmacies looking for a specialty medicine for a specific patient can use our
+                specialty medicine form. It asks only for the details that process needs.
+              </p>
+            </div>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
-            {WHO_WE_HELP.map(({ icon: Icon, title, desc }) => (
-              <div key={title} className="info-card">
-                <Icon className="w-6 h-6 text-accent mb-4" aria-hidden="true" />
-                <h3 className="text-lg mb-2">{title}</h3>
-                <p className="text-ink-soft leading-relaxed m-0">{desc}</p>
+          <div className="grid-3 mt-12">
+            {WHO_WE_HELP.map(({ icon: Icon, title, desc }, idx) => (
+              <div
+                key={title}
+                className={`border border-line rounded-2xl p-6 card-hover${idx === 0 ? ' is-active' : ''}`}
+              >
+                <Icon className="w-10 h-10 text-accent mb-5" strokeWidth={1.5} aria-hidden="true" />
+                <h3 className="font-sans text-base font-bold text-ink mb-2">{title}</h3>
+                <p className="text-sm text-ink-soft leading-relaxed m-0">{desc}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      <section className="section section-line section-white">
+      {/* pt-0: follows straight on from Who We Help. */}
+      <section className="section section-line section-white pt-0">
         <div className="wrap grid grid-cols-1 md:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] gap-12 md:gap-20 items-start">
           <div className="heading-lg">
             <span className="eyebrow">How It Works</span>
@@ -183,11 +210,10 @@ export default function SpecialtyMedicinesPage() {
             </p>
           </div>
           <ol className="space-y-6 m-0 p-0 list-none">
-            {STEPS.map((step, idx) => (
+            {STEPS.map((step) => (
               <li key={step.title} className="flex gap-5">
-                <span className="font-poppins text-accent font-semibold text-lg shrink-0">
-                  {String(idx + 1).padStart(2, '0')}
-                </span>
+                {/* The list is an <ol>, so the order is still conveyed; the arrow is decoration. */}
+                <ArrowRight className="w-6 h-6 text-accent shrink-0 mt-0.5" strokeWidth={2} aria-hidden="true" />
                 <div>
                   <h3 className="text-lg mb-1">{step.title}</h3>
                   <p className="text-ink-soft leading-relaxed m-0">{step.desc}</p>
@@ -198,11 +224,15 @@ export default function SpecialtyMedicinesPage() {
         </div>
       </section>
 
-      <section className="section section-line section-white">
+      {/* pt-0: follows straight on from How It Works. */}
+      <section className="section section-line section-white pt-0">
         <div className="wrap grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-20 items-start">
+          {/* heading-lg: same eyebrow and title size as What We Source. */}
           <div>
-            <span className="eyebrow">Documents We Provide</span>
-            <h2 className="mb-4">Paperwork that stands up to review</h2>
+            <div className="heading-lg">
+              <span className="eyebrow">Documents We Provide</span>
+              <h2 className="mb-4">Paperwork that stands up to review</h2>
+            </div>
             <p className="text-ink-soft leading-relaxed">
               Documentation varies by product and destination market, so we state it for each medicine on the quote
               rather than as a blanket claim. It typically includes:
@@ -217,22 +247,16 @@ export default function SpecialtyMedicinesPage() {
             </ul>
           </div>
           <div>
-            <span className="eyebrow">Philippines</span>
-            <h2 className="mb-4">Philippine FDA Compassionate Special Permit support</h2>
+            <div className="heading-lg">
+              <span className="eyebrow">Philippines</span>
+              <h2 className="mb-4">Philippine FDA Compassionate Special Permit support</h2>
+            </div>
             <p className="text-ink-soft leading-relaxed">
               In the Philippines, a medicine that is not registered with the Food and Drug Administration can be brought
               in for a named patient under a Compassionate Special Permit (CSP), applied for by the hospital or treating
               physician. We support that application with the product and manufacturer documents it needs, and
               coordinate the shipment once the permit is granted.
             </p>
-            <div className="info-card !p-6 mt-6 flex gap-4 items-start">
-              <Snowflake className="w-5 h-5 text-accent shrink-0 mt-0.5" aria-hidden="true" />
-              <p className="text-ink-soft leading-relaxed m-0">
-                <strong className="text-ink">Turnaround times.</strong> A case manager replies within 24 hours. Delivery
-                time depends on the medicine, its source and the permit route, and is confirmed on the quote. Mark the
-                request as routine, urgent (48 to 72 hours) or emergency when you send it.
-              </p>
-            </div>
           </div>
         </div>
       </section>

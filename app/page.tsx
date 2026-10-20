@@ -190,13 +190,11 @@ export default function HomePage() {
   return (
     <div className="w-full home-page">
       <JsonLd data={ORGANIZATION_DATA} />
-      {/* Hero. The h1 says what the site is about in the words people search with; the slogan
-          below it keeps the large display type but is a paragraph, so the page has one h1. */}
+      {/* Hero */}
       <section className="hero" id="home">
         <HeroSlider slides={HERO_SLIDES} />
         <div className="hero-content">
-          <h1 className="hero-kicker reveal d1">{hero.h1}</h1>
-          <p className="hero-title reveal d2">{hero.headline}</p>
+          <h1 className="reveal d2">{hero.headline}</h1>
           <p className="lede reveal d3">{hero.subheadline}</p>
           <div className="hero-actions reveal d4">
             <Link className="btn btn-primary" href="/contact?type=quote">
@@ -314,7 +312,19 @@ export default function HomePage() {
             <div className="wrap home-about-overlay-inner">
               <div className="home-about-title">
                 <span className="eyebrow on-dark">{aboutOverview.sectionTag}</span>
-                <h2>{aboutOverview.title}</h2>
+                {/* Two lines on desktop, broken after the comma: "One Accountable Partner," /
+                    "Backed by the Bishnoi Group" (see .home-about-title-line). */}
+                <h2>
+                  {aboutOverview.title.split(', ').map((line, idx, lines) => (
+                    <React.Fragment key={line}>
+                      <span className="home-about-title-line">
+                        {line}
+                        {idx < lines.length - 1 ? ',' : ''}
+                      </span>
+                      {idx < lines.length - 1 ? ' ' : ''}
+                    </React.Fragment>
+                  ))}
+                </h2>
               </div>
               <div className="home-about-summary">
                 <p>{aboutOverview.lead}</p>

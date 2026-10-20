@@ -13,10 +13,6 @@ export const metadata: Metadata = pageMetadata({
   path: '/faq/',
 });
 
-const IMG = {
-  hero: 'https://upload.wikimedia.org/wikipedia/commons/2/2e/Hospital_corridor_2.jpg',
-};
-
 export default function FaqPage() {
   const { faq } = homepageData;
 
@@ -35,13 +31,15 @@ export default function FaqPage() {
   return (
     <div className="w-full">
       <JsonLd data={structuredData} />
-      <section className="page-hero">
-        <div className="hero-media">
-          <img src={IMG.hero} alt="Hospital corridor" loading="eager" />
-        </div>
+      {/* Brand gradient instead of a photo; the copy sits in the middle of the band. On desktop the
+          headline is two lines and the lede three (see .faq-hero in globals.css). */}
+      <section className="page-hero faq-hero">
         <div className="hero-content">
           <span className="eyebrow on-dark">Frequently Asked Questions</span>
-          <h1>The questions procurement teams ask first</h1>
+          <h1>
+            <span className="faq-hero-line">The questions procurement</span>{' '}
+            <span className="faq-hero-line">teams ask first</span>
+          </h1>
           <p className="lede">
             How supply, documentation, and partnership actually work at Bishnoi Omniverse — answered
             in the same detail we would give you on a call.

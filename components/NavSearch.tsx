@@ -53,9 +53,36 @@ function moveFocus(e: React.KeyboardEvent, list: HTMLElement | null, input: HTML
   }
 }
 
+/**
+ * The no-results illustration: a magnifying glass sweeping across a blank page while a "?" bobs
+ * above it. Animated in CSS (.nav-search-empty-art), and still for reduced-motion visitors.
+ */
+function NoResultsArt() {
+  return (
+    <svg className="nav-search-empty-art" viewBox="0 0 132 96" aria-hidden="true">
+      <rect x="34" y="10" width="64" height="78" rx="10" fill="#faf8f4" stroke="#e4ddd0" strokeWidth="2" />
+      <rect className="line" x="44" y="26" width="40" height="5" rx="2.5" fill="#e4ddd0" />
+      <rect className="line line-2" x="44" y="38" width="32" height="5" rx="2.5" fill="#e4ddd0" />
+      <rect className="line line-3" x="44" y="50" width="24" height="5" rx="2.5" fill="#e4ddd0" />
+      <g className="glass">
+        <circle cx="66" cy="50" r="14" fill="#ffffff" fillOpacity="0.75" stroke="#f36b21" strokeWidth="4" />
+        <line x1="76" y1="60" x2="88" y2="72" stroke="#f36b21" strokeWidth="5" strokeLinecap="round" />
+      </g>
+      <text className="query-mark" x="104" y="26" fill="#f36b21" fontSize="20" fontWeight="700" fontFamily="inherit">
+        ?
+      </text>
+    </svg>
+  );
+}
+
 function ResultsList({ results, onNavigate }: { results: SearchResults; onNavigate: () => void }) {
   if (results.groups.length === 0) {
-    return <p className="nav-search-empty">No results for &ldquo;{results.query}&rdquo;.</p>;
+    return (
+      <div className="nav-search-empty-state">
+        <NoResultsArt />
+        <p className="nav-search-empty">No results for &ldquo;{results.query}&rdquo;.</p>
+      </div>
+    );
   }
 
   return (

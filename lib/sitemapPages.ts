@@ -23,7 +23,7 @@ import articlesHeroImg from '@/app/assets/article.png';
 import qualityHeroImg from '@/app/assets/quality.png';
 import suppliesImg from '@/app/assets/supplies.jpg';
 import medicinesImg from '@/app/assets/medicines.jpg';
-import specialtyHeroImg from '@/app/assets/medicines.webp';
+import specialtyHeroImg from '@/app/assets/specialtymedicineshero.png';
 import doctorsImg from '@/app/assets/doctors.jpg';
 import hospitalsImg from '@/app/assets/hospitals.png';
 import groupHeroImg from '@/app/assets/groupstructure.png';
