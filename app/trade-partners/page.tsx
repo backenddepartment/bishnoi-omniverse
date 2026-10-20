@@ -13,9 +13,9 @@ import {
 } from '@/components/about/Patterns';
 import { FadeIn } from '@/components/FadeIn';
 import { PartnerChain } from '@/components/about/trade-partners/PartnerChain';
-import heroImg from '@/app/assets/tradeandpartners.png';
+import heroImg from '@/app/assets/tradeandpartners.webp';
 import relationshipImg from '@/app/assets/omniverserelationship-cutout.webp';
-import routeMapImg from '@/app/assets/mapconnection.png';
+import routeMapImg from '@/app/assets/mapconnection.webp';
 import { pageMetadata } from '@/lib/seo';
 
 export const metadata: Metadata = pageMetadata({

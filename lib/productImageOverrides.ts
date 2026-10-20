@@ -1,7 +1,7 @@
 import type { ProductImage } from '@/lib/catalogImages';
-import nitrileFront from '@/app/productimages/nitrilefront.png';
-import nitrileBack from '@/app/productimages/nitrileback.png';
-import nitrileSide from '@/app/productimages/nitrileside.png';
+import nitrileFront from '@/app/productimages/nitrilefront.webp';
+import nitrileBack from '@/app/productimages/nitrileback.webp';
+import nitrileSide from '@/app/productimages/nitrileside.webp';
 
 /**
  * Product photo galleries committed to app/productimages/, keyed by product id. The first photo

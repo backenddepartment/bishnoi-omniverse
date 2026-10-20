@@ -6,16 +6,17 @@ import {
   HeartPulse, Hospital, Route, Snowflake, Split, Stethoscope, Syringe, UserCheck,
 } from 'lucide-react';
 import businessesData from '@/lib/data/businessesData.json';
+import contactData from '@/lib/data/contactData.json';
 import { WhatWeDoBand } from '@/components/WhatWeDoBand';
 import { FadeIn } from '@/components/FadeIn';
 import { AboutHero } from '@/components/about/Patterns';
-import storyHeroImg from '@/app/assets/aboutusherobg.png';
-import cphiImg from '@/app/assets/cphi.jpeg';
-import whatWeDoBandImg from '@/app/assets/backgroundabout.png';
+import storyHeroImg from '@/app/assets/aboutusherobg.webp';
+import cphiImg from '@/app/assets/cphi.webp';
+import whatWeDoBandImg from '@/app/assets/backgroundabout.webp';
 import familiesImg from '@/app/assets/families.jpg';
 import teamImg from '@/app/assets/team.jpg';
 import howWeWorkImg from '@/app/assets/howwework.jpg';
-import askImg from '@/app/assets/documents.png';
+import askImg from '@/app/assets/documents.webp';
 import { pageMetadata } from '@/lib/seo';
 
 // Local assets: the two Wikimedia URLs previously used here both 404'd, leaving a broken hero.
@@ -371,7 +372,9 @@ export default function AboutPage() {
               <Link href="/faq" className="about-ask-btn is-light">
                 See FAQs
               </Link>
-              <a href="mailto:contact@bishnoi.ai" className="about-ask-btn is-orange">
+              {/* The same address as the Contact page and footer, so the business details match
+                  everywhere (Google checks them against the Business Profile). */}
+              <a href={`mailto:${contactData.directContact.emails[0]}`} className="about-ask-btn is-orange">
                 Send an Email
               </a>
             </div>

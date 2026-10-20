@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useRef, useState } from 'react';
-import logoImg from '@/app/assets/logo.png';
+import logoImg from '@/app/assets/logo-hd.webp';
 
 /**
  * Trade & Partners · Partner Communication: the line of communication as a chain of arrows, each

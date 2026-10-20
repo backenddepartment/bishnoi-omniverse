@@ -26,7 +26,7 @@ import {
 } from '@/components/about/Patterns';
 import { FadeIn } from '@/components/FadeIn';
 import { ImprovementLoop } from '@/components/about/governance/ImprovementLoop';
-import hospitals from '@/app/assets/hospitals.png';
+import hospitals from '@/app/assets/hospitals.webp';
 import { pageMetadata } from '@/lib/seo';
 
 export const metadata: Metadata = pageMetadata({

@@ -29,7 +29,7 @@ export default function CorpPage() {
         </div>
         <div className="hero-content">
           <span className="eyebrow on-dark">Legal Entity</span>
-          <h1>Bishnoi Omniverse Corp</h1>
+          <h1>Bishnoi Omniverse Corp: Medical Supplies in the Philippines</h1>
           <p className="lede">Our Asia-Pacific logistics hub — registered and operating out of Metro Manila, Philippines.</p>
         </div>
       </section>

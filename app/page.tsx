@@ -10,7 +10,7 @@ import { HeroSlider } from '@/components/HeroSlider';
 import { FaqAccordion } from '@/components/FaqAccordion';
 import { CountUp } from '@/components/CountUp';
 import { CardSlider } from '@/components/CardSlider';
-import heroBg from '@/app/assets/background.png';
+import heroBg from '@/app/assets/background.webp';
 import heroSlideTwo from '@/app/assets/slidertwo.webp';
 import heroSlideThree from '@/app/assets/sliderthree.webp';
 import doctorsImg from '@/app/assets/doctors.jpg';
@@ -68,6 +68,7 @@ const ORGANIZATION_DATA = {
             'Unit 301 and 305, 17 Vatican Building, Vatican City Drive, B.F. Resort Village, Talon II',
           addressLocality: 'Las Piñas City',
           addressRegion: 'Metro Manila',
+          postalCode: '1747',
           addressCountry: 'PH',
         },
         {
@@ -190,11 +191,15 @@ export default function HomePage() {
   return (
     <div className="w-full home-page">
       <JsonLd data={ORGANIZATION_DATA} />
-      {/* Hero */}
+      {/* Hero. The h1 opens with the page's search keywords (hero.h1Keywords), visually hidden so
+          the hero shows only the slogan; search engines and screen readers read both. */}
       <section className="hero" id="home">
         <HeroSlider slides={HERO_SLIDES} />
         <div className="hero-content">
-          <h1 className="reveal d2">{hero.headline}</h1>
+          <h1 className="reveal d2">
+            <span className="sr-only">{hero.h1Keywords}: </span>
+            {hero.headline}
+          </h1>
           <p className="lede reveal d3">{hero.subheadline}</p>
           <div className="hero-actions reveal d4">
             <Link className="btn btn-primary" href="/contact?type=quote">

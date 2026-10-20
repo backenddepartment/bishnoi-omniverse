@@ -1,8 +1,8 @@
 import React from 'react';
 import type { Metadata } from 'next';
 import { ClipboardCheck, Search, MessageSquare, FileCheck2 } from 'lucide-react';
-import heroImg from '@/app/assets/quality.png';
-import lifelineImg from '@/app/assets/lifeline.png';
+import heroImg from '@/app/assets/quality.webp';
+import lifelineImg from '@/app/assets/lifeline.webp';
 import ctaBannerImg from '@/app/assets/ctabanner.jpg';
 import {
   AboutHero,

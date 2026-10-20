@@ -1,8 +1,8 @@
 'use client';
 
 import React, { useEffect, useRef, useState } from 'react';
-import flowImg from '@/app/assets/flow.png';
-import logoImg from '@/app/assets/logo.png';
+import flowImg from '@/app/assets/flow.webp';
+import logoImg from '@/app/assets/logo-hd.webp';
 
 /**
  * Sourcing Coordination on /global-network: the orange arrow with a pin and a label on each of its

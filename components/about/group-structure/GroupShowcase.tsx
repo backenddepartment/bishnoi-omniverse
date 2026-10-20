@@ -2,14 +2,14 @@ import React from 'react';
 import Link from 'next/link';
 import { ArrowUpRight } from 'lucide-react';
 import { CardSlider } from '@/components/CardSlider';
-import omniverseLogo from '@/app/assets/logo.png';
-import getmedsLogo from '@/app/assets/getmedslogo.png';
-import foundationLogo from '@/app/assets/nblogo.png';
-import founderImg from '@/app/assets/CEO.png';
-import sameenImg from '@/app/assets/sirsameen.png';
-import sumitImg from '@/app/assets/sirsumit.png';
-import chiImg from '@/app/assets/maamchi.png';
-import debbieImg from '@/app/assets/maamdebbie.png';
+import omniverseLogo from '@/app/assets/logo-hd.webp';
+import getmedsLogo from '@/app/assets/getmedslogo.webp';
+import foundationLogo from '@/app/assets/nblogo.webp';
+import founderImg from '@/app/assets/CEO.webp';
+import sameenImg from '@/app/assets/sirsameen.webp';
+import sumitImg from '@/app/assets/sirsumit.webp';
+import chiImg from '@/app/assets/maamchi.webp';
+import debbieImg from '@/app/assets/maamdebbie.webp';
 
 /**
  * The Bishnoi Group section on Group Structure: the headline and the leadership avatars on the

@@ -11,8 +11,8 @@ import {
 } from '@/components/about/Patterns';
 import { FadeIn } from '@/components/FadeIn';
 import { GroupShowcase } from '@/components/about/group-structure/GroupShowcase';
-import heroImg from '@/app/assets/groupstructure.png';
-import roleImg from '@/app/assets/omniverseabout.png';
+import heroImg from '@/app/assets/groupstructure.webp';
+import roleImg from '@/app/assets/omniverseabout.webp';
 import { pageMetadata } from '@/lib/seo';
 
 export const metadata: Metadata = pageMetadata({

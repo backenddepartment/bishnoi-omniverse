@@ -34,7 +34,7 @@ import {
 import { getCategoryOverview } from '@/lib/categoryOverviews';
 import { categorySeo } from '@/lib/categorySeo';
 import heroImg from '@/app/assets/medicinebgpage.webp';
-import bannerImg from '@/app/assets/bannermedical.png';
+import bannerImg from '@/app/assets/bannermedical.webp';
 
 const IMG = {
   hero: heroImg.src,

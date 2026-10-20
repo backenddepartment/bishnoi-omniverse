@@ -1,12 +1,12 @@
 import React from 'react';
 import type { Metadata } from 'next';
-import founderImg from '@/app/assets/CEO.png';
-import sameenImg from '@/app/assets/sirsameen.png';
-import sumitImg from '@/app/assets/sirsumit.png';
-import chiImg from '@/app/assets/maamchi.png';
-import debbieImg from '@/app/assets/maamdebbie.png';
-import heroImg from '@/app/assets/Leadership.png';
-import experienceBg from '@/app/assets/backgroundsection.png';
+import founderImg from '@/app/assets/CEO.webp';
+import sameenImg from '@/app/assets/sirsameen.webp';
+import sumitImg from '@/app/assets/sirsumit.webp';
+import chiImg from '@/app/assets/maamchi.webp';
+import debbieImg from '@/app/assets/maamdebbie.webp';
+import heroImg from '@/app/assets/Leadership.webp';
+import experienceBg from '@/app/assets/backgroundsection.webp';
 import { ArrowRight } from 'lucide-react';
 import { FadeIn } from '@/components/FadeIn';
 import {

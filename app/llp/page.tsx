@@ -29,7 +29,7 @@ export default function LlpPage() {
         </div>
         <div className="hero-content">
           <span className="eyebrow on-dark">Legal Entity</span>
-          <h1>Bishnoi Omniverse LLP</h1>
+          <h1>Bishnoi Omniverse LLP: Medical Supplies Exporter in India</h1>
           <p className="lede">Our global sourcing hub — registered and operating out of New Delhi, India.</p>
         </div>
       </section>

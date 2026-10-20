@@ -7,7 +7,7 @@ import { FaqAccordion, type FaqItem } from '@/components/FaqAccordion';
 import { WHATSAPP_HREF } from '@/lib/contactChannels';
 import { AboutHero } from '@/components/about/Patterns';
 import { pageMetadata } from '@/lib/seo';
-import heroImg from '@/app/assets/specialtymedicineshero.png';
+import heroImg from '@/app/assets/specialtymedicineshero.webp';
 
 export const metadata: Metadata = pageMetadata({
   title: 'Specialty & Hard-to-Find Medicine Sourcing | Bishnoi Omniverse',

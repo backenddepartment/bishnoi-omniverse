@@ -1,8 +1,8 @@
 import React from 'react';
 import type { Metadata } from 'next';
 import { ClipboardList, FileText, Handshake, Receipt, Search, Ship, Truck, Users } from 'lucide-react';
-import heroImg from '@/app/assets/globalnetworkbg.png';
-import mapImg from '@/app/assets/metromanila.png';
+import heroImg from '@/app/assets/globalnetworkbg.webp';
+import mapImg from '@/app/assets/metromanila.webp';
 import teamImg from '@/app/assets/team.jpg';
 import ctaImg from '@/app/assets/ctabannertwo.jpg';
 import { FadeIn } from '@/components/FadeIn';

@@ -4,7 +4,7 @@ import { Quote } from 'lucide-react';
 import { AboutHero, PatternSection, SectionHead } from '@/components/about/Patterns';
 import { ValueStack, type StackValue } from '@/components/about/vision-values/ValueStack';
 import { FadeIn } from '@/components/FadeIn';
-import heroImg from '@/app/assets/qualityandcompliance.png';
+import heroImg from '@/app/assets/qualityandcompliance.webp';
 import doctorsImg from '@/app/assets/doctors.jpg';
 import suppliesImg from '@/app/assets/supplies.jpg';
 import teamImg from '@/app/assets/team.jpg';

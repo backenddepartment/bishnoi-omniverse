@@ -12,7 +12,7 @@ import {
   subcategoryPath,
   subcategorySlug,
 } from '@/lib/catalogRoutes';
-import bannerImg from '@/app/assets/bannermedical.png';
+import bannerImg from '@/app/assets/bannermedical.webp';
 import { pageMetadata } from '@/lib/seo';
 
 export const metadata: Metadata = pageMetadata({
@@ -55,7 +55,7 @@ export default function CatalogPage() {
 
       <section className="catalog-index">
         <div className="wrap catalog-browser-wrap">
-          <h1>All Categories</h1>
+          <h1>All Categories of Hospital Consumables and Medical Equipment</h1>
           {/* The same banner strip the category pages carry, under the page's title. */}
           <img
             className="catalog-page-banner"
