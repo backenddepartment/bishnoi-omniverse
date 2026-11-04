@@ -118,22 +118,58 @@ All of these paths are built in `lib/catalogRoutes.ts`.
 
 ### Old addresses
 
-Products used to live at `/catalog/<product>/`, and categories at `/catalog?category=<category>`.
-Both still work: the site is a static export and cannot issue a server redirect, so each old
-address is kept as a stub that forwards to the new page (`app/catalog/[productId]/page.tsx` and
-`components/catalog/LegacyRedirect.tsx`). The stubs are marked `noindex` and left out of the
-sitemap.
+GitHub Pages cannot send an HTTP 301, so after each build `scripts/write-redirects.mjs` writes a
+small redirect page at every address that used to be a product page and no longer is. Each one has
+an instant `<meta http-equiv="refresh">` in its head (Google treats that as a permanent redirect)
+and a canonical tag pointing at the same target. They are not marked `noindex`, so Google passes
+the old address's standing to the new one, and they are never in the sitemap. That covers:
 
-Twelve product names appear under more than one category. The first occurrence keeps the plain
-slug and later ones get the category appended, so both stay reachable and readable:
+- old `/catalog/<product>/` links;
+- products merged into one page (below);
+- products moved to another category or renamed in the sheet. Every product URL ever published
+  is kept in `lib/data/publishedUrls.json`, and the deploy also reads the live sitemap, so a URL
+  that disappears gets a redirect to the product's new page (or its category). The build updates
+  that file; commit it when it changes.
 
-```
-/medical-equipment/respiratory-care/ventilators/
-/medical-equipment/emergency-and-critical-care/ventilators-emergency-and-critical-care/
-```
+Old category links (`/catalog?category=<category>`) are forwarded by
+`components/catalog/LegacyRedirect.tsx`.
 
-That means **reordering rows can reassign which of a duplicated pair gets the short URL.** If
-that matters, give the two entries distinct product names.
+### One page per product
+
+Some products are listed under more than one category (Ventilators under Respiratory Care and
+under Emergency & Critical Care). They get **one** page, under the category that owns them, and
+the other categories' pages still list them, linking to that page. Two rows that are the same item
+under different names (3-Ply Medical Masks and Surgical Masks) are merged the same way. This is
+done by `scripts/catalog-merge.mjs` on every sync:
+
+- `PRIMARY_CATEGORY` names the owning category of each product listed in several. A product with
+  no entry is owned by its first row in the sheet. The page uses that row's description.
+- `SAME_PRODUCT` lists names that are the same item.
+
+### Corrections on top of the sheet
+
+`scripts/catalog-overrides.mjs` also applies, on every sync:
+
+- `CATEGORY_MOVES`: products the sheet files under the wrong category (15 rows filed under
+  Dialysis). Their old URLs redirect automatically.
+- `lib/data/productCopy.json`: a unique description (and specifications) for each product whose
+  sheet text was a shared template or copied from another product. Google leaves pages with
+  duplicate copy out of its index ("Crawled – currently not indexed"). Run
+  `npm run catalog:copy-export` to get the same text as a CSV and paste it into the sheet's
+  Description and Specifications columns; an entry can then be deleted from the JSON.
+
+When adding a product to the sheet, give it its own description. Do not copy another row's.
+
+### Buying guides
+
+Keyword pages (microscopes, dental autoclaves, shoe covers and others) have a hand-written guide in
+`lib/productGuides.ts` and `lib/guides/`: their own title, meta description, H1, copy, FAQ and
+related links. The sheet row still supplies the rest of the page.
+
+Duplicate pages with the same title, description and heading compete with each other in Google
+and are often left out of the index, so keep this list current when a product is added to a
+second category. The deploy fails if two sitemap pages ever share a title, description or H1
+(`scripts/check-seo.mjs`).
 
 ## Images
 

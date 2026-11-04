@@ -38,7 +38,7 @@ import { absoluteUrl } from '@/lib/siteUrl';
 export const metadata: Metadata = pageMetadata({
   title: 'Medical Supplies Supplier Philippines | Bishnoi Omniverse',
   description:
-    'Medical supplies and specialty medicines for hospitals and clinics in the Philippines and worldwide, sourced through our India and Philippines hubs. Get a quote.',
+    'Medical supplies and specialty medicines for hospitals and clinics in the Philippines and worldwide, sourced via our India and Philippines hubs. Get a quote.',
   path: '/',
 });
 
@@ -92,6 +92,33 @@ const ORGANIZATION_DATA = {
         { '@type': 'Organization', name: 'Bishnoi Omniverse Corp', url: absoluteUrl('/corp/') },
         { '@type': 'Organization', name: 'Bishnoi Omniverse LLP', url: absoluteUrl('/llp/') },
       ],
+    },
+    // The Philippine office as a local business, so Google can match the site to the office's map
+    // and Business Profile listing. Same address and numbers as the Contact page. Add
+    // `openingHoursSpecification`, `geo` and the Business Profile URL (in `sameAs`) once confirmed;
+    // leaving them out is better than guessing.
+    {
+      '@type': 'LocalBusiness',
+      '@id': absoluteUrl('/#philippines-office'),
+      name: 'Bishnoi Omniverse Corp',
+      description:
+        'Supplier of medical equipment, hospital supplies and specialty medicines to hospitals, clinics and laboratories in the Philippines.',
+      url: absoluteUrl('/'),
+      image: absoluteUrl('/og-image.jpg'),
+      logo: absoluteUrl('/logo.png'),
+      email: contactData.directContact.emails[0],
+      telephone: contactData.directContact.phones[0],
+      address: {
+        '@type': 'PostalAddress',
+        streetAddress:
+          'Unit 301 and 305, 17 Vatican Building, Vatican City Drive, B.F. Resort Village, Talon II',
+        addressLocality: 'Las Piñas City',
+        addressRegion: 'Metro Manila',
+        postalCode: '1747',
+        addressCountry: 'PH',
+      },
+      areaServed: { '@type': 'Country', name: 'Philippines' },
+      parentOrganization: { '@id': absoluteUrl('/#organization') },
     },
     {
       '@type': 'WebSite',

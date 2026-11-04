@@ -31,6 +31,7 @@ import {
   subcategoryIdFromSlug,
   subcategorySlug,
 } from '@/lib/catalogRoutes';
+import { alsoKnownAs, alsoListedIn } from '@/lib/catalogListing';
 import { getCategoryOverview } from '@/lib/categoryOverviews';
 import { categorySeo } from '@/lib/categorySeo';
 import heroImg from '@/app/assets/medicinebgpage.webp';
@@ -165,16 +166,28 @@ export function CatalogBrowser({ categoryId }: { categoryId?: string }) {
     } catch {}
   };
 
+  // The products this page lists. A product listed under several categories has one page, under
+  // its owning category; on another category's page it is listed under that category's
+  // subcategory, and its links (built from its own categoryId) still go to its one page.
+  const listedProducts = useMemo((): ProductItem[] => {
+    if (selectedCategory === 'all') return products;
+    return products.flatMap((item: ProductItem) => {
+      if (item.categoryId === selectedCategory) return [item];
+      const listing = alsoListedIn(item).find((l) => l.categoryId === selectedCategory);
+      return listing ? [{ ...item, subcategoryId: listing.subcategoryId }] : [];
+    });
+  }, [products, selectedCategory]);
+
   const filteredProducts = useMemo(() => {
     const query = searchQuery.trim().toLowerCase();
-    return products.filter((item: ProductItem) => {
-      const matchesCategory = selectedCategory === 'all' || item.categoryId === selectedCategory;
+    return listedProducts.filter((item: ProductItem) => {
       const matchesSubcategory =
         selectedSubcategory === 'all' || item.subcategoryId === selectedSubcategory;
       const matchesSearch =
         query === '' ||
         [
           item.name,
+          ...alsoKnownAs(item),
           item.description,
           item.specifications,
           item.sizes,
@@ -186,9 +199,9 @@ export function CatalogBrowser({ categoryId }: { categoryId?: string }) {
           .join(' ')
           .toLowerCase()
           .includes(query);
-      return matchesCategory && matchesSubcategory && matchesSearch;
+      return matchesSubcategory && matchesSearch;
     });
-  }, [selectedCategory, selectedSubcategory, searchQuery, products, subcategoryName]);
+  }, [selectedSubcategory, searchQuery, listedProducts, subcategoryName]);
 
   // "Default" keeps the catalog sheet's own order; the rest sort a copy of the filtered set.
   const sortedProducts = useMemo(() => {

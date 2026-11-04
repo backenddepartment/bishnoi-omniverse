@@ -1,5 +1,6 @@
 import catalogData from '@/lib/data/catalogData.json';
 import { getCategoryOverview } from '@/lib/categoryOverviews';
+import { alsoKnownAs, alsoListedIn } from '@/lib/catalogListing';
 import { CATALOG_PATH, EQUIPMENT_PATH, categoryPath, productPath } from '@/lib/catalogRoutes';
 
 /**
@@ -207,7 +208,10 @@ function getIndex(): Record<SourceKey, IndexRecord[]> {
   const subcategoryName = new Map(catalogData.subcategories.map((s) => [s.id, s.name]));
   const productCount = new Map<string, number>();
   for (const product of catalogData.products) {
-    productCount.set(product.categoryId, (productCount.get(product.categoryId) ?? 0) + 1);
+    // Counted in every category whose page lists it, not only the one that owns its page.
+    for (const id of [product.categoryId, ...alsoListedIn(product).map((l) => l.categoryId)]) {
+      productCount.set(id, (productCount.get(id) ?? 0) + 1);
+    }
   }
 
   index = {
@@ -217,7 +221,7 @@ function getIndex(): Record<SourceKey, IndexRecord[]> {
       return record(
         {
           title: product.name,
-          subtitle: `${category} ${subcategory}`,
+          subtitle: `${category} ${subcategory} ${alsoKnownAs(product).join(' ')}`,
           body: `${product.description} ${product.useSetting} ${product.endUser}`,
         },
         {

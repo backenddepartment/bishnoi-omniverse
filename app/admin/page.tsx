@@ -26,6 +26,10 @@ export default function AdminPage() {
   // shipped to the browser.
   const productNames: Record<string, string> = {};
   for (const product of catalogData.products) productNames[product.id] = product.name;
+  // Quote adds recorded before two products were merged carry the old id.
+  for (const [oldId, id] of Object.entries(catalogData.productAliases ?? {})) {
+    if (productNames[id]) productNames[oldId] ??= productNames[id];
+  }
 
   return (
     <div className={adminFont.className}>

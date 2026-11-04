@@ -10,7 +10,7 @@ import { pageMetadata } from '@/lib/seo';
 import heroImg from '@/app/assets/specialtymedicineshero.webp';
 
 export const metadata: Metadata = pageMetadata({
-  title: 'Specialty & Hard-to-Find Medicine Sourcing | Bishnoi Omniverse',
+  title: 'Hard-to-Find Specialty Medicines | Bishnoi Omniverse',
   description:
     'Named-patient sourcing of specialty and hard-to-find medicines not registered in your market, for hospitals and doctors in the Philippines. Send a request.',
   path: '/specialty-medicines/',

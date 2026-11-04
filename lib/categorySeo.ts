@@ -20,10 +20,10 @@ const CATEGORY_SEO: Record<string, CategorySeo> = {
       'Bulk nitrile, latex and vinyl examination gloves and sterile surgical gloves for hospitals and clinics. Delivered across the Philippines. Request a quote.',
   },
   'personal-protective-equipment-ppe': {
-    title: 'PPE Supplier Philippines | Bishnoi Omniverse',
+    title: 'Personal Protective Equipment Supplier Philippines',
     h1: 'Personal Protective Equipment (PPE) for Hospitals',
     description:
-      'PPE supplier for Philippine hospitals: isolation gowns, coveralls, N95 and KN95 respirators, surgical masks and face shields in bulk. Request a quote.',
+      'Isolation gowns, coveralls, N95 and KN95 respirators, masks, face shields and shoe covers in bulk for Philippine hospitals. Request a quote.',
   },
   'dialysis-equipment': {
     title: 'Dialysis Supplies Philippines | Bishnoi Omniverse',
@@ -44,7 +44,7 @@ const CATEGORY_SEO: Record<string, CategorySeo> = {
       'Wholesale oxygen concentrators, cylinders, CPAP and BiPAP machines, nebulizers and oxygen masks for hospitals in the Philippines. Request a quote.',
   },
   'surgical-equipment': {
-    title: 'Surgical Instruments Supplier Philippines | Bishnoi Omniverse',
+    title: 'Surgical Instruments Philippines | Bishnoi Omniverse',
     h1: 'Surgical Instruments and Operating Room Equipment',
     description:
       'Surgical scissors, forceps, retractors, electrosurgical units, operating tables and surgical lights for Philippine hospitals. Request a quote.',
@@ -186,8 +186,19 @@ export function productDescription(product: { name: string; sterility?: string; 
   return candidates.find((c) => c.length <= MAX_DESCRIPTION) ?? `${product.name.slice(0, MAX_DESCRIPTION - 18)}… Request a quote.`;
 }
 
-/** A product page's title: "<product> Supplier Philippines | Bishnoi Omniverse" when it fits in 60. */
+const MAX_TITLE = 60;
+
+/**
+ * A product page's title, the first of these that fits in 60 characters (Google cuts off the
+ * rest): "<product> Supplier Philippines | Bishnoi Omniverse", "<product> | Bishnoi Omniverse", then
+ * the product name alone. The full name is always kept: its "(…)" part often holds the term people
+ * search for (PICC, CSTD), and product names are unique, so the titles are too. Google shows the
+ * site name beside the result anyway.
+ */
 export function productTitle(product: { name: string }): string {
-  const long = `${product.name} Supplier Philippines | Bishnoi Omniverse`;
-  return long.length <= 60 ? long : `${product.name} | Bishnoi Omniverse`;
+  const candidates = [
+    `${product.name} Supplier Philippines | Bishnoi Omniverse`,
+    `${product.name} | Bishnoi Omniverse`,
+  ];
+  return candidates.find((c) => c.length <= MAX_TITLE) ?? product.name;
 }

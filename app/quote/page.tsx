@@ -6,6 +6,7 @@ import { ArrowLeft, ClipboardList, Minus, Plus, Trash2 } from 'lucide-react';
 import catalogData from '@/lib/data/catalogData.json';
 import { PRODUCT_GALLERIES } from '@/lib/productImageOverrides';
 import { parseSizes } from '@/lib/catalogSizes';
+import { findProductById } from '@/lib/catalogListing';
 import { EQUIPMENT_PATH, productPath } from '@/lib/catalogRoutes';
 import { absoluteUrl } from '@/lib/siteUrl';
 import { MAX_QTY, clampQty, clearQuote, removeFromQuote, updateQuoteLine, useQuoteList } from '@/lib/quoteList';
@@ -77,8 +78,9 @@ export default function QuotePage() {
   const subcategoryName = useMemo(() => new Map(catalogData.subcategories.map((s) => [s.id, s.name])), []);
 
   // Lines whose product has since left the catalog are dropped from view (and from the inquiry).
+  // A line saved under an id that was since merged into another product shows that product.
   const rows = lines.flatMap((line) => {
-    const product = catalogData.products.find((p) => p.id === line.id);
+    const product = findProductById(line.id);
     return product ? [{ line, product, sizes: parseSizes(product.sizes) }] : [];
   });
   const units = rows.reduce((sum, row) => sum + row.line.qty, 0);

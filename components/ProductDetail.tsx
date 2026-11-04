@@ -25,6 +25,8 @@ import type { InquiryType } from '@/components/catalog/InquiryMenu';
 import { productPrefill } from '@/components/PersonaInquiryForm';
 import { InquiryPanel, type InquiryPanelHandle } from '@/components/quote/InquiryPanel';
 import { AddToQuoteButton } from '@/components/quote/AddToQuoteButton';
+import { ProductGuideSection, type GuideLink } from '@/components/catalog/ProductGuideSection';
+import type { ProductGuide } from '@/lib/productGuides';
 import { absoluteUrl } from '@/lib/siteUrl';
 import { EQUIPMENT_PATH, categoryPath, equipmentCrumbs, productPath, subcategoryPath } from '@/lib/catalogRoutes';
 
@@ -60,6 +62,10 @@ interface Props {
   categoryId?: string;
   subcategoryName?: string;
   related: PdpRelated[];
+  /** A hand-written buying guide (lib/productGuides.ts): sets the H1 and adds the guide section. */
+  guide?: ProductGuide;
+  guideCategories?: GuideLink[];
+  guideProducts?: GuideLink[];
 }
 
 /* ------------------------------------------------------------------ *
@@ -97,7 +103,16 @@ const REFERENCE_NOTE =
  * Component
  * ------------------------------------------------------------------ */
 
-export function ProductDetail({ product, categoryName, categoryId, subcategoryName, related }: Props) {
+export function ProductDetail({
+  product,
+  categoryName,
+  categoryId,
+  subcategoryName,
+  related,
+  guide,
+  guideCategories = [],
+  guideProducts = [],
+}: Props) {
   const sizes = parseSizes(product.sizes);
   const specPairs = parseSpecPairs(product.specifications);
   const image = product.image;
@@ -178,7 +193,7 @@ export function ProductDetail({ product, categoryName, categoryId, subcategoryNa
                 {subcategoryName && <span className="pdp-pill is-sub">{subcategoryName}</span>}
               </div>
 
-              <h1 className="pdp-title">{product.name}</h1>
+              <h1 className="pdp-title">{guide?.heading ?? product.name}</h1>
 
               {product.regulatoryClass && (
                 <div className="pdp-rating">
@@ -469,7 +484,7 @@ export function ProductDetail({ product, categoryName, categoryId, subcategoryNa
           </div>
 
           {/* The inquiry panel: who is asking first, then that type's form. */}
-          <aside ref={inquiryRef} className="pdp-form-col scroll-target" aria-label="Send inquiry">
+          <aside ref={inquiryRef} id="request-quote" className="pdp-form-col scroll-target" aria-label="Send inquiry">
             <InquiryPanel
               ref={panelRef}
               subtitle="Submit your details to get a formal quote for this product."
@@ -485,6 +500,15 @@ export function ProductDetail({ product, categoryName, categoryId, subcategoryNa
           </aside>
         </div>
       </section>
+
+      {guide && (
+        <ProductGuideSection
+          guide={guide}
+          categories={guideCategories}
+          products={guideProducts}
+          onRequestQuote={() => goToInquiry('hospital')}
+        />
+      )}
 
       {/* ── Other subcategories of this category ──────────────────────── */}
       {related.length > 0 && (

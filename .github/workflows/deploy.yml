@@ -88,6 +88,22 @@ jobs:
       - name: Inline critical CSS
         run: node scripts/inline-css.mjs out
 
+      # GitHub Pages cannot send a 301, so every product address that is no longer a page (merged
+      # duplicates, products moved or renamed in the sheet, old /catalog/<product>/ links) gets an
+      # instant meta-refresh stub, which Google treats as a permanent redirect. --live-sitemap also
+      # covers product URLs the current deploy has that this build dropped (scripts/write-redirects.mjs).
+      - name: Write redirects for moved product pages
+        env:
+          NEXT_PUBLIC_SITE_URL: "https://bishnoiomniverse.com"
+        run: node scripts/write-redirects.mjs out --live-sitemap
+
+      # Fails the deploy (the previous one stays live) if any sitemap URL is a redirect, noindex,
+      # not self-canonical, or shares its title, description or H1 with another page.
+      - name: Check SEO of every sitemap URL
+        env:
+          NEXT_PUBLIC_SITE_URL: "https://bishnoiomniverse.com"
+        run: node scripts/check-seo.mjs out
+
       - name: Upload build artifact
         uses: actions/upload-pages-artifact@v3
         with:

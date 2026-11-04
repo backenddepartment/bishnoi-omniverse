@@ -1,14 +1,14 @@
 'use client';
 
-import React, { useEffect } from 'react';
-import Link from 'next/link';
+import { useEffect } from 'react';
 import { CATALOG_PATH, EQUIPMENT_PATH, categoryPath } from '@/lib/catalogRoutes';
 
 /**
  * The site is a static export, so there is no server to answer an old address with a redirect.
- * A page that has moved is kept as a stub instead, which sends the browser on as soon as it
- * loads. These are full navigations rather than router transitions: a redirect has to land
- * whatever state the app is in.
+ * Moved pages (old /catalog/<product>/ addresses, merged products) are plain HTML stubs written
+ * after the build by scripts/write-redirects.mjs. This handles the one case a stub cannot: old
+ * query-string links to /catalog, which is still a real page. It is a full navigation rather than
+ * a router transition: a redirect has to land whatever state the app is in.
  */
 
 /**
@@ -19,26 +19,6 @@ function siteBase() {
   const path = window.location.pathname;
   const at = path.lastIndexOf(CATALOG_PATH);
   return at > 0 ? path.slice(0, at) : '';
-}
-
-/** Forwards /catalog/<product>/ to `href`, a site path without its trailing slash. */
-export function LegacyRedirect({ href, label }: { href: string; label: string }) {
-  useEffect(() => {
-    window.location.replace(`${siteBase()}${href}/`);
-  }, [href]);
-
-  return (
-    <section className="section section-white">
-      {/* For a browser without scripting. Relative, so it holds under a GitHub Pages sub-path:
-          the stub is always served two levels down, at /catalog/<product>/. */}
-      <meta httpEquiv="refresh" content={`0;url=../..${href}/`} />
-      <div className="wrap">
-        <p className="text-ink-soft m-0">
-          This page has moved. Continue to <Link href={href}>{label}</Link>.
-        </p>
-      </div>
-    </section>
-  );
 }
 
 /**

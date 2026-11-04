@@ -6102,3 +6102,83 @@ button.pdp-summary-cta { padding: 0; border: 0; background: none; font-family: i
   .admin-nav-link:hover .admin-nav-icon[data-anim],
   .admin-nav-link:focus-visible .admin-nav-icon[data-anim] { animation: none; }
 }
+
+/* ── Product buying guide (lib/productGuides.ts, components/catalog/ProductGuideSection.tsx) ── */
+.pdp-guide { padding: 8px 0 64px; }
+.pdp-guide-wrap { display: grid; gap: 40px; }
+@media (min-width: 900px) {
+  .pdp-guide-wrap { grid-template-columns: minmax(0, 1fr) 280px; gap: 56px; align-items: start; }
+  .pdp-guide-side { position: sticky; top: 120px; }
+}
+.pdp-guide-copy { max-width: 760px; }
+.pdp-guide-lede { font-size: 16px; line-height: 1.7; color: var(--ink-2); margin: 0 0 16px; }
+.pdp-guide-block { margin-top: 36px; }
+.pdp-guide-block h2 {
+  font-size: clamp(19px, 2vw, 23px);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  margin: 0 0 12px;
+}
+.pdp-guide-block p,
+.pdp-guide-block li { font-size: 15px; line-height: 1.7; color: var(--ink-soft); }
+.pdp-guide-block p { margin: 0 0 12px; }
+.pdp-guide-block ul,
+.pdp-guide-block ol { margin: 0 0 12px; padding-left: 20px; }
+.pdp-guide-block ul { list-style: disc; }
+.pdp-guide-block ol { list-style: decimal; }
+.pdp-guide-block li { margin-bottom: 6px; padding-left: 2px; }
+.pdp-guide-cta {
+  margin-top: 36px;
+  padding: 20px 22px;
+  border-radius: 16px;
+  background: var(--accent-tint);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+}
+.pdp-guide-cta p { margin: 0; font-size: 15px; font-weight: 500; color: var(--ink); max-width: 440px; }
+.pdp-guide-faq { border-top: 1px solid var(--line); }
+.pdp-guide-faq details { border-bottom: 1px solid var(--line); }
+.pdp-guide-faq summary {
+  cursor: pointer;
+  list-style: none;
+  padding: 16px 32px 16px 0;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--ink);
+  position: relative;
+}
+.pdp-guide-faq summary::-webkit-details-marker { display: none; }
+.pdp-guide-faq summary::after {
+  content: '+';
+  position: absolute;
+  right: 4px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 20px;
+  font-weight: 400;
+  color: var(--accent-dark);
+}
+.pdp-guide-faq details[open] summary::after { content: '−'; }
+.pdp-guide-faq details p { margin: 0 0 16px; }
+.pdp-guide-side h2 { font-size: 15px; font-weight: 600; margin: 0 0 10px; }
+.pdp-guide-side ul { list-style: none; margin: 0 0 24px; padding: 0; display: grid; gap: 8px; }
+.pdp-guide-side a:not(.btn) {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 10px 14px;
+  border-radius: 12px;
+  background: #f1f1f1;
+  color: var(--ink);
+  font-size: 13.5px;
+  font-weight: 500;
+  text-decoration: none;
+}
+.pdp-guide-side a:not(.btn):hover { background: #e6e6e6; }
+.pdp-guide-side a:not(.btn) svg { width: 14px; height: 14px; flex-shrink: 0; }
+/* Unchecked claims in a guide: visible on purpose, and the deploy fails while any remain. */
+.pdp-confirm { background: #fff3a3; color: #5c4a00; padding: 0 3px; border-radius: 3px; font-weight: 600; }

@@ -1,0 +1,687 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SEO Audit Progress</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  /* ---- Tokens: same palette as bishnoi-progress-presentation.html ---- */
+  :root {
+    --ink: #141414;
+    --ink-2: #3b3b3b;
+    --ink-3: #6a6a6a;
+    --rule: #e2e2e2;
+    --canvas: #ffffff;
+    --bench: #fafaf8;
+    --mint: #f1f7ee;
+    --mint-2: #e3eedf;
+    --sage: #a8d69b;
+    --deep: #4f7f44;
+    --good: #3f6f35;   --good-bg: #e6f2e1;
+    --warn: #8a5a00;   --warn-bg: #fbf0d9;
+    --bad: #b42318;    --bad-bg: #fde8e6;
+    --info: #1f4f8a;   --info-bg: #e7eef8;
+    --r-pill: 999px;
+    --r-card: 22px;
+    --r-panel: 28px;
+    --line: 1.5px solid var(--ink);
+    --focus: 0 0 0 3px #cfe8c6;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bench); color: var(--ink); font: 400 15px/1.6 Poppins, system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+  :focus-visible { outline: none; box-shadow: var(--focus); }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+
+  /* ---- Deck frame ---- */
+  .deck { min-height: 100vh; display: flex; flex-direction: column; }
+  .slide { display: none; flex: 1; width: 100%; max-width: 1120px; margin: 0 auto; padding: 48px 32px 24px; flex-direction: column; justify-content: center; }
+  .slide.on { display: flex; animation: rise .35s ease; }
+  @keyframes rise { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+
+  .eyebrow { font-size: 12.5px; font-weight: 600; letter-spacing: .09em; text-transform: uppercase; color: var(--deep); margin: 0 0 10px; }
+  h1 { font-size: 48px; line-height: 1.08; letter-spacing: -.02em; font-weight: 600; margin: 0 0 16px; }
+  h2 { font-size: 32px; line-height: 1.15; letter-spacing: -.015em; font-weight: 600; margin: 0 0 8px; }
+  .lead { color: var(--ink-2); max-width: 680px; margin: 0 0 22px; font-size: 15.5px; }
+
+  /* ---- Layout pieces ---- */
+  .grid { display: grid; gap: 16px; }
+  .g2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .g3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .split { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); gap: 30px; align-items: center; }
+  @media (max-width: 920px) { .g2, .g3, .split { grid-template-columns: 1fr; } h1 { font-size: 34px; } h2 { font-size: 26px; } .slide { padding: 36px 16px 16px; } }
+
+  .card { background: var(--canvas); border: 1px solid var(--rule); border-radius: var(--r-card); padding: 20px 22px; }
+  .card.strong { border: var(--line); }
+  .card h3 { margin: 0 0 6px; font-size: 16px; font-weight: 600; }
+  .card p { margin: 0; color: var(--ink-2); font-size: 13.5px; }
+  .card ul, .card ol { margin: 8px 0 0; padding-left: 18px; color: var(--ink-2); font-size: 13.5px; }
+  .card li { margin: 4px 0; }
+  .panel { background: var(--mint); border-radius: var(--r-panel); padding: 24px 26px; }
+
+  .tag { display: inline-flex; align-items: center; gap: 6px; height: 26px; padding: 0 12px; border-radius: var(--r-pill); font-size: 12.5px; font-weight: 500; white-space: nowrap; }
+  .tag .dot { width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+  .tag-good { background: var(--good-bg); color: var(--good); }
+  .tag-info { background: var(--info-bg); color: var(--info); }
+  .tag-warn { background: var(--warn-bg); color: var(--warn); }
+  .tag-bad { background: var(--bad-bg); color: var(--bad); }
+  .tag-mute { background: #f0f0ee; color: var(--ink-2); }
+  .tags { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
+
+  .links { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 20px; }
+  a.go { display: inline-flex; align-items: center; gap: 8px; height: 40px; padding: 0 20px; border-radius: var(--r-pill); border: 1.5px solid var(--ink); background: var(--canvas); color: var(--ink); text-decoration: none; font-weight: 500; font-size: 13.5px; transition: background .15s; }
+  a.go:hover { background: var(--mint); }
+  a.go.primary { background: var(--ink); color: #fff; border-color: var(--ink); }
+  a.go.primary:hover { background: #2b2b2b; }
+  a.go svg { width: 15px; height: 15px; flex: none; }
+  .card .links, .panel .links { margin-top: 14px; }
+  .card a.go, .panel a.go { height: 32px; padding: 0 14px; font-size: 12.5px; }
+
+  .kpis { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; margin: 8px 0 4px; }
+  @media (max-width: 920px) { .kpis { grid-template-columns: repeat(2, 1fr); } }
+  .kpi { background: var(--canvas); border: 1px solid var(--rule); border-radius: var(--r-card); padding: 16px 18px; }
+  .kpi b { display: block; font-size: 28px; font-weight: 600; letter-spacing: -.02em; line-height: 1.1; }
+  .kpi span { font-size: 12.5px; color: var(--ink-3); }
+
+  .steps { list-style: none; margin: 10px 0 0; padding: 0; }
+  .steps li { display: flex; gap: 14px; padding: 10px 0; border-bottom: 1px solid var(--rule); align-items: baseline; }
+  .steps li:last-child { border: 0; }
+  .steps .when { flex: none; width: 92px; font-size: 12.5px; font-weight: 600; color: var(--deep); }
+  .steps .what b { font-weight: 600; }
+  .steps .what span { color: var(--ink-3); font-size: 13px; display: block; }
+
+  /* ---- Screenshot frame: a little browser window ---- */
+  .shot { background: var(--canvas); border: 1px solid var(--rule); border-radius: 18px; overflow: hidden; box-shadow: 0 18px 40px -24px rgba(20, 20, 20, .35); }
+  .shot .bar { display: flex; align-items: center; gap: 8px; padding: 9px 14px; border-bottom: 1px solid var(--rule); background: #fbfbfa; }
+  .shot .bar i { width: 9px; height: 9px; border-radius: 50%; background: var(--rule); flex: none; }
+  .shot .bar i:nth-child(1) { background: #e8a9a2; }
+  .shot .bar i:nth-child(2) { background: #ecd3a0; }
+  .shot .bar i:nth-child(3) { background: var(--sage); }
+  .shot .bar span { flex: 1; text-align: center; font-size: 11.5px; color: var(--ink-3); background: var(--canvas); border: 1px solid var(--rule); border-radius: var(--r-pill); padding: 3px 14px; margin: 0 20px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .shot img { display: block; width: 100%; height: auto; }
+  .shot.crop img { aspect-ratio: 16 / 10; object-fit: cover; object-position: top; }
+  .shot + .caption, .shot-note { font-size: 12px; color: var(--ink-3); margin: 8px 4px 0; }
+  .shot a.open { display: block; text-decoration: none; }
+
+  /* ---- Controls ---- */
+  .rail { position: sticky; bottom: 0; background: linear-gradient(to top, var(--bench) 70%, transparent); padding: 12px 24px 16px; }
+  .rail .inner { max-width: 1120px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+  .dots { display: flex; gap: 6px; flex-wrap: wrap; }
+  .dots button { width: 10px; height: 10px; border-radius: 50%; border: 1.5px solid var(--ink); background: var(--canvas); padding: 0; cursor: pointer; }
+  .dots button[aria-current=true] { background: var(--ink); }
+  .navbtns { display: flex; gap: 8px; align-items: center; }
+  .navbtns .count { font-size: 12.5px; color: var(--ink-3); margin-right: 6px; font-variant-numeric: tabular-nums; }
+  .navbtns button { height: 38px; padding: 0 18px; border-radius: var(--r-pill); border: 1.5px solid var(--ink); background: var(--canvas); font: 500 13px Poppins; cursor: pointer; transition: background .15s; }
+  .navbtns button:hover { background: var(--mint); }
+  .navbtns button.primary { background: var(--ink); color: #fff; }
+  .navbtns button.primary:hover { background: #2b2b2b; }
+  .navbtns button[disabled] { opacity: .4; cursor: not-allowed; }
+  .hint-keys { font-size: 12px; color: var(--ink-3); }
+  @media (max-width: 920px) { .hint-keys, .dots { display: none; } }
+
+  .brandline { display: flex; align-items: center; gap: 12px; margin-bottom: 22px; }
+  .mark { width: 40px; height: 40px; border-radius: 50%; background: var(--ink); color: #fff; display: grid; place-items: center; font-weight: 700; font-size: 13px; flex: none; }
+  .brandline b { font-size: 14px; display: block; line-height: 1.2; }
+  .brandline span { font-size: 12px; color: var(--ink-3); }
+
+  table.cmp { width: 100%; border-collapse: collapse; background: var(--canvas); border: 1px solid var(--rule); border-radius: var(--r-card); overflow: hidden; }
+  .cmp th { text-align: left; font-size: 12px; font-weight: 500; color: var(--ink-3); padding: 10px 14px; background: #fbfbfa; border-bottom: 1px solid var(--rule); }
+  .cmp td { padding: 9px 14px; border-bottom: 1px solid var(--rule); font-size: 12.5px; vertical-align: top; }
+  .cmp tr:last-child td { border-bottom: 0; }
+  .cmp td:first-child { font-weight: 600; white-space: nowrap; }
+  .cmp th.us, .cmp td.us { background: var(--mint); border-left: 1px solid var(--mint-2); border-right: 1px solid var(--mint-2); }
+  .cmp th.us { color: var(--deep); font-weight: 600; }
+  .cmp td.us b { color: var(--deep); }
+
+  /* ---- SEO deck additions ---- */
+  /* Problem → what we did, side by side. */
+  .pf { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 16px; }
+  @media (max-width: 920px) { .pf { grid-template-columns: 1fr; } }
+  .pf .card h3 { display: flex; align-items: center; gap: 8px; }
+  .pf .problem { background: #fffaf9; border-color: #f3d9d5; }
+  .pf .problem h3 { color: var(--bad); }
+  .pf .fix { background: var(--mint); border-color: var(--mint-2); }
+  .pf .fix h3 { color: var(--deep); }
+  .code { margin: 10px 0 0; padding: 12px 14px; border-radius: 14px; background: #141414; color: #e9f5e4; font: 500 12px/1.6 ui-monospace, Consolas, monospace; white-space: pre-wrap; word-break: break-word; }
+  .code .c { color: #8fbf83; }
+  .serp { background: var(--canvas); border: 1px solid var(--rule); border-radius: 16px; padding: 14px 16px; font-family: Arial, sans-serif; }
+  .serp .u { font-size: 12px; color: #202124; }
+  .serp .t { font-size: 18px; color: #1a0dab; line-height: 1.3; margin: 2px 0 4px; }
+  .serp .d { font-size: 13px; color: #4d5156; line-height: 1.5; }
+  .serp .cut { color: #b42318; font-weight: 700; }
+  .divider { text-align: left; }
+  .divider .num { font-size: 120px; font-weight: 700; line-height: 1; letter-spacing: -.04em; color: var(--mint-2); margin: 0 0 6px; }
+  .who { font-size: 11.5px; font-weight: 600; color: var(--ink-3); text-transform: uppercase; letter-spacing: .06em; margin: 12px 0 0; }
+</style>
+</head>
+<body>
+<div class="deck" id="deck">
+
+  <!-- 1 · Title -->
+  <section class="slide on">
+    <div class="split">
+      <div>
+        <div class="brandline">
+          <div class="mark">BO</div>
+          <div><b>Bishnoi Omniverse</b><span>SEO Audit &amp; Google Visibility Report</span></div>
+        </div>
+        <p class="eyebrow">October 19 — October 24, 2026</p>
+        <h1>Getting bishnoiomniverse.com found on Google.</h1>
+        <p class="lead">What the SEO audit found, what we have already added and fixed on the website, and what we still need to do on our side to start ranking.</p>
+        <div class="links">
+          <a class="go primary" href="https://bishnoiomniverse.com" target="_blank" rel="noopener">Open the live website <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17 17 7M9 7h8v8"/></svg></a>
+          <a class="go" href="https://bishnoiomniverse.com/sitemap.xml" target="_blank" rel="noopener">sitemap.xml ↗</a>
+        </div>
+      </div>
+      <div>
+        <div class="shot"><a class="open" href="https://bishnoiomniverse.com" target="_blank" rel="noopener">
+          <div class="bar"><i></i><i></i><i></i><span>Link preview on LinkedIn, Facebook, Viber and WhatsApp</span></div>
+          <img src="presentation-assets/seo-share-image.jpg" alt="Bishnoi Omniverse share image: logo, Medical Supplies and Specialty Medicines, stethoscope photo"></a></div>
+        <p class="caption">The new share image now shown whenever a page of the site is shared.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2 · Where we started -->
+  <section class="slide">
+    <p class="eyebrow">The audit · 19 October</p>
+    <h2>Where the site stood</h2>
+    <p class="lead">A search for our own domain on Google returned only unrelated "Bishnoi" pages. The site was built well underneath, but it was missing the signals that tell Google what each page is about and that the business can be trusted.</p>
+    <div class="grid g2">
+      <div class="card"><h3 style="color:var(--good)">Working well</h3>
+        <ul><li>Pages fully readable by Google without running scripts</li><li>Fast responses, gzip and CDN caching</li><li>robots.txt correct, sitemap with 367 pages plus an image sitemap</li><li>Clean URLs like /medical-equipment/gloves/</li></ul></div>
+      <div class="card"><h3 style="color:var(--bad)">Holding the site back</h3>
+        <ul><li>Not on Google, not even for the brand name</li><li>No canonical tags, no structured data, no share tags</li><li>Product descriptions 369–566 characters (Google shows ~155)</li><li>Homepage H1 had no keywords; no articles; thin product pages</li><li>No Search Console or Analytics</li></ul></div>
+    </div>
+    <div class="kpis" style="margin-top:16px">
+      <div class="kpi"><b>0</b><span>Google results for the brand</span></div>
+      <div class="kpi"><b>0</b><span>pages with canonical tags</span></div>
+      <div class="kpi"><b>566</b><span>longest product description, in characters</span></div>
+      <div class="kpi"><b>45 MB</b><span>of page images, mostly PNG</span></div>
+    </div>
+  </section>
+
+  <!-- 3 · Part 1 divider -->
+  <section class="slide divider">
+    <p class="num">01</p>
+    <p class="eyebrow">Part 1</p>
+    <h2>What we added and fixed on the website</h2>
+    <p class="lead">Every code fix the audit assigned to the website is done and live. One slide per change follows: the problem the audit found, and what we did about it.</p>
+    <ul class="steps">
+      <li><span class="when">B1</span><div class="what"><b>Canonical tags on every page</b><span>one official address per page</span></div></li>
+      <li><span class="when">B2</span><div class="what"><b>Real dates in the sitemap</b><span>plus robots.txt and image sitemap confirmed</span></div></li>
+      <li><span class="when">B3 · B4</span><div class="what"><b>Structured data</b><span>Organization, Product and FAQ schema</span></div></li>
+      <li><span class="when">B5</span><div class="what"><b>Short meta descriptions</b><span>every product and category under 155 characters</span></div></li>
+      <li><span class="when">B6</span><div class="what"><b>Share previews</b><span>Open Graph and Twitter tags, new share image</span></div></li>
+      <li><span class="when">B7 · K1</span><div class="what"><b>Keywords in titles and headings</b><span>homepage, categories, catalog and hub pages</span></div></li>
+      <li><span class="when">B8 · Extra</span><div class="what"><b>Image alt text and 93% lighter images</b><span>WebP conversion for page speed</span></div></li>
+      <li><span class="when">C2 · Extra</span><div class="what"><b>New Specialty Medicines page, matching business details, layout fix</b></div></li>
+    </ul>
+  </section>
+
+  <!-- 4 · B1 canonical -->
+  <section class="slide">
+    <p class="eyebrow">Part 1 · B1 · Critical</p>
+    <h2>Canonical tags on every page</h2>
+    <div class="tags"><span class="tag tag-good"><i class="dot"></i>Live</span><span class="tag tag-mute">Every indexable page</span></div>
+    <div class="pf">
+      <div class="card problem"><h3>The problem</h3>
+        <p>No page told Google which address is the "official" one. The same page can be reached with or without a trailing slash, or with tracking links attached, so Google could split its ranking between duplicates.</p></div>
+      <div class="card fix"><h3>What we did</h3>
+        <p>Every page now names its own official address. Private pages (search results, quote list, 404) deliberately do not, so they never compete with real pages.</p>
+        <div class="code"><span class="c">&lt;!-- in the head of the gloves page --&gt;</span>
+&lt;link rel="canonical"
+  href="https://bishnoiomniverse.com/medical-equipment/gloves/"&gt;</div></div>
+    </div>
+  </section>
+
+  <!-- 5 · B2 sitemap + robots -->
+  <section class="slide">
+    <p class="eyebrow">Part 1 · B2 · Medium</p>
+    <h2>Sitemap with real dates, robots.txt in place</h2>
+    <div class="tags"><span class="tag tag-good"><i class="dot"></i>Live</span><span class="tag tag-mute">368 pages · 79 images</span></div>
+    <div class="pf">
+      <div class="card problem"><h3>The problem</h3>
+        <p>Every page in the sitemap carried the same "last changed" date: the moment the site was rebuilt, which happens every hour. Google learns that dates like that mean nothing and ignores them.</p></div>
+      <div class="card fix"><h3>What we did</h3>
+        <p>Each page's date now comes from when its content actually last changed, read from the project history. Editing one product moves only that product's date. The deploy runs this automatically.</p>
+        <div class="code">&lt;url&gt;
+  &lt;loc&gt;https://bishnoiomniverse.com/catalog/&lt;/loc&gt;
+  &lt;lastmod&gt;2026-10-20&lt;/lastmod&gt;  <span class="c">&lt;!-- real edit date --&gt;</span>
+&lt;/url&gt;</div></div>
+    </div>
+    <div class="links">
+      <a class="go" href="https://bishnoiomniverse.com/robots.txt" target="_blank" rel="noopener">robots.txt ↗</a>
+      <a class="go" href="https://bishnoiomniverse.com/sitemap.xml" target="_blank" rel="noopener">sitemap.xml ↗</a>
+      <a class="go" href="https://bishnoiomniverse.com/sitemap-images.xml" target="_blank" rel="noopener">sitemap-images.xml ↗</a>
+    </div>
+  </section>
+
+  <!-- 6 · B3 B4 structured data -->
+  <section class="slide">
+    <p class="eyebrow">Part 1 · B3 · B4 · High</p>
+    <h2>Structured data: telling Google who we are</h2>
+    <div class="tags"><span class="tag tag-good"><i class="dot"></i>Live</span></div>
+    <div class="pf" style="margin-bottom:16px">
+      <div class="card problem"><h3>The problem</h3>
+        <p>Only breadcrumbs were marked up. Google had to guess who the company is, where it operates, what each of the 326 product pages sells, and which text on /faq/ is a question and answer.</p></div>
+      <div class="card fix"><h3>What we did</h3>
+        <p>Added schema.org data that Google reads directly, built from the site's own data so it always matches what visitors see.</p></div>
+    </div>
+    <div class="grid g3">
+      <div class="card"><h3>Organization · homepage</h3><ul><li>Name, logo, description</li><li>Philippines and India office addresses</li><li>Phones, email, sales contact</li><li>Corp and LLP as sub-organizations</li></ul></div>
+      <div class="card"><h3>Product · 326 pages</h3><ul><li>Name, description, category</li><li>Product image where available</li><li>Official product address</li></ul><p style="margin-top:8px;font-size:12px;color:var(--warn)">No brand or price yet: the catalog has neither.</p></div>
+      <div class="card"><h3>FAQPage · /faq/</h3><ul><li>Every question and answer on the page</li><li>Read from the same list the page shows, so they can never disagree</li></ul></div>
+    </div>
+  </section>
+
+  <!-- 7 · B5 meta descriptions -->
+  <section class="slide">
+    <p class="eyebrow">Part 1 · B5 · High</p>
+    <h2>Search descriptions Google shows in full</h2>
+    <div class="tags"><span class="tag tag-good"><i class="dot"></i>Live</span><span class="tag tag-mute">326 products · 25 categories</span></div>
+    <div class="pf">
+      <div class="card problem"><h3>Before · 369–566 characters</h3>
+        <p>Google cuts descriptions at about 155 characters, so the call to action never appeared.</p>
+        <div class="serp" style="margin-top:12px"><div class="u">bishnoiomniverse.com › medical-equipment › gloves</div><div class="t">Nitrile Examination Gloves | Bishnoi Omniverse</div><div class="d">Nitrile examination gloves are disposable, latex-free protective gloves used by healthcare professionals during routine patient examinations, specimen handling<span class="cut"> …</span></div></div>
+        <p style="margin-top:8px;font-size:12px">The real old description: 556 characters, cut off before the call to action.</p></div>
+      <div class="card fix"><h3>After · under 155 characters</h3>
+        <p>A template for every product: keyword, benefit, call to action. All 25 category descriptions written by hand.</p>
+        <div class="serp" style="margin-top:12px"><div class="u">bishnoiomniverse.com › medical-equipment › gloves</div><div class="t">Nitrile Examination Gloves | Bishnoi Omniverse</div><div class="d">Bulk Nitrile Examination Gloves for hospitals &amp; clinics. Single-use. Delivered across the Philippines. Request a quote today.</div></div></div>
+    </div>
+  </section>
+
+  <!-- 8 · B6 share previews -->
+  <section class="slide">
+    <p class="eyebrow">Part 1 · B6 · High</p>
+    <h2>Proper link previews when shared</h2>
+    <div class="split">
+      <div>
+        <div class="tags"><span class="tag tag-good"><i class="dot"></i>Live</span></div>
+        <div class="card problem" style="margin-bottom:16px"><h3 style="color:var(--bad)">The problem</h3><p>No Open Graph or Twitter tags on any page, so links shared on LinkedIn, Facebook, Viber and WhatsApp showed a bare address or a random image.</p></div>
+        <div class="card fix" style="background:var(--mint);border-color:var(--mint-2)"><h3 style="color:var(--deep)">What we did</h3><ul><li>Every page now sends its own title, description and address</li><li>A new 1200×630 share image: logo, "Medical Supplies &amp; Specialty Medicines", stethoscope photo</li><li>Large-image cards for X / Twitter</li></ul></div>
+      </div>
+      <div>
+        <div class="shot"><div class="bar"><i></i><i></i><i></i><span>bishnoiomniverse.com/og-image.jpg</span></div>
+          <img src="presentation-assets/seo-share-image.jpg" alt="The 1200 by 630 share image"></div>
+        <p class="caption">Test any page in LinkedIn's Post Inspector to see the preview.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 9 · B7 K1 keywords -->
+  <section class="slide">
+    <p class="eyebrow">Part 1 · B7 · K1 · High</p>
+    <h2>Keywords: one main search term per page</h2>
+    <p class="lead">Each important page now targets the words buyers type into Google, in its title, search description and main heading (H1), following the audit's keyword map. No two pages chase the same term.</p>
+    <table class="cmp">
+      <tr><th>Page</th><th>Target keyword</th><th class="us">Main heading (H1) now</th></tr>
+      <tr><td>Homepage</td><td>medical supplies supplier Philippines</td><td class="us">Medical Supplies &amp; Specialty Medicines for Hospitals in the Philippines and Worldwide <span style="color:var(--ink-3)">(read by Google, slogan shown to visitors)</span></td></tr>
+      <tr><td>Medical equipment</td><td>medical equipment supplier Philippines</td><td class="us">Medical Equipment and Hospital Supplies, Ready for Healthcare.</td></tr>
+      <tr><td>Gloves</td><td>nitrile gloves supplier Philippines</td><td class="us"><b>Medical Gloves in Bulk for Philippine Hospitals</b></td></tr>
+      <tr><td>PPE</td><td>PPE supplier Philippines</td><td class="us">Personal Protective Equipment (PPE) for Hospitals</td></tr>
+      <tr><td>Dialysis</td><td>dialysis supplies Philippines</td><td class="us">Dialysis Supplies and Equipment for Dialysis Centres</td></tr>
+      <tr><td>Surgical</td><td>surgical instruments supplier Philippines</td><td class="us">Surgical Instruments and Operating Room Equipment</td></tr>
+      <tr><td>Catalog</td><td>hospital consumables wholesale</td><td class="us">All Categories of Hospital Consumables and Medical Equipment</td></tr>
+      <tr><td>India hub (/llp/)</td><td>medical supplies exporter India</td><td class="us">Bishnoi Omniverse LLP: Medical Supplies Exporter in India</td></tr>
+      <tr><td>Philippines hub (/corp/)</td><td>medical supplies Philippines</td><td class="us">Bishnoi Omniverse Corp: Medical Supplies in the Philippines</td></tr>
+    </table>
+    <p class="shot-note" style="margin-top:10px">Patient monitoring, respiratory care and the other 19 categories follow the same pattern. Page titles: keyword first, brand last, 50–60 characters, e.g. "Nitrile Gloves Supplier Philippines | Bishnoi Omniverse".</p>
+  </section>
+
+  <!-- 10 · Keyword example screenshot -->
+  <section class="slide">
+    <p class="eyebrow">Part 1 · K1 · Example</p>
+    <h2>What a keyword-led category page looks like</h2>
+    <div class="split">
+      <div>
+        <div class="card strong"><h3>Gloves category</h3>
+          <ul>
+            <li><b>Title:</b> Nitrile Gloves Supplier Philippines | Bishnoi Omniverse</li>
+            <li><b>H1:</b> Medical Gloves in Bulk for Philippine Hospitals</li>
+            <li><b>Description:</b> Bulk nitrile, latex and vinyl examination gloves and sterile surgical gloves for hospitals and clinics. Delivered across the Philippines. Request a quote.</li>
+            <li><b>Opening text:</b> names the glove types buyers search for</li>
+          </ul>
+          <div class="links"><a class="go primary" href="https://bishnoiomniverse.com/medical-equipment/gloves/" target="_blank" rel="noopener">Open the gloves page ↗</a></div></div>
+      </div>
+      <div>
+        <div class="shot"><a class="open" href="https://bishnoiomniverse.com/medical-equipment/gloves/" target="_blank" rel="noopener">
+          <div class="bar"><i></i><i></i><i></i><span>bishnoiomniverse.com/medical-equipment/gloves/</span></div>
+          <img src="presentation-assets/seo-gloves.png" alt="Gloves category page with the keyword heading"></a></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 11 · B8 + images -->
+  <section class="slide">
+    <p class="eyebrow">Part 1 · B8 · Extra</p>
+    <h2>Image descriptions and lighter pages</h2>
+    <div class="tags"><span class="tag tag-good"><i class="dot"></i>Live</span></div>
+    <div class="grid g2">
+      <div class="card"><h3>B8 · Alt text</h3>
+        <p><b>Problem:</b> two homepage images (a hero slide and the countries map) had no description for Google Images or screen readers.</p>
+        <p style="margin-top:8px"><b>Fixed:</b> both now describe what they show, e.g. "Map of the countries Bishnoi Omniverse supplies". The remaining empty descriptions on the site belong to purely decorative images, which is correct.</p></div>
+      <div class="card"><h3>Extra · Page speed</h3>
+        <p><b>Problem:</b> 44 page images were 1–4 MB PNG/JPG files. The About page alone loaded more than 7 MB. Speed is a Google ranking factor.</p>
+        <p style="margin-top:8px"><b>Fixed:</b> converted to WebP at the same size and visual quality.</p></div>
+    </div>
+    <div class="kpis" style="margin-top:16px">
+      <div class="kpi"><b>45 MB</b><span>images before</span></div>
+      <div class="kpi"><b>3.3 MB</b><span>images after</span></div>
+      <div class="kpi"><b>93%</b><span>smaller</span></div>
+      <div class="kpi"><b>2.9 MB → 116 KB</b><span>e.g. the CEO portrait</span></div>
+    </div>
+  </section>
+
+  <!-- 12 · C2 Specialty Medicines -->
+  <section class="slide">
+    <p class="eyebrow">Part 1 · C2 · High</p>
+    <h2>A page for our second business line</h2>
+    <div class="split">
+      <div>
+        <div class="tags"><span class="tag tag-good"><i class="dot"></i>Live</span><span class="tag tag-warn"><i class="dot"></i>Needs compliance review</span></div>
+        <p class="lead">Specialty medicine sourcing has low competition and high value, but the site had no page for it. Now it does, aimed at "specialty medicine sourcing", "hard-to-find medicines Philippines" and "named patient medicine supply".</p>
+        <div class="card"><h3>What is on it</h3>
+          <ul><li>What We Source · Who We Help · How It Works</li><li>Documents We Provide · Philippine FDA CSP support · FAQ</li><li>Send Your Requirement and WhatsApp buttons</li><li>Linked from the Company menu, the homepage and the sitemap</li></ul>
+          <div class="links"><a class="go primary" href="https://bishnoiomniverse.com/specialty-medicines/" target="_blank" rel="noopener">Open the page ↗</a></div></div>
+      </div>
+      <div>
+        <div class="shot"><a class="open" href="https://bishnoiomniverse.com/specialty-medicines/" target="_blank" rel="noopener">
+          <div class="bar"><i></i><i></i><i></i><span>bishnoiomniverse.com/specialty-medicines/</span></div>
+          <img src="presentation-assets/seo-specialty.png" alt="Specialty Medicines page hero"></a></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 13 · Extras: trust + layout -->
+  <section class="slide">
+    <p class="eyebrow">Part 1 · Found along the way</p>
+    <h2>Two more fixes the audit did not list</h2>
+    <div class="grid g2">
+      <div class="card"><h3>Matching business details</h3>
+        <p><b>Problem:</b> the About page used the email contact@bishnoi.ai, and the footer (on every page) showed a different office address from the rest of the site. Google compares these with the Business Profile; mismatches weaken trust.</p>
+        <p style="margin-top:8px"><b>Fixed:</b> one email and one address everywhere:</p>
+        <ul><li>il@bishnoiomniverse.com</li><li>Unit 301 and 305, 17 Vatican Building, Vatican City Drive, B.F. Resort Village, Talon II, Las Piñas City, Metro Manila 1747</li></ul></div>
+      <div class="card"><h3>Desktop pages showing phone layouts</h3>
+        <p><b>Problem:</b> a styling setup bug, there since 8 October, made Global Network, Group Structure and Trade &amp; Partners show their phone layouts on desktop, so pages were longer and harder to read.</p>
+        <p style="margin-top:8px"><b>Fixed:</b> corrected the styling configuration. Desktop layouts apply again; phones are unchanged.</p>
+        <div class="links"><a class="go" href="https://bishnoiomniverse.com/global-network/" target="_blank" rel="noopener">Global Network ↗</a></div></div>
+    </div>
+  </section>
+
+  <!-- 14 · Part 1 scorecard -->
+  <section class="slide">
+    <p class="eyebrow">Part 1 · Scorecard</p>
+    <h2>All website fixes from the audit: done</h2>
+    <table class="cmp">
+      <tr><th>ID</th><th>Item</th><th>Priority</th><th class="us">Status</th></tr>
+      <tr><td>B1</td><td>Canonical tags on every page</td><td>Critical</td><td class="us"><b>Live</b></td></tr>
+      <tr><td>B2</td><td>Real sitemap dates</td><td>Medium</td><td class="us"><b>Live</b></td></tr>
+      <tr><td>B3</td><td>Organization schema</td><td>High</td><td class="us"><b>Live</b> · add company LinkedIn when it exists</td></tr>
+      <tr><td>B4</td><td>Product and FAQ schema</td><td>Medium</td><td class="us"><b>Live</b> · brand and price pending data</td></tr>
+      <tr><td>B5</td><td>Short meta descriptions</td><td>High</td><td class="us"><b>Live</b></td></tr>
+      <tr><td>B6</td><td>Open Graph / Twitter tags</td><td>High</td><td class="us"><b>Live</b></td></tr>
+      <tr><td>B7</td><td>Keyword homepage H1</td><td>High</td><td class="us"><b>Live</b> · keywords read by Google, slogan shown</td></tr>
+      <tr><td>B8</td><td>Image alt text</td><td>Low</td><td class="us"><b>Live</b></td></tr>
+      <tr><td>K1</td><td>Keywords in titles and headings</td><td>High</td><td class="us"><b>Live</b></td></tr>
+      <tr><td>C2</td><td>Specialty Medicines page</td><td>High</td><td class="us"><b>Live</b> · compliance review pending</td></tr>
+      <tr><td>C4</td><td>India and Philippines hub pages</td><td>Medium</td><td class="us">Keyword headings done · details pending</td></tr>
+    </table>
+  </section>
+
+  <!-- 15 · Part 2 divider -->
+  <section class="slide divider">
+    <p class="num">02</p>
+    <p class="eyebrow">Part 2</p>
+    <h2>What we need to do on our side</h2>
+    <p class="lead">The website is ready. What is left needs our Google accounts, our listings and our real product and office data. Search Console is now verified (A1); the rest follows from here.</p>
+    <table class="cmp">
+      <tr><th>ID</th><th>Task</th><th>Priority</th><th>Time</th><th class="us">When</th></tr>
+      <tr><td>A1</td><td>Verify the site in Google Search Console, submit sitemaps</td><td>Critical</td><td>30 min</td><td class="us"><b>Done · 24 Oct</b></td></tr>
+      <tr><td>A2</td><td>Request indexing for the 13 key pages</td><td>Critical</td><td>20 min × 2 days</td><td class="us"><b>In progress</b></td></tr>
+      <tr><td>A4</td><td>Turn on Google Analytics 4</td><td>High</td><td>30 min</td><td class="us"><b>This week</b></td></tr>
+      <tr><td>A3</td><td>Create the Google Business Profile</td><td>High</td><td>1 hr + verification</td><td class="us"><b>This week</b></td></tr>
+      <tr><td>C2</td><td>Compliance review of the Specialty Medicines page</td><td>High</td><td>1 hr</td><td class="us"><b>This week</b></td></tr>
+      <tr><td>A5</td><td>Backlinks and business listings</td><td>High</td><td>2 hrs / week</td><td class="us">Weeks 2–8</td></tr>
+      <tr><td>C3 · C4</td><td>Product data and office details</td><td>High</td><td>Gathering</td><td class="us">Weeks 2–4</td></tr>
+      <tr><td>C1</td><td>Two articles a month</td><td>High</td><td>Half day each</td><td class="us">Ongoing</td></tr>
+      <tr><td>D1</td><td>Monthly SEO review</td><td>Medium</td><td>1 hr / month</td><td class="us">Monthly</td></tr>
+    </table>
+  </section>
+
+  <!-- 16 · A1 A2 progress -->
+  <section class="slide">
+    <p class="eyebrow">Part 2 · A1 · A2 · Progress update · 24 October</p>
+    <h2>Google now knows the site exists</h2>
+    <div class="tags"><span class="tag tag-good"><i class="dot"></i>A1 · Done</span><span class="tag tag-warn"><i class="dot"></i>A2 · In progress</span></div>
+    <div class="split" style="align-items:start">
+      <div class="grid">
+        <div class="card fix" style="background:var(--mint);border-color:var(--mint-2)"><h3 style="color:var(--deep)">A1 · Search Console verified, sitemaps submitted</h3>
+          <ul>
+            <li>Added Google's <b>TXT verification record</b> in the domain's DNS at <b>BigRock</b>, next to the existing email records (left untouched)</li>
+            <li>Google confirmed ownership of the whole <b>bishnoiomniverse.com</b> domain: http and https, with and without www</li>
+            <li>Submitted <code>sitemap.xml</code> (368 pages) and <code>sitemap-images.xml</code> (79 images)</li>
+            <li>The DNS record stays in place permanently, or Google removes the verification</li>
+          </ul></div>
+        <div class="card"><h3>A2 · Indexing requests started</h3>
+          <ul>
+            <li>Key pages inspected one by one; Google reports <b>"URL is unknown to Google"</b>, as expected for a site it has never crawled</li>
+            <li><b>Request indexing</b> sent page by page, about 10–12 per day, across 2 days for all 13 key pages</li>
+            <li>"No referring sitemaps" clears once Google reads the new sitemaps, within a few days</li>
+            <li><b>Done when:</b> each page shows <b>"URL is on Google"</b>, re-checked after a week</li>
+          </ul></div>
+      </div>
+      <div>
+        <div class="shot"><div class="bar"><i></i><i></i><i></i><span>Search Console · bishnoiomniverse.com · Overview</span></div>
+          <img src="presentation-assets/seo-gsc-overview.png" alt="Search Console overview for bishnoiomniverse.com after verification"></div>
+        <div class="shot" style="margin-top:14px"><div class="bar"><i></i><i></i><i></i><span>URL Inspection · /specialty-medicines/</span></div>
+          <img src="presentation-assets/seo-gsc-inspection.png" alt="URL Inspection showing URL is not on Google with the Request Indexing button"></div>
+        <p class="caption">Zero clicks and "not on Google" are the starting line: data fills in over the coming days and weeks.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 17 · A1 A2 how-to -->
+  <section class="slide">
+    <p class="eyebrow">Part 2 · A1 · A2 · How it was done</p>
+    <h2>Tell Google the site exists</h2>
+    <div class="grid g2">
+      <div class="card strong"><h3>A1 · Search Console (30 min)</h3>
+        <ol>
+          <li>Go to <b>search.google.com/search-console</b>, sign in with the company Google account</li>
+          <li><b>Add property → Domain</b> → <code>bishnoiomniverse.com</code></li>
+          <li>Copy the <b>TXT record</b> Google shows</li>
+          <li>BigRock → <b>Orders → bishnoiomniverse.com → DNS Records → TXT</b> → leave Domain/Sub-domain empty, paste the value, choose a TTL, <b>Save Record</b></li>
+          <li>Back in Search Console click <b>Verify</b> (retry after 15–60 min if needed)</li>
+          <li><b>Sitemaps</b> → submit <code>sitemap.xml</code> and <code>sitemap-images.xml</code></li>
+        </ol>
+        <p class="who">Needs: company Google account · BigRock login · ✓ done 24 Oct</p></div>
+      <div class="card strong"><h3>A2 · Request indexing (20 min, 2 days)</h3>
+        <ol>
+          <li>In Search Console paste a full URL into the <b>top search bar</b></li>
+          <li>Click <b>Request indexing</b>; Google allows about 10–12 a day</li>
+          <li><b>Day 1:</b> home, medical-equipment, specialty-medicines, gloves, PPE, dialysis, patient monitoring</li>
+          <li><b>Day 2:</b> respiratory care, surgical, catalog, about, contact, faq</li>
+          <li>After a week, inspect again: <b>"URL is on Google"</b> means done</li>
+        </ol>
+        <p class="who">Needs: A1 finished first</p></div>
+    </div>
+  </section>
+
+  <!-- 17 · A3 A4 -->
+  <section class="slide">
+    <p class="eyebrow">Part 2 · A3 · A4 · High</p>
+    <h2>Measure visitors, appear on Google Maps</h2>
+    <div class="grid g2">
+      <div class="card strong"><h3>A4 · Google Analytics 4 (30 min)</h3>
+        <ol>
+          <li><b>analytics.google.com → Admin → Create → Property</b> "Bishnoi Omniverse", time zone Asia/Manila</li>
+          <li>Web stream for <code>https://bishnoiomniverse.com</code> → copy the <b>G-…</b> Measurement ID</li>
+          <li>GitHub repository → <b>Settings → Secrets and variables → Actions → Variables</b> → add <code>GA_MEASUREMENT_ID</code></li>
+          <li><b>Actions → Deploy to GitHub Pages → Run workflow</b> (or wait for the hourly build)</li>
+          <li>After 1–2 days mark <code>generate_lead</code> and <code>whatsapp_click</code> as <b>Key events</b></li>
+          <li>Search Console → <b>Settings → Associations</b> → link GA4</li>
+        </ol>
+        <p class="who">Already built into the site · switches on with the ID</p></div>
+      <div class="card strong"><h3>A3 · Google Business Profile (1 hr)</h3>
+        <ol>
+          <li><b>business.google.com → Manage now</b> → "Bishnoi Omniverse Corp"</li>
+          <li>Category <b>Medical supply store</b> + <b>Medical equipment supplier</b></li>
+          <li>Address <b>exactly</b> as on the website footer, phone +63 994 855 9919, website, hours</li>
+          <li>Verify by video, postcard or phone</li>
+          <li>Add logo, office and warehouse photos, description and product categories</li>
+          <li>Ask satisfied hospital and clinic clients for Google reviews</li>
+        </ol>
+        <p class="who">Needs: logo · 3–5 photos · business hours</p></div>
+    </div>
+  </section>
+
+  <!-- 18 · A5 backlinks -->
+  <section class="slide">
+    <p class="eyebrow">Part 2 · A5 · High · Ongoing</p>
+    <h2>Earn trust: get other sites to link to us</h2>
+    <p class="lead">A new domain with no links pointing to it is crawled slowly and ranks poorly. Trusted links are the strongest signal for a new site. Goal: <b>10 quality links in the first 60 days.</b></p>
+    <div class="grid g3">
+      <div class="card"><h3>Our own channels</h3><ul><li>Company <b>LinkedIn</b> page with the website link (then add it to our schema)</li><li>Leadership profiles link to the site</li><li>Group sites: Getmeds and partners link to us</li></ul></div>
+      <div class="card"><h3>Philippines</h3><ul><li><b>PhilGEPS</b> government procurement listing</li><li><b>DTI / SEC</b> public listings</li><li>Medical device or hospital supply associations</li></ul></div>
+      <div class="card"><h3>India entity</h3><ul><li><b>Pharmexcil</b> and <b>EEPC India</b></li><li><b>IndiaMART</b>, <b>TradeIndia</b>, Alibaba</li><li>Manufacturers' and logistics partners' distributor pages</li></ul></div>
+    </div>
+    <div class="panel" style="margin-top:16px"><p style="margin:0;font-size:13.5px">Keep a simple tracking sheet: <b>site · link URL · date · status</b>. Check progress in Search Console → <b>Links</b>.</p></div>
+  </section>
+
+  <!-- 19 · Content we owe -->
+  <section class="slide">
+    <p class="eyebrow">Part 2 · C1 · C2 · C3 · C4</p>
+    <h2>Content and data only we can supply</h2>
+    <div class="grid g2">
+      <div class="card"><h3>C2 · Compliance review</h3><p>Regulatory staff should read /specialty-medicines/ and confirm every claim, especially the <b>Philippine FDA Compassionate Special Permit</b> section, the documents list, cold-chain and 24-hour reply statements.</p></div>
+      <div class="card"><h3>C1 · Articles, 2 per month</h3><p>First pick: <b>"Nitrile vs Latex vs Vinyl Gloves: Which Should Hospitals Buy?"</b>. Name who fact-checks each article before it is published.</p></div>
+      <div class="card"><h3>C3 · Top 20 product pages</h3><p>For each: full specs, sizes, certifications (ISO, CE, FDA), packaging and MOQ, lead time, brand, real photos, and an indicative price if we can publish one (this unlocks Google price results).</p></div>
+      <div class="card"><h3>C4 · India and Philippines hubs</h3><p>For each office: hours, phone, licence numbers we can publish (FDA LTO, Indian drug licence), regions served, delivery times, office and warehouse photos. Pages grow to 500+ words with a map.</p></div>
+    </div>
+  </section>
+
+  <!-- 20 · D1 + expectations -->
+  <section class="slide">
+    <p class="eyebrow">Part 2 · D1 · Monthly</p>
+    <h2>Measure progress, and set expectations</h2>
+    <div class="split" style="align-items:start">
+      <div>
+        <div class="card strong"><h3>Monthly review (1 hr)</h3>
+          <ol>
+            <li>Search Console → <b>Pages</b>: indexed count, "Not indexed" reasons</li>
+            <li><b>Performance</b>: clicks, impressions, average position</li>
+            <li>Improve pages ranking <b>8–20</b> first; they are closest to page 1</li>
+            <li>GA4: organic visitors and key events (enquiries, WhatsApp)</li>
+            <li>Search Console → <b>Links</b>: new backlinks</li>
+            <li>Log the numbers in a spreadsheet every month</li>
+          </ol></div>
+      </div>
+      <div>
+        <table class="cmp">
+          <tr><th>Target</th><th>Month 1</th><th>Month 3</th><th class="us">Month 6</th></tr>
+          <tr><td>Indexed pages</td><td>50+</td><td>250+</td><td class="us"><b>350+</b></td></tr>
+          <tr><td>Brand search #1</td><td>Yes</td><td>Yes</td><td class="us"><b>Yes</b></td></tr>
+          <tr><td>Monthly impressions</td><td>500+</td><td>5,000+</td><td class="us"><b>20,000+</b></td></tr>
+          <tr><td>Keywords in top 20</td><td>5</td><td>25</td><td class="us"><b>60+</b></td></tr>
+          <tr><td>Referring domains</td><td>5</td><td>15</td><td class="us"><b>30+</b></td></tr>
+          <tr><td>Organic enquiries</td><td>1+</td><td>5+</td><td class="us"><b>15+</b></td></tr>
+        </table>
+        <ul class="steps" style="margin-top:8px">
+          <li><span class="when">2 weeks</span><div class="what"><b>Key pages indexed, brand searches show the site</b></div></li>
+          <li><span class="when">1–2 months</span><div class="what"><b>Product searches start getting impressions</b></div></li>
+          <li><span class="when">3–6 months</span><div class="what"><b>Category terms move toward page 1</b></div></li>
+          <li><span class="when">6–12 months</span><div class="what"><b>Competitive terms like "medical supplies Philippines"</b></div></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- 21 · Things to consider -->
+  <section class="slide">
+    <p class="eyebrow">Part 2 · Things to consider</p>
+    <h2>What to keep in mind</h2>
+    <div class="grid g3">
+      <div class="card"><h3>Keep business details identical</h3><p>Name, address, phone and email must match exactly across the website, Business Profile, LinkedIn and directories. Copy them from the website footer.</p></div>
+      <div class="card"><h3>Do not change page addresses</h3><p>Google ranks URLs. Renaming a category or product in the sheet changes its address and resets its ranking; tell the web team first so a redirect can be added.</p></div>
+      <div class="card"><h3>Keep the product sheet clean</h3><p>The catalog, sitemap and search descriptions are built from the Google Sheet every hour. Accurate names and descriptions there mean accurate pages on Google.</p></div>
+      <div class="card"><h3>Hidden homepage keywords</h3><p>The homepage H1 keywords are visually hidden. Low risk, but if Search Console ever flags the homepage, switch to a visible keyword line.</p></div>
+      <div class="card"><h3>Claims need sign-off</h3><p>Regulatory statements (FDA, CSP, certifications, delivery times) are read by Google and buyers alike. Every new claim goes through compliance before publishing.</p></div>
+      <div class="card"><h3>Consistency beats intensity</h3><p>Two good articles a month, steady link-building and monthly reviews will outperform a one-off burst. SEO is measured in months, not days.</p></div>
+    </div>
+  </section>
+
+  <!-- 22 · Close -->
+  <section class="slide">
+    <div class="split">
+      <div>
+        <p class="eyebrow">Summary</p>
+        <h1 style="font-size:38px">The website is ready for Google, and Google now knows about it.</h1>
+        <p class="lead">Every website fix from the audit is live: canonical tags, real sitemap dates, structured data, short descriptions, share previews, keyword headings, lighter images and a new Specialty Medicines page. Search Console is verified and the sitemaps are submitted. Next: finish the indexing requests, switch on Analytics and create the Business Profile.</p>
+        <div class="links">
+          <a class="go primary" href="https://search.google.com/search-console" target="_blank" rel="noopener">Open Search Console ↗</a>
+          <a class="go" href="https://analytics.google.com" target="_blank" rel="noopener">Google Analytics ↗</a>
+          <a class="go" href="https://business.google.com" target="_blank" rel="noopener">Business Profile ↗</a>
+        </div>
+      </div>
+      <div>
+        <div class="shot crop"><a class="open" href="https://bishnoiomniverse.com" target="_blank" rel="noopener">
+          <div class="bar"><i></i><i></i><i></i><span>bishnoiomniverse.com</span></div>
+          <img src="presentation-assets/seo-home.png" alt="The live homepage"></a></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Controls -->
+  <div class="rail">
+    <div class="inner">
+      <span class="hint-keys">Use ← → arrow keys, or click the buttons</span>
+      <div class="dots" id="dots" role="tablist" aria-label="Slides"></div>
+      <div class="navbtns">
+        <span class="count" id="count">1 / 23</span>
+        <button id="prev" type="button">← Back</button>
+        <button id="next" class="primary" type="button">Next →</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  const dots = document.getElementById('dots');
+  const count = document.getElementById('count');
+  const prev = document.getElementById('prev');
+  const next = document.getElementById('next');
+  let at = 0;
+
+  slides.forEach((_, i) => {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.setAttribute('aria-label', 'Slide ' + (i + 1));
+    b.addEventListener('click', () => go(i));
+    dots.appendChild(b);
+  });
+
+  function go(i) {
+    at = Math.max(0, Math.min(slides.length - 1, i));
+    slides.forEach((s, k) => s.classList.toggle('on', k === at));
+    Array.from(dots.children).forEach((d, k) => d.setAttribute('aria-current', k === at ? 'true' : 'false'));
+    count.textContent = (at + 1) + ' / ' + slides.length;
+    prev.disabled = at === 0;
+    next.disabled = at === slides.length - 1;
+    window.scrollTo({ top: 0 });
+  }
+
+  prev.addEventListener('click', () => go(at - 1));
+  next.addEventListener('click', () => go(at + 1));
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === 'PageDown' || e.key === ' ') { e.preventDefault(); go(at + 1); }
+    if (e.key === 'ArrowLeft' || e.key === 'PageUp') { e.preventDefault(); go(at - 1); }
+    if (e.key === 'Home') go(0);
+    if (e.key === 'End') go(slides.length - 1);
+  });
+  go(0);
+</script>
+</body>
+</html>

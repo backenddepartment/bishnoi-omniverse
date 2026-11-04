@@ -12,7 +12,9 @@
     "catalog:export": "node scripts/export-catalog-csv.mjs",
     "sitemap:dates": "node scripts/page-dates.mjs",
     "prebuild": "node scripts/sync-catalog.mjs && node scripts/page-dates.mjs",
-    "postbuild": "node scripts/inline-css.mjs"
+    "postbuild": "node scripts/inline-css.mjs && node scripts/write-redirects.mjs && node scripts/check-seo.mjs",
+    "seo:check": "node scripts/check-seo.mjs",
+    "catalog:copy-export": "node scripts/export-product-copy.mjs"
   },
   "browserslist": [
     "chrome >= 93",

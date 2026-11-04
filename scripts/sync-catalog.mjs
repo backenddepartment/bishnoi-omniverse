@@ -21,6 +21,8 @@ import { readFileSync, writeFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, resolve } from 'node:path';
 import { parseCsvRecords } from './csv.mjs';
+import { mergeProducts, slugify } from './catalog-merge.mjs';
+import { applyCategoryMoves, applyProductCopy, pruneSubcategories } from './catalog-overrides.mjs';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const DATA_FILE = resolve(ROOT, 'lib/data/catalogData.json');
@@ -57,17 +59,6 @@ const COLUMNS = {
   imageCredit: 'image credit',
   imageSource: 'image source',
 };
-
-/** "Fluid & IV Therapy" -> "fluid-and-iv-therapy" */
-function slugify(value) {
-  return String(value)
-    .normalize('NFKD')
-    .replace(/[̀-ͯ]/g, '')
-    .toLowerCase()
-    .replace(/&/g, ' and ')
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-+|-+$/g, '');
-}
 
 /**
  * Returns a slug that is unique within `taken`: the preferred slug, else each fallback in turn,
@@ -210,8 +201,30 @@ function build(records) {
   return { categories, subcategories, products };
 }
 
+/**
+ * Merges rows that are the same product into one record (scripts/catalog-merge.mjs) and returns
+ * the file contents to write. Aliases already in the file are kept, so old ids stay resolvable.
+ */
+function withMergedProducts(data) {
+  // Order matters: move mis-filed rows first so they merge with rows already in that category,
+  // then merge, then give each product its own copy, then drop subcategories left empty.
+  const moved = applyCategoryMoves(data.products, data.subcategories);
+  const merged = mergeProducts(moved, data.productAliases ?? {});
+  const removed = data.products.length - merged.products.length;
+  if (removed > 0) {
+    console.log(`[catalog] Merged ${removed} duplicate product row(s) into the page they share.`);
+  }
+  const products = applyProductCopy(merged.products);
+  const { categories, subcategories } = pruneSubcategories(data.categories, data.subcategories, products);
+  return { ...data, categories, subcategories, products, productAliases: merged.aliases };
+}
+
 async function main() {
   if (!SHEET_CSV) {
+    // Still apply the merge, so a local build publishes the same pages as the deploy.
+    const raw = readFileSync(DATA_FILE, 'utf8');
+    const next = JSON.stringify(withMergedProducts(JSON.parse(raw)), null, 2) + '\n';
+    if (next !== raw) writeFileSync(DATA_FILE, next, 'utf8');
     console.log('[catalog] CATALOG_SHEET_CSV not set — keeping the committed lib/data/catalogData.json.');
     return;
   }
@@ -244,12 +257,12 @@ async function main() {
   // Everything else in the file (hero copy, trustBanner, rfqCheckout) stays hand-edited in the
   // repo; only the three sheet-owned keys are replaced.
   const existing = JSON.parse(readFileSync(DATA_FILE, 'utf8'));
-  const next = { ...existing, categories, subcategories, products };
+  const next = withMergedProducts({ ...existing, categories, subcategories, products });
 
   writeFileSync(DATA_FILE, JSON.stringify(next, null, 2) + '\n', 'utf8');
 
   console.log(
-    `[catalog] Wrote ${products.length} products across ${categories.length} categories ` +
+    `[catalog] Wrote ${next.products.length} products across ${categories.length} categories ` +
       `and ${subcategories.length} subcategories to lib/data/catalogData.json`
   );
 }
