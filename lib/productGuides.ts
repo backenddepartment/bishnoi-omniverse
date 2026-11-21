@@ -16,6 +16,8 @@
 
 import { GUIDES_GROUP_1 } from '@/lib/guides/group1';
 import { GUIDES_GROUP_2 } from '@/lib/guides/group2';
+import { GUIDES_GROUP_3 } from '@/lib/guides/group3';
+import { GUIDES_GROUP_4 } from '@/lib/guides/group4';
 
 export type GuideSection = {
   heading: string;
@@ -123,6 +125,8 @@ const ALL_GUIDES: Record<string, ProductGuide> = {
   ...PRODUCT_GUIDES,
   ...GUIDES_GROUP_1,
   ...GUIDES_GROUP_2,
+  ...GUIDES_GROUP_3,
+  ...GUIDES_GROUP_4,
 };
 
 export function productGuide(productId: string): ProductGuide | undefined {

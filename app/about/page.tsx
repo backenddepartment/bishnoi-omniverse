@@ -111,9 +111,9 @@ const PRINCIPLES = [
 ];
 
 export const metadata: Metadata = pageMetadata({
-  title: 'About Us | Our Story | Bishnoi Omniverse',
+  title: 'About Bishnoi Omniverse | Medical Supplier, PH & India',
   description:
-    'How Bishnoi Omniverse supplies hospitals, clinics and trade partners with medical equipment and specialty medicines, and the standards behind every shipment.',
+    'Bishnoi Omniverse supplies hospitals and clinics in the Philippines and worldwide with medical equipment and specialty medicines from India and PH hubs.',
   path: '/about/',
 });
 
