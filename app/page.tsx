@@ -32,6 +32,9 @@ import aboutBgImg from '@/app/assets/overviewaboutusbg.webp';
 import aboutBgSmallImg from '@/app/assets/overviewaboutusbg-800.webp';
 import worldMapImg from '@/app/assets/countries.webp';
 import contactData from '@/lib/data/contactData.json';
+import catalogData from '@/lib/data/catalogData.json';
+import { productPath } from '@/lib/catalogRoutes';
+import { allProductGuides } from '@/lib/productGuides';
 import { JsonLd, SITE_NAME, pageMetadata } from '@/lib/seo';
 import { absoluteUrl } from '@/lib/siteUrl';
 
@@ -170,6 +173,13 @@ const FEATURED_LINE_IMAGES: Record<string, { src: string; alt: string } | undefi
     alt: 'Surgical instruments — forceps, scissors and a scalpel — laid out on a blue sterile drape',
   },
 };
+
+// Every product page that has a buying guide, labelled with the product name. Products are looked
+// up in the catalog so a guide whose product has gone is simply left out.
+const BUYING_GUIDE_LINKS = Object.keys(allProductGuides()).flatMap((id) => {
+  const product = catalogData.products.find((p) => p.id === id);
+  return product ? [{ label: product.name, href: productPath(product) }] : [];
+});
 
 // Slide 1 (heroBg, "Clinicians supporting a patient in recovery") is out of the rotation for now;
 // add it back as the first entry to restore it.
@@ -425,6 +435,27 @@ export default function HomePage() {
             })}
           </CardSlider>
         </div>
+
+        {/* Buying guides: a plain link to every product page with a hand-written guide
+            (lib/productGuides.ts), so each one is linked from the home page. New guides appear
+            here automatically. */}
+        <nav aria-labelledby="home-guides-heading" className="wrap mt-12">
+          <h3 id="home-guides-heading" className="text-base font-semibold text-ink mb-4">
+            Buying guides for Philippine hospitals
+          </h3>
+          <ul className="flex flex-wrap gap-2.5 m-0 p-0 list-none">
+            {BUYING_GUIDE_LINKS.map((link) => (
+              <li key={link.href}>
+                <Link
+                  href={link.href}
+                  className="inline-block rounded-full border border-line bg-surface px-4 py-2 text-sm text-ink-soft no-underline transition-colors hover:border-accent hover:text-accent-dark"
+                >
+                  {link.label}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </nav>
       </section>
 
       {/* Quality & Compliance overview — on the paper tone so it separates from the white What

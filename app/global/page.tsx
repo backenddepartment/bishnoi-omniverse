@@ -16,9 +16,9 @@ import roleImg from '@/app/assets/omniverseabout.webp';
 import { pageMetadata } from '@/lib/seo';
 
 export const metadata: Metadata = pageMetadata({
-  title: 'Group Structure | Bishnoi Omniverse',
+  title: 'Bishnoi Group Structure: India & Philippines | Omniverse',
   description:
-    'Who you are dealing with: the Bishnoi Group at a glance, where Bishnoi Omniverse fits, and how its India and Philippine entities divide responsibility.',
+    'Bishnoi Omniverse is the healthcare supply business of the Bishnoi Group. See how its India and Philippine entities serve hospitals and partners.',
   path: '/global/',
 });
 

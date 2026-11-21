@@ -14,10 +14,10 @@ type CategorySeo = { title: string; h1?: string; description: string };
 
 const CATEGORY_SEO: Record<string, CategorySeo> = {
   gloves: {
-    title: 'Nitrile Gloves Supplier Philippines | Bishnoi Omniverse',
+    title: 'Medical Gloves Supplier Philippines | Bishnoi Omniverse',
     h1: 'Medical Gloves in Bulk for Philippine Hospitals',
     description:
-      'Bulk nitrile, latex and vinyl examination gloves and sterile surgical gloves for hospitals and clinics. Delivered across the Philippines. Request a quote.',
+      'Medical gloves in bulk: nitrile, latex and vinyl exam gloves and sterile surgical gloves for hospitals and clinics across the Philippines. Request a quote.',
   },
   'personal-protective-equipment-ppe': {
     title: 'Personal Protective Equipment Supplier Philippines',
